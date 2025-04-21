@@ -147,21 +147,25 @@ export interface Record {
 }
 
 export enum Record_RecordType {
-  TIME = 0,
-  DAY = 1,
-  MULTI_DAY = 2,
+  UNKNOWN = 0,
+  TIME = 1,
+  DAY = 2,
+  MULTI_DAY = 3,
   UNRECOGNIZED = -1,
 }
 
 export function record_RecordTypeFromJSON(object: any): Record_RecordType {
   switch (object) {
     case 0:
+    case "UNKNOWN":
+      return Record_RecordType.UNKNOWN;
+    case 1:
     case "TIME":
       return Record_RecordType.TIME;
-    case 1:
+    case 2:
     case "DAY":
       return Record_RecordType.DAY;
-    case 2:
+    case 3:
     case "MULTI_DAY":
       return Record_RecordType.MULTI_DAY;
     case -1:
@@ -173,6 +177,8 @@ export function record_RecordTypeFromJSON(object: any): Record_RecordType {
 
 export function record_RecordTypeToJSON(object: Record_RecordType): string {
   switch (object) {
+    case Record_RecordType.UNKNOWN:
+      return "UNKNOWN";
     case Record_RecordType.TIME:
       return "TIME";
     case Record_RecordType.DAY:
@@ -190,6 +196,7 @@ export interface RecordGroup {
   title: string;
   isPublic: boolean;
   publicId: string;
+  color: string;
   priority: number;
   worker?: Worker | undefined;
   createdAt: number;
@@ -1783,6 +1790,7 @@ function createBaseRecordGroup(): RecordGroup {
     title: "",
     isPublic: false,
     publicId: "",
+    color: "",
     priority: 0,
     worker: undefined,
     createdAt: 0,
@@ -1804,11 +1812,14 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     if (message.publicId !== "") {
       writer.uint32(34).string(message.publicId);
     }
+    if (message.color !== "") {
+      writer.uint32(42).string(message.color);
+    }
     if (message.priority !== 0) {
-      writer.uint32(40).int64(message.priority);
+      writer.uint32(784).int64(message.priority);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(50).fork()).join();
+      Worker.encode(message.worker, writer.uint32(794).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(800).int64(message.createdAt);
@@ -1859,15 +1870,23 @@ export const RecordGroup: MessageFns<RecordGroup> = {
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.priority = longToNumber(reader.int64());
           continue;
         }
-        case 6: {
-          if (tag !== 50) {
+        case 99: {
+          if (tag !== 794) {
             break;
           }
 
@@ -1905,6 +1924,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : false,
       publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
+      color: isSet(object.color) ? globalThis.String(object.color) : "",
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
@@ -1925,6 +1945,9 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     }
     if (message.publicId !== "") {
       obj.publicId = message.publicId;
+    }
+    if (message.color !== "") {
+      obj.color = message.color;
     }
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
@@ -1950,6 +1973,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     message.title = object.title ?? "";
     message.isPublic = object.isPublic ?? false;
     message.publicId = object.publicId ?? "";
+    message.color = object.color ?? "";
     message.priority = object.priority ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)

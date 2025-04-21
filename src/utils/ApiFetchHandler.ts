@@ -1,5 +1,7 @@
 import {NextResponse} from "next/server"
 import HttpMethod from "@/enums/HttpMethod"
+import {cookies} from "next/headers"
+import {redirect} from "next/navigation"
 
 export async function apiFetchHandler<T>(
     url: string,
@@ -26,12 +28,26 @@ export async function apiFetchHandler<T>(
             body: body ? JSON.stringify(body) : undefined,
         });
         
-        // ✅ 응답 타입 확인 후 JSON 파싱
+        const status = response.status
         const contentType = response.headers.get('content-type');
+        
+        console.log(contentType)
+        
+        
+        if (status === 401) {
+            // 🔑 토큰 삭제
+            const cookieStore = await cookies();
+            cookieStore.delete('accessToken'); // 실제 쿠키 이름으로 수정
+            cookieStore.delete('refreshToken'); // 있다면 같이
+            
+            // 🔁 로그인 페이지로 리다이렉트
+            redirect("http://localhost:3000/login")
+        }
+        
         
         if (contentType && contentType.includes('application/json')) {
             const data = await response.json();
-            return NextResponse.json(data, { status: response.status });
+            return NextResponse.json(data, { status });
         } else {
             const errorText = await response.text();
             console.error('Unexpected Response:', errorText);

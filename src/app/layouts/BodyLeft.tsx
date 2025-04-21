@@ -14,12 +14,12 @@ const BodyLeft = () => {
     };
     
     return (
-        <div>
+        <div style={{padding: "5px"}}>
             <div>
                 <button>내 이력 관리</button>
                 <button onClick={openModal}>새 기록장 추가</button>
             </div>
-            <div>
+            <div style={{paddingTop: "10px"}}>
                 <RecordGroups />
             </div>
             <RecordGroupDetailModal isOpen={isModalOpen} onClose={closeModal} />

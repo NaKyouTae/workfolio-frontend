@@ -1,0 +1,14 @@
+.left-label {
+    padding-left: 12px;
+    background: linear-gradient(to right, #FF5733 4px, transparent 4px);
+}
+
+.record-group-ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.record-group-ul > li {
+    padding: 3px 0;
+}

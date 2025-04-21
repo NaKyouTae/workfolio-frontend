@@ -5,6 +5,7 @@
 @import "dropdown.css";
 @import "input.css";
 @import "login.css";
+@import "record-group.css";
 
 :root {
   --background: #ffffff;

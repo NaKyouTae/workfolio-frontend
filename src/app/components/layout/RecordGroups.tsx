@@ -36,10 +36,13 @@ const RecordGroups = () => {
     
     return (
         <div>
-            <ul>
+            <ul className={"record-group-ul"}>
                 {
-                    recordGroups?.map((group) => (
-                        <li key={group.id}>{group.title}</li>
+                    recordGroups?.map((group: RecordGroup) => (
+                        <li key={group.id}>
+                            <span className={"left-label"} style={{background: `linear-gradient(to right, ${group.color} 4px, transparent 4px)`}}></span>
+                            {group.title}
+                        </li>
                     ))
                 }
             </ul>

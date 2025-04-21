@@ -11,7 +11,12 @@ export const protobufPackage = "com.spectrum.workfolio.proto";
 
 export interface CreateRecordGroupRequest {
   title: string;
+  color: string;
   priority: number;
+}
+
+export interface ListRecordGroupResponse {
+  groups: CreateRecordGroupResponse[];
 }
 
 export interface CreateRecordGroupResponse {
@@ -19,13 +24,14 @@ export interface CreateRecordGroupResponse {
   isPublic: boolean;
   publicId: string;
   title: string;
+  color: string;
   priority: number;
   createdAt: number;
   updatedAt: number;
 }
 
 function createBaseCreateRecordGroupRequest(): CreateRecordGroupRequest {
-  return { title: "", priority: 0 };
+  return { title: "", color: "", priority: 0 };
 }
 
 export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
@@ -33,8 +39,11 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
     if (message.title !== "") {
       writer.uint32(10).string(message.title);
     }
+    if (message.color !== "") {
+      writer.uint32(18).string(message.color);
+    }
     if (message.priority !== 0) {
-      writer.uint32(16).int64(message.priority);
+      writer.uint32(800).int64(message.priority);
     }
     return writer;
   },
@@ -55,7 +64,15 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 100: {
+          if (tag !== 800) {
             break;
           }
 
@@ -74,6 +91,7 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
   fromJSON(object: any): CreateRecordGroupRequest {
     return {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
+      color: isSet(object.color) ? globalThis.String(object.color) : "",
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
@@ -82,6 +100,9 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
     const obj: any = {};
     if (message.title !== "") {
       obj.title = message.title;
+    }
+    if (message.color !== "") {
+      obj.color = message.color;
     }
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
@@ -95,13 +116,76 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
   fromPartial<I extends Exact<DeepPartial<CreateRecordGroupRequest>, I>>(object: I): CreateRecordGroupRequest {
     const message = createBaseCreateRecordGroupRequest();
     message.title = object.title ?? "";
+    message.color = object.color ?? "";
     message.priority = object.priority ?? 0;
     return message;
   },
 };
 
+function createBaseListRecordGroupResponse(): ListRecordGroupResponse {
+  return { groups: [] };
+}
+
+export const ListRecordGroupResponse: MessageFns<ListRecordGroupResponse> = {
+  encode(message: ListRecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.groups) {
+      CreateRecordGroupResponse.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListRecordGroupResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListRecordGroupResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.groups.push(CreateRecordGroupResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListRecordGroupResponse {
+    return {
+      groups: globalThis.Array.isArray(object?.groups)
+        ? object.groups.map((e: any) => CreateRecordGroupResponse.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ListRecordGroupResponse): unknown {
+    const obj: any = {};
+    if (message.groups?.length) {
+      obj.groups = message.groups.map((e) => CreateRecordGroupResponse.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ListRecordGroupResponse>, I>>(base?: I): ListRecordGroupResponse {
+    return ListRecordGroupResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ListRecordGroupResponse>, I>>(object: I): ListRecordGroupResponse {
+    const message = createBaseListRecordGroupResponse();
+    message.groups = object.groups?.map((e) => CreateRecordGroupResponse.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseCreateRecordGroupResponse(): CreateRecordGroupResponse {
-  return { id: "", isPublic: false, publicId: "", title: "", priority: 0, createdAt: 0, updatedAt: 0 };
+  return { id: "", isPublic: false, publicId: "", title: "", color: "", priority: 0, createdAt: 0, updatedAt: 0 };
 }
 
 export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = {
@@ -118,8 +202,11 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
     if (message.title !== "") {
       writer.uint32(34).string(message.title);
     }
+    if (message.color !== "") {
+      writer.uint32(42).string(message.color);
+    }
     if (message.priority !== 0) {
-      writer.uint32(40).int64(message.priority);
+      writer.uint32(792).int64(message.priority);
     }
     if (message.createdAt !== 0) {
       writer.uint32(800).int64(message.createdAt);
@@ -170,7 +257,15 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -208,6 +303,7 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
       isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : false,
       publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       title: isSet(object.title) ? globalThis.String(object.title) : "",
+      color: isSet(object.color) ? globalThis.String(object.color) : "",
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -227,6 +323,9 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
     }
     if (message.title !== "") {
       obj.title = message.title;
+    }
+    if (message.color !== "") {
+      obj.color = message.color;
     }
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
@@ -249,6 +348,7 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
     message.isPublic = object.isPublic ?? false;
     message.publicId = object.publicId ?? "";
     message.title = object.title ?? "";
+    message.color = object.color ?? "";
     message.priority = object.priority ?? 0;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
