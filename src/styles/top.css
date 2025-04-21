@@ -1,0 +1,9 @@
+.top-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 10px;
+}
+
+.top-logo {
+    font-size: 30px;
+}

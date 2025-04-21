@@ -1,0 +1,16 @@
+.calendar-days-containers {
+    border: 1px solid #ccc;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-y: auto;
+    font-size: 12px;
+}
+
+.calendar-days {
+    margin: 5px;
+    font-weight: bold;
+}
