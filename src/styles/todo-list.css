@@ -1,0 +1,26 @@
+/* styles.css */
+.list-item {
+    border-radius: 4px;
+    min-height: 17px;
+}
+
+/* styles.css */
+.multi-day-item {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    background-color: rgba(204, 203, 203, 0.27); /* 원하는 색상으로 변경 가능 */
+    margin: 2px 0;
+    padding: 0 12px;
+    min-height: 17px;
+}
+
+.label {
+    display: inline-block; /* 인라인 블록 요소로 설정 */
+    width: 3px; /* 너비 설정 */
+    height: 10px; /* 높이 설정 */
+    margin-left: 3px;
+    border-radius: 5px; /* 모서리를 둥글게 */
+    margin-right: 5px; /* 라벨 간의 간격 */
+    background-color: green;
+}

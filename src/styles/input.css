@@ -1,0 +1,17 @@
+.input-wrapper {
+    margin: 10px 0;
+}
+
+.input-field {
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.input-field:focus {
+    border-color: #007bff;
+}
