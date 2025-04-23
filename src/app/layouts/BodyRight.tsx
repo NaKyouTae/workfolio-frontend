@@ -26,7 +26,13 @@ const BodyRight = () => {
     }, [])
     
     return (
-        <div>
+        <div style={{
+            width: '100%',
+            height: '97%',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
+        }}>
             <MonthlyCalendar initialDate={today} records={records} />
         </div>
     );

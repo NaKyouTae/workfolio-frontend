@@ -123,51 +123,90 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records})
     }
     
     return (
-        <div style={{height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-            <div style={{padding: '5px'}}>
-                <h2>{date.toLocaleDateString('ko-KR', {year: 'numeric', month: 'long'})}</h2>
-                <div style={{marginBottom: '20px'}}>
-                    <button onClick={handlePreviousMonth} style={{marginRight: '10px'}}>이전 달</button>
-                    <button onClick={handleTodayMonth} style={{marginRight: '10px'}}>오늘</button>
-                    <button onClick={handleNextMonth}>다음 달</button>
+        <div style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+        }}>
+            <div style={{flexShrink: 0}}>
+                <div className="calendar-header">
+                    <div className="calendar-title">
+                        {`${date.getFullYear()}. ${String(date.getMonth() + 1).padStart(2, '0')}`}
+                    </div>
+                    <div style={{
+                        marginLeft: '10px',
+                        display: 'flex',
+                        background: '#f5f5f5',
+                        borderRadius: '8px',
+                        overflow: 'hidden'
+                    }}>
+                        <button className="calendar-navigation-button" onClick={handlePreviousMonth}>&lt;</button>
+                        <button className="calendar-navigation-button" onClick={handleNextMonth}>&gt;</button>
+                        <button className="calendar-navigation-button" onClick={handleTodayMonth}>오늘</button>
+                    </div>
                 </div>
-                <div
-                    style={{display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px', marginBottom: '10px'}}>
-                    {weekdays.map((day) => (
+                <div className="calendar-days-header" style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    gap: '0px',
+                    marginBottom: '0px',
+                    borderTop: '1px solid #e0e0e0'
+                }}>
+                    {weekdays.map((day, index) => (
                         <div key={day} style={{
                             textAlign: 'center',
                             fontSize: '12px',
                             fontWeight: 'bold',
-                            color: day === '일' ? 'red' : 'black'
+                            color: day === '일' ? 'red' : day === '토' ? 'blue' : 'black',
+                            padding: '10px',
+                            borderRight: index === 6 ? 'none' : '1px solid #e0e0e0',
+                            borderBottom: '1px solid #e0e0e0'
                         }}>
                             {day}
                         </div>
                     ))}
                 </div>
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(7, 1fr)',
-                    gridAutoRows: '100px',
-                }}>
+            </div>
+            <div style={{
+                flex: 1,
+                display: 'flex',
+                minHeight: 0
+            }}>
+                <div className="calendar-days-container" >
                     {calendarDays.map((day, index) => (
-                        <div key={index} className={"calendar-days-containers"} onDoubleClick={handleDoubleClick}>
+                        <div 
+                            key={index} 
+                            className={"calendar-days-item"} 
+                            onDoubleClick={handleDoubleClick}
+                            style={{
+                                height: '100%',
+                                borderRight: index % 7 === 6 ? 'none' : '1px solid #e0e0e0',
+                                borderBottom: index >= 35 ? 'none' : '1px solid #e0e0e0'
+                            }}
+                        >
                             {day !== null ? (
                                 <>
                                     <div className={"calendar-days"}
-                                         style={{color: day.isCurrentMonth ? '#000' : '#888'}}>
-                                        {day.day === 1 ? `${day.month}월 ${day.day}일` : `${day.day}일`}
+                                         style={{
+                                             color: index % 7 === 0 
+                                                 ? (day.isCurrentMonth ? '#ff0000' : '#ffb3b3') 
+                                                 : (day.isCurrentMonth ? '#000' : '#888')
+                                         }}>
+                                        {day.day}
                                     </div>
-                                    {/* Todo들을 span 태그로 감싸서 colspan과 같은 효과를 낼 수 있도록 수정 */}
                                     {getRecordsByDateId(day.id).map(todo => {
                                         return (
-                                            todo.formattedStartDate <= day.id && todo.formattedEndDate >= day.id
-                                                ? <RecordList key={todo.title} record={todo} />
-                                                : <div>tt</div>
+                                            <div className={"calendar-days-record"}>
+                                                {todo.formattedStartDate <= day.id && todo.formattedEndDate >= day.id
+                                                    ? <RecordList key={todo.title} record={todo}/>
+                                                    : <div></div>}
+                                            </div>
                                         );
                                     })}
                                 </>
                             ) : (
-                                <div style={{color: '#888'}}></div> // 빈 공간을 위한 div
+                                <div style={{color: '#888'}}></div>
                             )}
                         </div>
                     ))}
