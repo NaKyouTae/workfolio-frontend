@@ -1,16 +1,20 @@
 // src/components/MonthlyCalendar.tsx
 import React, {useMemo, useState} from 'react'
 import {createDateModel, DateModel} from "@/app/models/DateModel"
-import RecordCreateModal from "@/app/components/layout/RecordCreateModal"
 import RecordList from "@/app/components/layout/RecordList"
 import {Record} from "../../../../generated/common"
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { useRecordGroupStore } from '@/store/recordGroupStore'
+import MonthlyCalendarHeader from './MonthlyCalendarHeader'
+import MonthlyCalendarWeekdays from './MonthlyCalendarWeekdays'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/SEOUL')
+
+type RecordType = 'weekly' | 'monthly' | 'list';
 
 interface MonthlyCalendarProps {
     initialDate: Date; // 초기 날짜
@@ -19,9 +23,8 @@ interface MonthlyCalendarProps {
 
 const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records}) => {
     const [date, setDate] = useState(initialDate)
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    
-    const weekdays = ['일', '월', '화', '수', '목', '금', '토']
+    const [recordType, setRecordType] = useState<RecordType>('monthly')
+    const { checkedGroups } = useRecordGroupStore()
     
     const getDaysInMonth = (year: number, month: number) => {
         const days: DateModel[] = []
@@ -42,6 +45,7 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records})
         if (records == null || records.length == 0) return []
         
         return records
+            .filter(record => record.recordGroup && checkedGroups.has(record.recordGroup.id)) // 체크된 그룹의 레코드만 필터링
             .map(record => {
                 const startDate = dayjs(dayjs().toDate().setTime(record.startedAt)).format('YYYYMMDD')
                 const endDate = dayjs(dayjs().toDate().setTime(record.endedAt)).format('YYYYMMDD')
@@ -53,7 +57,6 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records})
                     title: (startDate === dateId || endDate === dateId) ? record.title : ''
                 }
             })
-            // .filter(todo => todo.formattedStartDate <= dateId && todo.formattedEndDate >= dateId)
     }
     
     const getDaysInPreviousMonth = (year: number, month: number) => {
@@ -117,11 +120,11 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records})
             return newDate
         })
     }
-    
-    const handleDoubleClick = () => {
-        setIsModalOpen(true) // 모달 열기
-    }
-    
+
+    const handleTypeChange = (type: RecordType) => {
+        setRecordType(type);
+    };
+
     return (
         <div style={{
             height: '100%',
@@ -129,56 +132,25 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records})
             flexDirection: 'column',
             overflow: 'hidden'
         }}>
-            <div style={{flexShrink: 0}}>
-                <div className="calendar-header">
-                    <div className="calendar-title">
-                        {`${date.getFullYear()}. ${String(date.getMonth() + 1).padStart(2, '0')}`}
-                    </div>
-                    <div style={{
-                        marginLeft: '10px',
-                        display: 'flex',
-                        background: '#f5f5f5',
-                        borderRadius: '8px',
-                        overflow: 'hidden'
-                    }}>
-                        <button className="calendar-navigation-button" onClick={handlePreviousMonth}>&lt;</button>
-                        <button className="calendar-navigation-button" onClick={handleNextMonth}>&gt;</button>
-                        <button className="calendar-navigation-button" onClick={handleTodayMonth}>오늘</button>
-                    </div>
-                </div>
-                <div className="calendar-days-header" style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(7, 1fr)',
-                    gap: '0px',
-                    marginBottom: '0px',
-                    borderTop: '1px solid #e0e0e0'
-                }}>
-                    {weekdays.map((day, index) => (
-                        <div key={day} style={{
-                            textAlign: 'center',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            color: day === '일' ? 'red' : day === '토' ? 'blue' : 'black',
-                            padding: '10px',
-                            borderRight: index === 6 ? 'none' : '1px solid #e0e0e0',
-                            borderBottom: '1px solid #e0e0e0'
-                        }}>
-                            {day}
-                        </div>
-                    ))}
-                </div>
-            </div>
+            <MonthlyCalendarHeader 
+                date={date}
+                recordType={recordType}
+                onTypeChange={handleTypeChange}
+                onPreviousMonth={handlePreviousMonth}
+                onNextMonth={handleNextMonth}
+                onTodayMonth={handleTodayMonth}
+            />
+            <MonthlyCalendarWeekdays />
             <div style={{
                 flex: 1,
                 display: 'flex',
                 minHeight: 0
             }}>
-                <div className="calendar-days-container" >
+                <div className="calendar-days-container">
                     {calendarDays.map((day, index) => (
                         <div 
                             key={index} 
                             className={"calendar-days-item"} 
-                            onDoubleClick={handleDoubleClick}
                             style={{
                                 height: '100%',
                                 borderRight: index % 7 === 6 ? 'none' : '1px solid #e0e0e0',
@@ -195,15 +167,13 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records})
                                          }}>
                                         {day.day}
                                     </div>
-                                    {getRecordsByDateId(day.id).map(todo => {
-                                        return (
-                                            <div className={"calendar-days-record"}>
-                                                {todo.formattedStartDate <= day.id && todo.formattedEndDate >= day.id
-                                                    ? <RecordList key={todo.title} record={todo}/>
-                                                    : <div></div>}
-                                            </div>
-                                        );
-                                    })}
+                                    {getRecordsByDateId(day.id).map(todo => (
+                                        <div key={`${todo.id}-${day.id}`} className={"calendar-days-record"}>
+                                            {todo.formattedStartDate <= day.id && todo.formattedEndDate >= day.id
+                                                ? <RecordList key={`${todo.id}-${day.id}-list`} record={todo}/>
+                                                : <div></div>}
+                                        </div>
+                                    ))}
                                 </>
                             ) : (
                                 <div style={{color: '#888'}}></div>
@@ -212,7 +182,6 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({initialDate, records})
                     ))}
                 </div>
             </div>
-            <RecordCreateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
         </div>
     )
 }
