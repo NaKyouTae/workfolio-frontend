@@ -26,13 +26,19 @@
 }
 
 .record-group-header-container{
-    border-bottom: 1px solid #e0e0e0;
-    padding: 24px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 20px 0 20px;
     min-height: 64px;
 }
 
-.record-group-container{
-    padding: 24px 0px;
+.record-group-separator {
+    display: block;
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 24px 10px;
+    border: none;
 }
 
 .left-label {
@@ -57,9 +63,14 @@
     font-weight: 500;
 }
 
-.record-group-navigation-arrow{
+.record-group-navigation-arrow {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.record-group-navigation-arrow.expanded {
     transform: rotate(180deg);
-} 
+}
 
 .record-group-navigation-label-container{
     display: flex;

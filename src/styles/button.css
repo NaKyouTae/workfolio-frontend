@@ -1,0 +1,8 @@
+.button-12 {
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.button-12:hover {
+    color: #e0e0e0;
+}

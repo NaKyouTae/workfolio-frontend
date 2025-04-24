@@ -6,12 +6,7 @@ const Header = () => {
     const logout = async () => {
         try {
             // 카카오 로그아웃 요청
-            const data = await fetch('/api/logout', {
-                method: HttpMethod.GET,
-                credentials: "include"
-            });
-            
-            console.log('logout data :: ', data)
+            const data = await fetch('/api/logout', { method: HttpMethod.GET, credentials: "include" });
             
             if (data) {
                 console.log('카카오 로그아웃 성공');
@@ -32,8 +27,15 @@ const Header = () => {
     
     return (
         <div className={"top-container"}>
-            <div className={"top-logo"}>워크폴리오;</div>
-            <button onClick={logout}>카카오 로그아웃</button>
+            <div className={"top-logo"}>워크폴리오</div>
+            <div className={"top-user-info"}>
+                <div className={"top-user-info-contents"}>닉네임 님 반가워요!</div>
+                <span className={"top-user-info-separator"}></span>
+                <a className={"button-12"}>마이페이지</a>
+                <span className={"top-user-info-separator"}></span>
+                <a className={"button-12"} onClick={logout}>로그아웃</a>
+            </div>
+            
         </div>
     )
 }

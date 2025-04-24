@@ -6,5 +6,46 @@
 }
 
 .top-logo {
-    font-size: 30px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #000;
+    display: flex;
+    align-items: center;
+}
+
+.top-logo::after {
+    content: ';';
+    color: #facc15;
+    font-size: 32px;
+    margin-left: 2px;
+}
+
+.top-user-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    color: #666;
+}
+
+.top-user-info a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.top-user-info a:hover {
+    color: #000;
+}
+
+.top-user-info-separator {
+    width: 2px;
+    height: 13px;
+    background-color: #e0e0e0;
+}
+
+.top-user-info-contents {
+    font-size: 12px;
 }

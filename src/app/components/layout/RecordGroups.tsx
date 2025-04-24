@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup } from '../../../../generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-
+import Image from 'next/image';
 interface RecordGroupItemProps {
     group: RecordGroup;
     isChecked: boolean;
@@ -21,18 +21,23 @@ const RecordGroupItem = ({ group, isChecked, onToggle }: RecordGroupItemProps) =
                 cursor: 'pointer'
             }} onClick={() => onToggle(group.id)}>
                 <div style={{
-                    width: '20px',
-                    height: '20px',
+                    width: '16px',
+                    height: '16px',
                     borderRadius: '4px',
                     border: `2px solid ${group.color}`,
-                    backgroundColor: isChecked ? group.color : 'transparent',
+                    backgroundColor: group.color,
                     marginRight: '12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}>
                     {isChecked && (
-                        <span style={{ color: 'white', fontSize: '14px' }}>✓</span>
+                        <Image
+                            src="/ic-check.png"
+                            alt="Toggle groups"
+                            width={8}
+                            height={6}
+                        />
                     )}
                 </div>
                 <span style={{ fontSize: '14px' }}>{group.title}</span>

@@ -1,5 +1,7 @@
 import React from 'react';
 import RecordTypeButton from './RecordTypeButton';
+import CalendarNavigation from './CalendarNavigation';
+import MonthlyCalendarHeaderTitle from './MonthlyCalendarHeaderTitle';
 
 type RecordType = 'weekly' | 'monthly' | 'list';
 
@@ -24,19 +26,19 @@ const MonthlyCalendarHeader: React.FC<MonthlyCalendarHeaderProps> = ({
         <div className="calendar-header-container">
             <div className="calendar-header">
                 <div className="calendar-header-content">
-                    <div className="calendar-title">
-                        {`${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}`}
+                    <div className="calendar-title-group">
+                        <MonthlyCalendarHeaderTitle date={date} />
+                        <CalendarNavigation 
+                            onPreviousMonth={onPreviousMonth}
+                            onNextMonth={onNextMonth}
+                            onTodayMonth={onTodayMonth}
+                        />
                     </div>
-                    <div className="calendar-navigation">
-                        <div className="calendar-nav-group">
-                            <button className="calendar-nav-button" onClick={onPreviousMonth}>‹</button>
-                            <button className="calendar-nav-button" onClick={onNextMonth}>›</button>
-                            <button className="calendar-nav-button" onClick={onTodayMonth}>오늘</button>
-                        </div>
-                        
-                    </div>
+                    <RecordTypeButton 
+                        selectedType={recordType}
+                        onTypeChange={onTypeChange}
+                    />
                 </div>
-                <RecordTypeButton selectedType={recordType} onTypeChange={onTypeChange} />
             </div>
         </div>
     );

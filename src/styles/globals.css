@@ -8,6 +8,8 @@
 @import "record-group.css";
 @import "footer.css";
 @import "calendar-header.css";
+@import "font.css";
+@import "button.css";
 
 :root {
   --background: #ffffff;
