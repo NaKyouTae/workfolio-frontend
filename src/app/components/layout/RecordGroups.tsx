@@ -77,6 +77,8 @@ const RecordGroups = () => {
             try {
                 const res = await fetch('/api/recordGroups', {method: HttpMethod.GET});
                 const data = await res.json();
+
+                console.log(data);
                 
                 if (data != null) {
                     setRecordGroups(data.groups);

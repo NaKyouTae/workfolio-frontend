@@ -1,0 +1,175 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    color: #666;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup > label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.formGroup input[type="text"],
+.formGroup textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.formGroup textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.dateTimeGroup {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dateTimeGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.dateInputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.allDayCheckbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.allDayCheckbox input[type="checkbox"] {
+    margin: 0;
+    margin-right: 5px;
+}
+
+.fileUpload {
+    display: flex;
+    gap: 10px;
+}
+
+.fileUpload input[type="text"] {
+    flex: 1;
+    background-color: #f5f5f5;
+}
+
+.fileButton {
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.fileSize {
+    color: #666;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.manageButton {
+    padding: 10px 20px;
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submitButton {
+    padding: 10px 40px;
+    background-color: #ffd43b;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.labelWithColor {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.labelWithColor label {
+    margin-bottom: 0;
+}
+
+.colorPipeline {
+    display: inline-block;
+    width: 8px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: #ddd;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.colorPipeline:hover {
+    transform: scale(1.1);
+} 

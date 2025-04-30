@@ -31,7 +31,7 @@ export async function apiFetchHandler<T>(
         const status = response.status
         const contentType = response.headers.get('content-type');
         
-        console.log(contentType)
+        console.log(status, contentType)
         
         
         if (status === 401) {

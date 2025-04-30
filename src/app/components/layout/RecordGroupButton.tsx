@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
+import RecordCreateModal from './modal/RecordCreateModal';
 
 interface RecordGroupButtonProps {
-    onClick: () => void;
 }
 
-const RecordGroupButton: React.FC<RecordGroupButtonProps> = ({
-    onClick
-}) => {
+const RecordGroupButton: React.FC<RecordGroupButtonProps> = ({}) => {
+    const [isRecordCreateModalOpen, setIsRecordCreateModalOpen] = useState(false);
+
+    const closeRecordCreateModal = () => {
+        setIsRecordCreateModalOpen(false);
+    };
+
+    const openRecordCreateModal = () => {
+        setIsRecordCreateModalOpen(true);
+    };
+
     return (
         <div className="record-group-button-container">
-            <button onClick={onClick}>새 기록 추가</button>
+            <button onClick={openRecordCreateModal}>새 기록 추가</button>
+            <RecordCreateModal isOpen={isRecordCreateModalOpen} onClose={closeRecordCreateModal}/>
         </div>
     );
 };

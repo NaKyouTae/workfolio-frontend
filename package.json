@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "proto": "protoc \\\n  --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto \\\n  --ts_proto_out=./generated \\\n  --ts_proto_opt=esModuleInterop=true,forceLong=number,useOptionals=true \\\n  --proto_path=./public/proto \\\n  ./public/proto/*.proto"
+    "proto": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated --ts_proto_opt=esModuleInterop=true,forceLong=number,useOptionals=true --proto_path=./public/proto ./public/proto/*.proto"
   },
   "dependencies": {
     "dayjs": "^1.11.13",

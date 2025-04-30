@@ -1,6 +1,6 @@
 import React from 'react'
 import HttpMethod from "@/enums/HttpMethod"
-
+import Image from 'next/image';
 const Header = () => {
     
     const logout = async () => {
@@ -27,7 +27,7 @@ const Header = () => {
     
     return (
         <div className={"top-container"}>
-            <div className={"top-logo"}>워크폴리오</div>
+            <Image width={174} height={24} src="/workfolio-logo.png" alt="Workfolio Logo"/>
             <div className={"top-user-info"}>
                 <div className={"top-user-info-contents"}>닉네임 님 반가워요!</div>
                 <span className={"top-user-info-separator"}></span>

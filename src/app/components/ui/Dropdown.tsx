@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import styles from './Dropdown.module.css';
 
 export interface IDropdown {
     value: string;
     label: string;
+    color?: string;
 }
 
 interface DropdownProps {
@@ -22,21 +24,31 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
         setValue(value); // 선택된 옵션의 title 값을 외부 상태에 설정
         setIsOpen(false); // 드롭다운 닫기
     };
+
+    // 선택된 옵션의 라벨 찾기
+    const selectedLabel = options.find(option => option.value === selectedOption)?.label || '선택해주세요';
     
     return (
-        <div className="dropdown">
-            <button onClick={toggleDropdown} className="dropdown-toggle">
-                {selectedOption}
+        <div className={styles.dropdown}>
+            <button 
+                type="button"
+                onClick={toggleDropdown} 
+                className={styles.dropdownToggle}
+            >
+                {selectedLabel}
+                <span className={styles.arrow}>▼</span>
             </button>
             {isOpen && (
-                <ul className="dropdown-menu">
-                    {options.map((option, index) => (
+                <ul className={styles.dropdownMenu}>
+                    {options.map((option) => (
                         <li
-                            key={index}
-                            className="dropdown-item"
-                            onClick={() => handleOptionClick(option.value)} // 클릭 시 값을 setValue로 설정
+                            key={option.value}
+                            className={`${styles.dropdownItem} ${
+                                option.value === selectedOption ? styles.selected : ''
+                            }`}
+                            onClick={() => handleOptionClick(option.value)}
                         >
-                            {option.label} {/* 객체의 title만 렌더링 */}
+                            {option.label}
                         </li>
                     ))}
                 </ul>
@@ -44,7 +56,6 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
         </div>
     );
 };
-
 
 export default Dropdown;
 
