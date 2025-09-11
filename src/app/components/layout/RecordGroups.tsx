@@ -83,7 +83,7 @@ const RecordGroups = () => {
                 if (data != null) {
                     setRecordGroups(data.groups);
                     // 모든 그룹을 기본적으로 체크된 상태로 초기화
-                    initializeGroups(data.groups.map((group: RecordGroup) => group.id));
+                    initializeGroups(data.groups?.map((group: RecordGroup) => group.id) || []);
                 }
             } catch (error) {
                 console.error('Error fetching record groups:', error);
@@ -94,7 +94,7 @@ const RecordGroups = () => {
 
     return (
         <div>
-            {recordGroups.map((group) => (
+            {recordGroups?.map((group) => (
                 <RecordGroupItem
                     key={group.id}
                     group={group}
