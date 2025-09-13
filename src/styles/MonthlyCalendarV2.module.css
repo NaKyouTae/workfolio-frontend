@@ -1,0 +1,221 @@
+/* MonthlyCalendarV2 Component Styles */
+
+/* Main Container */
+.calendarContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.calendarContent {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.monthlyCalendar {
+    position: relative;
+}
+
+.calendarDaysContainer {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 0px;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+}
+
+/* Calendar Day Items */
+.calendarDaysItem {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: 12px;
+    min-height: 100px;
+    width: 100%;
+}
+
+.calendarDaysItemBorderRight {
+    border-right: 1px solid #e0e0e0;
+}
+
+.calendarDaysItemBorderBottom {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.calendarDaysItemNoBorderRight {
+    border-right: none;
+}
+
+.calendarDaysItemNoBorderBottom {
+    border-bottom: none;
+}
+
+/* Day Numbers */
+.calendarDays {
+    margin-left: 8px;
+    margin-top: 5px;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+}
+
+.calendarDaysSunday {
+    color: #ff0000;
+}
+
+.calendarDaysSundayPreviousMonth {
+    color: #ffb3b3;
+}
+
+.calendarDaysCurrentMonth {
+    color: #000;
+}
+
+.calendarDaysOtherMonth {
+    color: #888;
+}
+
+/* Today Circle */
+.todayCircle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #007bff;
+    background-color: transparent;
+    z-index: 1;
+}
+
+/* Schedule Events */
+.schedule {
+    position: absolute;
+    overflow: hidden;
+    height: 17px;
+    line-height: 18px;
+    vertical-align: top;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.scheduleSingleDay {
+    left: 2px;
+    right: 2px;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    font-size: 11px;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.scheduleMultiDay {
+    display: flex;
+    align-items: center;
+    margin: 0px 2px 1px;
+    padding: 0 4px;
+    font-size: 11px;
+    z-index: 2;
+    overflow: hidden;
+    max-width: calc(100% - 4px);
+    box-sizing: border-box;
+}
+
+.scheduleMultiDayStart {
+    border-radius: 3px 0 0 3px;
+}
+
+.scheduleMultiDayEnd {
+    border-radius: 0 3px 3px 0;
+}
+
+.scheduleMultiDayContinue {
+    border-radius: 0;
+}
+
+/* Event Title */
+.eventTitle {
+    color: #fff;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.eventTitle:hover {
+    text-decoration: underline;
+}
+
+/* Continuation Indicator */
+.continuationIndicator {
+    color: #fff;
+    font-weight: bold;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Start Indicator */
+.startIndicator {
+    color: #fff;
+    font-weight: bold;
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+
+/* TIME Type Events */
+.timeEvent {
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    color: #666;
+}
+
+.timeEvent .eventTitle {
+    color: #666 !important;
+    font-weight: normal;
+}
+
+/* Multi-day Event Positioning */
+.multiDayEventContinue {
+    margin-left: 0;
+    margin-right: 0;
+    border-left: none;
+    border-right: none;
+}
+
+.scheduleNotFirstChild {
+    margin-left: 0;
+}
+
+.scheduleNotLastChild {
+    margin-right: 0;
+}
+
+/* Empty Day */
+.emptyDay {
+    color: #888;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .schedule {
+        font-size: 10px;
+        height: 16px;
+    }
+    
+    .eventTitle {
+        font-size: 10px;
+    }
+}
