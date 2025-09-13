@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import MonthlyCalendar from "@/app/components/layout/MonthlyCalendar"
 import HttpMethod from "@/enums/HttpMethod"
 import {Record} from "../../../generated/common"
-import MonthlyCalendarV2 from '../components/layout/MonthlyCalendarV2';
+import MonthlyCalendar from '../components/layout/MonthlyCalendar'
 
 const BodyRight = () => {
     const [records, setRecords] = useState<Record[]>([])
@@ -34,8 +33,7 @@ const BodyRight = () => {
             display: 'flex',
             flexDirection: 'column'
         }}>
-            {/* <MonthlyCalendar initialDate={today} records={records} /> */}
-            <MonthlyCalendarV2 initialDate={today} records={records} />
+            <MonthlyCalendar initialDate={today} records={records} />
         </div>
     );
 };

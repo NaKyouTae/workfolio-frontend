@@ -26,7 +26,7 @@ export const MultiDayEventElement: React.FC<EventElementProps> = ({
             )}
             {weekCount === 0 && (
                 <span className={styles.eventTitle}>
-                    {event.displayText}
+                    멀티 {event.displayText}
                 </span>
             )}
             {shouldShowContinuationIndicator && (
@@ -58,7 +58,7 @@ export const SingleDayEventElement: React.FC<SingleDayEventElementProps> = ({
             style={style}
         >
             <span className={styles.eventTitle}>
-                {event.displayText}
+                싱글 {event.displayText}
             </span>
         </div>
     )
