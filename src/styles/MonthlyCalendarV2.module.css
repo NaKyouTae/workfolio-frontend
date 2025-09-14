@@ -1,135 +1,183 @@
-/* MonthlyCalendarV2 Component Styles */
+/* MonthlyCalendarV2 CSS Module */
 
-/* Main Container */
 .calendarContainer {
-    height: 100%;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
 .calendarContent {
     flex: 1;
-    display: flex;
-    min-height: 0;
-}
-
-.monthlyCalendar {
     position: relative;
+    overflow: hidden;
 }
 
-.calendarDaysContainer {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(6, 1fr);
-    gap: 0px;
+.calendarTable {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.calendarWeekRow {
+    height: 120px;
+}
+
+.eventLineRow {
+    height: 20px;
+}
+
+.calendarDayCell {
+    position: relative;
+    width: calc(100% / 7);
+    height: 120px;
+    padding: 0;
+    border-right: 1px solid #e0e0e0;
     border-bottom: 1px solid #e0e0e0;
-    position: relative;
+    vertical-align: top;
+    background-color: #ffffff;
 }
 
-/* Calendar Day Items */
+.calendarDayCellLast {
+    border-right: none;
+}
+
+.multiDayEventCell {
+    height: 20px !important;
+    padding: 0;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+}
+
+.calendarDayCell:hover {
+    background-color: #f8f9fa;
+}
+
+/* 기존 스타일들 유지 */
 .calendarDaysItem {
     position: relative;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-direction: column;
-    box-sizing: border-box;
-    overflow: hidden;
-    font-size: 12px;
-    min-height: 100px;
     width: 100%;
+    height: 100%;
+    padding: 4px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: none;
 }
 
 .calendarDaysItemBorderRight {
     border-right: 1px solid #e0e0e0;
 }
 
-.calendarDaysItemBorderBottom {
-    border-bottom: 1px solid #e0e0e0;
-}
-
 .calendarDaysItemNoBorderRight {
     border-right: none;
+}
+
+.calendarDaysItemBorderBottom {
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .calendarDaysItemNoBorderBottom {
     border-bottom: none;
 }
 
-/* Day Numbers */
 .calendarDays {
-    margin-left: 8px;
-    margin-top: 5px;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    margin-bottom: 4px;
     position: relative;
-    z-index: 1;
-}
-
-.calendarDaysSunday {
-    color: #ff0000;
-}
-
-.calendarDaysSundayPreviousMonth {
-    color: #ffb3b3;
+    z-index: 2;
 }
 
 .calendarDaysCurrentMonth {
-    color: #000;
+    color: #333333;
 }
 
 .calendarDaysOtherMonth {
-    color: #888;
+    color: #cccccc;
 }
 
-/* Today Circle */
+.calendarDaysSunday {
+    color: #ff4444;
+}
+
+.calendarDaysSundayPreviousMonth {
+    color: #ffaaaa;
+}
+
 .todayCircle {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: -2px;
+    right: -2px;
     width: 20px;
     height: 20px;
+    background-color: #007bff;
     border-radius: 50%;
-    border: 2px solid #007bff;
-    background-color: transparent;
     z-index: 1;
 }
 
-/* Schedule Events */
-.schedule {
-    position: absolute;
-    overflow: hidden;
-    height: 17px;
-    line-height: 18px;
-    vertical-align: top;
-    white-space: nowrap;
-    cursor: pointer;
-    border: 1px solid transparent;
+.emptyDay {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
 }
 
-.scheduleSingleDay {
+/* 이벤트 스타일 */
+.scheduleItem {
+    position: absolute;
     left: 2px;
     right: 2px;
-    display: flex;
-    align-items: center;
-    padding: 0 4px;
+    height: 18px;
+    padding: 2px 4px;
     font-size: 11px;
-    z-index: 2;
+    color: #ffffff;
+    border-radius: 3px;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.scheduleItem:hover {
+    text-decoration: underline;
+}
+
+.scheduleItemTime {
+    background-color: transparent !important;
+    color: #333333;
+    font-weight: 500;
 }
 
 .scheduleMultiDay {
-    display: flex;
-    align-items: center;
-    margin: 0px 2px 1px;
-    padding: 0 4px;
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    height: 18px;
+    padding: 2px 4px;
     font-size: 11px;
-    z-index: 2;
+    color: #ffffff;
+    border-radius: 3px;
     overflow: hidden;
-    max-width: calc(100% - 4px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    z-index: 1;
     box-sizing: border-box;
+    max-width: calc(100% - 4px);
+}
+
+.scheduleMultiDay:hover {
+    text-decoration: underline;
 }
 
 .scheduleMultiDayStart {
@@ -144,76 +192,33 @@
     border-radius: 0;
 }
 
-/* Event Title */
-.eventTitle {
-    color: #fff;
-    text-decoration: none;
-    transition: text-decoration 0.2s ease;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-}
-
-.eventTitle:hover {
-    text-decoration: underline;
-}
-
-/* Continuation Indicator */
 .continuationIndicator {
-    color: #fff;
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
     font-weight: bold;
+    color: #ffffff;
     margin-left: auto;
-    flex-shrink: 0;
 }
 
-/* Start Indicator */
 .startIndicator {
-    color: #fff;
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
     font-weight: bold;
-    margin-right: 4px;
-    flex-shrink: 0;
+    color: #ffffff;
 }
 
-/* TIME Type Events */
-.timeEvent {
-    background-color: transparent !important;
-    border-radius: 0 !important;
-    color: #666;
-}
-
-.timeEvent .eventTitle {
-    color: #666 !important;
-    font-weight: normal;
-}
-
-/* Multi-day Event Positioning */
-.multiDayEventContinue {
-    margin-left: 0;
-    margin-right: 0;
-    border-left: none;
-    border-right: none;
-}
-
-.scheduleNotFirstChild {
-    margin-left: 0;
-}
-
-.scheduleNotLastChild {
-    margin-right: 0;
-}
-
-/* Empty Day */
-.emptyDay {
-    color: #888;
-}
-
-/* Remaining Events Count */
 .remainingEventsCount {
     position: absolute;
     bottom: 2px;
     right: 4px;
-    color: #000;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
     font-size: 10px;
     padding: 2px 4px;
     border-radius: 3px;
@@ -221,14 +226,40 @@
     font-weight: bold;
 }
 
-/* Responsive Design */
+/* 반응형 디자인 */
 @media (max-width: 768px) {
-    .schedule {
+    .calendarDayCell {
+        height: 100px;
+    }
+    
+    .calendarWeekRow {
+        height: 100px;
+    }
+    
+    .scheduleItem,
+    .scheduleMultiDay {
         font-size: 10px;
         height: 16px;
     }
+}
+
+@media (max-width: 480px) {
+    .calendarDayCell {
+        height: 80px;
+    }
     
-    .eventTitle {
-        font-size: 10px;
+    .calendarWeekRow {
+        height: 80px;
+    }
+    
+    .scheduleItem,
+    .scheduleMultiDay {
+        font-size: 9px;
+        height: 14px;
+    }
+    
+    .remainingEventsCount {
+        font-size: 8px;
+        padding: 1px 3px;
     }
 }
