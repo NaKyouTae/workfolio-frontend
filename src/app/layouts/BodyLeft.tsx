@@ -18,13 +18,14 @@ const BodyLeft = () => {
             <RecordGroupButton />
             <RecordGroupMiddle title="내 기록 전체보기" />
             <span className="record-group-separator"></span>
-            <RecordGroupSection title="내 기록장"
-                isGroupsExpanded={true}
+            <RecordGroupSection 
+                title="내 기록장"
+                defaultExpanded={true}
             />
             <span className="record-group-separator"></span>
             <RecordGroupSection 
                 title="공유 기록장"
-                isGroupsExpanded={true}
+                defaultExpanded={true}
             />
         </div>
     );

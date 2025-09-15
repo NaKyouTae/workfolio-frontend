@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import RecordGroupHeader from './RecordGroupHeader';
 import RecordGroups from './RecordGroups';
+
 interface RecordGroupSectionProps {
     title: string;
-    isGroupsExpanded: boolean;
+    defaultExpanded?: boolean;
 }
 
 const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
     title,
-    isGroupsExpanded,
+    defaultExpanded = true,
 }) => {
+    const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
+
+    const handleToggleGroups = () => {
+        setIsGroupsExpanded(!isGroupsExpanded);
+    };
+
     return (
         <div>
-            <RecordGroupHeader title={title} />
+            <RecordGroupHeader 
+                title={title} 
+                isGroupsExpanded={isGroupsExpanded}
+                onToggleGroups={handleToggleGroups}
+            />
             <div style={{
                 maxHeight: isGroupsExpanded ? '100%' : '0',
                 overflow: 'hidden',

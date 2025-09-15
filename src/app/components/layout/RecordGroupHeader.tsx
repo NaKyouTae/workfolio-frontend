@@ -1,23 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
-import { useRecordGroupCreateStore } from '@/store/recordGroupCreateStore';
 import { CreateRecordGroupRequest } from '../../../../generated/create-record-group'
 import HttpMethod from "@/enums/HttpMethod"
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 
 interface RecordGroupHeaderProps {
     title: string;
+    isGroupsExpanded: boolean;
+    onToggleGroups: () => void;
 }
 
 const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
     title,
+    isGroupsExpanded,
+    onToggleGroups,
 }) => {
-    const [isGroupsExpanded, setIsGroupsExpanded] = useState(true);
     const triggerRef = useRef<HTMLDivElement>(null);
-
-    const toggleGroups = () => {
-        setIsGroupsExpanded(!isGroupsExpanded);
-    };
 
     const createRecordGroup = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,7 +55,7 @@ const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
                     alt="Toggle groups"
                     width={14}
                     height={14}
-                    onClick={toggleGroups}
+                    onClick={onToggleGroups}
                     style={{ cursor: 'pointer' }}
                     className={`record-group-navigation-arrow ${isGroupsExpanded ? 'expanded' : ''}`}
                 />
