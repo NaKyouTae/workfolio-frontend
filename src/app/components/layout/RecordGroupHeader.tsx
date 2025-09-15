@@ -1,8 +1,5 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
-import { CreateRecordGroupRequest } from '../../../../generated/create-record-group'
-import HttpMethod from "@/enums/HttpMethod"
-import { RecordGroupColor } from '@/enums/RecordGroupColor';
 
 interface RecordGroupHeaderProps {
     title: string;
@@ -17,33 +14,9 @@ const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
 }) => {
     const triggerRef = useRef<HTMLDivElement>(null);
 
-    const createRecordGroup = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        const message = CreateRecordGroupRequest.create({
-            title: '[기본] 업무',
-            color: RecordGroupColor.RED,
-            priority: 0.1,
-        });
-        
-        try {
-            const data = await fetch('/api/record-groups', {
-                method: HttpMethod.POST,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(
-                    {
-                        title: message.title,
-                        color: message.color,
-                        priority: message.priority.toString(),
-                    }
-                ) }
-            );
-            console.log('Created Group:', data);
-        } catch (error) {
-            console.error('Error creating group:', error);
-        }
+    const handleCreateGroup = () => {
+        // 커스텀 이벤트 발생
+        window.dispatchEvent(new CustomEvent('createRecordGroup'));
     };
     
     return (
@@ -66,7 +39,7 @@ const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
                     alt="Add groups"
                     width={14}
                     height={14}
-                    onClick={createRecordGroup}
+                    onClick={handleCreateGroup}
                     style={{ cursor: 'pointer' }}
                 />
             </div>

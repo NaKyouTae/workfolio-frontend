@@ -17,6 +17,7 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
         setIsGroupsExpanded(!isGroupsExpanded);
     };
 
+
     return (
         <div>
             <RecordGroupHeader 

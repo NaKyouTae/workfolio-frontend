@@ -28,6 +28,12 @@ export interface CreateRecordResponse {
   updatedAt: number;
 }
 
+export interface ListRecordRequest {
+  year: number;
+  month: number;
+  recordGroupIds: string[];
+}
+
 export interface ListRecordResponse {
   records: Record[];
 }
@@ -308,6 +314,100 @@ export const CreateRecordResponse: MessageFns<CreateRecordResponse> = {
     message.endedAt = object.endedAt ?? 0;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
+    return message;
+  },
+};
+
+function createBaseListRecordRequest(): ListRecordRequest {
+  return { year: 0, month: 0, recordGroupIds: [] };
+}
+
+export const ListRecordRequest: MessageFns<ListRecordRequest> = {
+  encode(message: ListRecordRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.year !== 0) {
+      writer.uint32(8).uint64(message.year);
+    }
+    if (message.month !== 0) {
+      writer.uint32(16).uint64(message.month);
+    }
+    for (const v of message.recordGroupIds) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListRecordRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListRecordRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.year = longToNumber(reader.uint64());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.month = longToNumber(reader.uint64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.recordGroupIds.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListRecordRequest {
+    return {
+      year: isSet(object.year) ? globalThis.Number(object.year) : 0,
+      month: isSet(object.month) ? globalThis.Number(object.month) : 0,
+      recordGroupIds: globalThis.Array.isArray(object?.recordGroupIds)
+        ? object.recordGroupIds.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ListRecordRequest): unknown {
+    const obj: any = {};
+    if (message.year !== 0) {
+      obj.year = Math.round(message.year);
+    }
+    if (message.month !== 0) {
+      obj.month = Math.round(message.month);
+    }
+    if (message.recordGroupIds?.length) {
+      obj.recordGroupIds = message.recordGroupIds;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ListRecordRequest>, I>>(base?: I): ListRecordRequest {
+    return ListRecordRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ListRecordRequest>, I>>(object: I): ListRecordRequest {
+    const message = createBaseListRecordRequest();
+    message.year = object.year ?? 0;
+    message.month = object.month ?? 0;
+    message.recordGroupIds = object.recordGroupIds?.map((e) => e) || [];
     return message;
   },
 };

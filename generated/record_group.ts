@@ -39,6 +39,17 @@ export interface JoinRecordGroupResponse {
   isSuccess: boolean;
 }
 
+export interface UpdateRecordGroupRequest {
+  title: string;
+  isPublic: boolean;
+  color: string;
+  priority: number;
+}
+
+export interface UpdateRecordGroupResponse {
+  isSuccess: boolean;
+}
+
 function createBaseCreateRecordGroupRequest(): CreateRecordGroupRequest {
   return { title: "", color: "", priority: 0 };
 }
@@ -52,7 +63,7 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
       writer.uint32(18).string(message.color);
     }
     if (message.priority !== 0) {
-      writer.uint32(800).int64(message.priority);
+      writer.uint32(800).uint64(message.priority);
     }
     return writer;
   },
@@ -85,7 +96,7 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
             break;
           }
 
-          message.priority = longToNumber(reader.int64());
+          message.priority = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -153,13 +164,13 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
       writer.uint32(42).string(message.color);
     }
     if (message.priority !== 0) {
-      writer.uint32(792).int64(message.priority);
+      writer.uint32(792).uint64(message.priority);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -216,7 +227,7 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
             break;
           }
 
-          message.priority = longToNumber(reader.int64());
+          message.priority = longToNumber(reader.uint64());
           continue;
         }
         case 100: {
@@ -224,7 +235,7 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -232,7 +243,7 @@ export const CreateRecordGroupResponse: MessageFns<CreateRecordGroupResponse> = 
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -494,6 +505,172 @@ export const JoinRecordGroupResponse: MessageFns<JoinRecordGroupResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<JoinRecordGroupResponse>, I>>(object: I): JoinRecordGroupResponse {
     const message = createBaseJoinRecordGroupResponse();
+    message.isSuccess = object.isSuccess ?? false;
+    return message;
+  },
+};
+
+function createBaseUpdateRecordGroupRequest(): UpdateRecordGroupRequest {
+  return { title: "", isPublic: false, color: "", priority: 0 };
+}
+
+export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
+  encode(message: UpdateRecordGroupRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.isPublic !== false) {
+      writer.uint32(16).bool(message.isPublic);
+    }
+    if (message.color !== "") {
+      writer.uint32(26).string(message.color);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(32).uint64(message.priority);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateRecordGroupRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateRecordGroupRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.isPublic = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.priority = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateRecordGroupRequest {
+    return {
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : false,
+      color: isSet(object.color) ? globalThis.String(object.color) : "",
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
+    };
+  },
+
+  toJSON(message: UpdateRecordGroupRequest): unknown {
+    const obj: any = {};
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.isPublic !== false) {
+      obj.isPublic = message.isPublic;
+    }
+    if (message.color !== "") {
+      obj.color = message.color;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateRecordGroupRequest>, I>>(base?: I): UpdateRecordGroupRequest {
+    return UpdateRecordGroupRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateRecordGroupRequest>, I>>(object: I): UpdateRecordGroupRequest {
+    const message = createBaseUpdateRecordGroupRequest();
+    message.title = object.title ?? "";
+    message.isPublic = object.isPublic ?? false;
+    message.color = object.color ?? "";
+    message.priority = object.priority ?? 0;
+    return message;
+  },
+};
+
+function createBaseUpdateRecordGroupResponse(): UpdateRecordGroupResponse {
+  return { isSuccess: false };
+}
+
+export const UpdateRecordGroupResponse: MessageFns<UpdateRecordGroupResponse> = {
+  encode(message: UpdateRecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.isSuccess !== false) {
+      writer.uint32(8).bool(message.isSuccess);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateRecordGroupResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateRecordGroupResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isSuccess = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateRecordGroupResponse {
+    return { isSuccess: isSet(object.isSuccess) ? globalThis.Boolean(object.isSuccess) : false };
+  },
+
+  toJSON(message: UpdateRecordGroupResponse): unknown {
+    const obj: any = {};
+    if (message.isSuccess !== false) {
+      obj.isSuccess = message.isSuccess;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateRecordGroupResponse>, I>>(base?: I): UpdateRecordGroupResponse {
+    return UpdateRecordGroupResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateRecordGroupResponse>, I>>(object: I): UpdateRecordGroupResponse {
+    const message = createBaseUpdateRecordGroupResponse();
     message.isSuccess = object.isSuccess ?? false;
     return message;
   },
