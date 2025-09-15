@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "npm run proto && next dev --turbopack",
+    "dev:parallel": "npm run proto & next dev --turbopack",
+    "build": "npm run proto && next build",
     "start": "next start",
     "lint": "next lint",
     "proto": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated --ts_proto_opt=esModuleInterop=true,forceLong=number,useOptionals=true --proto_path=./public/proto ./public/proto/*.proto"

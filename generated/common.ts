@@ -12,6 +12,7 @@ export const protobufPackage = "com.spectrum.workfolio.proto";
 export interface Worker {
   id: string;
   name: string;
+  nickName: string;
   createdAt: number;
   updatedAt: number;
 }
@@ -204,7 +205,7 @@ export interface RecordGroup {
 }
 
 function createBaseWorker(): Worker {
-  return { id: "", name: "", createdAt: 0, updatedAt: 0 };
+  return { id: "", name: "", nickName: "", createdAt: 0, updatedAt: 0 };
 }
 
 export const Worker: MessageFns<Worker> = {
@@ -215,11 +216,14 @@ export const Worker: MessageFns<Worker> = {
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
+    if (message.nickName !== "") {
+      writer.uint32(26).string(message.nickName);
+    }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -247,12 +251,20 @@ export const Worker: MessageFns<Worker> = {
           message.name = reader.string();
           continue;
         }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.nickName = reader.string();
+          continue;
+        }
         case 100: {
           if (tag !== 800) {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -260,7 +272,7 @@ export const Worker: MessageFns<Worker> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -276,6 +288,7 @@ export const Worker: MessageFns<Worker> = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
+      nickName: isSet(object.nickName) ? globalThis.String(object.nickName) : "",
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -288,6 +301,9 @@ export const Worker: MessageFns<Worker> = {
     }
     if (message.name !== "") {
       obj.name = message.name;
+    }
+    if (message.nickName !== "") {
+      obj.nickName = message.nickName;
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -305,6 +321,7 @@ export const Worker: MessageFns<Worker> = {
     const message = createBaseWorker();
     message.id = object.id ?? "";
     message.name = object.name ?? "";
+    message.nickName = object.nickName ?? "";
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;
@@ -337,10 +354,10 @@ export const Company: MessageFns<Company> = {
       writer.uint32(26).string(message.name);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(32).int64(message.startedAt);
+      writer.uint32(32).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(40).int64(message.endedAt);
+      writer.uint32(40).uint64(message.endedAt);
     }
     if (message.isWorking !== false) {
       writer.uint32(48).bool(message.isWorking);
@@ -349,10 +366,10 @@ export const Company: MessageFns<Company> = {
       Worker.encode(message.worker, writer.uint32(58).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -393,7 +410,7 @@ export const Company: MessageFns<Company> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.int64());
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -401,7 +418,7 @@ export const Company: MessageFns<Company> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.int64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -425,7 +442,7 @@ export const Company: MessageFns<Company> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -433,7 +450,7 @@ export const Company: MessageFns<Company> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -527,19 +544,19 @@ export const Position: MessageFns<Position> = {
       writer.uint32(26).string(message.name);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(32).int64(message.startedAt);
+      writer.uint32(32).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(40).int64(message.endedAt);
+      writer.uint32(40).uint64(message.endedAt);
     }
     if (message.company !== undefined) {
       Company.encode(message.company, writer.uint32(50).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -580,7 +597,7 @@ export const Position: MessageFns<Position> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.int64());
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -588,7 +605,7 @@ export const Position: MessageFns<Position> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.int64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -604,7 +621,7 @@ export const Position: MessageFns<Position> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -612,7 +629,7 @@ export const Position: MessageFns<Position> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -698,22 +715,22 @@ export const Salary: MessageFns<Salary> = {
       writer.uint32(18).string(message.publicId);
     }
     if (message.amount !== 0) {
-      writer.uint32(24).int64(message.amount);
+      writer.uint32(24).uint64(message.amount);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(32).int64(message.startedAt);
+      writer.uint32(32).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(40).int64(message.endedAt);
+      writer.uint32(40).uint64(message.endedAt);
     }
     if (message.company !== undefined) {
       Company.encode(message.company, writer.uint32(50).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -746,7 +763,7 @@ export const Salary: MessageFns<Salary> = {
             break;
           }
 
-          message.amount = longToNumber(reader.int64());
+          message.amount = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -754,7 +771,7 @@ export const Salary: MessageFns<Salary> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.int64());
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -762,7 +779,7 @@ export const Salary: MessageFns<Salary> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.int64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -778,7 +795,7 @@ export const Salary: MessageFns<Salary> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -786,7 +803,7 @@ export const Salary: MessageFns<Salary> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -881,10 +898,10 @@ export const Account: MessageFns<Account> = {
       Worker.encode(message.worker, writer.uint32(42).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -941,7 +958,7 @@ export const Account: MessageFns<Account> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -949,7 +966,7 @@ export const Account: MessageFns<Account> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -1046,19 +1063,19 @@ export const Certifications: MessageFns<Certifications> = {
       writer.uint32(34).string(message.issuer);
     }
     if (message.issuedAt !== 0) {
-      writer.uint32(40).int64(message.issuedAt);
+      writer.uint32(40).uint64(message.issuedAt);
     }
     if (message.expirationPeriod !== 0) {
-      writer.uint32(48).int64(message.expirationPeriod);
+      writer.uint32(48).uint64(message.expirationPeriod);
     }
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(58).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1107,7 +1124,7 @@ export const Certifications: MessageFns<Certifications> = {
             break;
           }
 
-          message.issuedAt = longToNumber(reader.int64());
+          message.issuedAt = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -1115,7 +1132,7 @@ export const Certifications: MessageFns<Certifications> = {
             break;
           }
 
-          message.expirationPeriod = longToNumber(reader.int64());
+          message.expirationPeriod = longToNumber(reader.uint64());
           continue;
         }
         case 7: {
@@ -1131,7 +1148,7 @@ export const Certifications: MessageFns<Certifications> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -1139,7 +1156,7 @@ export const Certifications: MessageFns<Certifications> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -1233,19 +1250,19 @@ export const Degrees: MessageFns<Degrees> = {
       writer.uint32(26).string(message.major);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(32).int64(message.startedAt);
+      writer.uint32(32).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(40).int64(message.endedAt);
+      writer.uint32(40).uint64(message.endedAt);
     }
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(50).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1286,7 +1303,7 @@ export const Degrees: MessageFns<Degrees> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.int64());
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -1294,7 +1311,7 @@ export const Degrees: MessageFns<Degrees> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.int64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -1310,7 +1327,7 @@ export const Degrees: MessageFns<Degrees> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -1318,7 +1335,7 @@ export const Degrees: MessageFns<Degrees> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -1404,10 +1421,10 @@ export const Education: MessageFns<Education> = {
       writer.uint32(18).string(message.name);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(24).int64(message.startedAt);
+      writer.uint32(24).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(32).int64(message.endedAt);
+      writer.uint32(32).uint64(message.endedAt);
     }
     if (message.agency !== "") {
       writer.uint32(42).string(message.agency);
@@ -1416,10 +1433,10 @@ export const Education: MessageFns<Education> = {
       Worker.encode(message.worker, writer.uint32(50).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1452,7 +1469,7 @@ export const Education: MessageFns<Education> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.int64());
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -1460,7 +1477,7 @@ export const Education: MessageFns<Education> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.int64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -1484,7 +1501,7 @@ export const Education: MessageFns<Education> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -1492,7 +1509,7 @@ export const Education: MessageFns<Education> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -1595,10 +1612,10 @@ export const Record: MessageFns<Record> = {
       writer.uint32(34).string(message.description);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(40).int64(message.startedAt);
+      writer.uint32(40).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(48).int64(message.endedAt);
+      writer.uint32(48).uint64(message.endedAt);
     }
     if (message.recordGroup !== undefined) {
       RecordGroup.encode(message.recordGroup, writer.uint32(58).fork()).join();
@@ -1607,10 +1624,10 @@ export const Record: MessageFns<Record> = {
       Worker.encode(message.worker, writer.uint32(66).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(800).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(808).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1659,7 +1676,7 @@ export const Record: MessageFns<Record> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.int64());
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -1667,7 +1684,7 @@ export const Record: MessageFns<Record> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.int64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 7: {
@@ -1691,7 +1708,7 @@ export const Record: MessageFns<Record> = {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
         case 101: {
@@ -1699,7 +1716,7 @@ export const Record: MessageFns<Record> = {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -1816,16 +1833,16 @@ export const RecordGroup: MessageFns<RecordGroup> = {
       writer.uint32(42).string(message.color);
     }
     if (message.priority !== 0) {
-      writer.uint32(784).int64(message.priority);
+      writer.uint32(768).uint64(message.priority);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(794).fork()).join();
+      Worker.encode(message.worker, writer.uint32(778).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1877,36 +1894,36 @@ export const RecordGroup: MessageFns<RecordGroup> = {
           message.color = reader.string();
           continue;
         }
-        case 98: {
-          if (tag !== 784) {
+        case 96: {
+          if (tag !== 768) {
             break;
           }
 
-          message.priority = longToNumber(reader.int64());
+          message.priority = longToNumber(reader.uint64());
           continue;
         }
-        case 99: {
-          if (tag !== 794) {
+        case 97: {
+          if (tag !== 778) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
-          message.createdAt = longToNumber(reader.int64());
+          message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
-          message.updatedAt = longToNumber(reader.int64());
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
