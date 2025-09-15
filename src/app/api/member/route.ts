@@ -17,8 +17,6 @@ export async function GET() {
         const res = await apiFetchHandler<WorkerGetResponse[]>('http://localhost:8080/api/workers/me', HttpMethod.GET, undefined, accessToken);
         
         const data = await res.json()
-
-        console.log('data', data)
         
         return NextResponse.json(data)
     } catch (error) {

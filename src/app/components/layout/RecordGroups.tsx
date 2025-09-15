@@ -75,7 +75,7 @@ const RecordGroups = () => {
     useEffect(() => {
         const fetchRecordGroups = async () => {
             try {
-                const res = await fetch('/api/recordGroups', {method: HttpMethod.GET});
+                const res = await fetch('/api/record-groups', {method: HttpMethod.GET});
                 const data = await res.json();
 
                 console.log(data);

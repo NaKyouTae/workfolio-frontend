@@ -13,7 +13,7 @@ export async function GET() {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<CreateRecordGroupResponse[]>('http://localhost:8080/api/recordGroups', HttpMethod.GET, undefined, accessToken);
+        const res = await apiFetchHandler<CreateRecordGroupResponse[]>('http://localhost:8080/api/record-groups', HttpMethod.GET, undefined, accessToken);
         
         const data = await res.json()
         
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<CreateRecordGroupResponse>('http://localhost:8080/api/recordGroups', HttpMethod.POST, requestData, accessToken);
+        const res = await apiFetchHandler<CreateRecordGroupResponse>('http://localhost:8080/api/record-groups', HttpMethod.POST, requestData, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();

@@ -29,7 +29,7 @@ const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
         });
         
         try {
-            const data = await fetch('/api/recordGroups', {
+            const data = await fetch('/api/record-groups', {
                 method: HttpMethod.POST,
                 headers: {
                     'Content-Type': 'application/json',

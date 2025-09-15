@@ -63,7 +63,7 @@ export const useRecordGroupCreateStore = create<RecordGroupCreateState>((set, ge
         try {
             set({ isLoading: true, error: null });
 
-            const response = await fetch('/api/recordGroups', {
+            const response = await fetch('/api/record-groups', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
