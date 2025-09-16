@@ -1,6 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Mypage: React.FC = () => {
+    const [activeMenu, setActiveMenu] = useState('profile');
+    const [nickname, setNickname] = useState('춤추는 제이미');
+    const [nicknameError, setNicknameError] = useState('이 닉네임은 이미 사용 중이에요.');
+
+    const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNickname(e.target.value);
+        if (e.target.value === '춤추는 제이미') {
+            setNicknameError('이 닉네임은 이미 사용 중이에요.');
+        } else {
+            setNicknameError('');
+        }
+    };
+
+    const handleDuplicateCheck = () => {
+        // 중복 확인 로직
+        console.log('닉네임 중복 확인');
+    };
+
+    const handleWithdraw = () => {
+        // 회원 탈퇴 로직
+        console.log('회원 탈퇴');
+    };
+
     return (
         <div style={{
             display: 'flex',
@@ -8,54 +31,203 @@ const Mypage: React.FC = () => {
             height: '100vh',
             overflow: 'hidden',
             flexDirection: 'column',
-            padding: '20px'
+            backgroundColor: '#ffffff'
         }}>
+            {/* Header */}
             <div style={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-                marginBottom: '20px'
+                backgroundColor: '#000000',
+                color: '#ffffff',
+                padding: '20px 40px',
+                fontSize: '18px',
+                fontWeight: 'bold'
             }}>
                 마이페이지
             </div>
-            
+
+            {/* Main Content */}
             <div style={{
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '20px'
+                flex: 1,
+                height: 'calc(100vh - 120px)'
             }}>
+                {/* Left Menu */}
                 <div style={{
-                    padding: '20px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '8px',
-                    backgroundColor: '#f9f9f9'
+                    width: '200px',
+                    backgroundColor: '#f8f9fa',
+                    borderRight: '1px solid #e9ecef',
+                    padding: '20px 0'
                 }}>
-                    <h3>프로필 정보</h3>
-                    <p>닉네임: 닉네임</p>
-                    <p>이메일: user@example.com</p>
+                    <div style={{
+                        padding: '15px 30px',
+                        cursor: 'pointer',
+                        backgroundColor: activeMenu === 'profile' ? '#ffffff' : 'transparent',
+                        borderRight: activeMenu === 'profile' ? '3px solid #000000' : 'none',
+                        fontWeight: activeMenu === 'profile' ? 'bold' : 'normal'
+                    }} onClick={() => setActiveMenu('profile')}>
+                        프로필 관리
+                    </div>
+                    <div style={{
+                        padding: '15px 30px',
+                        cursor: 'pointer',
+                        backgroundColor: activeMenu === 'withdraw' ? '#ffffff' : 'transparent',
+                        borderRight: activeMenu === 'withdraw' ? '3px solid #000000' : 'none',
+                        fontWeight: activeMenu === 'withdraw' ? 'bold' : 'normal'
+                    }} onClick={() => setActiveMenu('withdraw')}>
+                        회원 탈퇴
+                    </div>
                 </div>
-                
+
+                {/* Right Content */}
                 <div style={{
-                    padding: '20px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '8px',
-                    backgroundColor: '#f9f9f9'
+                    flex: 1,
+                    padding: '40px',
+                    backgroundColor: '#ffffff'
                 }}>
-                    <h3>설정</h3>
-                    <p>알림 설정</p>
-                    <p>테마 설정</p>
-                    <p>언어 설정</p>
+                    {activeMenu === 'profile' && (
+                        <div>
+                            <h2 style={{
+                                fontSize: '24px',
+                                fontWeight: 'bold',
+                                marginBottom: '30px',
+                                color: '#000000'
+                            }}>
+                                프로필 관리
+                            </h2>
+                            
+                            <div style={{ marginBottom: '30px' }}>
+                                <label style={{
+                                    display: 'block',
+                                    fontSize: '14px',
+                                    fontWeight: 'bold',
+                                    marginBottom: '8px',
+                                    color: '#000000'
+                                }}>
+                                    닉네임(필수)
+                                </label>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <div style={{ position: 'relative', flex: 1 }}>
+                                        <input
+                                            type="text"
+                                            value={nickname}
+                                            onChange={handleNicknameChange}
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px 16px',
+                                                border: '1px solid #e9ecef',
+                                                borderRadius: '4px',
+                                                fontSize: '14px',
+                                                outline: 'none'
+                                            }}
+                                        />
+                                        {nickname && (
+                                            <button
+                                                onClick={() => setNickname('')}
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '12px',
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    fontSize: '16px',
+                                                    color: '#6c757d'
+                                                }}
+                                            >
+                                                ×
+                                            </button>
+                                        )}
+                                    </div>
+                                    <button
+                                        onClick={handleDuplicateCheck}
+                                        disabled={!nickname || nickname === '춤추는 제이미'}
+                                        style={{
+                                            padding: '12px 20px',
+                                            backgroundColor: nickname && nickname !== '춤추는 제이미' ? '#000000' : '#6c757d',
+                                            color: '#ffffff',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: nickname && nickname !== '춤추는 제이미' ? 'pointer' : 'not-allowed',
+                                            fontSize: '14px',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >
+                                        중복 확인
+                                    </button>
+                                </div>
+                                {nicknameError && (
+                                    <div style={{
+                                        color: '#dc3545',
+                                        fontSize: '12px',
+                                        marginTop: '5px'
+                                    }}>
+                                        {nicknameError}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeMenu === 'withdraw' && (
+                        <div>
+                            <h2 style={{
+                                fontSize: '24px',
+                                fontWeight: 'bold',
+                                marginBottom: '30px',
+                                color: '#000000'
+                            }}>
+                                회원 탈퇴
+                            </h2>
+                            
+                            <div style={{ marginBottom: '30px' }}>
+                                <p style={{
+                                    fontSize: '14px',
+                                    color: '#6c757d',
+                                    marginBottom: '20px'
+                                }}>
+                                    회원 탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
+                                </p>
+                                <button
+                                    onClick={handleWithdraw}
+                                    style={{
+                                        padding: '12px 24px',
+                                        backgroundColor: '#6c757d',
+                                        color: '#ffffff',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'not-allowed',
+                                        fontSize: '14px',
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    탈퇴하기
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
-                
-                <div style={{
-                    padding: '20px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '8px',
-                    backgroundColor: '#f9f9f9'
-                }}>
-                    <h3>통계</h3>
-                    <p>총 작업 시간: 120시간</p>
-                    <p>완료된 작업: 45개</p>
-                    <p>활성 프로젝트: 3개</p>
+            </div>
+
+            {/* Footer */}
+            <div style={{
+                backgroundColor: '#f8f9fa',
+                borderTop: '1px solid #e9ecef',
+                padding: '20px 40px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                fontSize: '12px',
+                color: '#6c757d'
+            }}>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                    <span style={{ cursor: 'pointer' }}>고객센터</span>
+                    <span style={{ color: '#e9ecef' }}>|</span>
+                    <span style={{ cursor: 'pointer' }}>이용약관</span>
+                    <span style={{ color: '#e9ecef' }}>|</span>
+                    <span style={{ cursor: 'pointer' }}>개인정보처리방침</span>
+                </div>
+                <div>
+                    © 2025 Spectrum. All rights reserved.
                 </div>
             </div>
         </div>
