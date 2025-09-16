@@ -9,32 +9,24 @@ dayjs.locale('ko')
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Seoul')
 
+interface ListRecord extends Record {
+    displayDate: string
+    displayTime: string
+    dayOfWeek: string
+    isWeekend: boolean
+    isFirstRecordOfDay: boolean
+}
+
 interface ListCalendarProps {
+    initialDate: Date
     records: Record[]
     recordGroups: RecordGroup[]
     onAddRecord: (date: Date) => void
     onRecordClick: (record: Record) => void
 }
 
-interface ListRecord {
-    id: string
-    title: string
-    type: number
-    description: string
-    startedAt: number
-    endedAt: number
-    recordGroup?: RecordGroup | undefined
-    worker?: unknown
-    createdAt: number
-    updatedAt: number
-    displayDate: string
-    displayTime: string
-    dayOfWeek: string
-    isWeekend: boolean
-    isFirstRecordOfDay?: boolean
-}
-
 const ListCalendar: React.FC<ListCalendarProps> = ({ 
+    initialDate,
     records, 
     onAddRecord, 
     onRecordClick 
@@ -43,14 +35,15 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
 
     const dateFormat = "MM.DD. ddd"
 
-    // 현재 월의 모든 날짜 생성
-    const currentMonth = dayjs().month()
-    const currentYear = dayjs().year()
-    const daysInMonth = dayjs().daysInMonth()
+    // initialDate를 기준으로 월의 모든 날짜 생성
+    const initialDayjs = dayjs(initialDate)
+    const currentMonth = initialDayjs.month()
+    const currentYear = initialDayjs.year()
+    const daysInMonth = initialDayjs.daysInMonth()
     
-    // 현재 월의 모든 날짜 배열 생성
+    // initialDate 기준 월의 모든 날짜 배열 생성
     const allDaysInMonth = Array.from({ length: daysInMonth }, (_, i) => {
-        const date = dayjs().year(currentYear).month(currentMonth).date(i + 1)
+        const date = initialDayjs.year(currentYear).month(currentMonth).date(i + 1)
         return {
             date: date.format('YYYY-MM-DD'),
             displayDate: date.format(dateFormat),
@@ -59,10 +52,6 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
             dayjs: date
         }
     })
-
-    console.log("======= records =======")
-    console.log(records)
-    console.log("======= records =======")
 
     // 레코드를 날짜별로 그룹화 (records가 배열인지 확인)
     const recordsByDate = (Array.isArray(records) ? records : []).reduce((acc, record) => {

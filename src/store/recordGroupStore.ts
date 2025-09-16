@@ -15,6 +15,7 @@ interface RecordGroupState {
     toggleGroup: (id: string) => void;
     initializeGroups: (groupIds: string[]) => void;
     clearAllGroups: () => void;
+    toggleAllGroups: () => void;
     
     // 계산된 값들
     getAllRecordGroups: () => RecordGroup[];
@@ -51,6 +52,21 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     
     clearAllGroups: () => 
         set({ checkedGroups: new Set() }),
+    
+    toggleAllGroups: () => 
+        set((state) => {
+            const allGroups = [...state.ownedRecordGroups, ...state.sharedRecordGroups];
+            const allGroupIds = allGroups.map(group => group.id);
+            const allChecked = allGroupIds.every(id => state.checkedGroups.has(id));
+            
+            if (allChecked) {
+                // 모든 그룹이 체크되어 있으면 모두 해제
+                return { checkedGroups: new Set() };
+            } else {
+                // 일부 또는 모든 그룹이 해제되어 있으면 모두 체크
+                return { checkedGroups: new Set(allGroupIds) };
+            }
+        }),
     
     // 계산된 값들
     getAllRecordGroups: () => {

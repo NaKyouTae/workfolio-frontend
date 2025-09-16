@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { createDateModel, DateModel } from "@/app/models/DateModel"
 import { Record } from '../../../../generated/common'
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import MonthlyCalendarWeekdays from './MonthlyCalendarWeekdays'
 import { useCalendarDays } from './calendar/hooks'
@@ -10,10 +9,9 @@ import styles from '@/styles/MonthlyCalendarV2.module.css'
 import { CalendarDay } from './calendar/types'
 import { CalendarDayItemV2 } from './calendar/CalendarDayItemV2'
 
-dayjs.extend(utc)
+dayjs.locale('ko')
 dayjs.extend(timezone)
-dayjs.tz.setDefault('Asia/SEOUL')
-
+dayjs.tz.setDefault('Asia/Seoul')
 
 interface MonthlyCalendarV2Props {
     initialDate: Date
@@ -23,7 +21,7 @@ interface MonthlyCalendarV2Props {
 /**
  * Table 태그를 사용한 MonthlyCalendarV2 컴포넌트
  */
-export default function MonthlyCalendarV2({ initialDate }: MonthlyCalendarV2Props) {
+export default function MonthlyCalendarV2({ initialDate, records }: MonthlyCalendarV2Props) {
     const [date, setDate] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)

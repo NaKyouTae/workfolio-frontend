@@ -143,13 +143,6 @@ const BodyRight = () => {
 
     // 검색 필터링된 레코드 (API에서 이미 필터링되므로 클라이언트에서는 추가 필터링 불필요)
     const filteredRecords = Array.isArray(records) ? records : []
-
-    console.log("================")
-    console.log("Records type:", typeof records)
-    console.log("Is array:", Array.isArray(records))
-    console.log("Records:", records)
-    console.log("Filtered records:", filteredRecords)
-    console.log("================")
     
     return (
         <div style={{
@@ -212,6 +205,7 @@ const BodyRight = () => {
                     </div>
                 ) : recordType === 'list' ? (
                     <ListCalendar
+                        initialDate={date} 
                         records={filteredRecords}
                         recordGroups={checkedRecordGroups}
                         onAddRecord={handleAddRecordForDate}
