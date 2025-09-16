@@ -34,7 +34,7 @@
 /* 로그인 */
 .login-wrap {width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--gray001);}
 
-.login-box {width: 48rem; padding: 4rem; background-color: var(--white); border-radius: .8rem; display: flex; flex-flow: column; row-gap: 4rem; align-items: center;}
+.login-box {width: 50rem; padding: 4rem; background-color: var(--white); border-radius: .8rem; display: flex; flex-flow: column; row-gap: 4rem; align-items: center;}
 .login-box > h1 > img {height: 5.2rem;}
-.login-box > p {text-align: center; font-size: 1.2rem; font-weight: 500; color: var(--gray005); line-height: 1.6;}
+.login-box > p {text-align: center; font-size: 1.4rem; color: var(--gray005); line-height: 1.8;}
 .login-box > ul {width: 100%;}
