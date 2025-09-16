@@ -1,0 +1,131 @@
+/* Pretendard */
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-Black.woff') format('woff');
+    font-weight: 900;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-ExtraBold.woff') format('woff');
+    font-weight: 800;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-Light.woff') format('woff');
+    font-weight: 300;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-ExtraLight.woff') format('woff');
+    font-weight: 200;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pretendard';
+    src: url('font/Pretendard/Pretendard-Thin.woff') format('woff');
+    font-weight: 100;
+    font-display: swap;
+} 
+
+/* Balgin */
+@font-face {
+    font-family: 'Balgin';
+    src: url('font/Balgin/balgintext-bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Balgin';
+    src: url('font/Balgin/balgintext-regular.woff') format('woff');
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Balgin';
+    src: url('font/Balgin/balgintext-light.woff') format('woff');
+    font-weight: 300;
+    font-display: swap;
+}
+
+/* Mangueira */
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-heavy.woff') format('woff');
+    font-weight: 900;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-black.woff') format('woff');
+    font-weight: 800;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-semibold.woff') format('woff');
+    font-weight: 600;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-medium.woff') format('woff');
+    font-weight: 500;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-regular.woff') format('woff');
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-light.woff') format('woff');
+    font-weight: 300;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-extralight.woff') format('woff');
+    font-weight: 200;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Mangueira';
+    src: url('font/Mangueira/mangueira-thin.woff') format('woff');
+    font-weight: 100;
+    font-display: swap;
+} 

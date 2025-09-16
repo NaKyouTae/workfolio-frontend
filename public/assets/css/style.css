@@ -1,0 +1,40 @@
+/* to embed a font */
+@import url('./font.css');
+
+:root {
+    --black: #121212;
+    --white: #FDFDFE;
+
+    --gray001: #F7F8F9;
+    --gray002: #EEF0F1;
+    --gray003: #DFE0E1;
+    --gray004: #BBC0C5;
+    --gray005: #808991;
+    --gray006: #515C66;
+
+    --yellow001: #FFF0D1;
+    --yellow002: #FFE3A5;
+    --yellow003: #FFCD60;
+    --yellow004: #FFBB26;
+
+    --red: #FF3B30;
+    --orange: #FF9500;
+    --yellow: #FFCC00;
+    --green: #34C759;
+    --mint: #00C7BE;
+    --teal: #30B0C7;
+    --cyan: #32ADE6;
+    --blue: #007AFF;
+    --indigo: #5856D6;
+    --purple: #AF52DE;
+    --pink: #FF2D55;
+    --brown: #A2845E;
+}
+
+/* 로그인 */
+.login-wrap {width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--gray001);}
+
+.login-box {width: 48rem; padding: 4rem; background-color: var(--white); border-radius: .8rem; display: flex; flex-flow: column; row-gap: 4rem; align-items: center;}
+.login-box > h1 > img {height: 5.2rem;}
+.login-box > p {text-align: center; font-size: 1.2rem; font-weight: 500; color: var(--gray005); line-height: 1.6;}
+.login-box > ul {width: 100%;}

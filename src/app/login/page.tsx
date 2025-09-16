@@ -37,32 +37,17 @@ export default function LoginPage() {
     }
     
     return (
-        <div className={'container'}>
-            <h1 className={'title'}>
-                워크폴리오<span className={'highlight'}>;</span>
-            </h1>
-            <p className={'description'}>
-                워크폴리오는 업무와 이력을 한곳에서 관리하는 기록 플랫폼이에요.
-                <br />
-                쌓여가는 경험을 쉽고 편리하게 정리하고 더 나은 커리어를 만들어 보세요.
-            </p>
-            
-            <div className={"buttonContainer"}>
-                <Link href={KAKAO_AUTH_URL}>
-                    <button className={'loginButton kakao'} >
-                        <Image src="/kakao.png" alt="Kakao Logo" width={20} height={20} />
-                        <span>카카오로 시작하기</span>
-                    </button>
-                </Link>
-                {/*<button className={'loginButton naver'}>*/}
-                {/*    <Image src="/naver.png" alt="Naver Logo" width={20} height={20} />*/}
-                {/*    <span>네이버로 시작하기</span>*/}
-                {/*</button>*/}
-                
-                {/*<button className={'loginButton google'}>*/}
-                {/*    <Image src="/google.png" alt="Google Logo" width={20} height={20} />*/}
-                {/*    <span>Google로 시작하기</span>*/}
-                {/*</button>*/}
+        <div className="container">
+            <div className="login-wrap">
+                <div className="login-box">
+                    <h1><img src="/assets/img/logo/img-logo01.svg" alt="workfolio" /></h1>
+                    <p>워크폴리오, 일과 이력을 한곳에 쌓아두는 나만의 기록장.<br/>차곡차곡 쌓이는 경험을 한곳에서 정리하고 더 멋진 커리어로 이어가 보세요.</p>
+                    <ul>
+                        <li>
+                            <button className="btn-kakao" onClick={() => window.location.href = KAKAO_AUTH_URL}><span>카카오로 시작하기</span></button>
+                        </li>   
+                    </ul>
+                </div>
             </div>
         </div>
     );
