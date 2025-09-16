@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 
 const Mypage: React.FC = () => {
-    const { user, updateUserNickname, isLoading } = useUser();
+    const { user, updateUserNickname, deleteAccount, isLoading } = useUser();
     const [activeMenu, setActiveMenu] = useState('profile');
     const [nickname, setNickname] = useState('');
     const [nicknameError, setNicknameError] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     
     // 유저 정보가 로드되면 닉네임 설정
     useEffect(() => {
@@ -44,9 +45,22 @@ const Mypage: React.FC = () => {
         }
     };
 
-    const handleWithdraw = () => {
-        // 회원 탈퇴 로직
-        console.log('회원 탈퇴');
+    const handleWithdraw = async () => {
+        if (!confirm('정말로 회원 탈퇴를 하시겠습니까? 탈퇴 후에는 모든 데이터가 삭제되며 복구할 수 없습니다.')) {
+            return;
+        }
+        
+        try {
+            setIsDeleting(true);
+            await deleteAccount();
+            // 성공 시에는 자동으로 리다이렉트되므로 여기까지 도달하지 않음
+        } catch (error) {
+            console.error('회원 탈퇴 실패:', error);
+            // 400 에러는 이미 deleteAccount에서 성공으로 처리되므로 여기까지 오지 않음
+            alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -214,18 +228,19 @@ const Mypage: React.FC = () => {
                                 </p>
                                 <button
                                     onClick={handleWithdraw}
+                                    disabled={isDeleting || isLoading}
                                     style={{
                                         padding: '12px 24px',
-                                        backgroundColor: '#6c757d',
+                                        backgroundColor: (isDeleting || isLoading) ? '#6c757d' : '#dc3545',
                                         color: '#ffffff',
                                         border: 'none',
                                         borderRadius: '4px',
-                                        cursor: 'not-allowed',
+                                        cursor: (isDeleting || isLoading) ? 'not-allowed' : 'pointer',
                                         fontSize: '14px',
                                         fontWeight: 'bold'
                                     }}
                                 >
-                                    탈퇴하기
+                                    {isDeleting ? '탈퇴 중...' : '탈퇴하기'}
                                 </button>
                             </div>
                         </div>

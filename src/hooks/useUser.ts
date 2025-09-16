@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useUserStore } from '@/store/userStore';
 import { WorkerGetResponse, WorkerUpdateNickNameResponse } from '../../generated/worker';
-import { getCookie } from '@/utils/cookie';
 import HttpMethod from '@/enums/HttpMethod';
 
 export const useUser = () => {
@@ -34,6 +33,37 @@ export const useUser = () => {
             setLoading(false);
         }
     }, [setUser, setLoading, setError]);
+    
+    // 회원 탈퇴
+    const deleteAccount = useCallback(async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            const response = await fetch('/api/workers/me', { method: HttpMethod.DELETE });
+            
+            // 400 에러가 발생해도 회원 탈퇴가 완료된 것으로 간주
+            if (!response.ok && response.status !== 400) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // 성공 시 유저 정보 클리어 및 로그아웃
+            clearUser();
+            document.cookie = 'accessToken=; max-age=0; path=/';
+            document.cookie = 'refreshToken=; max-age=0; path=/';
+            
+            // 로그인 페이지로 리다이렉트
+            window.location.href = '/login';
+            
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : '회원 탈퇴 중 오류가 발생했습니다.';
+            setError(errorMessage);
+            console.error('Error deleting account:', err);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }, [clearUser, setLoading, setError]);
     
     // 로그아웃
     const logout = useCallback(() => {
@@ -89,6 +119,7 @@ export const useUser = () => {
         logout,
         refreshUser,
         updateUserNickname,
+        deleteAccount,
         isLoggedIn: !!user,
     };
 };
