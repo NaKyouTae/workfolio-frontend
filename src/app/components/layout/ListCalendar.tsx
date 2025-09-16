@@ -60,6 +60,10 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
         }
     })
 
+    console.log("======= records =======")
+    console.log(records)
+    console.log("======= records =======")
+
     // 레코드를 날짜별로 그룹화 (records가 배열인지 확인)
     const recordsByDate = (Array.isArray(records) ? records : []).reduce((acc, record) => {
         
@@ -143,21 +147,11 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
         <div className={styles.container}>
             {/* 테이블 헤더 */}
             <div className={styles.tableHeader}>
-                <div className={styles.headerCell}>
-                    일자
-                </div>
-                <div className={`${styles.headerCell} ${styles.headerCellCenter}`}>
-                    추가
-                </div>
-                <div className={styles.headerCell}>
-                    시간
-                </div>
-                <div className={styles.headerCell}>
-                    캘린더
-                </div>
-                <div className={styles.headerCell}>
-                    내용
-                </div>
+                <div className={styles.headerCell}>일자</div>
+                <div className={`${styles.headerCell} ${styles.headerCellCenter}`}>추가</div>
+                <div className={styles.headerCell}>시간</div>
+                <div className={styles.headerCell}>캘린더</div>
+                <div className={styles.headerCell}>내용</div>
             </div>
 
             {/* 테이블 바디 */}

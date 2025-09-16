@@ -20,7 +20,7 @@ const BodyRight = () => {
     const checkedGroupIds = getCheckedGroupIds()
     const checkedRecordGroups = getCheckedRecordGroups()
     
-    // 레코드 조회 함수
+    // 레코드 조회 함수 (통합)
     const fetchRecords = useCallback(async (month?: number, year?: number) => {
         setLoading(true)
         setError(null)
@@ -60,7 +60,7 @@ const BodyRight = () => {
             
             const data = await res.json()
             
-            console.log("API Response (external):", data)
+            console.log("API Response:", data)
             
             if (data && Array.isArray(data.records)) {
                 setRecords(data.records)
@@ -68,7 +68,7 @@ const BodyRight = () => {
                 // data 자체가 배열인 경우
                 setRecords(data)
             } else {
-                console.warn("Invalid records data (external):", data)
+                console.warn("Invalid records data:", data)
                 setRecords([])
             }
         } catch (error) {
@@ -83,76 +83,20 @@ const BodyRight = () => {
         }
     }, [getCheckedGroupIds, recordType])
 
-    // 레코드 조회 useEffect
+    // 레코드 조회 useEffect - 의존성 배열 수정
     useEffect(() => {
-        const fetchRecordsInternal = async () => {
-            setLoading(true)
-            setError(null)
-            
-            try {
-                const currentDate = new Date()
-                const targetMonth = currentDate.getMonth() + 1
-                const targetYear = currentDate.getFullYear()
-                
-                // 현재 체크된 RecordGroup ID 가져오기
-                const currentCheckedGroupIds = getCheckedGroupIds()
-                
-                // 체크된 RecordGroup ID가 없으면 빈 배열 반환
-                if (currentCheckedGroupIds.length === 0) {
-                    setRecords([])
-                    setLoading(false)
-                    return
-                }
-                
-                // recordType에 따라 다른 API URL 구성
-                let apiUrl: string
-                if (recordType === 'weekly') {
-                    // 주간 레코드 조회 (현재 주차 계산)
-                    const firstDay = new Date(targetYear, targetMonth - 1, 1)
-                    const currentWeek = Math.ceil((firstDay.getDay() + new Date().getDate()) / 7)
-                    apiUrl = `/api/records/weekly?year=${targetYear}&month=${targetMonth}&week=${currentWeek}&recordGroupIds=${currentCheckedGroupIds.join(',')}`
-                } else {
-                    // 월간 레코드 조회 (기본값)
-                    apiUrl = `/api/records/monthly?year=${targetYear}&month=${targetMonth}&recordGroupIds=${currentCheckedGroupIds.join(',')}`
-                }
-                
-                const res = await fetch(apiUrl, { method: HttpMethod.GET })
-                
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`)
-                }
-                
-                const data = await res.json()
-                
-                console.log("API Response:", data)
-                
-                if (data && Array.isArray(data.records)) {
-                    setRecords(data.records)
-                } else if (data && Array.isArray(data)) {
-                    // data 자체가 배열인 경우
-                    setRecords(data)
-                } else {
-                    console.warn("Invalid records data:", data)
-                    setRecords([])
-                }
-            } catch (error) {
-                console.error('Error fetching records:', error)
-                setError('레코드를 불러오는 중 오류가 발생했습니다.')
-                // 에러 발생 시 샘플 데이터 사용
-                const sampleRecordGroups = createSampleRecordGroups()
-                const sampleRecords = createSampleRecords(sampleRecordGroups)
-                setRecords(sampleRecords)
-            } finally {
-                setLoading(false)
-            }
-        }
-        
-        fetchRecordsInternal()
-    }, []) // 의존성 배열에서 함수 제거
+        fetchRecords()
+    }, [recordType]) // recordType 변경 시 자동 리로드
+    
+    // checkedGroupIds 변경 시 별도 useEffect로 처리
+    useEffect(() => {
+        fetchRecords()
+    }, [checkedGroupIds.join(',')]) // checkedGroupIds 변경 시 자동 리로드
 
     // 이벤트 핸들러들
     const handleTypeChange = useCallback((type: 'weekly' | 'monthly' | 'list') => {
         setRecordType(type)
+        // recordType 변경 시 자동으로 데이터 다시 로드 (useEffect에서 처리됨)
     }, [])
 
     const handlePreviousMonth = useCallback(() => {

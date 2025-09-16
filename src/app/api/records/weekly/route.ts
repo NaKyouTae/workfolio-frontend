@@ -63,7 +63,7 @@ export async function GET(request: Request) {
         const data = await res.json()
         
         return NextResponse.json({
-            records: data,
+            records: data.records,
             type: 'weekly',
             year: yearNum,
             month: monthNum,
