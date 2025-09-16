@@ -1,7 +1,10 @@
 import React from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import Image from 'next/image';
+import { useViewStore } from '@/store/viewStore';
+
 const Header = () => {
+    const { setView } = useViewStore();
     
     const logout = async () => {
         try {
@@ -27,11 +30,18 @@ const Header = () => {
     
     return (
         <div className={"top-container"}>
-            <Image width={174} height={24} src="/workfolio-logo.png" alt="Workfolio Logo"/>
+            <Image 
+                width={174} 
+                height={24} 
+                src="/workfolio-logo.png" 
+                alt="Workfolio Logo"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setView('dashboard')}
+            />
             <div className={"top-user-info"}>
                 <div className={"top-user-info-contents"}>닉네임 님 반가워요!</div>
                 <span className={"top-user-info-separator"}></span>
-                <a className={"button-12"}>마이페이지</a>
+                <a className={"button-12"} onClick={() => setView('mypage')}>마이페이지</a>
                 <span className={"top-user-info-separator"}></span>
                 <a className={"button-12"} onClick={logout}>로그아웃</a>
             </div>
