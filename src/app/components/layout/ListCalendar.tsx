@@ -60,8 +60,8 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
         }
     })
 
-    // 레코드를 날짜별로 그룹화
-    const recordsByDate = records.reduce((acc, record) => {
+    // 레코드를 날짜별로 그룹화 (records가 배열인지 확인)
+    const recordsByDate = (Array.isArray(records) ? records : []).reduce((acc, record) => {
         
         // 문자열 타임스탬프를 숫자로 변환 후 처리
         const timestamp = parseInt(record.startedAt.toString());

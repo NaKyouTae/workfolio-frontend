@@ -274,10 +274,9 @@ const NewRecordGroupItem = ({ onSave, onCancel }: NewRecordGroupItemProps) => {
 };
 
 
-const RecordGroups = () => {
-    const [recordGroups, setRecordGroups] = useState<RecordGroup[]>([]);
+const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
     const [isCreating, setIsCreating] = useState(false);
-    const { checkedGroups, toggleGroup, initializeGroups } = useRecordGroupStore();
+    const { checkedGroups, toggleGroup } = useRecordGroupStore();
 
     // 전역 이벤트 리스너로 새 그룹 추가 요청 감지
     useEffect(() => {
@@ -290,26 +289,6 @@ const RecordGroups = () => {
             window.removeEventListener('createRecordGroup', handleCreateGroupRequest);
         };
     }, []);
-    
-    useEffect(() => {
-        const fetchRecordGroups = async () => {
-            try {
-                const res = await fetch('/api/record-groups', {method: HttpMethod.GET});
-                const data = await res.json();
-
-                console.log(data);
-                
-                if (data != null) {
-                    setRecordGroups(data.groups);
-                    // 모든 그룹을 기본적으로 체크된 상태로 초기화
-                    initializeGroups(data.groups?.map((group: RecordGroup) => group.id) || []);
-                }
-            } catch (error) {
-                console.error('Error fetching record groups:', error);
-            }
-        }
-        fetchRecordGroups();
-    }, [initializeGroups]);
 
     const createRecordGroup = async (title: string) => {
         try {

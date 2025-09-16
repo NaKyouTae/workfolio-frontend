@@ -1,22 +1,27 @@
 import React, {useEffect, useState, useCallback} from 'react'
-import {Record, RecordGroup} from "../../../generated/common"
+import {Record} from "../../../generated/common"
 import MonthlyCalendarV2 from '../components/layout/MonthlyCalendarV2'
 import ListCalendar from '../components/layout/ListCalendar'
 import CalendarHeader from '../components/layout/CalendarHeader'
 import { createSampleRecordGroups, createSampleRecords } from '../../utils/sampleData'
 import HttpMethod from '../../enums/HttpMethod'
+import { useRecordGroupStore } from '@/store/recordGroupStore'
 
 const BodyRight = () => {
     const [records, setRecords] = useState<Record[]>([])
-    const [recordGroups, setRecordGroups] = useState<RecordGroup[]>([])
     const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('list')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     
+    // store에서 체크된 RecordGroup 정보 가져오기
+    const { getCheckedGroupIds, getCheckedRecordGroups } = useRecordGroupStore()
+    const checkedGroupIds = getCheckedGroupIds()
+    const checkedRecordGroups = getCheckedRecordGroups()
+    
     // 레코드 조회 함수
-    const fetchRecords = useCallback(async (month?: number, year?: number, search?: string) => {
+    const fetchRecords = useCallback(async (month?: number, year?: number) => {
         setLoading(true)
         setError(null)
         
@@ -25,9 +30,26 @@ const BodyRight = () => {
             const targetMonth = month || currentDate.getMonth() + 1
             const targetYear = year || currentDate.getFullYear()
             
-            let apiUrl = `/api/records?month=${targetMonth}&year=${targetYear}`
-            if (search) {
-                apiUrl += `&search=${encodeURIComponent(search)}`
+            // 현재 체크된 RecordGroup ID 가져오기
+            const currentCheckedGroupIds = getCheckedGroupIds()
+            
+            // 체크된 RecordGroup ID가 없으면 빈 배열 반환
+            if (currentCheckedGroupIds.length === 0) {
+                setRecords([])
+                setLoading(false)
+                return
+            }
+            
+            // recordType에 따라 다른 API URL 구성
+            let apiUrl: string
+            if (recordType === 'weekly') {
+                // 주간 레코드 조회 (현재 주차 계산)
+                const firstDay = new Date(targetYear, targetMonth - 1, 1)
+                const currentWeek = Math.ceil((firstDay.getDay() + new Date().getDate()) / 7)
+                apiUrl = `/api/records/weekly?year=${targetYear}&month=${targetMonth}&week=${currentWeek}&recordGroupIds=${currentCheckedGroupIds.join(',')}`
+            } else {
+                // 월간 레코드 조회 (기본값)
+                apiUrl = `/api/records/monthly?year=${targetYear}&month=${targetMonth}&recordGroupIds=${currentCheckedGroupIds.join(',')}`
             }
             
             const res = await fetch(apiUrl, { method: HttpMethod.GET })
@@ -38,9 +60,15 @@ const BodyRight = () => {
             
             const data = await res.json()
             
-            if (data && data.records) {
+            console.log("API Response (external):", data)
+            
+            if (data && Array.isArray(data.records)) {
                 setRecords(data.records)
+            } else if (data && Array.isArray(data)) {
+                // data 자체가 배열인 경우
+                setRecords(data)
             } else {
+                console.warn("Invalid records data (external):", data)
                 setRecords([])
             }
         } catch (error) {
@@ -49,43 +77,78 @@ const BodyRight = () => {
             // 에러 발생 시 샘플 데이터 사용
             const sampleRecordGroups = createSampleRecordGroups()
             const sampleRecords = createSampleRecords(sampleRecordGroups)
-            setRecordGroups(sampleRecordGroups)
             setRecords(sampleRecords)
         } finally {
             setLoading(false)
         }
-    }, [])
+    }, [getCheckedGroupIds, recordType])
 
-    // 레코드 그룹 조회 함수
-    const fetchRecordGroups = useCallback(async () => {
-        try {
-            const res = await fetch('/api/record-groups', { method: HttpMethod.GET })
+    // 레코드 조회 useEffect
+    useEffect(() => {
+        const fetchRecordsInternal = async () => {
+            setLoading(true)
+            setError(null)
             
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`)
-            }
-            
-            const data = await res.json()
-            
-            if (data && data.recordGroups) {
-                setRecordGroups(data.recordGroups)
-            } else {
+            try {
+                const currentDate = new Date()
+                const targetMonth = currentDate.getMonth() + 1
+                const targetYear = currentDate.getFullYear()
+                
+                // 현재 체크된 RecordGroup ID 가져오기
+                const currentCheckedGroupIds = getCheckedGroupIds()
+                
+                // 체크된 RecordGroup ID가 없으면 빈 배열 반환
+                if (currentCheckedGroupIds.length === 0) {
+                    setRecords([])
+                    setLoading(false)
+                    return
+                }
+                
+                // recordType에 따라 다른 API URL 구성
+                let apiUrl: string
+                if (recordType === 'weekly') {
+                    // 주간 레코드 조회 (현재 주차 계산)
+                    const firstDay = new Date(targetYear, targetMonth - 1, 1)
+                    const currentWeek = Math.ceil((firstDay.getDay() + new Date().getDate()) / 7)
+                    apiUrl = `/api/records/weekly?year=${targetYear}&month=${targetMonth}&week=${currentWeek}&recordGroupIds=${currentCheckedGroupIds.join(',')}`
+                } else {
+                    // 월간 레코드 조회 (기본값)
+                    apiUrl = `/api/records/monthly?year=${targetYear}&month=${targetMonth}&recordGroupIds=${currentCheckedGroupIds.join(',')}`
+                }
+                
+                const res = await fetch(apiUrl, { method: HttpMethod.GET })
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`)
+                }
+                
+                const data = await res.json()
+                
+                console.log("API Response:", data)
+                
+                if (data && Array.isArray(data.records)) {
+                    setRecords(data.records)
+                } else if (data && Array.isArray(data)) {
+                    // data 자체가 배열인 경우
+                    setRecords(data)
+                } else {
+                    console.warn("Invalid records data:", data)
+                    setRecords([])
+                }
+            } catch (error) {
+                console.error('Error fetching records:', error)
+                setError('레코드를 불러오는 중 오류가 발생했습니다.')
                 // 에러 발생 시 샘플 데이터 사용
                 const sampleRecordGroups = createSampleRecordGroups()
-                setRecordGroups(sampleRecordGroups)
+                const sampleRecords = createSampleRecords(sampleRecordGroups)
+                setRecords(sampleRecords)
+            } finally {
+                setLoading(false)
             }
-        } catch (error) {
-            console.error('Error fetching record groups:', error)
-            // 에러 발생 시 샘플 데이터 사용
-            const sampleRecordGroups = createSampleRecordGroups()
-            setRecordGroups(sampleRecordGroups)
         }
-    }, [])
-
-    useEffect(() => {
-        fetchRecordGroups()
-        fetchRecords()
-    }, [fetchRecordGroups, fetchRecords])
+        
+        fetchRecordsInternal()
+    }, []) // 의존성 배열에서 함수 제거
 
     // 이벤트 핸들러들
     const handleTypeChange = useCallback((type: 'weekly' | 'monthly' | 'list') => {
@@ -97,33 +160,32 @@ const BodyRight = () => {
             const newDate = new Date(prev)
             newDate.setMonth(prev.getMonth() - 1)
             // 날짜 변경 시 해당 월의 레코드 조회
-            fetchRecords(newDate.getMonth() + 1, newDate.getFullYear(), searchTerm)
+            fetchRecords(newDate.getMonth() + 1, newDate.getFullYear())
             return newDate
         })
-    }, [fetchRecords, searchTerm])
+    }, [fetchRecords])
 
     const handleNextMonth = useCallback(() => {
         setDate(prev => {
             const newDate = new Date(prev)
             newDate.setMonth(prev.getMonth() + 1)
             // 날짜 변경 시 해당 월의 레코드 조회
-            fetchRecords(newDate.getMonth() + 1, newDate.getFullYear(), searchTerm)
+            fetchRecords(newDate.getMonth() + 1, newDate.getFullYear())
             return newDate
         })
-    }, [fetchRecords, searchTerm])
+    }, [fetchRecords])
 
     const handleTodayMonth = useCallback(() => {
         const today = new Date()
         setDate(today)
         // 오늘로 이동 시 해당 월의 레코드 조회
-        fetchRecords(today.getMonth() + 1, today.getFullYear(), searchTerm)
-    }, [fetchRecords, searchTerm])
+        fetchRecords(today.getMonth() + 1, today.getFullYear())
+    }, [fetchRecords])
 
     const handleSearchChange = useCallback((term: string) => {
         setSearchTerm(term)
-        // 검색어 변경 시 해당 월의 레코드 조회
-        fetchRecords(date.getMonth() + 1, date.getFullYear(), term)
-    }, [fetchRecords, date])
+        // 검색어는 UI에서만 사용하고 API 호출에는 영향 없음
+    }, [])
 
     const handleAddRecordForDate = useCallback((date: Date) => {
         // TODO: 특정 날짜에 레코드 추가 로직 구현
@@ -136,10 +198,13 @@ const BodyRight = () => {
     }, [])
 
     // 검색 필터링된 레코드 (API에서 이미 필터링되므로 클라이언트에서는 추가 필터링 불필요)
-    const filteredRecords = records
+    const filteredRecords = Array.isArray(records) ? records : []
 
     console.log("================")
-    console.log(filteredRecords)
+    console.log("Records type:", typeof records)
+    console.log("Is array:", Array.isArray(records))
+    console.log("Records:", records)
+    console.log("Filtered records:", filteredRecords)
     console.log("================")
     
     return (
@@ -187,7 +252,7 @@ const BodyRight = () => {
                     }}>
                         <div>{error}</div>
                         <button
-                            onClick={() => fetchRecords(date.getMonth() + 1, date.getFullYear(), searchTerm)}
+                            onClick={() => fetchRecords(date.getMonth() + 1, date.getFullYear())}
                             style={{
                                 marginTop: '10px',
                                 padding: '8px 16px',
@@ -204,7 +269,7 @@ const BodyRight = () => {
                 ) : recordType === 'list' ? (
                     <ListCalendar
                         records={filteredRecords}
-                        recordGroups={recordGroups}
+                        recordGroups={checkedRecordGroups}
                         onAddRecord={handleAddRecordForDate}
                         onRecordClick={handleRecordClick}
                     />

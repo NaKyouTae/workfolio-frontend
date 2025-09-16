@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import RecordGroupHeader from './RecordGroupHeader';
 import RecordGroups from './RecordGroups';
+import { RecordGroup } from '../../../../generated/common';
 
 interface RecordGroupSectionProps {
     title: string;
     defaultExpanded?: boolean;
+    recordGroups: RecordGroup[];
 }
 
 const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
     title,
     defaultExpanded = true,
+    recordGroups,
 }) => {
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
 
     const handleToggleGroups = () => {
         setIsGroupsExpanded(!isGroupsExpanded);
     };
-
 
     return (
         <div>
@@ -30,7 +32,7 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
                 overflow: 'hidden',
                 transition: 'max-height 0.3s ease-in-out'
             }}>
-                <RecordGroups />
+                <RecordGroups recordGroups={recordGroups} />
             </div>
         </div>
     );
