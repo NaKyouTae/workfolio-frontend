@@ -1,22 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useUser } from '@/hooks/useUser';
 
 const Mypage: React.FC = () => {
+    const { user, updateUserNickname, isLoading } = useUser();
     const [activeMenu, setActiveMenu] = useState('profile');
-    const [nickname, setNickname] = useState('춤추는 제이미');
-    const [nicknameError, setNicknameError] = useState('이 닉네임은 이미 사용 중이에요.');
+    const [nickname, setNickname] = useState('');
+    const [nicknameError, setNicknameError] = useState('');
+    const [isUpdating, setIsUpdating] = useState(false);
+    
+    // 유저 정보가 로드되면 닉네임 설정
+    useEffect(() => {
+        if (user) {
+            setNickname(user.nickName);
+        }
+    }, [user]);
 
     const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNickname(e.target.value);
-        if (e.target.value === '춤추는 제이미') {
-            setNicknameError('이 닉네임은 이미 사용 중이에요.');
-        } else {
+        // 닉네임 변경 시 오류 메시지 초기화
+        if (nicknameError) {
             setNicknameError('');
         }
     };
 
-    const handleDuplicateCheck = () => {
-        // 중복 확인 로직
-        console.log('닉네임 중복 확인');
+    const handleDuplicateCheck = async () => {
+        if (!nickname || nickname === user?.nickName) {
+            return;
+        }
+        
+        try {
+            setIsUpdating(true);
+            setNicknameError('');
+            
+            await updateUserNickname(nickname);
+            
+            // 성공 시 오류 메시지 초기화
+            setNicknameError('');
+        } catch {
+            // 에러는 updateUserNickname에서 처리됨
+            setNicknameError('이 닉네임은 이미 사용 중이에요.');
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     const handleWithdraw = () => {
@@ -140,19 +165,19 @@ const Mypage: React.FC = () => {
                                     </div>
                                     <button
                                         onClick={handleDuplicateCheck}
-                                        disabled={!nickname || nickname === '춤추는 제이미'}
+                                        disabled={!nickname || nickname === user?.nickName || isUpdating || isLoading}
                                         style={{
                                             padding: '12px 20px',
-                                            backgroundColor: nickname && nickname !== '춤추는 제이미' ? '#000000' : '#6c757d',
+                                            backgroundColor: (nickname && nickname !== user?.nickName && !isUpdating && !isLoading) ? '#000000' : '#6c757d',
                                             color: '#ffffff',
                                             border: 'none',
                                             borderRadius: '4px',
-                                            cursor: nickname && nickname !== '춤추는 제이미' ? 'pointer' : 'not-allowed',
+                                            cursor: (nickname && nickname !== user?.nickName && !isUpdating && !isLoading) ? 'pointer' : 'not-allowed',
                                             fontSize: '14px',
                                             fontWeight: 'bold'
                                         }}
                                     >
-                                        중복 확인
+                                        {isUpdating ? '변경 중...' : '중복 확인'}
                                     </button>
                                 </div>
                                 {nicknameError && (

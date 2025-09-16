@@ -18,6 +18,10 @@ export interface WorkerListResponse {
   workers: Worker[];
 }
 
+export interface WorkerUpdateNickNameResponse {
+  isSuccess: boolean;
+}
+
 function createBaseWorkerGetResponse(): WorkerGetResponse {
   return { worker: undefined };
 }
@@ -134,6 +138,64 @@ export const WorkerListResponse: MessageFns<WorkerListResponse> = {
   fromPartial<I extends Exact<DeepPartial<WorkerListResponse>, I>>(object: I): WorkerListResponse {
     const message = createBaseWorkerListResponse();
     message.workers = object.workers?.map((e) => Worker.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseWorkerUpdateNickNameResponse(): WorkerUpdateNickNameResponse {
+  return { isSuccess: false };
+}
+
+export const WorkerUpdateNickNameResponse: MessageFns<WorkerUpdateNickNameResponse> = {
+  encode(message: WorkerUpdateNickNameResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.isSuccess !== false) {
+      writer.uint32(8).bool(message.isSuccess);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WorkerUpdateNickNameResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkerUpdateNickNameResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isSuccess = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkerUpdateNickNameResponse {
+    return { isSuccess: isSet(object.isSuccess) ? globalThis.Boolean(object.isSuccess) : false };
+  },
+
+  toJSON(message: WorkerUpdateNickNameResponse): unknown {
+    const obj: any = {};
+    if (message.isSuccess !== false) {
+      obj.isSuccess = message.isSuccess;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WorkerUpdateNickNameResponse>, I>>(base?: I): WorkerUpdateNickNameResponse {
+    return WorkerUpdateNickNameResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WorkerUpdateNickNameResponse>, I>>(object: I): WorkerUpdateNickNameResponse {
+    const message = createBaseWorkerUpdateNickNameResponse();
+    message.isSuccess = object.isSuccess ?? false;
     return message;
   },
 };

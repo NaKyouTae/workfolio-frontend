@@ -26,18 +26,15 @@ const BodyLeft = () => {
 
                 const ownedData = await ownedRes.json();
                 const sharedData = await sharedRes.json();
-
-                console.log('Owned groups:', ownedData);
-                console.log('Shared groups:', sharedData);
                 
                 // 소유한 레코드 그룹 설정
-                const ownedGroups = ownedData.groups || ownedData || [];
+                const ownedGroups = ownedData.groups || [];
                 if (ownedGroups.length > 0) {
                     setOwnedRecordGroups(ownedGroups);
                 }
                 
                 // 공유받은 레코드 그룹 설정
-                const sharedGroups = sharedData.groups || sharedData || [];
+                const sharedGroups = sharedData.groups || [];
                 if (sharedGroups.length > 0) {
                     setSharedRecordGroups(sharedGroups);
                 }

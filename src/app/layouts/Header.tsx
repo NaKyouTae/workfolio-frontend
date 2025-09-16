@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import Image from 'next/image';
 import { useViewStore } from '@/store/viewStore';
+import { useUser } from '@/hooks/useUser';
 
 const Header = () => {
     const { setView } = useViewStore();
+    const { user, fetchUser, logout: userLogout } = useUser();
+    
+    // 컴포넌트 마운트 시 유저 정보 가져오기
+    useEffect(() => {
+        fetchUser();
+    }, [fetchUser]); // fetchUser는 useCallback으로 메모이제이션됨
     
     const logout = async () => {
         try {
@@ -13,10 +20,9 @@ const Header = () => {
             
             if (data) {
                 console.log('카카오 로그아웃 성공');
-                
-                // 쿠키에서 JWT 토큰 제거
-                document.cookie = 'accessToken=; max-age=0; path=/';  // accessToken 쿠키 삭제
-                document.cookie = 'refreshToken=; max-age=0; path=/';  // refreshToken 쿠키 삭제 (필요한 경우)
+
+                // 유저 정보 클리어
+                userLogout();
                 
                 // 로그아웃 후 리다이렉트
                 window.location.href = 'http://localhost:3000';  // 로그아웃 후 리다이렉트
@@ -39,7 +45,9 @@ const Header = () => {
                 onClick={() => setView('dashboard')}
             />
             <div className={"top-user-info"}>
-                <div className={"top-user-info-contents"}>닉네임 님 반가워요!</div>
+                <div className={"top-user-info-contents"}>
+                    {user ? `${user.nickName} 님 반가워요!` : '로딩 중...'}
+                </div>
                 <span className={"top-user-info-separator"}></span>
                 <a className={"button-12"} onClick={() => setView('mypage')}>마이페이지</a>
                 <span className={"top-user-info-separator"}></span>
