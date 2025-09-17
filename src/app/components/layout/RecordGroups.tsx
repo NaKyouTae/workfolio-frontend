@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup } from '../../../../generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { UpdateRecordGroupRequest } from '../../../../generated/record_group';
+import { SuccessRecordGroupResponse, UpdateRecordGroupRequest } from '../../../../generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import ColorSelectModal from './ColorSelectModal';
 import Image from 'next/image';
+
 interface RecordGroupItemProps {
     group: RecordGroup;
     isChecked: boolean;
@@ -33,9 +34,28 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
         setIsEditing(false);
     };
 
-    const handleCancel = () => {
-        setEditTitle(group.title);
-        setIsEditing(false);
+    const handleCancel = async () => {
+        try {
+            const response = await fetch(`/api/record-groups/${group.id}`, {
+                method: HttpMethod.DELETE,
+            });
+
+            if (response.ok) {
+                const result: SuccessRecordGroupResponse = await response.json();
+                if (result.isSuccess) {
+                    // 삭제 성공 시 부모 컴포넌트에 알림
+                    if (onDelete) {
+                        onDelete(group.id);
+                    }
+                } else {
+                    console.error('Failed to delete record group:', result);
+                }
+            } else {
+                console.error('Failed to delete record group');
+            }
+        } catch (error) {
+            console.error('Error deleting record group:', error);
+        }
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {

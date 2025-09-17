@@ -47,7 +47,7 @@ export interface UpdateRecordGroupRequest {
   priority: number;
 }
 
-export interface UpdateRecordGroupResponse {
+export interface SuccessRecordGroupResponse {
   isSuccess: boolean;
 }
 
@@ -617,22 +617,22 @@ export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
   },
 };
 
-function createBaseUpdateRecordGroupResponse(): UpdateRecordGroupResponse {
+function createBaseSuccessRecordGroupResponse(): SuccessRecordGroupResponse {
   return { isSuccess: false };
 }
 
-export const UpdateRecordGroupResponse: MessageFns<UpdateRecordGroupResponse> = {
-  encode(message: UpdateRecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const SuccessRecordGroupResponse: MessageFns<SuccessRecordGroupResponse> = {
+  encode(message: SuccessRecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.isSuccess !== false) {
       writer.uint32(8).bool(message.isSuccess);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): UpdateRecordGroupResponse {
+  decode(input: BinaryReader | Uint8Array, length?: number): SuccessRecordGroupResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateRecordGroupResponse();
+    const message = createBaseSuccessRecordGroupResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -653,11 +653,11 @@ export const UpdateRecordGroupResponse: MessageFns<UpdateRecordGroupResponse> = 
     return message;
   },
 
-  fromJSON(object: any): UpdateRecordGroupResponse {
+  fromJSON(object: any): SuccessRecordGroupResponse {
     return { isSuccess: isSet(object.isSuccess) ? globalThis.Boolean(object.isSuccess) : false };
   },
 
-  toJSON(message: UpdateRecordGroupResponse): unknown {
+  toJSON(message: SuccessRecordGroupResponse): unknown {
     const obj: any = {};
     if (message.isSuccess !== false) {
       obj.isSuccess = message.isSuccess;
@@ -665,11 +665,11 @@ export const UpdateRecordGroupResponse: MessageFns<UpdateRecordGroupResponse> = 
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UpdateRecordGroupResponse>, I>>(base?: I): UpdateRecordGroupResponse {
-    return UpdateRecordGroupResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<SuccessRecordGroupResponse>, I>>(base?: I): SuccessRecordGroupResponse {
+    return SuccessRecordGroupResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UpdateRecordGroupResponse>, I>>(object: I): UpdateRecordGroupResponse {
-    const message = createBaseUpdateRecordGroupResponse();
+  fromPartial<I extends Exact<DeepPartial<SuccessRecordGroupResponse>, I>>(object: I): SuccessRecordGroupResponse {
+    const message = createBaseSuccessRecordGroupResponse();
     message.isSuccess = object.isSuccess ?? false;
     return message;
   },

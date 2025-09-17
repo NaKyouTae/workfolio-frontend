@@ -34,6 +34,7 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
                 type="button"
                 onClick={toggleDropdown} 
                 className={styles.dropdownToggle}
+                style={{color: 'black'}}
             >
                 {selectedLabel}
                 <span className={styles.arrow}>▼</span>
