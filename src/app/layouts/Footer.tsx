@@ -1,13 +1,13 @@
 import React from 'react';
 import '@/styles/footer.css';
 const Footer = () => {return (
-        <div className="footer-container">
-            <div>고객센터</div>
-            <div style={{ margin: '0 8px' }}>|</div>
-            <div>이용약관</div>
-            <div style={{ margin: '0 8px' }}>|</div>
-            <div>개인정보처리방침</div>
-        </div>
+        <footer>
+            <ul>
+                <li><a href="#">이용약관</a></li>
+                <li><a href="#">개인정보처리방침</a></li>
+            </ul>
+            <p>Ⓒ 2025 Spectrum. All rights reserved.</p>
+        </footer>
     );
 };
 

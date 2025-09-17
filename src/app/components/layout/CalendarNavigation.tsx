@@ -12,11 +12,11 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
     onTodayMonth
 }) => {
     return (
-        <div className="calendar-nav-group">
-            <button className="calendar-nav-button calendar-nav-button-left" onClick={onPreviousMonth}>‹</button>
-            <button className="calendar-nav-button calendar-nav-button-middle" onClick={onNextMonth}>›</button>
-            <button className="calendar-nav-button calendar-nav-button-right" onClick={onTodayMonth}>오늘</button>
-        </div>
+        <ul>
+            <li><button onClick={onPreviousMonth}><i className="ic-arrow-left-14" /></button></li>
+            <li><button onClick={onNextMonth}><i className="ic-arrow-right-14" /></button></li>
+            <li><button onClick={onTodayMonth}>오늘</button></li>
+        </ul>
     );
 };
 

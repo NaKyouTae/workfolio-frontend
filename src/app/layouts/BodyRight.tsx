@@ -165,13 +165,7 @@ const BodyRight = () => {
     const filteredRecords = Array.isArray(records) ? records : []
     
     return (
-        <div style={{
-            width: '100%',
-            height: '97%',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
+        <div className="contents">
             {/* CalendarHeader - 상위에 위치 */}
             <CalendarHeader 
                 date={date}
@@ -185,7 +179,7 @@ const BodyRight = () => {
             />
             
             {/* Calendar - 하위에 위치, 토글에 따라 변경 */}
-            <div style={{ flex: 1, overflow: 'hidden' }}>
+            <div className="calendar-wrap">
                 {loading ? (
                     <div style={{
                         display: 'flex',

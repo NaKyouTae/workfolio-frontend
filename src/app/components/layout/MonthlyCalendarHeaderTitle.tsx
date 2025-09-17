@@ -6,9 +6,7 @@ interface MonthlyCalendarHeaderTitleProps {
 
 const MonthlyCalendarHeaderTitle: React.FC<MonthlyCalendarHeaderTitleProps> = ({date}) => {
     return (
-        <div className="calendar-title">
-            {`${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}`}
-        </div>
+        <h2>{`${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}`}</h2>
     );
 };
 
