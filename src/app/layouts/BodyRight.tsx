@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {Record} from "../../../generated/common"
-import MonthlyCalendarV2 from '../components/layout/MonthlyCalendarV2'
-import ListCalendar from '../components/layout/ListCalendar'
-import CalendarHeader from '../components/layout/CalendarHeader'
+import MonthlyCalendarV2 from '../components/layout/calendar/monthly/MonthlyCalendarV2'
+import ListCalendar from '../components/layout/calendar/list/ListCalendar'
+import CalendarHeader from '../components/layout/calendar/CalendarHeader'
 import { createSampleRecordGroups, createSampleRecords } from '../../utils/sampleData'
 import HttpMethod from '../../enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
@@ -12,7 +12,6 @@ const BodyRight = () => {
     const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('list')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
-    const [error, setError] = useState<string | null>(null)
     
     // store에서 체크된 RecordGroup 정보 가져오기
     const { getCheckedGroupIds, getCheckedRecordGroups } = useRecordGroupStore()
@@ -22,8 +21,6 @@ const BodyRight = () => {
     
     // API 데이터 로딩 함수
     const loadApiData = useCallback(async (month?: number, year?: number) => {
-        setError(null)
-        
         try {
             const currentDate = new Date()
             const targetMonth = month || currentDate.getMonth() + 1
@@ -74,7 +71,6 @@ const BodyRight = () => {
             }
         } catch (error) {
             console.error('Error fetching records from API:', error)
-            setError('레코드를 불러오는 중 오류가 발생했습니다.')
             setRecords([])
         }
     }, [getCheckedGroupIds, recordType])
@@ -99,7 +95,6 @@ const BodyRight = () => {
             )
             
             setRecords(filteredRecords)
-            setError(null)
             return
         }
         
@@ -127,7 +122,6 @@ const BodyRight = () => {
             )
             
             setRecords(filteredRecords)
-            setError(null)
         } else {
             // 로그인한 경우 - API 데이터 로드
             loadApiData()
@@ -207,33 +201,7 @@ const BodyRight = () => {
             
             {/* Calendar - 하위에 위치, 토글에 따라 변경 */}
             <div className="calendar-wrap">
-                {error ? (
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100%',
-                        fontSize: '16px',
-                        color: '#dc3545'
-                    }}>
-                        <div>{error}</div>
-                        <button
-                            onClick={() => fetchRecords(date.getMonth() + 1, date.getFullYear())}
-                            style={{
-                                marginTop: '10px',
-                                padding: '8px 16px',
-                                backgroundColor: '#007bff',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            다시 시도
-                        </button>
-                    </div>
-                ) : recordType === 'list' ? (
+                {recordType === 'list' ? (
                     <ListCalendar
                         initialDate={date} 
                         records={filteredRecords}

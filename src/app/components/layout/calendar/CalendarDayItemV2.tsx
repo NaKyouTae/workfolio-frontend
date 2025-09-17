@@ -1,9 +1,5 @@
 import React from 'react'
-import { CalendarDay, CalendarEvent } from './types'
-import { SingleDayEventElement } from './EventElement'
-import { assignEventLinesForDate } from './utils'
-import { Record_RecordType } from "../../../../../generated/common"
-import styles from '@/styles/MonthlyCalendarV2.module.css'
+import { CalendarDay } from './types'
 
 interface CalendarDayItemProps {
     day: CalendarDay | null

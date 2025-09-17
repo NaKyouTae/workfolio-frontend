@@ -1,6 +1,6 @@
 // src/components/MonthlyCalendar.tsx
 import React from 'react';
-import BodyLeft from "@/app/layouts/BodyLeft"
+import Sidebar from "@/app/layouts/Sidebar"
 import BodyRight from "@/app/layouts/BodyRight"
 import Footer from "@/app/layouts/Footer"
 import Mypage from "@/app/components/Mypage"
@@ -15,7 +15,7 @@ const Contents = () => {
     
     return (
         <main>
-            <BodyLeft />
+            <Sidebar />
             <section>
                 <BodyRight />
                 <Footer/>

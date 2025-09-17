@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import RecordGroupHeader from './RecordGroupHeader';
-import RecordGroups from './RecordGroups';
-import { RecordGroup } from '../../../../generated/common';
+import RecordGroupsOwnedHeader from './RecordGroupsOwnedHeader';
+import RecordGroups from '../RecordGroups';
+import { RecordGroup } from '../../../../../../../generated/common';
 
 interface RecordGroupSectionProps {
-    title: string;
     defaultExpanded?: boolean;
     recordGroups: RecordGroup[];
     onUpdateRecordGroups: (updatedGroups: RecordGroup[]) => void;
@@ -13,8 +12,7 @@ interface RecordGroupSectionProps {
     onCancelCreateGroup?: () => void;
 }
 
-const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
-    title,
+const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
     defaultExpanded = true,
     recordGroups,
     onUpdateRecordGroups,
@@ -30,8 +28,7 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
 
     return (
         <div className="record-group">
-            <RecordGroupHeader 
-                title={title} 
+            <RecordGroupsOwnedHeader 
                 isGroupsExpanded={isGroupsExpanded}
                 onToggleGroups={handleToggleGroups}
             />
@@ -50,4 +47,4 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
     );
 };
 
-export default RecordGroupSection; 
+export default RecordGroupsOwned; 

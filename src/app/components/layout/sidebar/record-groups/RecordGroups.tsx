@@ -1,15 +1,11 @@
 import React from 'react';
 import HttpMethod from '@/enums/HttpMethod';
-import { RecordGroup } from '../../../../generated/common';
+import { RecordGroup } from '../../../../../../generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { UpdateRecordGroupRequest } from '../../../../generated/record_group';
+import { UpdateRecordGroupRequest } from '../../../../../../generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import RecordGroupItem from './RecordGroupItem';
 import NewRecordGroupItem from './NewRecordGroupItem';
-
-
-
-
 
 interface RecordGroupsProps {
     recordGroups: RecordGroup[];
@@ -195,6 +191,12 @@ const RecordGroups = ({
 
     return (
         <>
+            {isCreatingGroup && (
+                <NewRecordGroupItem
+                    onSave={handleSaveNewGroup}
+                    onCancel={handleCancelNewGroup}
+                />
+            )}
             {recordGroups?.map((group) => (
                 <RecordGroupItem
                     key={group.id}
@@ -206,12 +208,6 @@ const RecordGroups = ({
                     onDelete={deleteRecordGroup}
                 />
             ))}
-            {isCreatingGroup && (
-                <NewRecordGroupItem
-                    onSave={handleSaveNewGroup}
-                    onCancel={handleCancelNewGroup}
-                />
-            )}
         </>
     );
 };

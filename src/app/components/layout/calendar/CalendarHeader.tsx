@@ -1,7 +1,5 @@
 import React from 'react';
-import RecordTypeButton from './RecordTypeButton';
 import CalendarNavigation from './CalendarNavigation';
-import MonthlyCalendarHeaderTitle from './MonthlyCalendarHeaderTitle';
 
 type RecordType = 'weekly' | 'monthly' | 'list';
 
@@ -29,7 +27,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
     return (
         <div className="calendar-option">
             <div className="calendar-nav">
-                <MonthlyCalendarHeaderTitle date={date} />
+                <h2>{`${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}`}</h2>
                 <CalendarNavigation 
                     onPreviousMonth={onPreviousMonth}
                     onNextMonth={onNextMonth}
@@ -47,10 +45,32 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                         />
                     </div>
                 )}
-                <RecordTypeButton 
-                    selectedType={recordType}
-                    onTypeChange={onTypeChange}
-                />
+                <ul className="tab-style1">
+                    <li>
+                        <button 
+                            onClick={() => onTypeChange('weekly')}
+                            className={`${recordType === 'weekly' ? 'active' : ''}`}
+                        >
+                            주간
+                        </button>
+                    </li>
+                    <li>
+                        <button 
+                            onClick={() => onTypeChange('monthly')}
+                            className={`${recordType === 'monthly' ? 'active' : ''}`}
+                        >
+                            월간
+                        </button>
+                    </li>
+                    <li>
+                        <button 
+                            onClick={() => onTypeChange('list')}
+                            className={`${recordType === 'list' ? 'active' : ''}`}
+                        >
+                            목록
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     );

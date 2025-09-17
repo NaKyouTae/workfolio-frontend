@@ -1,15 +1,15 @@
 import React, { useState, useCallback } from 'react'
 import { createDateModel, DateModel } from "@/app/models/DateModel"
-import { Record } from "../../../../generated/common"
+import { Record } from "../../../../../../generated/common"
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
-import MonthlyCalendarHeader from './CalendarHeader'
-import MonthlyCalendarWeekdays from './MonthlyCalendarWeekdays'
-import { CalendarDayItem } from './calendar/CalendarDayItem'
-import { ContinuousEventElements } from './calendar/ContinuousEventElements'
-import { useCalendarDays, useCalendarEvents, useSingleDayEventsByDate, useMultiDayEvents } from './calendar/hooks'
+import CalendarHeader from '../CalendarHeader'
+import CalendarWeekdays from '../CalendarWeekdays'
+import { CalendarDayItem } from '../CalendarDayItem'
+import { ContinuousEventElements } from '../ContinuousEventElements'
+import { useCalendarDays, useCalendarEvents, useSingleDayEventsByDate, useMultiDayEvents } from '../hooks'
 import styles from '@/styles/MonthlyCalendarV2.module.css'
 
 dayjs.extend(utc)
@@ -74,7 +74,7 @@ export default function MonthlyCalendar({ initialDate, records }: MonthlyCalenda
 
     return (
         <div className={styles.calendarContainer}>
-            <MonthlyCalendarHeader 
+            <CalendarHeader 
                 date={dateAsDate}
                 recordType={recordType}
                 onTypeChange={handleTypeChange}
@@ -82,7 +82,7 @@ export default function MonthlyCalendar({ initialDate, records }: MonthlyCalenda
                 onNextMonth={handleNextMonth}
                 onTodayMonth={handleTodayMonth}
             />
-            <MonthlyCalendarWeekdays />
+            <CalendarWeekdays />
             <div className={styles.calendarContent}>
                 <div className={`${styles.monthlyCalendar} ${styles.calendarDaysContainer}`}>
                     {calendarDays.map((day, index) => {

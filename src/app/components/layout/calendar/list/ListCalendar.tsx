@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Record, RecordGroup } from '../../../../generated/common'
+import { Record, RecordGroup } from '../../../../../../generated/common'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import timezone from 'dayjs/plugin/timezone'

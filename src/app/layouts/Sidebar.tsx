@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import RecordGroupSection from '../components/layout/RecordGroupSection';
-import RecordGroupButton from '../components/layout/RecordGroupButton';
-import RecordGroupMiddle from '../components/layout/RecordGroupMiddle';
+import SidebarButton from '../components/layout/sidebar/SidebarButton';
+import SidebarConfig from '../components/layout/sidebar/SidebarConfig';
 import { RecordGroup } from '../../../generated/common';
 import { CreateRecordGroupRequest } from '../../../generated/create-record-group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { createSampleRecordGroups } from '../../utils/sampleData';
+import RecordGroupsOwned from '../components/layout/sidebar/record-groups/record-groups-owned/RecordGroupsOwned';
+import RecordGroupsShared from '../components/layout/sidebar/record-groups/record-groups-shard/RecordGroupsShared';
 
-const BodyLeft = () => {
+const Sidebar = () => {
     const { 
         ownedRecordGroups, 
         sharedRecordGroups, 
@@ -141,11 +142,10 @@ const BodyLeft = () => {
     
     return (
         <aside>
-            <RecordGroupButton />
+            <SidebarButton />
             <div className="aside-cont">
-                <RecordGroupMiddle title="내 기록 전체보기" />
-                <RecordGroupSection 
-                    title="내 기록장"
+                <SidebarConfig />
+                <RecordGroupsOwned
                     defaultExpanded={true}
                     recordGroups={ownedRecordGroups}
                     onUpdateRecordGroups={setOwnedRecordGroups}
@@ -153,15 +153,17 @@ const BodyLeft = () => {
                     onCreateGroup={createRecordGroup}
                     onCancelCreateGroup={() => setIsCreatingGroup(false)}
                 />
-                <RecordGroupSection 
-                    title="공유 기록장"
+                <RecordGroupsShared
                     defaultExpanded={true}
                     recordGroups={sharedRecordGroups}
                     onUpdateRecordGroups={setSharedRecordGroups}
+                    isCreatingGroup={isCreatingGroup}
+                    onCreateGroup={createRecordGroup}
+                    onCancelCreateGroup={() => setIsCreatingGroup(false)}
                 />
             </div>
         </aside>
     );
 };
 
-export default BodyLeft;
+export default Sidebar;

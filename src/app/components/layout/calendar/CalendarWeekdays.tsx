@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MonthlyCalendarWeekdays: React.FC = () => {
+const CalendarWeekdays: React.FC = () => {
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
     return (
@@ -19,4 +19,4 @@ const MonthlyCalendarWeekdays: React.FC = () => {
     );
 };
 
-export default MonthlyCalendarWeekdays; 
+export default CalendarWeekdays; 

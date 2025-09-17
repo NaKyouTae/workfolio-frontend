@@ -1,13 +1,11 @@
 import React from 'react';
 
-interface RecordGroupHeaderProps {
-    title: string;
+interface RecordGroupsOwnedHeaderProps {
     isGroupsExpanded: boolean;
     onToggleGroups: () => void;
 }
 
-const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
-    title,
+const RecordGroupsOwnedHeader: React.FC<RecordGroupsOwnedHeaderProps> = ({
     isGroupsExpanded,
     onToggleGroups,
 }) => {
@@ -21,12 +19,14 @@ const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
     return (
         <div className="record-group-title">
             <div>
-                <p>{title}</p>
-                <button className={`trans ${isGroupsExpanded ? 'active' : ''}`} onClick={onToggleGroups}><i className="ic-arrow-down-14" /></button>
+                <p>내 기록장</p>
+                <button className={`trans ${isGroupsExpanded ? 'active' : ''}`} onClick={onToggleGroups}>
+                    <i className="ic-arrow-down-14" />
+                </button>
             </div>
             <button className="trans" onClick={handleCreateGroup}><i className="ic-add" /></button>
         </div>
     );
 };
 
-export default RecordGroupHeader; 
+export default RecordGroupsOwnedHeader; 

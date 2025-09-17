@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { createDateModel, DateModel } from "@/app/models/DateModel"
-import { Record } from '../../../../generated/common'
+import { Record } from '../../../../../../generated/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
-import MonthlyCalendarWeekdays from './MonthlyCalendarWeekdays'
-import { useCalendarDays } from './calendar/hooks'
-import styles from '@/styles/MonthlyCalendarV2.module.css'
-import { CalendarDay } from './calendar/types'
-import { CalendarDayItemV2 } from './calendar/CalendarDayItemV2'
+import CalendarWeekdays from '../CalendarWeekdays'
+import { useCalendarDays } from '../hooks'
+import { CalendarDay } from '../types'
+import { CalendarDayItemV2 } from '../CalendarDayItemV2'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -41,7 +40,7 @@ export default function MonthlyCalendarV2({ initialDate, records }: MonthlyCalen
 
     return (
         <table className="calendar-monthly">
-            <MonthlyCalendarWeekdays />
+            <CalendarWeekdays />
             <tbody>
                 {weeks.map((week, weekIndex) => (
                     <tr key={weekIndex}>

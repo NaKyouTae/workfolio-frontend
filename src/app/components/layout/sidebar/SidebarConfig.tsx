@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 
-interface RecordGroupMiddleProps {
-    title: string;
-}
+interface SidebarConfigProps { }
 
-const RecordGroupMiddle: React.FC<RecordGroupMiddleProps> = ({
-    title
-}) => {
+const SidebarConfig: React.FC<SidebarConfigProps> = () => {
     const [isChecked, setIsChecked] = useState(true);
     const { 
         toggleAllGroups,
@@ -38,11 +34,11 @@ const RecordGroupMiddle: React.FC<RecordGroupMiddleProps> = ({
                     id="all" 
                     onChange={onToggle} 
                 />
-                <label htmlFor="all"><p>{title}</p></label>
+                <label htmlFor="all"><p>내 기록 전체보기</p></label>
             </div>
             <button className="trans"><i className="ic-set" /></button>
         </div>
     );
 };
 
-export default RecordGroupMiddle; 
+export default SidebarConfig; 

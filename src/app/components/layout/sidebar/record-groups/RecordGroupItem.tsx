@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
-import { RecordGroup } from '../../../../generated/common';
-import { SuccessRecordGroupResponse } from '../../../../generated/record_group';
-import ColorSelectModal from './ColorSelectModal';
+import { RecordGroup } from '../../../../../../generated/common';
+import { SuccessRecordGroupResponse } from '../../../../../../generated/record_group';
+import ColorSelectModal from './RecordGroupColorModal';
 
 interface RecordGroupItemProps {
     group: RecordGroup;

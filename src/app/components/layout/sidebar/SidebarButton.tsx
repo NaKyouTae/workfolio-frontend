@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import RecordCreateModal from './modal/RecordCreateModal';
+import RecordCreateModal from '../modal/RecordCreateModal';
 
-interface RecordGroupButtonProps {}
+interface SidebarButtonProps {}
 
-const RecordGroupButton: React.FC<RecordGroupButtonProps> = ({}) => {
+const SidebarButton: React.FC<SidebarButtonProps> = ({}) => {
     const [isRecordCreateModalOpen, setIsRecordCreateModalOpen] = useState(false);
 
     const closeRecordCreateModal = () => {
@@ -22,4 +22,4 @@ const RecordGroupButton: React.FC<RecordGroupButtonProps> = ({}) => {
     );
 };
 
-export default RecordGroupButton; 
+export default SidebarButton; 

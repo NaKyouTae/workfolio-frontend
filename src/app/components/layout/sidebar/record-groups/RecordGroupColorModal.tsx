@@ -1,7 +1,7 @@
 import React from 'react';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 
-interface ColorSelectModalProps {
+interface RecordGroupColorModalProps {
     isOpen: boolean;
     currentColor: string;
     onColorSelect: (color: string) => void;
@@ -9,7 +9,7 @@ interface ColorSelectModalProps {
     title?: string;
 }
 
-const ColorSelectModal: React.FC<ColorSelectModalProps> = ({
+const RecordGroupColorModal: React.FC<RecordGroupColorModalProps> = ({
     isOpen,
     currentColor,
     onColorSelect,
@@ -52,4 +52,4 @@ const ColorSelectModal: React.FC<ColorSelectModalProps> = ({
     );
 };
 
-export default ColorSelectModal;
+export default RecordGroupColorModal;
