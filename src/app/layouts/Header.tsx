@@ -37,11 +37,18 @@ const Header = () => {
     return (
         <header>
             <h1 onClick={() => setView('dashboard')}><Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} /></h1>
-            <ul>
-                <li>{user ? `${user.nickName} 님 반가워요!` : '잠시만요, 준비 중이에요'}</li>
+            {user? (
+                <ul>
+                <li>{`${user.nickName} 님 반가워요!`}</li>
                 <li><a onClick={() => setView('mypage')}>마이페이지</a></li>
                 <li><a onClick={logout}>로그아웃</a></li>
             </ul>
+            ) : (
+                <ul>
+                    <li>환영합니다. <a href="/login" style={{ color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}>로그인</a>을 해보세요~</li>
+                </ul>
+            )}
+            
         </header>
     )
 }

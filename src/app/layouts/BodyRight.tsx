@@ -12,17 +12,16 @@ const BodyRight = () => {
     const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('list')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
-    const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     
     // store에서 체크된 RecordGroup 정보 가져오기
     const { getCheckedGroupIds, getCheckedRecordGroups } = useRecordGroupStore()
     const checkedGroupIds = getCheckedGroupIds()
     const checkedRecordGroups = getCheckedRecordGroups()
+    const checkedGroupIdsString = checkedGroupIds.join(',') // 의존성 배열용 문자열
     
-    // 레코드 조회 함수 (통합)
-    const fetchRecords = useCallback(async (month?: number, year?: number) => {
-        setLoading(true)
+    // API 데이터 로딩 함수
+    const loadApiData = useCallback(async (month?: number, year?: number) => {
         setError(null)
         
         try {
@@ -36,26 +35,6 @@ const BodyRight = () => {
             // 체크된 RecordGroup ID가 없으면 빈 배열 반환
             if (currentCheckedGroupIds.length === 0) {
                 setRecords([])
-                setLoading(false)
-                return
-            }
-
-            // 토큰이 없으면 샘플 데이터 사용
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
-                console.log('No access token, using sample data');
-                const sampleRecordGroups = createSampleRecordGroups()
-                const sampleRecords = createSampleRecords(sampleRecordGroups)
-                // 체크된 그룹 ID에 따라 필터링
-                const filteredRecords = sampleRecords.filter((record: Record) => 
-                    currentCheckedGroupIds.includes(record.recordGroup?.id || '')
-                )
-                setRecords(filteredRecords)
-                setLoading(false)
                 return
             }
             
@@ -84,8 +63,6 @@ const BodyRight = () => {
             
             const data = await res.json()
             
-            console.log("API Response:", data)
-            
             if (data && Array.isArray(data.records)) {
                 setRecords(data.records)
             } else if (data && Array.isArray(data)) {
@@ -96,25 +73,70 @@ const BodyRight = () => {
                 setRecords([])
             }
         } catch (error) {
-            console.error('Error fetching records:', error)
+            console.error('Error fetching records from API:', error)
             setError('레코드를 불러오는 중 오류가 발생했습니다.')
-            // 에러 발생 시 샘플 데이터 사용
+            setRecords([])
+        }
+    }, [getCheckedGroupIds, recordType])
+    
+    // 레코드 조회 함수 (통합)
+    const fetchRecords = useCallback(async (month?: number, year?: number) => {
+        // 로그인 상태 확인
+        const accessToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')[1];
+        
+        // 로그인하지 않은 경우 - 샘플 데이터 로드 및 필터링
+        if (!accessToken) {
             const sampleRecordGroups = createSampleRecordGroups()
             const sampleRecords = createSampleRecords(sampleRecordGroups)
-            // 체크된 그룹 ID에 따라 필터링
+            
+            const currentCheckedGroupIds = getCheckedGroupIds()
+            
             const filteredRecords = sampleRecords.filter((record: Record) => 
-                checkedGroupIds.includes(record.recordGroup?.id || '')
+                currentCheckedGroupIds.includes(record.recordGroup?.id || '')
             )
+            
             setRecords(filteredRecords)
-        } finally {
-            setLoading(false)
+            setError(null)
+            return
         }
-    }, [getCheckedGroupIds, recordType, checkedGroupIds])
+        
+        // 로그인한 경우 - API 데이터 로딩
+        await loadApiData(month, year)
+    }, [loadApiData, getCheckedGroupIds])
+
+
+    // 체크박스 변경 시 샘플 데이터 로드
+    useEffect(() => {
+        const accessToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')[1];
+        
+        // 로그인하지 않은 경우에만 샘플 데이터 로드
+        if (!accessToken) {
+            // 직접 샘플데이터 로드 및 필터링
+            const sampleRecordGroups = createSampleRecordGroups()
+            const sampleRecords = createSampleRecords(sampleRecordGroups)
+            
+            const currentCheckedGroupIds = getCheckedGroupIds()
+            
+            const filteredRecords = sampleRecords.filter((record: Record) => 
+                currentCheckedGroupIds.includes(record.recordGroup?.id || '')
+            )
+            
+            setRecords(filteredRecords)
+            setError(null)
+        }
+    }, [checkedGroupIdsString, getCheckedGroupIds]) // 체크박스 변경 시에만 실행
 
     // 레코드 조회 useEffect - 의존성 배열 수정
     useEffect(() => {
         fetchRecords()
     }, [fetchRecords]) // fetchRecords 변경 시 자동 리로드
+
 
     // 이벤트 핸들러들
     const handleTypeChange = useCallback((type: 'weekly' | 'monthly' | 'list') => {
@@ -189,18 +211,7 @@ const BodyRight = () => {
             
             {/* Calendar - 하위에 위치, 토글에 따라 변경 */}
             <div style={{ flex: 1, overflow: 'hidden' }}>
-                {loading ? (
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100%',
-                        fontSize: '16px',
-                        color: '#666'
-                    }}>
-                        로딩 중...
-                    </div>
-                ) : error ? (
+                {error ? (
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
