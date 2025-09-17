@@ -54,55 +54,43 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
     };
 
     return (
-        <div className="record-group-item" style={{ position: 'relative' }}>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                flex: 1,
-                cursor: 'pointer'
-            }} onClick={() => !isEditing && onToggle(group.id)}>
-                <div style={{
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '4px',
-                    border: `2px solid ${group.color}`,
-                    backgroundColor: group.color,
-                    marginRight: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                    {isChecked && (
-                        <Image
-                            src="/ic-check.png"
-                            alt="Toggle groups"
-                            width={8}
-                            height={6}
+        <li>
+            <div className="info">
+                <input type="checkbox"  id={`group${group.id}`} onClick={() => !isEditing && onToggle(group.id)} />
+                <label 
+                    htmlFor={`group${group.id}`}
+                    style={{"--group-color": `${group.color}` } as React.CSSProperties} 
+                >
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                            onBlur={handleSave}
+                            autoFocus
                         />
+                    ) : (
+                        <p>{group.title}</p>
                     )}
-                </div>
-                {isEditing ? (
-                    <input
-                        type="text"
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        onKeyDown={handleKeyPress}
-                        onBlur={handleSave}
-                        autoFocus
-                        style={{
-                            fontSize: '14px',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            padding: '2px 6px',
-                            outline: 'none',
-                            width: '100%'
-                        }}
-                    />
-                ) : (
-                    <span style={{ fontSize: '14px' }}>{group.title}</span>
+                </label>
+            </div>
+            <div className="more">
+                <button className="trans active" onClick={() => setShowColorModal(true)}><i className="ic-more" /></button>
+                {showColorModal && (
+                    <div className="record-edit-modal-wrap">
+                        <button onClick={() => setIsEditing(true)}>기록장 이름 변경</button>
+                        <ColorSelectModal
+                            isOpen={showColorModal}
+                            currentColor={group.color}
+                            onColorSelect={handleColorSelect}
+                            onClose={() => setShowColorModal(false)}
+                            title="기록장 색상 변경"
+                        />
+                    </div>
                 )}
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            {/* <div className="more">
                 {isEditing ? (
                     <>
                         <button onClick={handleSave} style={{
@@ -172,24 +160,9 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                         </button>
                     </>
                 )}
-            </div>
-            {showColorModal && (
-                <div style={{
-                    position: 'absolute',
-                    right: '-320px',
-                    top: '0',
-                    zIndex: 1000
-                }}>
-                    <ColorSelectModal
-                        isOpen={showColorModal}
-                        currentColor={group.color}
-                        onColorSelect={handleColorSelect}
-                        onClose={() => setShowColorModal(false)}
-                        title="기록장 색상 변경"
-                    />
-                </div>
-            )}
-        </div>
+                
+            </div> */}
+        </li>
     );
 };
 
@@ -459,7 +432,7 @@ const RecordGroups = ({
     };
 
     return (
-        <div>
+        <>
             {recordGroups?.map((group) => (
                 <RecordGroupItem
                     key={group.id}
@@ -477,7 +450,7 @@ const RecordGroups = ({
                     onCancel={handleCancelNewGroup}
                 />
             )}
-        </div>
+        </>
     );
 };
 

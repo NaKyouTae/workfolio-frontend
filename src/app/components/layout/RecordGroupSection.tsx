@@ -29,17 +29,13 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
     };
 
     return (
-        <div>
+        <div className="record-group">
             <RecordGroupHeader 
                 title={title} 
                 isGroupsExpanded={isGroupsExpanded}
                 onToggleGroups={handleToggleGroups}
             />
-            <div style={{
-                maxHeight: isGroupsExpanded ? '100%' : '0',
-                overflow: 'hidden',
-                transition: 'max-height 0.3s ease-in-out'
-            }}>
+            <ul className="record-group-list">
                 <RecordGroups 
                     recordGroups={recordGroups} 
                     onUpdateRecordGroups={onUpdateRecordGroups}
@@ -47,7 +43,7 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
                     onCreateGroup={onCreateGroup}
                     onCancelCreateGroup={onCancelCreateGroup}
                 />
-            </div>
+            </ul>
         </div>
     );
 };

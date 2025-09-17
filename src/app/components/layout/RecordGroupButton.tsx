@@ -16,8 +16,8 @@ const RecordGroupButton: React.FC<RecordGroupButtonProps> = ({}) => {
     };
 
     return (
-        <div className="record-group-button-container">
-            <button onClick={openRecordCreateModal}>새 기록 추가</button>
+        <div className="aside-button">
+            <button className="md" onClick={openRecordCreateModal}>새 기록 추가</button>
             <RecordCreateModal isOpen={isRecordCreateModalOpen} onClose={closeRecordCreateModal}/>
         </div>
     );

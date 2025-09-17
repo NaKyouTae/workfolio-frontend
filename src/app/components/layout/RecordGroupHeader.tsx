@@ -12,7 +12,7 @@ const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
     isGroupsExpanded,
     onToggleGroups,
 }) => {
-    const triggerRef = useRef<HTMLDivElement>(null);
+    // const triggerRef = useRef<HTMLDivElement>(null);
 
     const handleCreateGroup = () => {
         // 커스텀 이벤트 발생
@@ -20,29 +20,12 @@ const RecordGroupHeader: React.FC<RecordGroupHeaderProps> = ({
     };
     
     return (
-        <div className="record-group-navigation-header">
-            <div className="record-group-navigation-label-container">
-                <span className="record-group-navigation-label">{title}</span>
-                <Image
-                    src="/ic-arrow-up.png"
-                    alt="Toggle groups"
-                    width={14}
-                    height={14}
-                    onClick={onToggleGroups}
-                    style={{ cursor: 'pointer' }}
-                    className={`record-group-navigation-arrow ${isGroupsExpanded ? 'expanded' : ''}`}
-                />
+        <div className="record-group-title">
+            <div>
+                <p>{title}</p>
+                <button className={`trans ${isGroupsExpanded ? 'active' : ''}`} onClick={onToggleGroups}><i className="ic-arrow-down-14" /></button>
             </div>
-            <div ref={triggerRef}>
-                <Image
-                    src="/ic-add.png"
-                    alt="Add groups"
-                    width={14}
-                    height={14}
-                    onClick={handleCreateGroup}
-                    style={{ cursor: 'pointer' }}
-                />
-            </div>
+            <button className="trans" onClick={handleCreateGroup}><i className="ic-add" /></button>
         </div>
     );
 };

@@ -141,35 +141,27 @@ const BodyLeft = () => {
     }, [setOwnedRecordGroups, setSharedRecordGroups, initializeGroups]);
     
     return (
-        <div style={{ 
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            backgroundColor: '#fff',
-            margin: 0,
-            boxSizing: 'border-box'
-        }}>
+        <aside>
             <RecordGroupButton />
-            <RecordGroupMiddle title="내 기록 전체보기" />
-            <span className="record-group-separator"></span>
-            <RecordGroupSection 
-                title="내 기록장"
-                defaultExpanded={true}
-                recordGroups={ownedRecordGroups}
-                onUpdateRecordGroups={setOwnedRecordGroups}
-                isCreatingGroup={isCreatingGroup}
-                onCreateGroup={createRecordGroup}
-                onCancelCreateGroup={() => setIsCreatingGroup(false)}
-            />
-            <span className="record-group-separator"></span>
-            <RecordGroupSection 
-                title="공유 기록장"
-                defaultExpanded={true}
-                recordGroups={sharedRecordGroups}
-                onUpdateRecordGroups={setSharedRecordGroups}
-            />
-        </div>
+            <div className="aside-cont">
+                <RecordGroupMiddle title="내 기록 전체보기" />
+                <RecordGroupSection 
+                    title="내 기록장"
+                    defaultExpanded={true}
+                    recordGroups={ownedRecordGroups}
+                    onUpdateRecordGroups={setOwnedRecordGroups}
+                    isCreatingGroup={isCreatingGroup}
+                    onCreateGroup={createRecordGroup}
+                    onCancelCreateGroup={() => setIsCreatingGroup(false)}
+                />
+                <RecordGroupSection 
+                    title="공유 기록장"
+                    defaultExpanded={true}
+                    recordGroups={sharedRecordGroups}
+                    onUpdateRecordGroups={setSharedRecordGroups}
+                />
+            </div>
+        </aside>
     );
 };
 

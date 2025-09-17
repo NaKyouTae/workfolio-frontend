@@ -35,26 +35,14 @@ const Header = () => {
     };
     
     return (
-        <div className={"top-container"}>
-            <Image 
-                width={174} 
-                height={24} 
-                src="/workfolio-logo.png" 
-                alt="Workfolio Logo"
-                style={{ cursor: 'pointer' }}
-                onClick={() => setView('dashboard')}
-            />
-            <div className={"top-user-info"}>
-                <div className={"top-user-info-contents"}>
-                    {user ? `${user.nickName} 님 반가워요!` : '로딩 중...'}
-                </div>
-                <span className={"top-user-info-separator"}></span>
-                <a className={"button-12"} onClick={() => setView('mypage')}>마이페이지</a>
-                <span className={"top-user-info-separator"}></span>
-                <a className={"button-12"} onClick={logout}>로그아웃</a>
-            </div>
-            
-        </div>
+        <header>
+            <h1 onClick={() => setView('dashboard')}><Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} /></h1>
+            <ul>
+                <li>{user ? `${user.nickName} 님 반가워요!` : '잠시만요, 준비 중이에요'}</li>
+                <li><a onClick={() => setView('mypage')}>마이페이지</a></li>
+                <li><a onClick={logout}>로그아웃</a></li>
+            </ul>
+        </header>
     )
 }
 

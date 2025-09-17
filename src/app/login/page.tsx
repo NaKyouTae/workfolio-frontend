@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import {getCookie} from "@/utils/cookie"
 import {useEffect, useState} from "react"
 import {useRouter} from "next/navigation"
@@ -38,7 +39,7 @@ export default function LoginPage() {
         <div className="container">
             <div className="login-wrap">
                 <div className="login-box">
-                    <h1><img src="/assets/img/logo/img-logo01.svg" alt="workfolio" /></h1>
+                    <h1><Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} /></h1>
                     <p>워크폴리오, 일과 이력을 한곳에 쌓아두는 나만의 기록장.<br/>차곡차곡 쌓이는 경험을 한곳에서 정리하고 더 멋진 커리어로 이어가 보세요.</p>
                     <ul>
                         <li>

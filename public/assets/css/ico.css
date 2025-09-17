@@ -1,3 +1,11 @@
 i {display: flex; align-items: center; justify-content: center; background-repeat: no-repeat; background-position: center; background-size: contain;}
 
 /* icon : a b c d e f g h i j k l m n o p q r s t u v w x y z */
+.ic-arrow-up-14 {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-arrow-up-14.svg);}
+.ic-arrow-down-14 {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-arrow-down-14.svg);}
+
+.ic-add {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-add.svg);}
+
+.ic-check {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-check.svg);}
+.ic-more {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-more.svg);}
+.ic-set {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-set.svg);}
