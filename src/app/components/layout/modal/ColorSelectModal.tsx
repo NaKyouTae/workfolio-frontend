@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import styles from './ColorSelectModal.module.css';
 import { useRecordGroupCreateStore } from '@/store/recordGroupCreateStore';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';

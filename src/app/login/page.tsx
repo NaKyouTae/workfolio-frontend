@@ -28,11 +28,9 @@ export default function LoginPage() {
             
             // 쿠키에 accessToken과 refreshToken이 있다면 대시보드로 리디렉션
             if (accessToken && refreshToken) {
-                console.log('로그인 성공')
-                router.push('/dashboard');
+                router.push('/dashboard'); // 로그인 성공
             } else {
-                console.log('로그인 실패')
-                setIsLoading(false); // 로그인 상태가 아니면 로딩 종료
+                setIsLoading(false); // 로그인 실패
             }
         };
         

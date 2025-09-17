@@ -62,7 +62,6 @@ const BodyLeft = () => {
                 const newGroup = await response.json();
                 setOwnedRecordGroups([...ownedRecordGroups, newGroup]);
                 setIsCreatingGroup(false);
-                console.log('Created Group:', newGroup);
             } else {
                 console.error('Failed to create group');
             }
@@ -93,7 +92,6 @@ const BodyLeft = () => {
                     ?.split('=')[1];
                 
                 if (!accessToken) {
-                    console.log('No access token, using sample data');
                     const sampleRecordGroups = createSampleRecordGroups();
                     setOwnedRecordGroups(sampleRecordGroups);
                     setSharedRecordGroups([]);
@@ -132,7 +130,6 @@ const BodyLeft = () => {
                 const allGroups = [...ownedGroups, ...sharedGroups];
                 if (allGroups.length > 0) {
                     const groupIds = allGroups.map((group: RecordGroup) => group.id);
-                    console.log('Initializing groups with IDs:', groupIds);
                     initializeGroups(groupIds);
                 }
             } catch (error) {

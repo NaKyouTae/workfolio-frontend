@@ -66,8 +66,6 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             title: title,
             memo: memo,
         });
-
-        console.log(JSON.stringify(createRecordRequest));
             
         try {
             const response = await fetch('/api/records', {

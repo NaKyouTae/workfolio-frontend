@@ -80,7 +80,6 @@ const RecordGroups = ({
                     group.id === id ? { ...group, title } : group
                 );
                 onUpdateRecordGroups(updatedGroups);
-                console.log('Updated Group:', id, title);
             } else {
                 console.error('Failed to update group');
             }
@@ -140,7 +139,6 @@ const RecordGroups = ({
                     group.id === id ? { ...group, color } : group
                 );
                 onUpdateRecordGroups(updatedGroups);
-                console.log('Updated Group Color:', id, color);
             } else {
                 console.error('Failed to update group color');
             }
@@ -174,7 +172,6 @@ const RecordGroups = ({
             if (response.ok) {
                 const updatedGroups = recordGroups.filter(group => group.id !== id);
                 onUpdateRecordGroups(updatedGroups);
-                console.log('Deleted Group:', id);
             } else {
                 console.error('Failed to delete group');
             }

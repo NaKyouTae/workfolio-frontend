@@ -20,12 +20,7 @@ const RecordGroupMiddle: React.FC<RecordGroupMiddleProps> = ({
     useEffect(() => {
         const allGroups = [...ownedRecordGroups, ...sharedRecordGroups];
         const checkedIds = Array.from(checkedGroups);
-        const allChecked = allGroups.length > 0 && allGroups.every(group => checkedIds.includes(group.id));
-        
-        console.log('RecordGroupMiddle - allGroups:', allGroups);
-        console.log('RecordGroupMiddle - checkedIds:', checkedIds);
-        console.log('RecordGroupMiddle - allChecked:', allChecked);
-        
+        const allChecked = allGroups.length > 0 && allGroups.every(group => checkedIds.includes(group.id));        
         setIsChecked(allChecked);
     }, [ownedRecordGroups, sharedRecordGroups, checkedGroups]); // 실제 데이터 변경을 감지
     

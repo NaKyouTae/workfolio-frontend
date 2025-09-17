@@ -27,10 +27,7 @@ const Header = () => {
             const data = await fetch('/api/logout', { method: HttpMethod.GET, credentials: "include" });
             
             if (data) {
-                console.log('카카오 로그아웃 성공');
-
-                // 유저 정보 클리어
-                userLogout();
+                userLogout(); // 유저 정보 클리어
                 
                 // 로그아웃 후 리다이렉트
                 window.location.href = 'http://localhost:3000';  // 로그아웃 후 리다이렉트
