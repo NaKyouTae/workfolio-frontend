@@ -1,4 +1,5 @@
 import Head from "next/head"
+import "../styles/globals.css"
 import "../../public/assets/css/reset.css"
 import "../../public/assets/css/font.css"
 import "../../public/assets/css/ico.css"

@@ -7,12 +7,20 @@ interface RecordGroupSectionProps {
     title: string;
     defaultExpanded?: boolean;
     recordGroups: RecordGroup[];
+    onUpdateRecordGroups: (updatedGroups: RecordGroup[]) => void;
+    isCreatingGroup?: boolean;
+    onCreateGroup?: (title: string) => void;
+    onCancelCreateGroup?: () => void;
 }
 
 const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
     title,
     defaultExpanded = true,
     recordGroups,
+    onUpdateRecordGroups,
+    isCreatingGroup,
+    onCreateGroup,
+    onCancelCreateGroup,
 }) => {
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
 
@@ -32,7 +40,13 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
                 overflow: 'hidden',
                 transition: 'max-height 0.3s ease-in-out'
             }}>
-                <RecordGroups recordGroups={recordGroups} />
+                <RecordGroups 
+                    recordGroups={recordGroups} 
+                    onUpdateRecordGroups={onUpdateRecordGroups}
+                    isCreatingGroup={isCreatingGroup}
+                    onCreateGroup={onCreateGroup}
+                    onCancelCreateGroup={onCancelCreateGroup}
+                />
             </div>
         </div>
     );

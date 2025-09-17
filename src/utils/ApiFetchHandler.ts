@@ -7,7 +7,8 @@ export async function apiFetchHandler<T>(
     url: string,
     method: HttpMethod = HttpMethod.GET,
     body?: any,
-    accessToken?: string
+    accessToken?: string,
+    additionalHeaders?: Record<string, string>
 ): Promise<NextResponse<T> | NextResponse<{ message: string }>> {
     try {
         const headers: HeadersInit = {
@@ -17,8 +18,12 @@ export async function apiFetchHandler<T>(
         if (accessToken) {
             headers['Authorization'] = `Bearer ${accessToken}`;
         } else {
-            console.log('Unauthorized - Not found Access Token', accessToken)
-            return NextResponse.json({ message: 'Unauthorized - Not found Access Token' }, { status: 401 });
+            console.log('No access token provided - proceeding without authentication');
+        }
+        
+        // 추가 헤더가 있으면 추가
+        if (additionalHeaders) {
+            Object.assign(headers, additionalHeaders);
         }
         
         const response = await fetch(url, {
@@ -34,14 +39,12 @@ export async function apiFetchHandler<T>(
         console.log(status, contentType)
         
         
-        if (status === 401) {
-            // 🔑 토큰 삭제
+        if (status === 401 && accessToken) {
+            console.log('401 error detected, redirecting to login...');
             const cookieStore = await cookies();
-            cookieStore.delete('accessToken'); // 실제 쿠키 이름으로 수정
-            cookieStore.delete('refreshToken'); // 있다면 같이
-            
-            // 🔁 로그인 페이지로 리다이렉트
-            redirect("http://localhost:3000/login")
+            cookieStore.delete('accessToken');
+            cookieStore.delete('refreshToken');
+            redirect("http://localhost:3000/login");
         }
         
         

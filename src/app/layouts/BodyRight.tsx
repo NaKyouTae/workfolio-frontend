@@ -39,6 +39,21 @@ const BodyRight = () => {
                 setLoading(false)
                 return
             }
+
+            // 토큰이 없으면 샘플 데이터 사용
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                console.log('No access token, using sample data');
+                const sampleRecordGroups = createSampleRecordGroups()
+                const sampleRecords = createSampleRecords(sampleRecordGroups)
+                setRecords(sampleRecords)
+                setLoading(false)
+                return
+            }
             
             // recordType에 따라 다른 API URL 구성
             let apiUrl: string
@@ -55,6 +70,11 @@ const BodyRight = () => {
             const res = await fetch(apiUrl, { method: HttpMethod.GET })
             
             if (!res.ok) {
+                if (res.status === 401) {
+                    // 401 에러 시 로그인 페이지로 리다이렉트
+                    window.location.href = '/login';
+                    return;
+                }
                 throw new Error(`HTTP error! status: ${res.status}`)
             }
             

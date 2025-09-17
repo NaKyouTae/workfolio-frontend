@@ -1,4 +1,15 @@
 @import "todo-list.css";
+@import "calendar.css";
+@import "top.css";
+@import "middle.css";
+@import "dropdown.css";
+@import "input.css";
+@import "login.css";
+@import "record-group.css";
+@import "footer.css";
+@import "calendar-header.css";
+@import "font.css";
+@import "button.css";
 
 :root {
   --background: #ffffff;

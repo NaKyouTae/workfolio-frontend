@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup } from '../../../../generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { CreateRecordGroupRequest } from '../../../../generated/create-record-group';
 import { UpdateRecordGroupRequest } from '../../../../generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import ColorSelectModal from './ColorSelectModal';
@@ -274,57 +273,37 @@ const NewRecordGroupItem = ({ onSave, onCancel }: NewRecordGroupItemProps) => {
 };
 
 
-const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
-    const [isCreating, setIsCreating] = useState(false);
+interface RecordGroupsProps {
+    recordGroups: RecordGroup[];
+    onUpdateRecordGroups: (updatedGroups: RecordGroup[]) => void;
+    isCreatingGroup?: boolean;
+    onCreateGroup?: (title: string) => void;
+    onCancelCreateGroup?: () => void;
+}
+
+const RecordGroups = ({ 
+    recordGroups, 
+    onUpdateRecordGroups, 
+    isCreatingGroup, 
+    onCreateGroup, 
+    onCancelCreateGroup 
+}: RecordGroupsProps) => {
     const { checkedGroups, toggleGroup } = useRecordGroupStore();
 
-    // 전역 이벤트 리스너로 새 그룹 추가 요청 감지
-    useEffect(() => {
-        const handleCreateGroupRequest = () => {
-            setIsCreating(true);
-        };
-
-        window.addEventListener('createRecordGroup', handleCreateGroupRequest);
-        return () => {
-            window.removeEventListener('createRecordGroup', handleCreateGroupRequest);
-        };
-    }, []);
-
-    const createRecordGroup = async (title: string) => {
-        try {
-            const message = CreateRecordGroupRequest.create({
-                title: title,
-                color: RecordGroupColor.RED,
-                priority: 1,
-            });
-            
-            const response = await fetch('/api/record-groups', {
-                method: HttpMethod.POST,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: message.title,
-                    color: message.color,
-                    priority: message.priority.toString(),
-                })
-            });
-
-            if (response.ok) {
-                const newGroup = await response.json();
-                setRecordGroups(prev => [...prev, newGroup]);
-                setIsCreating(false);
-                console.log('Created Group:', newGroup);
-            } else {
-                console.error('Failed to create group');
-            }
-        } catch (error) {
-            console.error('Error creating group:', error);
-        }
-    };
 
     const updateRecordGroup = async (id: string, title: string) => {
         try {
+            // 토큰이 없으면 로그인 페이지로 리다이렉트
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                window.location.href = '/login';
+                return;
+            }
+
             // 기존 그룹 정보 찾기
             const existingGroup = recordGroups.find(group => group.id === id);
             if (!existingGroup) {
@@ -353,12 +332,16 @@ const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
                 })
             });
 
+            if (response.status === 401) {
+                window.location.href = '/login';
+                return;
+            }
+
             if (response.ok) {
-                setRecordGroups(prev => 
-                    prev.map(group => 
-                        group.id === id ? { ...group, title } : group
-                    )
+                const updatedGroups = recordGroups.map(group => 
+                    group.id === id ? { ...group, title } : group
                 );
+                onUpdateRecordGroups(updatedGroups);
                 console.log('Updated Group:', id, title);
             } else {
                 console.error('Failed to update group');
@@ -370,6 +353,17 @@ const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
 
     const updateRecordGroupColor = async (id: string, color: string) => {
         try {
+            // 토큰이 없으면 로그인 페이지로 리다이렉트
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                window.location.href = '/login';
+                return;
+            }
+
             // 기존 그룹 정보 찾기
             const existingGroup = recordGroups.find(group => group.id === id);
             if (!existingGroup) {
@@ -398,12 +392,16 @@ const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
                 })
             });
 
+            if (response.status === 401) {
+                window.location.href = '/login';
+                return;
+            }
+
             if (response.ok) {
-                setRecordGroups(prev => 
-                    prev.map(group => 
-                        group.id === id ? { ...group, color } : group
-                    )
+                const updatedGroups = recordGroups.map(group => 
+                    group.id === id ? { ...group, color } : group
                 );
+                onUpdateRecordGroups(updatedGroups);
                 console.log('Updated Group Color:', id, color);
             } else {
                 console.error('Failed to update group color');
@@ -415,12 +413,29 @@ const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
 
     const deleteRecordGroup = async (id: string) => {
         try {
+            // 토큰이 없으면 로그인 페이지로 리다이렉트
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                window.location.href = '/login';
+                return;
+            }
+
             const response = await fetch(`/api/record-groups/${id}`, {
                 method: HttpMethod.DELETE,
             });
 
+            if (response.status === 401) {
+                window.location.href = '/login';
+                return;
+            }
+
             if (response.ok) {
-                setRecordGroups(prev => prev.filter(group => group.id !== id));
+                const updatedGroups = recordGroups.filter(group => group.id !== id);
+                onUpdateRecordGroups(updatedGroups);
                 console.log('Deleted Group:', id);
             } else {
                 console.error('Failed to delete group');
@@ -432,11 +447,15 @@ const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
 
 
     const handleSaveNewGroup = (title: string) => {
-        createRecordGroup(title);
+        if (onCreateGroup) {
+            onCreateGroup(title);
+        }
     };
 
     const handleCancelNewGroup = () => {
-        setIsCreating(false);
+        if (onCancelCreateGroup) {
+            onCancelCreateGroup();
+        }
     };
 
     return (
@@ -452,7 +471,7 @@ const RecordGroups = ({ recordGroups }: { recordGroups: RecordGroup[] }) => {
                     onDelete={deleteRecordGroup}
                 />
             ))}
-            {isCreating && (
+            {isCreatingGroup && (
                 <NewRecordGroupItem
                     onSave={handleSaveNewGroup}
                     onCancel={handleCancelNewGroup}
