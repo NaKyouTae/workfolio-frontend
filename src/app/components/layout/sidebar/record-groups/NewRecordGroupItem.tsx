@@ -1,11 +1,13 @@
+import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import React, { useState } from 'react';
 
 interface NewRecordGroupItemProps {
+    placeholder: string;
     onSave: (title: string) => void;
     onCancel: () => void;
 }
 
-const NewRecordGroupItem = ({ onSave, onCancel }: NewRecordGroupItemProps) => {
+const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupItemProps) => {
     const [title, setTitle] = useState('');
 
     const handleSave = () => {
@@ -24,63 +26,34 @@ const NewRecordGroupItem = ({ onSave, onCancel }: NewRecordGroupItemProps) => {
     };
 
     return (
-        <div className="record-group-item">
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                flex: 1
-            }}>
-                <div style={{
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '4px',
-                    border: '2px solid #ccc',
-                    backgroundColor: '#f8f9fa',
-                    marginRight: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                </div>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    onBlur={handleSave}
-                    autoFocus
-                    placeholder="새 기록장 이름"
-                    style={{
-                        flex: 1,
-                        fontSize: '14px',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        padding: '4px 8px',
-                        outline: 'none'
-                    }}
+        <li>
+            <div className="info">
+                <input 
+                    checked={true} 
+                    type="checkbox" 
+                    id={`new-group`} 
+                    onChange={() => {}}
                 />
+                <label 
+                    htmlFor={`new-group`}
+                    style={{"--group-color": `${RecordGroupColor.RED}` } as React.CSSProperties} 
+                >
+                    <input
+                        placeholder={placeholder}
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                        onBlur={handleSave}
+                        autoFocus
+                    />
+                </label>
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button onClick={handleSave} style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: '4px',
-                    cursor: 'pointer',
-                    color: '#007bff'
-                }}>
-                    ✓
-                </button>
-                <button onClick={onCancel} style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: '4px',
-                    cursor: 'pointer',
-                    color: '#dc3545'
-                }}>
-                    ✕
-                </button>
+            <div className="more">
+                <button className="trans active" style={{ color: '#fff' }} onClick={handleSave}><i className="ic-check" /></button>
+                <button className="trans" style={{ color: '#fff' }} onClick={onCancel}><i className="ic-close" /></button>
             </div>
-        </div>
+        </li>
     );
 };
 

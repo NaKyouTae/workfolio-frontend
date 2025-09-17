@@ -5,25 +5,17 @@ import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { UpdateRecordGroupRequest } from '../../../../../../generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import RecordGroupItem from './RecordGroupItem';
-import NewRecordGroupItem from './NewRecordGroupItem';
 
 interface RecordGroupsProps {
     recordGroups: RecordGroup[];
     onUpdateRecordGroups: (updatedGroups: RecordGroup[]) => void;
-    isCreatingGroup?: boolean;
-    onCreateGroup?: (title: string) => void;
-    onCancelCreateGroup?: () => void;
 }
 
 const RecordGroups = ({ 
     recordGroups, 
-    onUpdateRecordGroups, 
-    isCreatingGroup, 
-    onCreateGroup, 
-    onCancelCreateGroup 
+    onUpdateRecordGroups,
 }: RecordGroupsProps) => {
     const { checkedGroups, toggleGroup } = useRecordGroupStore();
-
 
     const updateRecordGroup = async (id: string, title: string) => {
         try {
@@ -176,39 +168,18 @@ const RecordGroups = ({
         }
     };
 
-
-    const handleSaveNewGroup = (title: string) => {
-        if (onCreateGroup) {
-            onCreateGroup(title);
-        }
-    };
-
-    const handleCancelNewGroup = () => {
-        if (onCancelCreateGroup) {
-            onCancelCreateGroup();
-        }
-    };
-
     return (
-        <>
-            {isCreatingGroup && (
-                <NewRecordGroupItem
-                    onSave={handleSaveNewGroup}
-                    onCancel={handleCancelNewGroup}
-                />
-            )}
-            {recordGroups?.map((group) => (
-                <RecordGroupItem
-                    key={group.id}
-                    group={group}
-                    isChecked={checkedGroups.has(group.id)}
-                    onToggle={toggleGroup}
-                    onUpdate={updateRecordGroup}
-                    onUpdateColor={updateRecordGroupColor}
-                    onDelete={deleteRecordGroup}
-                />
-            ))}
-        </>
+        recordGroups?.map((group) => (
+            <RecordGroupItem
+                key={group.id}
+                group={group}
+                isChecked={checkedGroups.has(group.id)}
+                onToggle={toggleGroup}
+                onUpdate={updateRecordGroup}
+                onUpdateColor={updateRecordGroupColor}
+                onDelete={deleteRecordGroup}
+            />
+        ))
     );
 };
 
