@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 
 interface RecordGroupMiddleProps {
@@ -10,17 +9,25 @@ const RecordGroupMiddle: React.FC<RecordGroupMiddleProps> = ({
     title
 }) => {
     const [isChecked, setIsChecked] = useState(true);
-    const { toggleAllGroups, getAllRecordGroups, getCheckedGroupIds } = useRecordGroupStore();
+    const { 
+        toggleAllGroups,
+        ownedRecordGroups,
+        sharedRecordGroups,
+        checkedGroups
+    } = useRecordGroupStore();
     
     // 모든 그룹이 체크되어 있는지 확인
     useEffect(() => {
-        const allGroups = getAllRecordGroups();
-        const checkedIds = getCheckedGroupIds();
+        const allGroups = [...ownedRecordGroups, ...sharedRecordGroups];
+        const checkedIds = Array.from(checkedGroups);
         const allChecked = allGroups.length > 0 && allGroups.every(group => checkedIds.includes(group.id));
-        console.log('allChecked', allChecked);
-        console.log('allGroups', allGroups);
-        console.log('checkedIds', checkedIds);
-    }, [getAllRecordGroups, getCheckedGroupIds]);
+        
+        console.log('RecordGroupMiddle - allGroups:', allGroups);
+        console.log('RecordGroupMiddle - checkedIds:', checkedIds);
+        console.log('RecordGroupMiddle - allChecked:', allChecked);
+        
+        setIsChecked(allChecked);
+    }, [ownedRecordGroups, sharedRecordGroups, checkedGroups]); // 실제 데이터 변경을 감지
     
     const onToggle = () => {
         toggleAllGroups();
@@ -29,7 +36,10 @@ const RecordGroupMiddle: React.FC<RecordGroupMiddleProps> = ({
 
     return (
         <div className="record-all">
-            <div><input type="checkbox" id="all" onClick={onToggle} /><label htmlFor="all"><p>{title}</p></label></div>
+            <div>
+                <input checked={isChecked} type="checkbox" id="all" onClick={onToggle} />
+                <label htmlFor="all"><p>{title}</p></label>
+            </div>
             <button className="trans"><i className="ic-set" /></button>
         </div>
     );

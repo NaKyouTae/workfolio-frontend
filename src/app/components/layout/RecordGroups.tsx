@@ -5,7 +5,6 @@ import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { SuccessRecordGroupResponse, UpdateRecordGroupRequest } from '../../../../generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import ColorSelectModal from './ColorSelectModal';
-import Image from 'next/image';
 
 interface RecordGroupItemProps {
     group: RecordGroup;
@@ -24,7 +23,6 @@ interface NewRecordGroupItemProps {
 const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, onDelete }: RecordGroupItemProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(group.title);
-    const [showOptions, setShowOptions] = useState(false);
     const [showColorModal, setShowColorModal] = useState(false);
 
     const handleSave = () => {
@@ -76,7 +74,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
     return (
         <li>
             <div className="info">
-                <input type="checkbox"  id={`group${group.id}`} onClick={() => !isEditing && onToggle(group.id)} />
+                <input checked={isChecked} type="checkbox" id={`group${group.id}`} onClick={() => !isEditing && onToggle(group.id)} />
                 <label 
                     htmlFor={`group${group.id}`}
                     style={{"--group-color": `${group.color}` } as React.CSSProperties} 

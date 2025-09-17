@@ -131,7 +131,9 @@ const BodyLeft = () => {
                 // 모든 그룹을 기본적으로 체크된 상태로 초기화
                 const allGroups = [...ownedGroups, ...sharedGroups];
                 if (allGroups.length > 0) {
-                    initializeGroups(allGroups.map((group: RecordGroup) => group.id));
+                    const groupIds = allGroups.map((group: RecordGroup) => group.id);
+                    console.log('Initializing groups with IDs:', groupIds);
+                    initializeGroups(groupIds);
                 }
             } catch (error) {
                 console.error('Error fetching record groups:', error);
