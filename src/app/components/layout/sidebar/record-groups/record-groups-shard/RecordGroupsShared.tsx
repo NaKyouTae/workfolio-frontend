@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import RecordGroupsSharedHeader from './RecordGroupsSharedHeader';
 import RecordGroups from '../RecordGroups';
 import { RecordGroup } from '../../../../../../../generated/common';
-import { CreateRecordGroupRequest } from '../../../../../../../generated/create-record-group';
-import { RecordGroupColor } from '@/enums/RecordGroupColor';
+import { JoinRecordGroupRequest } from '../../../../../../../generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
+import { useUser } from '@/hooks/useUser';
 import NewRecordGroupItem from '../NewRecordGroupItem';
 
 interface RecordGroupSectionProps {
@@ -21,6 +21,8 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
         initializeGroups 
     } = useRecordGroupStore();
     
+    const { user } = useUser();
+    
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
@@ -28,24 +30,34 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
         setIsGroupsExpanded(!isGroupsExpanded);
     };
 
-    // 새 그룹 생성 함수
-    const createRecordGroup = async (title: string) => {
+    // 그룹 참여 함수
+    const createRecordGroup = async (publicId: string) => {
         try {
-            const message = CreateRecordGroupRequest.create({
-                title: title,
-                color: RecordGroupColor.RED,
-                priority: 1,
-            });
+            // 현재 사용자 ID 가져오기
+            if (!user?.id) {
+                console.error('User not found');
+                return;
+            }
             
-            const response = await fetch('/api/record-groups', {
+            const targetWorkerId = user.id;
+            
+            const message = JoinRecordGroupRequest.create({
+                publicId: publicId,
+                targetWorkerId: targetWorkerId,
+            });
+
+            console.log("===============")  
+            console.log(message);
+            console.log("===============")  
+            
+            const response = await fetch('/api/record-groups/join', {
                 method: HttpMethod.POST,
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    title: message.title,
-                    color: message.color,
-                    priority: message.priority.toString(),
+                    publicId: message.publicId,
+                    targetWorkerId: message.targetWorkerId,
                 })
             });
 
@@ -55,14 +67,26 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
             }
 
             if (response.ok) {
-                const newGroup = await response.json();
-                setSharedRecordGroups([...sharedRecordGroups, newGroup]);
-                setIsCreatingGroup(false);
+                const result = await response.json();
+                if (result.isSuccess) {
+                    // 성공 시 그룹 목록 새로고침
+                    const sharedRes = await fetch('/api/record-groups/shared', { 
+                        method: HttpMethod.GET 
+                    });
+                    if (sharedRes.ok) {
+                        const sharedData = await sharedRes.json();
+                        const sharedGroups = sharedData.groups || [];
+                        setSharedRecordGroups(sharedGroups);
+                    }
+                    setIsCreatingGroup(false);
+                } else {
+                    console.error('Failed to join group');
+                }
             } else {
-                console.error('Failed to create group');
+                console.error('Failed to join group');
             }
         } catch (error) {
-            console.error('Error creating group:', error);
+            console.error('Error joining group:', error);
         }
     };
 

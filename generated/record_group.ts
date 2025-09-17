@@ -32,12 +32,8 @@ export interface ListRecordGroupResponse {
 }
 
 export interface JoinRecordGroupRequest {
-  recordGroupId: string;
+  publicId: string;
   targetWorkerId: string;
-}
-
-export interface JoinRecordGroupResponse {
-  isSuccess: boolean;
 }
 
 export interface UpdateRecordGroupRequest {
@@ -45,10 +41,6 @@ export interface UpdateRecordGroupRequest {
   isPublic: boolean;
   color: string;
   priority: number;
-}
-
-export interface SuccessRecordGroupResponse {
-  isSuccess: boolean;
 }
 
 function createBaseCreateRecordGroupRequest(): CreateRecordGroupRequest {
@@ -376,13 +368,13 @@ export const ListRecordGroupResponse: MessageFns<ListRecordGroupResponse> = {
 };
 
 function createBaseJoinRecordGroupRequest(): JoinRecordGroupRequest {
-  return { recordGroupId: "", targetWorkerId: "" };
+  return { publicId: "", targetWorkerId: "" };
 }
 
 export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
   encode(message: JoinRecordGroupRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.recordGroupId !== "") {
-      writer.uint32(10).string(message.recordGroupId);
+    if (message.publicId !== "") {
+      writer.uint32(10).string(message.publicId);
     }
     if (message.targetWorkerId !== "") {
       writer.uint32(18).string(message.targetWorkerId);
@@ -402,7 +394,7 @@ export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
             break;
           }
 
-          message.recordGroupId = reader.string();
+          message.publicId = reader.string();
           continue;
         }
         case 2: {
@@ -424,15 +416,15 @@ export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
 
   fromJSON(object: any): JoinRecordGroupRequest {
     return {
-      recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
+      publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       targetWorkerId: isSet(object.targetWorkerId) ? globalThis.String(object.targetWorkerId) : "",
     };
   },
 
   toJSON(message: JoinRecordGroupRequest): unknown {
     const obj: any = {};
-    if (message.recordGroupId !== "") {
-      obj.recordGroupId = message.recordGroupId;
+    if (message.publicId !== "") {
+      obj.publicId = message.publicId;
     }
     if (message.targetWorkerId !== "") {
       obj.targetWorkerId = message.targetWorkerId;
@@ -445,66 +437,8 @@ export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
   },
   fromPartial<I extends Exact<DeepPartial<JoinRecordGroupRequest>, I>>(object: I): JoinRecordGroupRequest {
     const message = createBaseJoinRecordGroupRequest();
-    message.recordGroupId = object.recordGroupId ?? "";
+    message.publicId = object.publicId ?? "";
     message.targetWorkerId = object.targetWorkerId ?? "";
-    return message;
-  },
-};
-
-function createBaseJoinRecordGroupResponse(): JoinRecordGroupResponse {
-  return { isSuccess: false };
-}
-
-export const JoinRecordGroupResponse: MessageFns<JoinRecordGroupResponse> = {
-  encode(message: JoinRecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.isSuccess !== false) {
-      writer.uint32(8).bool(message.isSuccess);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): JoinRecordGroupResponse {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseJoinRecordGroupResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.isSuccess = reader.bool();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): JoinRecordGroupResponse {
-    return { isSuccess: isSet(object.isSuccess) ? globalThis.Boolean(object.isSuccess) : false };
-  },
-
-  toJSON(message: JoinRecordGroupResponse): unknown {
-    const obj: any = {};
-    if (message.isSuccess !== false) {
-      obj.isSuccess = message.isSuccess;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<JoinRecordGroupResponse>, I>>(base?: I): JoinRecordGroupResponse {
-    return JoinRecordGroupResponse.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<JoinRecordGroupResponse>, I>>(object: I): JoinRecordGroupResponse {
-    const message = createBaseJoinRecordGroupResponse();
-    message.isSuccess = object.isSuccess ?? false;
     return message;
   },
 };
@@ -613,64 +547,6 @@ export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
     message.isPublic = object.isPublic ?? false;
     message.color = object.color ?? "";
     message.priority = object.priority ?? 0;
-    return message;
-  },
-};
-
-function createBaseSuccessRecordGroupResponse(): SuccessRecordGroupResponse {
-  return { isSuccess: false };
-}
-
-export const SuccessRecordGroupResponse: MessageFns<SuccessRecordGroupResponse> = {
-  encode(message: SuccessRecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.isSuccess !== false) {
-      writer.uint32(8).bool(message.isSuccess);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): SuccessRecordGroupResponse {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSuccessRecordGroupResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.isSuccess = reader.bool();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SuccessRecordGroupResponse {
-    return { isSuccess: isSet(object.isSuccess) ? globalThis.Boolean(object.isSuccess) : false };
-  },
-
-  toJSON(message: SuccessRecordGroupResponse): unknown {
-    const obj: any = {};
-    if (message.isSuccess !== false) {
-      obj.isSuccess = message.isSuccess;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SuccessRecordGroupResponse>, I>>(base?: I): SuccessRecordGroupResponse {
-    return SuccessRecordGroupResponse.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<SuccessRecordGroupResponse>, I>>(object: I): SuccessRecordGroupResponse {
-    const message = createBaseSuccessRecordGroupResponse();
-    message.isSuccess = object.isSuccess ?? false;
     return message;
   },
 };

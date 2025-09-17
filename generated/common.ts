@@ -204,6 +204,10 @@ export interface RecordGroup {
   updatedAt: number;
 }
 
+export interface SuccessResponse {
+  isSuccess: boolean;
+}
+
 function createBaseWorker(): Worker {
   return { id: "", name: "", nickName: "", createdAt: 0, updatedAt: 0 };
 }
@@ -1997,6 +2001,64 @@ export const RecordGroup: MessageFns<RecordGroup> = {
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
+    return message;
+  },
+};
+
+function createBaseSuccessResponse(): SuccessResponse {
+  return { isSuccess: false };
+}
+
+export const SuccessResponse: MessageFns<SuccessResponse> = {
+  encode(message: SuccessResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.isSuccess !== false) {
+      writer.uint32(8).bool(message.isSuccess);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SuccessResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSuccessResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isSuccess = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SuccessResponse {
+    return { isSuccess: isSet(object.isSuccess) ? globalThis.Boolean(object.isSuccess) : false };
+  },
+
+  toJSON(message: SuccessResponse): unknown {
+    const obj: any = {};
+    if (message.isSuccess !== false) {
+      obj.isSuccess = message.isSuccess;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SuccessResponse>, I>>(base?: I): SuccessResponse {
+    return SuccessResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SuccessResponse>, I>>(object: I): SuccessResponse {
+    const message = createBaseSuccessResponse();
+    message.isSuccess = object.isSuccess ?? false;
     return message;
   },
 };
