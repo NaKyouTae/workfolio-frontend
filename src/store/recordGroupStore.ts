@@ -48,7 +48,11 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
         }),
     
     initializeGroups: (groupIds: string[]) => 
-        set({ checkedGroups: new Set(groupIds) }),
+        set((state) => {
+            const newCheckedGroups = new Set(state.checkedGroups);
+            groupIds.forEach(id => newCheckedGroups.add(id));
+            return { checkedGroups: newCheckedGroups };
+        }),
     
     clearAllGroups: () => 
         set({ checkedGroups: new Set() }),

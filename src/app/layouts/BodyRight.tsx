@@ -1,16 +1,16 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {Record} from "../../../generated/common"
-import MonthlyCalendarV2 from '../components/layout/calendar/monthly/MonthlyCalendarV2'
 import ListCalendar from '../components/layout/calendar/list/ListCalendar'
 import CalendarHeader from '../components/layout/calendar/CalendarHeader'
 import { createSampleRecordGroups, createSampleRecords } from '../../utils/sampleData'
 import HttpMethod from '../../enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
-import MonthlyCalendar from '../components/layout/calendar/monthly/MonthlyCalendar'
+import MonthlyCalendarV2 from '../components/layout/calendar/monthly/MonthlyCalendarV2'
+import MonthlyCalendarV1 from '../components/layout/calendar/monthly/MonthlyCalendarV1'
 
 const BodyRight = () => {
     const [records, setRecords] = useState<Record[]>([])
-    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('monthly')
+    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('weekly')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     
@@ -38,7 +38,7 @@ const BodyRight = () => {
             
             // recordType에 따라 다른 API URL 구성
             let apiUrl: string
-            if (recordType === 'weekly') {
+            if (recordType === 'list') {
                 // 주간 레코드 조회 (현재 주차 계산)
                 const firstDay = new Date(targetYear, targetMonth - 1, 1)
                 const currentWeek = Math.ceil((firstDay.getDay() + new Date().getDate()) / 7)
@@ -216,7 +216,7 @@ const BodyRight = () => {
                         records={filteredRecords}
                     />
                 ) : (
-                    <MonthlyCalendar 
+                    <MonthlyCalendarV1
                         initialDate={date} 
                         records={filteredRecords}
                     />

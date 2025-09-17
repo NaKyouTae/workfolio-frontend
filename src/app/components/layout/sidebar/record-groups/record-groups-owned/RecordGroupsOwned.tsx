@@ -92,12 +92,10 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                 
                 // 소유한 레코드 그룹 설정
                 const ownedGroups = ownedData.groups || [];
-                if (ownedGroups.length > 0) {
-                    setOwnedRecordGroups(ownedGroups);
-                    // 소유한 그룹들을 기본적으로 체크된 상태로 초기화
-                    const groupIds = ownedGroups.map((group: RecordGroup) => group.id);
-                    initializeGroups(groupIds);
-                }
+                setOwnedRecordGroups(ownedGroups);
+                // 소유한 그룹들을 기본적으로 체크된 상태로 초기화
+                const groupIds = ownedGroups.map((group: RecordGroup) => group.id);
+                initializeGroups(groupIds);
             } catch (error) {
                 console.error('Error fetching record groups:', error);
             }

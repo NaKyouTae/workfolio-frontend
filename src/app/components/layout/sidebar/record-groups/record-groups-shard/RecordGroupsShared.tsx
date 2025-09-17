@@ -113,12 +113,10 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                 
                 // 공유받은 레코드 그룹 설정
                 const sharedGroups = sharedData.groups || [];
-                if (sharedGroups.length > 0) {
-                    setSharedRecordGroups(sharedGroups);
-                    // 공유받은 그룹들을 기본적으로 체크된 상태로 초기화
-                    const groupIds = sharedGroups.map((group: RecordGroup) => group.id);
-                    initializeGroups(groupIds);
-                }
+                setSharedRecordGroups(sharedGroups);
+                // 공유받은 그룹들을 기본적으로 체크된 상태로 초기화
+                const groupIds = sharedGroups.map((group: RecordGroup) => group.id);
+                initializeGroups(groupIds);
             } catch (error) {
                 console.error('Error fetching record groups:', error);
             }

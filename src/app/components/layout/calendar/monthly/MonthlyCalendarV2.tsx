@@ -57,7 +57,14 @@ export default function MonthlyCalendarV2({ initialDate, records }: MonthlyCalen
                                     </div>
                                 )}
                                 {/* 여기에 스케줄을 추가할 수 있습니다 */}
-                                <CalendarDayItemV2 key={dayIndex} weeks={weeks} day={day} records={records} />
+                                <CalendarDayItemV2 
+                                    key={dayIndex} 
+                                    weeks={weeks} 
+                                    day={day} 
+                                    records={records}
+                                    weekIndex={weekIndex}
+                                    dayIndex={dayIndex}
+                                />
                             </td>
                         ))}
                     </tr>
