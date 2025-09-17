@@ -1,11 +1,10 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import { createDateModel, DateModel } from "@/app/models/DateModel"
 import { Record } from "../../../../../../generated/common"
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
-import CalendarHeader from '../CalendarHeader'
 import CalendarWeekdays from '../CalendarWeekdays'
 import { CalendarDayItem } from '../CalendarDayItem'
 import { ContinuousEventElements } from '../ContinuousEventElements'
@@ -15,8 +14,6 @@ import styles from '@/styles/MonthlyCalendarV2.module.css'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/SEOUL')
-
-type RecordType = 'weekly' | 'monthly' | 'list'
 
 interface MonthlyCalendarProps {
     initialDate: Date
@@ -31,7 +28,6 @@ export default function MonthlyCalendar({ initialDate, records }: MonthlyCalenda
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
     })
-    const [recordType, setRecordType] = useState<RecordType>('monthly')
     const { checkedGroups } = useRecordGroupStore()
 
     // 커스텀 훅 사용
@@ -40,48 +36,11 @@ export default function MonthlyCalendar({ initialDate, records }: MonthlyCalenda
     const singleDayEventsByDate = useSingleDayEventsByDate(calendarEvents)
     const multiDayEvents = useMultiDayEvents(calendarEvents)
 
-    // 이벤트 핸들러들
-    const handleTypeChange = useCallback((type: string) => {
-        setRecordType(type as RecordType)
-    }, [])
-
-    const handlePreviousMonth = useCallback(() => {
-        setDate(prev => {
-            const newDate = dayjs(`${prev.year}-${(prev.month + 1).toString().padStart(2, '0')}-01`)
-                .subtract(1, 'month')
-            return createDateModel(newDate.year(), newDate.month(), newDate.date(), true)
-        })
-    }, [])
-
-    const handleNextMonth = useCallback(() => {
-        setDate(prev => {
-            const newDate = dayjs(`${prev.year}-${(prev.month + 1).toString().padStart(2, '0')}-01`)
-                .add(1, 'month')
-            return createDateModel(newDate.year(), newDate.month(), newDate.date(), true)
-        })
-    }, [])
-
-    const handleTodayMonth = useCallback(() => {
-        const today = new Date()
-        setDate(createDateModel(today.getFullYear(), today.getMonth(), today.getDate(), true))
-    }, [])
-
     // 오늘 날짜 확인
     const today = dayjs().format('YYYYMMDD')
 
-    // DateModel을 Date로 변환 (DateModel의 month는 0부터 시작)
-    const dateAsDate = new Date(date.year, date.month, date.day)
-
     return (
         <div className={styles.calendarContainer}>
-            <CalendarHeader 
-                date={dateAsDate}
-                recordType={recordType}
-                onTypeChange={handleTypeChange}
-                onPreviousMonth={handlePreviousMonth}
-                onNextMonth={handleNextMonth}
-                onTodayMonth={handleTodayMonth}
-            />
             <CalendarWeekdays />
             <div className={styles.calendarContent}>
                 <div className={`${styles.monthlyCalendar} ${styles.calendarDaysContainer}`}>

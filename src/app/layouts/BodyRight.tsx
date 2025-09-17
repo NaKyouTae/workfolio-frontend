@@ -6,10 +6,11 @@ import CalendarHeader from '../components/layout/calendar/CalendarHeader'
 import { createSampleRecordGroups, createSampleRecords } from '../../utils/sampleData'
 import HttpMethod from '../../enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
+import MonthlyCalendar from '../components/layout/calendar/monthly/MonthlyCalendar'
 
 const BodyRight = () => {
     const [records, setRecords] = useState<Record[]>([])
-    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('list')
+    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('monthly')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     
@@ -209,8 +210,13 @@ const BodyRight = () => {
                         onAddRecord={handleAddRecordForDate}
                         onRecordClick={handleRecordClick}
                     />
-                ) : (
+                ) : recordType === 'monthly' ? (
                     <MonthlyCalendarV2 
+                        initialDate={date} 
+                        records={filteredRecords}
+                    />
+                ) : (
+                    <MonthlyCalendar 
                         initialDate={date} 
                         records={filteredRecords}
                     />
