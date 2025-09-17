@@ -6,9 +6,7 @@ import {CreateRecordGroupResponse} from "../../../../generated/create-record-gro
 
 export async function POST(req: Request) {
     try {
-        const requestData = await req.json();
-        console.log('daga', requestData);
-        
+        const requestData = await req.json();        
         const accessToken = await getCookie('accessToken');
         
         // accessToken이 없으면 401 응답 반환

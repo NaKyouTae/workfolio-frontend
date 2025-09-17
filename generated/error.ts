@@ -10,33 +10,33 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
 export interface ErrorResponse {
-  /** HttpStatus를 int32로 변환 */
-  status: number;
-  /** 메시지 */
-  message: string;
-  /** 타입 */
-  type: string;
-  /** 타임스탬프 (밀리초 단위) */
   timestamp: number;
+  status: string;
+  code: number;
+  message: string;
+  path: string;
 }
 
 function createBaseErrorResponse(): ErrorResponse {
-  return { status: 0, message: "", type: "", timestamp: 0 };
+  return { timestamp: 0, status: "", code: 0, message: "", path: "" };
 }
 
 export const ErrorResponse: MessageFns<ErrorResponse> = {
   encode(message: ErrorResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.status !== 0) {
-      writer.uint32(8).int32(message.status);
+    if (message.timestamp !== 0) {
+      writer.uint32(8).uint64(message.timestamp);
+    }
+    if (message.status !== "") {
+      writer.uint32(18).string(message.status);
+    }
+    if (message.code !== 0) {
+      writer.uint32(24).uint32(message.code);
     }
     if (message.message !== "") {
-      writer.uint32(18).string(message.message);
+      writer.uint32(34).string(message.message);
     }
-    if (message.type !== "") {
-      writer.uint32(26).string(message.type);
-    }
-    if (message.timestamp !== 0) {
-      writer.uint32(32).int64(message.timestamp);
+    if (message.path !== "") {
+      writer.uint32(42).string(message.path);
     }
     return writer;
   },
@@ -53,7 +53,7 @@ export const ErrorResponse: MessageFns<ErrorResponse> = {
             break;
           }
 
-          message.status = reader.int32();
+          message.timestamp = longToNumber(reader.uint64());
           continue;
         }
         case 2: {
@@ -61,23 +61,31 @@ export const ErrorResponse: MessageFns<ErrorResponse> = {
             break;
           }
 
-          message.message = reader.string();
+          message.status = reader.string();
           continue;
         }
         case 3: {
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.type = reader.string();
+          message.code = reader.uint32();
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.timestamp = longToNumber(reader.int64());
+          message.message = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.path = reader.string();
           continue;
         }
       }
@@ -91,26 +99,30 @@ export const ErrorResponse: MessageFns<ErrorResponse> = {
 
   fromJSON(object: any): ErrorResponse {
     return {
-      status: isSet(object.status) ? globalThis.Number(object.status) : 0,
-      message: isSet(object.message) ? globalThis.String(object.message) : "",
-      type: isSet(object.type) ? globalThis.String(object.type) : "",
       timestamp: isSet(object.timestamp) ? globalThis.Number(object.timestamp) : 0,
+      status: isSet(object.status) ? globalThis.String(object.status) : "",
+      code: isSet(object.code) ? globalThis.Number(object.code) : 0,
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
+      path: isSet(object.path) ? globalThis.String(object.path) : "",
     };
   },
 
   toJSON(message: ErrorResponse): unknown {
     const obj: any = {};
-    if (message.status !== 0) {
-      obj.status = Math.round(message.status);
+    if (message.timestamp !== 0) {
+      obj.timestamp = Math.round(message.timestamp);
+    }
+    if (message.status !== "") {
+      obj.status = message.status;
+    }
+    if (message.code !== 0) {
+      obj.code = Math.round(message.code);
     }
     if (message.message !== "") {
       obj.message = message.message;
     }
-    if (message.type !== "") {
-      obj.type = message.type;
-    }
-    if (message.timestamp !== 0) {
-      obj.timestamp = Math.round(message.timestamp);
+    if (message.path !== "") {
+      obj.path = message.path;
     }
     return obj;
   },
@@ -120,10 +132,11 @@ export const ErrorResponse: MessageFns<ErrorResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<ErrorResponse>, I>>(object: I): ErrorResponse {
     const message = createBaseErrorResponse();
-    message.status = object.status ?? 0;
-    message.message = object.message ?? "";
-    message.type = object.type ?? "";
     message.timestamp = object.timestamp ?? 0;
+    message.status = object.status ?? "";
+    message.code = object.code ?? 0;
+    message.message = object.message ?? "";
+    message.path = object.path ?? "";
     return message;
   },
 };

@@ -1,5 +1,4 @@
-import React, { useRef } from 'react';
-import Image from 'next/image';
+import React from 'react';
 
 interface RecordGroupHeaderProps {
     title: string;

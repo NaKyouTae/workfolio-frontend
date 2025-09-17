@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import styles from './ColorSelectModal.module.css';
 import { useRecordGroupCreateStore } from '@/store/recordGroupCreateStore';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
@@ -20,7 +20,7 @@ const ColorSelectModal: React.FC<ColorSelectModalProps> = ({}) => {
                 <div className={styles.colorGrid}>
                     {COLORS.map((color, index) => (
                         <button
-                            key={index}
+                            key={`modal-color-${color}-${index}`}
                             type="button"
                             className={`${styles.colorButton} ${
                                 selectedColor === color ? styles.selected : ''
@@ -31,7 +31,12 @@ const ColorSelectModal: React.FC<ColorSelectModalProps> = ({}) => {
                             }}
                         >
                             {selectedColor === color && (
-                                <span className={styles.checkmark}>✓</span>
+                                <span 
+                                    key={`modal-checkmark-${color}-${index}`}
+                                    className={styles.checkmark}
+                                >
+                                    ✓
+                                </span>
                             )}
                         </button>
                     ))}

@@ -35,15 +35,17 @@ const RecordGroupSection: React.FC<RecordGroupSectionProps> = ({
                 isGroupsExpanded={isGroupsExpanded}
                 onToggleGroups={handleToggleGroups}
             />
-            <ul className="record-group-list">
-                <RecordGroups 
-                    recordGroups={recordGroups} 
-                    onUpdateRecordGroups={onUpdateRecordGroups}
-                    isCreatingGroup={isCreatingGroup}
-                    onCreateGroup={onCreateGroup}
-                    onCancelCreateGroup={onCancelCreateGroup}
-                />
-            </ul>
+            {isGroupsExpanded && (
+                <ul className="record-group-list">
+                    <RecordGroups 
+                        recordGroups={recordGroups} 
+                        onUpdateRecordGroups={onUpdateRecordGroups}
+                        isCreatingGroup={isCreatingGroup}
+                        onCreateGroup={onCreateGroup}
+                        onCancelCreateGroup={onCancelCreateGroup}
+                    />
+                </ul>
+            )}
         </div>
     );
 };

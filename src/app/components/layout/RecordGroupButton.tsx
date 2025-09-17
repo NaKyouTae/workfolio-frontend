@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import RecordCreateModal from './modal/RecordCreateModal';
 
-interface RecordGroupButtonProps {
-}
+interface RecordGroupButtonProps {}
 
 const RecordGroupButton: React.FC<RecordGroupButtonProps> = ({}) => {
     const [isRecordCreateModalOpen, setIsRecordCreateModalOpen] = useState(false);

@@ -17,8 +17,6 @@ export async function apiFetchHandler<T>(
         
         if (accessToken) {
             headers['Authorization'] = `Bearer ${accessToken}`;
-        } else {
-            console.log('No access token provided - proceeding without authentication');
         }
         
         // 추가 헤더가 있으면 추가
@@ -35,12 +33,8 @@ export async function apiFetchHandler<T>(
         
         const status = response.status
         const contentType = response.headers.get('content-type');
-        
-        console.log(status, contentType)
-        
-        
+
         if (status === 401 && accessToken) {
-            console.log('401 error detected, redirecting to login...');
             const cookieStore = await cookies();
             cookieStore.delete('accessToken');
             cookieStore.delete('refreshToken');

@@ -172,4 +172,21 @@
 
 .colorPipeline:hover {
     transform: scale(1.1);
+}
+
+.loadingText {
+    padding: 8px 12px;
+    color: #666;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.noOptionsText {
+    padding: 8px 12px;
+    color: #999;
+    font-style: italic;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
 } 

@@ -8,10 +8,18 @@ const Header = () => {
     const { setView } = useViewStore();
     const { user, fetchUser, logout: userLogout } = useUser();
     
-    // 컴포넌트 마운트 시 유저 정보 가져오기
+    // 로그인 상태 확인 및 유저 정보 가져오기
     useEffect(() => {
-        fetchUser();
-    }, [fetchUser]); // fetchUser는 useCallback으로 메모이제이션됨
+        const accessToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')[1];
+        
+        // 로그인한 경우에만 유저 정보 가져오기
+        if (accessToken) {
+            fetchUser();
+        }
+    }, [fetchUser]);
     
     const logout = async () => {
         try {
@@ -19,10 +27,7 @@ const Header = () => {
             const data = await fetch('/api/logout', { method: HttpMethod.GET, credentials: "include" });
             
             if (data) {
-                console.log('카카오 로그아웃 성공');
-
-                // 유저 정보 클리어
-                userLogout();
+                userLogout(); // 유저 정보 클리어
                 
                 // 로그아웃 후 리다이렉트
                 window.location.href = 'http://localhost:3000';  // 로그아웃 후 리다이렉트
@@ -37,11 +42,18 @@ const Header = () => {
     return (
         <header>
             <h1 onClick={() => setView('dashboard')}><Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} /></h1>
-            <ul>
-                <li>{user ? `${user.nickName} 님 반가워요!` : '잠시만요, 준비 중이에요'}</li>
+            {user? (
+                <ul>
+                <li>{`${user.nickName} 님 반가워요!`}</li>
                 <li><a onClick={() => setView('mypage')}>마이페이지</a></li>
                 <li><a onClick={logout}>로그아웃</a></li>
             </ul>
+            ) : (
+                <ul>
+                    <li>환영합니다. <a href="/login" style={{ color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}>로그인</a>을 해보세요~</li>
+                </ul>
+            )}
+            
         </header>
     )
 }

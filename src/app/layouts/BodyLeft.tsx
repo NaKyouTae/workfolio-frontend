@@ -62,7 +62,6 @@ const BodyLeft = () => {
                 const newGroup = await response.json();
                 setOwnedRecordGroups([...ownedRecordGroups, newGroup]);
                 setIsCreatingGroup(false);
-                console.log('Created Group:', newGroup);
             } else {
                 console.error('Failed to create group');
             }
@@ -93,7 +92,6 @@ const BodyLeft = () => {
                     ?.split('=')[1];
                 
                 if (!accessToken) {
-                    console.log('No access token, using sample data');
                     const sampleRecordGroups = createSampleRecordGroups();
                     setOwnedRecordGroups(sampleRecordGroups);
                     setSharedRecordGroups([]);
@@ -131,7 +129,8 @@ const BodyLeft = () => {
                 // 모든 그룹을 기본적으로 체크된 상태로 초기화
                 const allGroups = [...ownedGroups, ...sharedGroups];
                 if (allGroups.length > 0) {
-                    initializeGroups(allGroups.map((group: RecordGroup) => group.id));
+                    const groupIds = allGroups.map((group: RecordGroup) => group.id);
+                    initializeGroups(groupIds);
                 }
             } catch (error) {
                 console.error('Error fetching record groups:', error);

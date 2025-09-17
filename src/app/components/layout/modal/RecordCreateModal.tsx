@@ -37,6 +37,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 try {
                     const res = await fetch('/api/record-groups/editable', { method: HttpMethod.GET });
                     const data = await res.json();
+
                     if (data != null) {
                         const options = data.groups.map((res: RecordGroup) => ({
                             value: res.id,
@@ -65,8 +66,6 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             title: title,
             memo: memo,
         });
-
-        console.log(JSON.stringify(createRecordRequest));
             
         try {
             const response = await fetch('/api/records', {
