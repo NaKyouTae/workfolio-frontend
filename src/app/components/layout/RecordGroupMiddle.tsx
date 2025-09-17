@@ -37,7 +37,12 @@ const RecordGroupMiddle: React.FC<RecordGroupMiddleProps> = ({
     return (
         <div className="record-all">
             <div>
-                <input checked={isChecked} type="checkbox" id="all" onClick={onToggle} />
+                <input 
+                    checked={isChecked} 
+                    type="checkbox" 
+                    id="all" 
+                    onChange={onToggle} 
+                />
                 <label htmlFor="all"><p>{title}</p></label>
             </div>
             <button className="trans"><i className="ic-set" /></button>

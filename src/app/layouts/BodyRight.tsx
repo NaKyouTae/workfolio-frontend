@@ -50,7 +50,11 @@ const BodyRight = () => {
                 console.log('No access token, using sample data');
                 const sampleRecordGroups = createSampleRecordGroups()
                 const sampleRecords = createSampleRecords(sampleRecordGroups)
-                setRecords(sampleRecords)
+                // 체크된 그룹 ID에 따라 필터링
+                const filteredRecords = sampleRecords.filter((record: Record) => 
+                    currentCheckedGroupIds.includes(record.recordGroup?.id || '')
+                )
+                setRecords(filteredRecords)
                 setLoading(false)
                 return
             }
@@ -97,21 +101,20 @@ const BodyRight = () => {
             // 에러 발생 시 샘플 데이터 사용
             const sampleRecordGroups = createSampleRecordGroups()
             const sampleRecords = createSampleRecords(sampleRecordGroups)
-            setRecords(sampleRecords)
+            // 체크된 그룹 ID에 따라 필터링
+            const filteredRecords = sampleRecords.filter((record: Record) => 
+                checkedGroupIds.includes(record.recordGroup?.id || '')
+            )
+            setRecords(filteredRecords)
         } finally {
             setLoading(false)
         }
-    }, [getCheckedGroupIds, recordType])
+    }, [getCheckedGroupIds, recordType, checkedGroupIds])
 
     // 레코드 조회 useEffect - 의존성 배열 수정
     useEffect(() => {
         fetchRecords()
-    }, [recordType]) // recordType 변경 시 자동 리로드
-    
-    // checkedGroupIds 변경 시 별도 useEffect로 처리
-    useEffect(() => {
-        fetchRecords()
-    }, [checkedGroupIds.join(',')]) // checkedGroupIds 변경 시 자동 리로드
+    }, [fetchRecords]) // fetchRecords 변경 시 자동 리로드
 
     // 이벤트 핸들러들
     const handleTypeChange = useCallback((type: 'weekly' | 'monthly' | 'list') => {

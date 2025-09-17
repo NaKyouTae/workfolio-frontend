@@ -85,7 +85,12 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
     return (
         <li>
             <div className="info">
-                <input checked={isChecked} type="checkbox" id={`group${group.id}`} onClick={() => !isEditing && onToggle(group.id)} />
+                <input 
+                    checked={isChecked} 
+                    type="checkbox" 
+                    id={`group${group.id}`} 
+                    onChange={() => !isEditing && onToggle(group.id)}
+                />
                 <label 
                     htmlFor={`group${group.id}`}
                     style={{"--group-color": `${group.color}` } as React.CSSProperties} 
