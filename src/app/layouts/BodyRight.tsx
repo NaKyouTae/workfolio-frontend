@@ -108,16 +108,15 @@ const BodyRight = () => {
     }, [loadApiData, getCheckedGroupIds])
 
 
-    // 체크박스 변경 시 샘플 데이터 로드
+    // 체크박스 변경 시 데이터 로드 (로그인 상태에 따라 샘플데이터 또는 API)
     useEffect(() => {
         const accessToken = document.cookie
             .split('; ')
             .find(row => row.startsWith('accessToken='))
             ?.split('=')[1];
         
-        // 로그인하지 않은 경우에만 샘플 데이터 로드
         if (!accessToken) {
-            // 직접 샘플데이터 로드 및 필터링
+            // 로그인하지 않은 경우 - 샘플 데이터 로드
             const sampleRecordGroups = createSampleRecordGroups()
             const sampleRecords = createSampleRecords(sampleRecordGroups)
             
@@ -129,8 +128,11 @@ const BodyRight = () => {
             
             setRecords(filteredRecords)
             setError(null)
+        } else {
+            // 로그인한 경우 - API 데이터 로드
+            loadApiData()
         }
-    }, [checkedGroupIdsString, getCheckedGroupIds]) // 체크박스 변경 시에만 실행
+    }, [checkedGroupIdsString, getCheckedGroupIds, loadApiData]) // 체크박스 변경 시에만 실행
 
     // 레코드 조회 useEffect - 의존성 배열 수정
     useEffect(() => {

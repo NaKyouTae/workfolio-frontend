@@ -8,10 +8,18 @@ const Header = () => {
     const { setView } = useViewStore();
     const { user, fetchUser, logout: userLogout } = useUser();
     
-    // 컴포넌트 마운트 시 유저 정보 가져오기
+    // 로그인 상태 확인 및 유저 정보 가져오기
     useEffect(() => {
-        fetchUser();
-    }, [fetchUser]); // fetchUser는 useCallback으로 메모이제이션됨
+        const accessToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')[1];
+        
+        // 로그인한 경우에만 유저 정보 가져오기
+        if (accessToken) {
+            fetchUser();
+        }
+    }, [fetchUser]);
     
     const logout = async () => {
         try {
