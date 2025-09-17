@@ -107,7 +107,6 @@ a {
 }
 
 a:visited, a:hover, a:active, a:focus {
-    color: var(--black);
     text-decoration: none;
 }
 
