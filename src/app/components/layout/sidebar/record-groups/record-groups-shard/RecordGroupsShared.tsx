@@ -6,6 +6,7 @@ import { JoinRecordGroupRequest } from '../../../../../../../generated/record_gr
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { useUser } from '@/hooks/useUser';
+import { createSampleRecordGroups } from '../../../../../../utils/sampleData';
 import NewRecordGroupItem from '../NewRecordGroupItem';
 
 interface RecordGroupSectionProps {
@@ -45,10 +46,6 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                 publicId: publicId,
                 targetWorkerId: targetWorkerId,
             });
-
-            console.log("===============")  
-            console.log(message);
-            console.log("===============")  
             
             const response = await fetch('/api/record-groups/join', {
                 method: HttpMethod.POST,
@@ -60,11 +57,6 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                     targetWorkerId: message.targetWorkerId,
                 })
             });
-
-            if (response.status === 401) {
-                window.location.href = '/login';
-                return;
-            }
 
             if (response.ok) {
                 const result = await response.json();
@@ -105,7 +97,10 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                     ?.split('=')[1];
                 
                 if (!accessToken) {
-                    setSharedRecordGroups([]);
+                    // 로그인이 안되어 있으면 샘플 데이터 사용
+                    const sampleRecordGroups = createSampleRecordGroups();
+                    setSharedRecordGroups(sampleRecordGroups);
+                    initializeGroups(sampleRecordGroups.map((group: RecordGroup) => group.id));
                     return;
                 }
 

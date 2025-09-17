@@ -192,6 +192,78 @@ export const createSampleRecords = (recordGroups: RecordGroup[]): Record[] => {
             recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
             createdAt: Date.now(),
             updatedAt: Date.now()
+        },
+        // 3일 기간 데이터
+        {
+            id: '11',
+            title: '부산 출장 (3일)',
+            type: Record_RecordType.DAY,
+            description: '부산 고객사 방문 및 현장 점검 (3일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-22`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-24`).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        // 5일 기간 데이터
+        {
+            id: '12',
+            title: '리브랜딩 프로젝트 집중 작업 (5일)',
+            type: Record_RecordType.DAY,
+            description: '리브랜딩 프로젝트 핵심 작업 기간 (5일간 집중)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-25`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-29`).valueOf(),
+            recordGroup: recordGroups[1], // 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        // 7일 기간 데이터
+        {
+            id: '13',
+            title: '연수 및 교육 (7일)',
+            type: Record_RecordType.DAY,
+            description: '신기술 연수 및 교육 과정 참여 (7일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-01`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-07`).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        // 10일 기간 데이터
+        {
+            id: '14',
+            title: '해외 출장 (10일)',
+            type: Record_RecordType.DAY,
+            description: '싱가포르 지사 방문 및 글로벌 미팅 (10일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-10`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-19`).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        // 추가 3일 기간 데이터
+        {
+            id: '15',
+            title: '개인 휴가 (3일)',
+            type: Record_RecordType.DAY,
+            description: '가족과 함께하는 개인 휴가 (3일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-25`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-27`).valueOf(),
+            recordGroup: recordGroups[3], // 개인 일정
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        // 추가 5일 기간 데이터
+        {
+            id: '16',
+            title: '워크폴리오 개발 스프린트 (5일)',
+            type: Record_RecordType.DAY,
+            description: '워크폴리오 사이드 프로젝트 집중 개발 기간 (5일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 3).toString().padStart(2, '0')}-01`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 3).toString().padStart(2, '0')}-05`).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
         }
     ]
 }

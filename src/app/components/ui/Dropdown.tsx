@@ -41,9 +41,9 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
             </button>
             {isOpen && (
                 <ul className={styles.dropdownMenu}>
-                    {options.map((option) => (
+                    {options.map((option, index) => (
                         <li
-                            key={option.value}
+                            key={`${option.value}-${index}`}
                             className={`${styles.dropdownItem} ${
                                 option.value === selectedOption ? styles.selected : ''
                             }`}

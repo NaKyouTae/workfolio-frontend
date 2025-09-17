@@ -39,7 +39,16 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     const data = await res.json();
 
                     if (data != null) {
-                        const options = data.groups.map((res: RecordGroup) => ({
+                        // 중복된 ID를 제거하고 고유한 옵션만 생성
+                        const uniqueGroups = data.groups.reduce((acc: RecordGroup[], current: RecordGroup) => {
+                            const existingGroup = acc.find(group => group.id === current.id);
+                            if (!existingGroup) {
+                                acc.push(current);
+                            }
+                            return acc;
+                        }, []);
+                        
+                        const options = uniqueGroups.map((res: RecordGroup) => ({
                             value: res.id,
                             label: res.title,
                             color: res.color
