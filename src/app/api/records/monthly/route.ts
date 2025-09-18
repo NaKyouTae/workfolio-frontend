@@ -2,7 +2,7 @@ import { getCookie } from "@/utils/cookie"
 import { apiFetchHandler } from "@/utils/ApiFetchHandler"
 import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
-import { Record } from "../../../../../generated/common"
+import { Record } from "@/generated/common"
 
 /**
  * 월간 레코드 조회 API

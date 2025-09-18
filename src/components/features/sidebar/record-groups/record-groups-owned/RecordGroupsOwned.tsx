@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import RecordGroupsOwnedHeader from './RecordGroupsOwnedHeader';
 import RecordGroups from '../RecordGroups';
-import { RecordGroup } from '../../../../../../../generated/common';
-import { CreateRecordGroupRequest } from '../../../../../../../generated/create-record-group';
+import { RecordGroup } from '@/generated/common';
+import { CreateRecordGroupRequest } from '@/generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { createSampleRecordGroups } from '../../../../../../utils/sampleData';
+import { createSampleRecordGroups } from '@/utils/sampleData';
 import NewRecordGroupItem from '../NewRecordGroupItem';
 
 interface RecordGroupSectionProps {

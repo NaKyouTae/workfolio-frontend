@@ -1,6 +1,8 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
-import CareerManagement from './layout/career/CareerManagement';
+import CareerManagement from '@/components/features/career/CareerManagement';
 
 const Mypage: React.FC = () => {
     const { user, updateUserNickname, deleteAccount, isLoading } = useUser();

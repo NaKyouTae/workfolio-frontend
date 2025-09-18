@@ -2,7 +2,7 @@ import { getCookie } from "@/utils/cookie"
 import { apiFetchHandler } from "@/utils/ApiFetchHandler"
 import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
-import { WorkerUpdateNickNameResponse } from "../../../../../generated/worker"
+import { WorkerUpdateNickNameResponse } from "@/generated/worker"
 
 export async function PUT(
     request: Request,

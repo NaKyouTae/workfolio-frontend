@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { createDateModel, DateModel } from "@/app/models/DateModel"
+import { createDateModel, DateModel } from "@/models/DateModel"
 import { Record } from "../../../../../../generated/common"
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'

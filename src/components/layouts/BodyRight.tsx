@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useCallback} from 'react'
-import {Record} from "../../../generated/common"
-import ListCalendar from '../components/layout/calendar/list/ListCalendar'
-import CalendarHeader from '../components/layout/calendar/CalendarHeader'
-import { createSampleRecordGroups, createSampleRecords } from '../../utils/sampleData'
-import HttpMethod from '../../enums/HttpMethod'
+import {Record} from "@/generated/common"
+import ListCalendar from '@/components/features/calendar/list/ListCalendar'
+import CalendarHeader from '@/components/features/calendar/CalendarHeader'
+import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleData'
+import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
-import MonthlyCalendarV2 from '../components/layout/calendar/monthly/MonthlyCalendarV2'
-import MonthlyCalendarV1 from '../components/layout/calendar/monthly/MonthlyCalendarV1'
+import MonthlyCalendarV2 from '@/components/features/calendar/monthly/MonthlyCalendarV2'
+import MonthlyCalendarV1 from '@/components/features/calendar/monthly/MonthlyCalendarV1'
 
 const BodyRight = () => {
     const [records, setRecords] = useState<Record[]>([])

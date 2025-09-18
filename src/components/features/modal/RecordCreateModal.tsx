@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import {toTimestamp} from "@/utils/TimeUtil"
-import Dropdown, {IDropdown} from "@/app/components/ui/Dropdown"
-import DateTimeInput from "@/app/components/ui/DateTimeInput"
-import {RecordGroup} from "../../../../../generated/common"
+import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
+import DateTimeInput from "@/components/ui/DateTimeInput"
+import {RecordGroup} from "@/generated/common"
 import styles from './RecordCreateModal.module.css'
 import { DateTime } from "luxon"
-import { CreateRecordRequest } from '../../../../../generated/create-record'
+import { CreateRecordRequest } from '@/generated/record'
 
 interface ModalProps {
     isOpen: boolean;

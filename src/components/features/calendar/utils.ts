@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
-import { Record, Record_RecordType } from "../../../../../generated/common"
+import { Record, Record_RecordType } from "@/generated/common"
 import { CalendarEvent, CalendarDay } from './types'
-import { DateModel } from '@/app/models/DateModel'
+import { DateModel } from '@/models/DateModel'
 
 /**
  * 캘린더 날짜들을 생성하는 함수

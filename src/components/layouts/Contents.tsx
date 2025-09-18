@@ -1,9 +1,9 @@
 // src/components/MonthlyCalendar.tsx
 import React from 'react';
-import Sidebar from "@/app/layouts/Sidebar"
-import BodyRight from "@/app/layouts/BodyRight"
-import Footer from "@/app/layouts/Footer"
-import Mypage from "@/app/components/Mypage"
+import Sidebar from "@/components/layouts/Sidebar"
+import BodyRight from "@/components/layouts/BodyRight"
+import Footer from "@/components/layouts/Footer"
+import Mypage from "@/app/mypage/page"
 import { useViewStore } from '@/store/viewStore';
 
 const Contents = () => {

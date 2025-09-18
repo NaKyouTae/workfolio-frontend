@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import RecordGroupsSharedHeader from './RecordGroupsSharedHeader';
 import RecordGroups from '../RecordGroups';
-import { RecordGroup } from '../../../../../../../generated/common';
-import { JoinRecordGroupRequest } from '../../../../../../../generated/record_group';
+import { RecordGroup } from '@/generated/common';
+import { JoinRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { useUser } from '@/hooks/useUser';
-import { createSampleRecordGroups } from '../../../../../../utils/sampleData';
+import { createSampleRecordGroups } from '@/utils/sampleData';
 import NewRecordGroupItem from '../NewRecordGroupItem';
 
 interface RecordGroupSectionProps {

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getCookie } from '@/utils/cookie'
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import HttpMethod from '@/enums/HttpMethod';
-import { WorkerGetResponse } from '../../../../generated/worker';
+import { WorkerGetResponse } from '@/generated/worker';
 
 
 export async function GET() {

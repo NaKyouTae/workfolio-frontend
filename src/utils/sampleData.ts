@@ -1,4 +1,4 @@
-import { Record, RecordGroup, Record_RecordType } from '../../generated/common'
+import { Record, RecordGroup, Record_RecordType } from '@/generated/common'
 import dayjs from 'dayjs'
 
 export const createSampleRecordGroups = (): RecordGroup[] => {

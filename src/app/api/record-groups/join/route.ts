@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
-import { SuccessResponse } from '../../../../../generated/common';
+import { SuccessResponse } from '@/generated/common';
 
 export async function POST(req: Request) {
     try {

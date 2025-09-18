@@ -7,7 +7,7 @@ import {
     getSingleDayEventsForDate, 
     getMultiDayEvents 
 } from './utils'
-import { DateModel } from '@/app/models/DateModel'
+import { DateModel } from '@/models/DateModel'
 
 /**
  * 캘린더 날짜들을 관리하는 훅

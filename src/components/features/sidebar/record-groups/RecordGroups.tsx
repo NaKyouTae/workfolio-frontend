@@ -1,8 +1,8 @@
 import React from 'react';
 import HttpMethod from '@/enums/HttpMethod';
-import { RecordGroup } from '../../../../../../generated/common';
+import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { UpdateRecordGroupRequest } from '../../../../../../generated/record_group';
+import { UpdateRecordGroupRequest } from '@/generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import RecordGroupItem from './RecordGroupItem';
 

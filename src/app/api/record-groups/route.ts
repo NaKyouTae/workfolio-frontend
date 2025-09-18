@@ -2,7 +2,7 @@ import {getCookie} from "@/utils/cookie"
 import {apiFetchHandler} from "@/utils/ApiFetchHandler"
 import HttpMethod from "@/enums/HttpMethod"
 import {NextResponse} from "next/server"
-import {CreateRecordGroupResponse} from "../../../../generated/create-record-group"
+import {CreateRecordGroupResponse} from "@/generated/record_group"
 
 export async function POST(req: Request) {
     try {

@@ -1,4 +1,4 @@
-import { DateModel } from "@/app/models/DateModel"
+import { DateModel } from "@/models/DateModel"
 import { Record } from "../../../../../generated/common"
 
 export interface CalendarEvent {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getCookie } from "@/utils/cookie";
 import { apiFetchHandler } from "@/utils/ApiFetchHandler";
 import HttpMethod from "@/enums/HttpMethod";
-import { TokenResponse } from "../../../../../generated/token";
+import { TokenResponse } from "@/generated/token";
 
 export async function GET() {
     try {

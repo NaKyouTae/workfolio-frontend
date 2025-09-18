@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { getCookie } from "@/utils/cookie";
 import { apiFetchHandler } from "@/utils/ApiFetchHandler";
 import HttpMethod from "@/enums/HttpMethod";
-import { CreateRecordGroupResponse } from "../../../../../generated/create-record-group";
-import { SuccessRecordGroupResponse } from "../../../../../generated/record_group";
+import { CreateRecordGroupResponse } from "@/generated/record_group";
+import { SuccessResponse } from "@/generated/common";
 
 export async function PUT(req: Request, { params }: { params: { recordGroupId: string } }) {
     try {
@@ -34,7 +34,7 @@ export async function DELETE(req: Request, { params }: { params: { recordGroupId
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<SuccessRecordGroupResponse>(`http://localhost:8080/api/record-groups/${recordGroupId}`, HttpMethod.DELETE, null, accessToken);
+        const res = await apiFetchHandler<SuccessResponse>(`http://localhost:8080/api/record-groups/${recordGroupId}`, HttpMethod.DELETE, null, accessToken);
         const data = await res.json();
         
         return NextResponse.json(data)
