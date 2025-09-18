@@ -5,7 +5,7 @@ import { NextResponse } from "next/server"
 import { WorkerCareerListResponse } from "@/generated/worker_career";
 import { SuccessResponse } from "@/generated/common";
 
-export async function POST(req: Request) {
+export async function PUT(req: Request) {
     try {
         const accessToken = await getCookie('accessToken');
         
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         // 백엔드 서버로 커리어 데이터 전송
         const res = await apiFetchHandler<SuccessResponse>(
             'http://localhost:8080/api/workers/careers', 
-            HttpMethod.POST, 
+            HttpMethod.PUT, 
             careerData, 
             accessToken
         );

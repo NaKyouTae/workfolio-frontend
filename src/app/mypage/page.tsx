@@ -193,22 +193,16 @@ const Mypage: React.FC = () => {
                                             </button>
                                         )}
                                     </div>
-                                    <button
-                                        onClick={handleDuplicateCheck}
-                                        disabled={!nickname || nickname === user?.nickName || isUpdating || isLoading}
-                                        style={{
-                                            padding: '12px 20px',
-                                            backgroundColor: (nickname && nickname !== user?.nickName && !isUpdating && !isLoading) ? '#000000' : '#6c757d',
-                                            color: '#ffffff',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            cursor: (nickname && nickname !== user?.nickName && !isUpdating && !isLoading) ? 'pointer' : 'not-allowed',
-                                            fontSize: '14px',
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        {isUpdating ? '변경 중...' : '중복 확인'}
-                                    </button>
+                                    <div>
+                                        <button 
+                                            onClick={handleDuplicateCheck} 
+                                            disabled={!nickname || nickname === user?.nickName || isUpdating || isLoading}
+                                            style={{ width: '70px', height: '30px', backgroundColor: "#007bff", color: 'white', border: 'none', borderRadius: '4px' }}
+                                        >
+                                            {isUpdating ? '변경 중...' : '중복 확인'}
+                                        </button>
+                                    </div>
+                                    
                                 </div>
                                 {nicknameError && (
                                     <div style={{
