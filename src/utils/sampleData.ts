@@ -264,6 +264,107 @@ export const createSampleRecords = (recordGroups: RecordGroup[]): Record[] => {
             recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
             createdAt: Date.now(),
             updatedAt: Date.now()
+        },
+        // 겹치는 멀티 일정 5개 추가
+        {
+            id: '17',
+            title: '긴급 프로젝트 (3일 겹침)',
+            type: Record_RecordType.DAY,
+            description: '리브랜딩 프로젝트와 겹치는 긴급 프로젝트 (3일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-07`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-09`).valueOf(),
+            recordGroup: recordGroups[1], // 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '18',
+            title: '추가 출장 (2일 겹침)',
+            type: Record_RecordType.DAY,
+            description: '부산 출장과 겹치는 추가 출장 (2일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-23`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-24`).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '19',
+            title: '개인 프로젝트 (4일 겹침)',
+            type: Record_RecordType.DAY,
+            description: '리브랜딩 프로젝트 집중 작업과 겹치는 개인 프로젝트 (4일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-26`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-29`).valueOf(),
+            recordGroup: recordGroups[3], // 개인 일정
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '20',
+            title: '워크샵 (3일 겹침)',
+            type: Record_RecordType.DAY,
+            description: '연수 및 교육과 겹치는 워크샵 (3일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-03`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-05`).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '21',
+            title: '해외 컨퍼런스 (5일 겹침)',
+            type: Record_RecordType.DAY,
+            description: '해외 출장과 겹치는 컨퍼런스 참석 (5일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-15`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-19`).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        // 월 초반 구간 일정 4개 추가
+        {
+            id: '22',
+            title: '월간 계획 수립 (3일)',
+            type: Record_RecordType.DAY,
+            description: '새로운 월의 계획 수립 및 목표 설정 (3일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-01`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '23',
+            title: '팀 빌딩 워크샵 (2일)',
+            type: Record_RecordType.DAY,
+            description: '팀원들과의 빌딩 활동 및 소통 시간 (2일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-02`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '24',
+            title: '신규 프로젝트 킥오프 (4일)',
+            type: Record_RecordType.DAY,
+            description: '새로운 프로젝트의 킥오프 미팅 및 계획 수립 (4일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-04`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-07`).valueOf(),
+            recordGroup: recordGroups[1], // 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '25',
+            title: '개인 스터디 캠프 (3일)',
+            type: Record_RecordType.DAY,
+            description: '개인 성장을 위한 스터디 그룹 집중 캠프 (3일간)',
+            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-06`).valueOf(),
+            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).valueOf(),
+            recordGroup: recordGroups[3], // 개인 일정
+            createdAt: Date.now(),
+            updatedAt: Date.now()
         }
     ]
 }
