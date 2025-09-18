@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
+import CareerManagement from './layout/career/CareerManagement';
 
 const Mypage: React.FC = () => {
     const { user, updateUserNickname, deleteAccount, isLoading } = useUser();
@@ -108,6 +109,15 @@ const Mypage: React.FC = () => {
                     <div style={{
                         padding: '15px 30px',
                         cursor: 'pointer',
+                        backgroundColor: activeMenu === 'career' ? '#ffffff' : 'transparent',
+                        borderRight: activeMenu === 'career' ? '3px solid #000000' : 'none',
+                        fontWeight: activeMenu === 'career' ? 'bold' : 'normal'
+                    }} onClick={() => setActiveMenu('career')}>
+                        커리어 관리
+                    </div>
+                    <div style={{
+                        padding: '15px 30px',
+                        cursor: 'pointer',
                         backgroundColor: activeMenu === 'withdraw' ? '#ffffff' : 'transparent',
                         borderRight: activeMenu === 'withdraw' ? '3px solid #000000' : 'none',
                         fontWeight: activeMenu === 'withdraw' ? 'bold' : 'normal'
@@ -205,6 +215,10 @@ const Mypage: React.FC = () => {
                                 )}
                             </div>
                         </div>
+                    )}
+
+                    {activeMenu === 'career' && (
+                        <CareerManagement />
                     )}
 
                     {activeMenu === 'withdraw' && (
