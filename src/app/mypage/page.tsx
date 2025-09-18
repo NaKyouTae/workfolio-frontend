@@ -132,6 +132,7 @@ const Mypage: React.FC = () => {
                 <div style={{
                     flex: 1,
                     padding: '40px',
+                    overflow: 'auto',
                     backgroundColor: '#ffffff'
                 }}>
                     {activeMenu === 'profile' && (
