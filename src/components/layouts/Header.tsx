@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import Image from 'next/image';
-import { useViewStore } from '@/store/viewStore';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 
 const Header = () => {
-    const { setView } = useViewStore();
+    const router = useRouter();
     const { user, fetchUser, logout: userLogout } = useUser();
     
     // 로그인 상태 확인 및 유저 정보 가져오기
@@ -41,11 +42,13 @@ const Header = () => {
     
     return (
         <header>
-            <h1 onClick={() => setView('dashboard')}><Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} /></h1>
+            <h1 style={{ cursor: 'pointer' }} onClick={() => router.push('/dashboard')}>
+                <Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} />
+            </h1>
             {user? (
                 <ul>
                     <li>{`${user.nickName} 님 반가워요 !`}</li>
-                    <li><a onClick={() => setView('mypage')}>마이페이지</a></li>
+                    <li><Link href="/mypage">마이페이지</Link></li>
                     <li><a onClick={logout}>로그아웃</a></li>
                 </ul>
             ) : (

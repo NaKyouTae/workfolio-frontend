@@ -12,7 +12,21 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
     
-    // 다른 모든 페이지는 토큰 없이도 접근 가능
+    // 보호된 페이지들 (토큰이 필요한 페이지)
+    const protectedPaths = ['/dashboard', '/mypage'];
+    const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path));
+    
+    if (isProtectedPath) {
+        // 토큰 확인
+        const accessToken = request.cookies.get('accessToken');
+        
+        if (!accessToken) {
+            // 토큰이 없으면 로그인 페이지로 리다이렉트
+            return NextResponse.redirect(new URL('/login', request.url));
+        }
+    }
+    
+    // 다른 모든 페이지는 허용
     return NextResponse.next();
 }
 

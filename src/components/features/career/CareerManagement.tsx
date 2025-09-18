@@ -326,14 +326,11 @@ const CareerManagement: React.FC = () => {
                   <div style={{ marginTop: '8px' }}>
                     <strong>급여:</strong>
                     <ul style={{ margin: '4px 0 0 20px', padding: 0 }}>
-                      {company.salaries.map((salary: Salary, salIndex: number) => {
-                        console.log('Salary amount:', salary.amount, 'Type:', typeof salary.amount);
-                        return (
-                          <li key={salIndex} style={{ marginBottom: '2px' }}>
-                            {Number(salary.amount).toLocaleString('ko-KR')}원 ({DateUtil.formatDateRange(salary.startedAt, salary.endedAt)})
-                          </li>
-                        );
-                      })}
+                      {company.salaries.map((salary: Salary, salIndex: number) => (
+                        <li key={salIndex} style={{ marginBottom: '2px' }}>
+                          {Number(salary.amount).toLocaleString('ko-KR')}원 ({DateUtil.formatDateRange(salary.startedAt, salary.endedAt)})
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}
@@ -578,18 +575,15 @@ const CareerManagement: React.FC = () => {
         </div>
       </div>
       <div>
-        {salaries.map((salary, index) => {
-          console.log('Salary amount in edit mode:', salary.amount, 'Type:', typeof salary.amount);
-          return (
-            <div key={index} style={{ padding: '10px', border: '1px solid #ddd', marginBottom: '10px', borderRadius: '4px' }}>
-              <div><strong>{Number(salary.amount).toLocaleString('ko-KR')}원</strong></div>
-              <div>{DateUtil.formatDateRange(salary.startedAt, salary.endedAt)}</div>
-              <button onClick={() => removeSalary(index)} style={{ marginTop: '5px', padding: '4px 8px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px' }}>
-                삭제
-              </button>
-            </div>
-          );
-        })}
+        {salaries.map((salary, index) => (
+          <div key={index} style={{ padding: '10px', border: '1px solid #ddd', marginBottom: '10px', borderRadius: '4px' }}>
+            <div><strong>{Number(salary.amount).toLocaleString('ko-KR')}원</strong></div>
+            <div>{DateUtil.formatDateRange(salary.startedAt, salary.endedAt)}</div>
+            <button onClick={() => removeSalary(index)} style={{ marginTop: '5px', padding: '4px 8px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px' }}>
+              삭제
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

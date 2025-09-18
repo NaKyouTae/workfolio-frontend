@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import CareerManagement from '@/components/features/career/CareerManagement';
+import Header from '@/components/layouts/Header';
 
 const Mypage: React.FC = () => {
     const { user, updateUserNickname, deleteAccount, isLoading } = useUser();
@@ -67,24 +68,26 @@ const Mypage: React.FC = () => {
     };
 
     return (
-        <div style={{
-            display: 'flex',
-            width: '100%',
-            height: '100vh',
-            overflow: 'hidden',
-            flexDirection: 'column',
-            backgroundColor: '#ffffff'
-        }}>
-            {/* Header */}
+        <>
+            <Header />
             <div style={{
-                backgroundColor: '#000000',
-                color: '#ffffff',
-                padding: '20px 40px',
-                fontSize: '18px',
-                fontWeight: 'bold'
+                display: 'flex',
+                width: '100%',
+                height: '100vh',
+                overflow: 'hidden',
+                flexDirection: 'column',
+                backgroundColor: '#ffffff'
             }}>
-                마이페이지
-            </div>
+                {/* Page Title */}
+                <div style={{
+                    backgroundColor: '#000000',
+                    color: '#ffffff',
+                    padding: '20px 40px',
+                    fontSize: '18px',
+                    fontWeight: 'bold'
+                }}>
+                    마이페이지
+                </div>
 
             {/* Main Content */}
             <div style={{
@@ -288,6 +291,7 @@ const Mypage: React.FC = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
