@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import HttpMethod from "@/enums/HttpMethod"
-import {toTimestamp} from "@/utils/TimeUtil"
+import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
 import {RecordGroup} from "@/generated/common"
 import styles from './RecordCreateModal.module.css'
-import { DateTime } from "luxon"
 import { CreateRecordRequest } from '@/generated/record'
+import dayjs from 'dayjs'
 
 interface ModalProps {
     isOpen: boolean;
@@ -14,12 +14,13 @@ interface ModalProps {
 }
 
 const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+    const defaultFormat: string = 'YYYY-MM-DD HH:mm:ss';
     const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
     const [recordGroupId, setRecordGroupId] = useState<string>('');
     const [title, setTitle] = useState('');
     const [memo, setMemo] = useState('');
-    const [startedAt, setStartedAt] = useState(DateTime.now().toISO());
-    const [endedAt, setEndedAt] = useState(DateTime.now().plus({ hours: 1 }).toISO());
+    const [startedAt, setStartedAt] = useState(dayjs().format(defaultFormat));
+    const [endedAt, setEndedAt] = useState(dayjs().add(1, 'day').format(defaultFormat));
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     
@@ -27,8 +28,8 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         if (isOpen) {
             setTitle('');
             setMemo('');
-            setStartedAt(DateTime.now().toISO());
-            setEndedAt(DateTime.now().plus({ hours: 1 }).toISO());
+            setStartedAt(dayjs().format(defaultFormat));
+            setEndedAt(dayjs().add(1, 'day').format(defaultFormat));
             setRecordGroupId('');
             setIsAllDay(false);
             setSelectedFile(null);
@@ -69,8 +70,8 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         e.preventDefault();
 
         const createRecordRequest = CreateRecordRequest.create({
-            startedAt: toTimestamp(startedAt),
-            endedAt: toTimestamp(endedAt),
+            startedAt: DateUtil.parseToTimestamp(startedAt),
+            endedAt: DateUtil.parseToTimestamp(endedAt),
             recordGroupId: recordGroupId,
             title: title,
             memo: memo,

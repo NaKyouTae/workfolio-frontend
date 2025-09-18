@@ -19,19 +19,19 @@ export interface Worker {
 
 export interface Company {
   id: string;
-  publicId: string;
   name: string;
   startedAt: number;
   endedAt: number;
   isWorking: boolean;
   worker?: Worker | undefined;
+  positions: Position[];
+  salaries: Salary[];
   createdAt: number;
   updatedAt: number;
 }
 
 export interface Position {
   id: string;
-  publicId: string;
   name: string;
   startedAt: number;
   endedAt: number;
@@ -42,7 +42,6 @@ export interface Position {
 
 export interface Salary {
   id: string;
-  publicId: string;
   amount: number;
   startedAt: number;
   endedAt: number;
@@ -204,6 +203,15 @@ export interface RecordGroup {
   updatedAt: number;
 }
 
+export interface WorkerRecordGroup {
+  id: string;
+  publicId: string;
+  worker?: Worker | undefined;
+  recordGroup?: RecordGroup | undefined;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface SuccessResponse {
   isSuccess: boolean;
 }
@@ -224,10 +232,10 @@ export const Worker: MessageFns<Worker> = {
       writer.uint32(26).string(message.nickName);
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -263,16 +271,16 @@ export const Worker: MessageFns<Worker> = {
           message.nickName = reader.string();
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -335,12 +343,13 @@ export const Worker: MessageFns<Worker> = {
 function createBaseCompany(): Company {
   return {
     id: "",
-    publicId: "",
     name: "",
     startedAt: 0,
     endedAt: 0,
     isWorking: false,
     worker: undefined,
+    positions: [],
+    salaries: [],
     createdAt: 0,
     updatedAt: 0,
   };
@@ -351,29 +360,32 @@ export const Company: MessageFns<Company> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.publicId !== "") {
-      writer.uint32(18).string(message.publicId);
-    }
     if (message.name !== "") {
-      writer.uint32(26).string(message.name);
+      writer.uint32(18).string(message.name);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(32).uint64(message.startedAt);
+      writer.uint32(24).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(40).uint64(message.endedAt);
+      writer.uint32(32).uint64(message.endedAt);
     }
     if (message.isWorking !== false) {
-      writer.uint32(48).bool(message.isWorking);
+      writer.uint32(40).bool(message.isWorking);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(58).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
+    }
+    for (const v of message.positions) {
+      Position.encode(v!, writer.uint32(410).fork()).join();
+    }
+    for (const v of message.salaries) {
+      Salary.encode(v!, writer.uint32(418).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -398,15 +410,15 @@ export const Company: MessageFns<Company> = {
             break;
           }
 
-          message.publicId = reader.string();
+          message.name = reader.string();
           continue;
         }
         case 3: {
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.name = reader.string();
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -414,7 +426,7 @@ export const Company: MessageFns<Company> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -422,35 +434,43 @@ export const Company: MessageFns<Company> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.uint64());
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
           message.isWorking = reader.bool();
           continue;
         }
-        case 7: {
-          if (tag !== 58) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.positions.push(Position.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.salaries.push(Salary.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -469,12 +489,15 @@ export const Company: MessageFns<Company> = {
   fromJSON(object: any): Company {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
-      publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
       isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : false,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
+      positions: globalThis.Array.isArray(object?.positions)
+        ? object.positions.map((e: any) => Position.fromJSON(e))
+        : [],
+      salaries: globalThis.Array.isArray(object?.salaries) ? object.salaries.map((e: any) => Salary.fromJSON(e)) : [],
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -484,9 +507,6 @@ export const Company: MessageFns<Company> = {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
-    }
-    if (message.publicId !== "") {
-      obj.publicId = message.publicId;
     }
     if (message.name !== "") {
       obj.name = message.name;
@@ -503,6 +523,12 @@ export const Company: MessageFns<Company> = {
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
     }
+    if (message.positions?.length) {
+      obj.positions = message.positions.map((e) => Position.toJSON(e));
+    }
+    if (message.salaries?.length) {
+      obj.salaries = message.salaries.map((e) => Salary.toJSON(e));
+    }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
     }
@@ -518,7 +544,6 @@ export const Company: MessageFns<Company> = {
   fromPartial<I extends Exact<DeepPartial<Company>, I>>(object: I): Company {
     const message = createBaseCompany();
     message.id = object.id ?? "";
-    message.publicId = object.publicId ?? "";
     message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
@@ -526,6 +551,8 @@ export const Company: MessageFns<Company> = {
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
       : undefined;
+    message.positions = object.positions?.map((e) => Position.fromPartial(e)) || [];
+    message.salaries = object.salaries?.map((e) => Salary.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;
@@ -533,7 +560,7 @@ export const Company: MessageFns<Company> = {
 };
 
 function createBasePosition(): Position {
-  return { id: "", publicId: "", name: "", startedAt: 0, endedAt: 0, company: undefined, createdAt: 0, updatedAt: 0 };
+  return { id: "", name: "", startedAt: 0, endedAt: 0, company: undefined, createdAt: 0, updatedAt: 0 };
 }
 
 export const Position: MessageFns<Position> = {
@@ -541,26 +568,23 @@ export const Position: MessageFns<Position> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.publicId !== "") {
-      writer.uint32(18).string(message.publicId);
-    }
     if (message.name !== "") {
-      writer.uint32(26).string(message.name);
+      writer.uint32(18).string(message.name);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(32).uint64(message.startedAt);
+      writer.uint32(24).uint64(message.startedAt);
     }
     if (message.endedAt !== 0) {
-      writer.uint32(40).uint64(message.endedAt);
+      writer.uint32(32).uint64(message.endedAt);
     }
     if (message.company !== undefined) {
-      Company.encode(message.company, writer.uint32(50).fork()).join();
+      Company.encode(message.company, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -585,15 +609,15 @@ export const Position: MessageFns<Position> = {
             break;
           }
 
-          message.publicId = reader.string();
+          message.name = reader.string();
           continue;
         }
         case 3: {
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.name = reader.string();
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -601,35 +625,27 @@ export const Position: MessageFns<Position> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 6: {
-          if (tag !== 50) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.company = Company.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -648,7 +664,6 @@ export const Position: MessageFns<Position> = {
   fromJSON(object: any): Position {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
-      publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
@@ -662,9 +677,6 @@ export const Position: MessageFns<Position> = {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
-    }
-    if (message.publicId !== "") {
-      obj.publicId = message.publicId;
     }
     if (message.name !== "") {
       obj.name = message.name;
@@ -693,7 +705,6 @@ export const Position: MessageFns<Position> = {
   fromPartial<I extends Exact<DeepPartial<Position>, I>>(object: I): Position {
     const message = createBasePosition();
     message.id = object.id ?? "";
-    message.publicId = object.publicId ?? "";
     message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
@@ -707,7 +718,7 @@ export const Position: MessageFns<Position> = {
 };
 
 function createBaseSalary(): Salary {
-  return { id: "", publicId: "", amount: 0, startedAt: 0, endedAt: 0, company: undefined, createdAt: 0, updatedAt: 0 };
+  return { id: "", amount: 0, startedAt: 0, endedAt: 0, company: undefined, createdAt: 0, updatedAt: 0 };
 }
 
 export const Salary: MessageFns<Salary> = {
@@ -715,11 +726,8 @@ export const Salary: MessageFns<Salary> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.publicId !== "") {
-      writer.uint32(18).string(message.publicId);
-    }
     if (message.amount !== 0) {
-      writer.uint32(24).uint64(message.amount);
+      writer.uint32(16).uint64(message.amount);
     }
     if (message.startedAt !== 0) {
       writer.uint32(32).uint64(message.startedAt);
@@ -728,13 +736,13 @@ export const Salary: MessageFns<Salary> = {
       writer.uint32(40).uint64(message.endedAt);
     }
     if (message.company !== undefined) {
-      Company.encode(message.company, writer.uint32(50).fork()).join();
+      Company.encode(message.company, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -755,15 +763,7 @@ export const Salary: MessageFns<Salary> = {
           continue;
         }
         case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.publicId = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
+          if (tag !== 16) {
             break;
           }
 
@@ -786,24 +786,24 @@ export const Salary: MessageFns<Salary> = {
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 6: {
-          if (tag !== 50) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.company = Company.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -822,7 +822,6 @@ export const Salary: MessageFns<Salary> = {
   fromJSON(object: any): Salary {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
-      publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
@@ -836,9 +835,6 @@ export const Salary: MessageFns<Salary> = {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
-    }
-    if (message.publicId !== "") {
-      obj.publicId = message.publicId;
     }
     if (message.amount !== 0) {
       obj.amount = Math.round(message.amount);
@@ -867,7 +863,6 @@ export const Salary: MessageFns<Salary> = {
   fromPartial<I extends Exact<DeepPartial<Salary>, I>>(object: I): Salary {
     const message = createBaseSalary();
     message.id = object.id ?? "";
-    message.publicId = object.publicId ?? "";
     message.amount = object.amount ?? 0;
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
@@ -899,13 +894,13 @@ export const Account: MessageFns<Account> = {
       writer.uint32(34).string(message.email);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(42).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -949,24 +944,24 @@ export const Account: MessageFns<Account> = {
           message.email = reader.string();
           continue;
         }
-        case 5: {
-          if (tag !== 42) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -1073,13 +1068,13 @@ export const Certifications: MessageFns<Certifications> = {
       writer.uint32(48).uint64(message.expirationPeriod);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(58).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1139,24 +1134,24 @@ export const Certifications: MessageFns<Certifications> = {
           message.expirationPeriod = longToNumber(reader.uint64());
           continue;
         }
-        case 7: {
-          if (tag !== 58) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -1260,13 +1255,13 @@ export const Degrees: MessageFns<Degrees> = {
       writer.uint32(40).uint64(message.endedAt);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(50).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1318,24 +1313,24 @@ export const Degrees: MessageFns<Degrees> = {
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 6: {
-          if (tag !== 50) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -1434,13 +1429,13 @@ export const Education: MessageFns<Education> = {
       writer.uint32(42).string(message.agency);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(50).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1492,24 +1487,24 @@ export const Education: MessageFns<Education> = {
           message.agency = reader.string();
           continue;
         }
-        case 6: {
-          if (tag !== 50) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -1625,13 +1620,13 @@ export const Record: MessageFns<Record> = {
       RecordGroup.encode(message.recordGroup, writer.uint32(58).fork()).join();
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(66).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
-      writer.uint32(800).uint64(message.createdAt);
+      writer.uint32(784).uint64(message.createdAt);
     }
     if (message.updatedAt !== 0) {
-      writer.uint32(808).uint64(message.updatedAt);
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1699,24 +1694,24 @@ export const Record: MessageFns<Record> = {
           message.recordGroup = RecordGroup.decode(reader, reader.uint32());
           continue;
         }
-        case 8: {
-          if (tag !== 66) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
           continue;
         }
-        case 100: {
-          if (tag !== 800) {
+        case 98: {
+          if (tag !== 784) {
             break;
           }
 
           message.createdAt = longToNumber(reader.uint64());
           continue;
         }
-        case 101: {
-          if (tag !== 808) {
+        case 99: {
+          if (tag !== 792) {
             break;
           }
 
@@ -1837,10 +1832,10 @@ export const RecordGroup: MessageFns<RecordGroup> = {
       writer.uint32(42).string(message.color);
     }
     if (message.priority !== 0) {
-      writer.uint32(768).uint64(message.priority);
+      writer.uint32(240).uint64(message.priority);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(778).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -1898,16 +1893,16 @@ export const RecordGroup: MessageFns<RecordGroup> = {
           message.color = reader.string();
           continue;
         }
-        case 96: {
-          if (tag !== 768) {
+        case 30: {
+          if (tag !== 240) {
             break;
           }
 
           message.priority = longToNumber(reader.uint64());
           continue;
         }
-        case 97: {
-          if (tag !== 778) {
+        case 50: {
+          if (tag !== 402) {
             break;
           }
 
@@ -1998,6 +1993,150 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     message.priority = object.priority ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
+      : undefined;
+    message.createdAt = object.createdAt ?? 0;
+    message.updatedAt = object.updatedAt ?? 0;
+    return message;
+  },
+};
+
+function createBaseWorkerRecordGroup(): WorkerRecordGroup {
+  return { id: "", publicId: "", worker: undefined, recordGroup: undefined, createdAt: 0, updatedAt: 0 };
+}
+
+export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
+  encode(message: WorkerRecordGroup, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.publicId !== "") {
+      writer.uint32(18).string(message.publicId);
+    }
+    if (message.worker !== undefined) {
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
+    }
+    if (message.recordGroup !== undefined) {
+      RecordGroup.encode(message.recordGroup, writer.uint32(410).fork()).join();
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(784).uint64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(792).uint64(message.updatedAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WorkerRecordGroup {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkerRecordGroup();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.publicId = reader.string();
+          continue;
+        }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.worker = Worker.decode(reader, reader.uint32());
+          continue;
+        }
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.recordGroup = RecordGroup.decode(reader, reader.uint32());
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
+            break;
+          }
+
+          message.createdAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
+            break;
+          }
+
+          message.updatedAt = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkerRecordGroup {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
+      worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
+      recordGroup: isSet(object.recordGroup) ? RecordGroup.fromJSON(object.recordGroup) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
+    };
+  },
+
+  toJSON(message: WorkerRecordGroup): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.publicId !== "") {
+      obj.publicId = message.publicId;
+    }
+    if (message.worker !== undefined) {
+      obj.worker = Worker.toJSON(message.worker);
+    }
+    if (message.recordGroup !== undefined) {
+      obj.recordGroup = RecordGroup.toJSON(message.recordGroup);
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WorkerRecordGroup>, I>>(base?: I): WorkerRecordGroup {
+    return WorkerRecordGroup.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WorkerRecordGroup>, I>>(object: I): WorkerRecordGroup {
+    const message = createBaseWorkerRecordGroup();
+    message.id = object.id ?? "";
+    message.publicId = object.publicId ?? "";
+    message.worker = (object.worker !== undefined && object.worker !== null)
+      ? Worker.fromPartial(object.worker)
+      : undefined;
+    message.recordGroup = (object.recordGroup !== undefined && object.recordGroup !== null)
+      ? RecordGroup.fromPartial(object.recordGroup)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;

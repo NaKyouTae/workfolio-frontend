@@ -2,6 +2,8 @@ import { getCookie } from "@/utils/cookie"
 import { apiFetchHandler } from "@/utils/ApiFetchHandler"
 import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
+import { WorkerCareerListResponse } from "@/generated/worker_career";
+import { SuccessResponse } from "@/generated/common";
 
 export async function POST(req: Request) {
     try {
@@ -15,8 +17,8 @@ export async function POST(req: Request) {
         const careerData = await req.json();
         
         // 백엔드 서버로 커리어 데이터 전송
-        const res = await apiFetchHandler(
-            'http://localhost:8080/api/career', 
+        const res = await apiFetchHandler<SuccessResponse>(
+            'http://localhost:8080/api/workers/careers', 
             HttpMethod.POST, 
             careerData, 
             accessToken
@@ -42,8 +44,8 @@ export async function GET() {
         }
         
         // 백엔드 서버에서 커리어 데이터 조회
-        const res = await apiFetchHandler(
-            'http://localhost:8080/api/career', 
+        const res = await apiFetchHandler<WorkerCareerListResponse>(
+            'http://localhost:8080/api/workers/careers', 
             HttpMethod.GET, 
             undefined, 
             accessToken
