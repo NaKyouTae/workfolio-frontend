@@ -122,7 +122,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
     if (newCompany.name && newCompany.startedAt) {
       try {
         const response = await fetch('/api/workers/companies', {
-          method: 'POST',
+          method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -132,9 +132,14 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         if (response.ok) {
           const result = await response.json();
           if (result) {
+
+            console.log("result", result);
+
             const newCompanyData = result.company;
             const updatedCompanies = [...companies, newCompanyData];
             handleDataChange(updatedCompanies);
+
+            console.log("updatedCompanies", updatedCompanies);
             
             // 모든 회사의 position과 salary를 다시 조회
             const companyIds = updatedCompanies.map(company => company.id).join(',');

@@ -9,10 +9,10 @@ export async function GET() {
   try {
     const accessToken = await getCookie('accessToken');
       
-      // accessToken이 없으면 401 응답 반환
-      if (!accessToken) {
-          return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
-      }
+    // accessToken이 없으면 401 응답 반환
+    if (!accessToken) {
+        return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
+    }
     
     const res = await apiFetchHandler<CompanyListResponse>(
       'http://localhost:8080/api/workers/companies', 
@@ -22,6 +22,8 @@ export async function GET() {
     );
 
     const data = await res.json();
+
+    console.log("data", data);
 
     return NextResponse.json(data);
   } catch (error) {

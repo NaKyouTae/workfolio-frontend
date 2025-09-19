@@ -214,6 +214,19 @@ export interface SuccessResponse {
   isSuccess: boolean;
 }
 
+export interface Interview {
+  id: string;
+  title?: string | undefined;
+  startedAt: number;
+  endedAt?: number | undefined;
+  memo?: string | undefined;
+  worker?: Worker | undefined;
+  prevCompany?: Company | undefined;
+  nextCompany?: Company | undefined;
+  createdAt: number;
+  updatedAt: number;
+}
+
 function createBaseWorker(): Worker {
   return { id: "", name: "", nickName: "", createdAt: 0, updatedAt: 0 };
 }
@@ -2160,6 +2173,227 @@ export const SuccessResponse: MessageFns<SuccessResponse> = {
   fromPartial<I extends Exact<DeepPartial<SuccessResponse>, I>>(object: I): SuccessResponse {
     const message = createBaseSuccessResponse();
     message.isSuccess = object.isSuccess ?? false;
+    return message;
+  },
+};
+
+function createBaseInterview(): Interview {
+  return {
+    id: "",
+    title: undefined,
+    startedAt: 0,
+    endedAt: undefined,
+    memo: undefined,
+    worker: undefined,
+    prevCompany: undefined,
+    nextCompany: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
+}
+
+export const Interview: MessageFns<Interview> = {
+  encode(message: Interview, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== undefined) {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.startedAt !== 0) {
+      writer.uint32(24).uint64(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      writer.uint32(32).uint64(message.endedAt);
+    }
+    if (message.memo !== undefined) {
+      writer.uint32(42).string(message.memo);
+    }
+    if (message.worker !== undefined) {
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
+    }
+    if (message.prevCompany !== undefined) {
+      Company.encode(message.prevCompany, writer.uint32(410).fork()).join();
+    }
+    if (message.nextCompany !== undefined) {
+      Company.encode(message.nextCompany, writer.uint32(418).fork()).join();
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(784).uint64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(792).uint64(message.updatedAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Interview {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInterview();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.memo = reader.string();
+          continue;
+        }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.worker = Worker.decode(reader, reader.uint32());
+          continue;
+        }
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.prevCompany = Company.decode(reader, reader.uint32());
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.nextCompany = Company.decode(reader, reader.uint32());
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
+            break;
+          }
+
+          message.createdAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
+            break;
+          }
+
+          message.updatedAt = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Interview {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      title: isSet(object.title) ? globalThis.String(object.title) : undefined,
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
+      prevCompany: isSet(object.prevCompany) ? Company.fromJSON(object.prevCompany) : undefined,
+      nextCompany: isSet(object.nextCompany) ? Company.fromJSON(object.nextCompany) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
+    };
+  },
+
+  toJSON(message: Interview): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.title !== undefined) {
+      obj.title = message.title;
+    }
+    if (message.startedAt !== 0) {
+      obj.startedAt = Math.round(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
+    }
+    if (message.worker !== undefined) {
+      obj.worker = Worker.toJSON(message.worker);
+    }
+    if (message.prevCompany !== undefined) {
+      obj.prevCompany = Company.toJSON(message.prevCompany);
+    }
+    if (message.nextCompany !== undefined) {
+      obj.nextCompany = Company.toJSON(message.nextCompany);
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Interview>, I>>(base?: I): Interview {
+    return Interview.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Interview>, I>>(object: I): Interview {
+    const message = createBaseInterview();
+    message.id = object.id ?? "";
+    message.title = object.title ?? undefined;
+    message.startedAt = object.startedAt ?? 0;
+    message.endedAt = object.endedAt ?? undefined;
+    message.memo = object.memo ?? undefined;
+    message.worker = (object.worker !== undefined && object.worker !== null)
+      ? Worker.fromPartial(object.worker)
+      : undefined;
+    message.prevCompany = (object.prevCompany !== undefined && object.prevCompany !== null)
+      ? Company.fromPartial(object.prevCompany)
+      : undefined;
+    message.nextCompany = (object.nextCompany !== undefined && object.nextCompany !== null)
+      ? Company.fromPartial(object.nextCompany)
+      : undefined;
+    message.createdAt = object.createdAt ?? 0;
+    message.updatedAt = object.updatedAt ?? 0;
     return message;
   },
 };

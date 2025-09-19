@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import CareerManagement from '@/components/features/career/CareerManagement';
+import InterviewManagement from '@/components/features/interview/InterviewManagement';
 import Header from '@/components/layouts/Header';
 
 const Mypage: React.FC = () => {
@@ -123,6 +124,15 @@ const Mypage: React.FC = () => {
                     <div style={{
                         padding: '15px 30px',
                         cursor: 'pointer',
+                        backgroundColor: activeMenu === 'interview' ? '#ffffff' : 'transparent',
+                        borderRight: activeMenu === 'interview' ? '3px solid #000000' : 'none',
+                        fontWeight: activeMenu === 'interview' ? 'bold' : 'normal'
+                    }} onClick={() => setActiveMenu('interview')}>
+                        인터뷰 관리
+                    </div>
+                    <div style={{
+                        padding: '15px 30px',
+                        cursor: 'pointer',
                         backgroundColor: activeMenu === 'withdraw' ? '#ffffff' : 'transparent',
                         borderRight: activeMenu === 'withdraw' ? '3px solid #000000' : 'none',
                         fontWeight: activeMenu === 'withdraw' ? 'bold' : 'normal'
@@ -219,6 +229,10 @@ const Mypage: React.FC = () => {
 
                     {activeMenu === 'career' && (
                         <CareerManagement />
+                    )}
+
+                    {activeMenu === 'interview' && (
+                        <InterviewManagement />
                     )}
 
                     {activeMenu === 'withdraw' && (
