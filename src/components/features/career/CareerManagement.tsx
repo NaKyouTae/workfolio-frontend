@@ -5,8 +5,13 @@ import CertificationManagement from './CertificationManagement';
 import DegreesManagement from './DegreesManagement';
 import EducationManagement from './EducationManagement';
 import HttpMethod from '@/enums/HttpMethod';
+import { useUser } from '@/hooks/useUser';
+import { createSampleCompanies, createSampleCertifications, createSampleDegrees, createSampleEducations } from '@/utils/sampleData';
 
 const CareerManagement: React.FC = () => {
+  // 사용자 인증 상태
+  const { isLoggedIn } = useUser();
+  
   // 로딩 상태
   const [isLoading, setIsLoading] = useState(true);
   
@@ -111,15 +116,32 @@ const CareerManagement: React.FC = () => {
         try {
           console.log('========================');
           console.log('CareerManagement: Initial data fetch started');
+          console.log('isLoggedIn:', isLoggedIn);
           console.log('========================');
           
           setIsLoading(true);
-          const [companies, certifications, degrees, educations] = await Promise.all([
-            fetchCompanies(),
-            fetchCertifications(),
-            fetchDegrees(),
-            fetchEducations()
-          ]);
+          
+          let companies: Company[] = [];
+          let certifications: Certifications[] = [];
+          let degrees: Degrees[] = [];
+          let educations: Education[] = [];
+
+          if (isLoggedIn) {
+            // 로그인된 경우 서버에서 데이터 조회
+            [companies, certifications, degrees, educations] = await Promise.all([
+              fetchCompanies(),
+              fetchCertifications(),
+              fetchDegrees(),
+              fetchEducations()
+            ]);
+          } else {
+            // 로그인되지 않은 경우 샘플 데이터 사용
+            console.log('Using sample data for non-logged-in user');
+            companies = createSampleCompanies();
+            certifications = createSampleCertifications();
+            degrees = createSampleDegrees();
+            educations = createSampleEducations();
+          }
 
           setCareerData({
             companies,
@@ -142,7 +164,7 @@ const CareerManagement: React.FC = () => {
 
       fetchAllCareerData();
     }
-  }, []);
+  }, [isLoggedIn, fetchCompanies, fetchCertifications, fetchDegrees, fetchEducations]);
 
   // 데이터 변경 핸들러들
   const handleCompaniesChange = useCallback((data: Company[]) => {
@@ -192,7 +214,14 @@ const CareerManagement: React.FC = () => {
     <div style={{ padding: '20px' }}>
       {/* 헤더 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', paddingBottom: '15px', borderBottom: '2px solid #e0e0e0' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333', margin: 0 }}>커리어 관리</h2>
+        <div>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333', margin: 0 }}>커리어 관리</h2>
+          {!isLoggedIn && (
+            <p style={{ fontSize: '14px', color: '#666', margin: '5px 0 0 0' }}>
+              📋 샘플 데이터를 표시하고 있습니다. 로그인하면 실제 데이터를 확인할 수 있습니다.
+            </p>
+          )}
+        </div>
       </div>
 
       {/* 각 항목 관리 컴포넌트들 */}

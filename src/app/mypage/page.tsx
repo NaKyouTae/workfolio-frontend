@@ -7,7 +7,7 @@ import JobSearchManagement from '@/components/features/interview/JobSearchManage
 import Header from '@/components/layouts/Header';
 
 const Mypage: React.FC = () => {
-    const { user, updateUserNickname, deleteAccount, isLoading } = useUser();
+    const { user, updateUserNickname, deleteAccount, isLoading, isLoggedIn } = useUser();
     const [activeMenu, setActiveMenu] = useState('profile');
     const [nickname, setNickname] = useState('');
     const [nicknameError, setNicknameError] = useState('');
@@ -18,8 +18,11 @@ const Mypage: React.FC = () => {
     useEffect(() => {
         if (user) {
             setNickname(user.nickName);
+        } else if (!isLoggedIn) {
+            // 로그인하지 않은 경우 샘플 닉네임 설정
+            setNickname('샘플 사용자');
         }
-    }, [user]);
+    }, [user, isLoggedIn]);
 
     const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNickname(e.target.value);
@@ -159,6 +162,19 @@ const Mypage: React.FC = () => {
                                 프로필 관리
                             </h2>
                             
+                            {!isLoggedIn && (
+                                <div style={{
+                                    backgroundColor: '#fff3cd',
+                                    border: '1px solid #ffeaa7',
+                                    borderRadius: '4px',
+                                    padding: '15px',
+                                    marginBottom: '30px',
+                                    color: '#856404'
+                                }}>
+                                    📋 샘플 데이터를 표시하고 있습니다. 로그인하면 실제 프로필을 관리할 수 있습니다.
+                                </div>
+                            )}
+                            
                             <div style={{ marginBottom: '30px' }}>
                                 <label style={{
                                     display: 'block',
@@ -175,13 +191,16 @@ const Mypage: React.FC = () => {
                                             type="text"
                                             value={nickname}
                                             onChange={handleNicknameChange}
+                                            disabled={!isLoggedIn}
                                             style={{
                                                 width: '100%',
                                                 padding: '12px 16px',
                                                 border: '1px solid #e9ecef',
                                                 borderRadius: '4px',
                                                 fontSize: '14px',
-                                                outline: 'none'
+                                                outline: 'none',
+                                                backgroundColor: !isLoggedIn ? '#f8f9fa' : '#ffffff',
+                                                color: !isLoggedIn ? '#6c757d' : '#000000'
                                             }}
                                         />
                                         {nickname && (
@@ -206,8 +225,16 @@ const Mypage: React.FC = () => {
                                     <div>
                                         <button 
                                             onClick={handleDuplicateCheck} 
-                                            disabled={!nickname || nickname === user?.nickName || isUpdating || isLoading}
-                                            style={{ width: '70px', height: '30px', backgroundColor: "#007bff", color: 'white', border: 'none', borderRadius: '4px' }}
+                                            disabled={!isLoggedIn || !nickname || nickname === user?.nickName || isUpdating || isLoading}
+                                            style={{ 
+                                                width: '70px', 
+                                                height: '30px', 
+                                                backgroundColor: (!isLoggedIn || !nickname || nickname === user?.nickName || isUpdating || isLoading) ? "#6c757d" : "#007bff", 
+                                                color: 'white', 
+                                                border: 'none', 
+                                                borderRadius: '4px',
+                                                cursor: (!isLoggedIn || !nickname || nickname === user?.nickName || isUpdating || isLoading) ? 'not-allowed' : 'pointer'
+                                            }}
                                         >
                                             {isUpdating ? '변경 중...' : '중복 확인'}
                                         </button>
@@ -246,6 +273,19 @@ const Mypage: React.FC = () => {
                                 회원 탈퇴
                             </h2>
                             
+                            {!isLoggedIn && (
+                                <div style={{
+                                    backgroundColor: '#fff3cd',
+                                    border: '1px solid #ffeaa7',
+                                    borderRadius: '4px',
+                                    padding: '15px',
+                                    marginBottom: '30px',
+                                    color: '#856404'
+                                }}>
+                                    📋 로그인하지 않은 상태에서는 회원 탈퇴 기능을 사용할 수 없습니다.
+                                </div>
+                            )}
+                            
                             <div style={{ marginBottom: '30px' }}>
                                 <p style={{
                                     fontSize: '14px',
@@ -256,14 +296,14 @@ const Mypage: React.FC = () => {
                                 </p>
                                 <button
                                     onClick={handleWithdraw}
-                                    disabled={isDeleting || isLoading}
+                                    disabled={!isLoggedIn || isDeleting || isLoading}
                                     style={{
                                         padding: '12px 24px',
-                                        backgroundColor: (isDeleting || isLoading) ? '#6c757d' : '#dc3545',
+                                        backgroundColor: (!isLoggedIn || isDeleting || isLoading) ? '#6c757d' : '#dc3545',
                                         color: '#ffffff',
                                         border: 'none',
                                         borderRadius: '4px',
-                                        cursor: (isDeleting || isLoading) ? 'not-allowed' : 'pointer',
+                                        cursor: (!isLoggedIn || isDeleting || isLoading) ? 'not-allowed' : 'pointer',
                                         fontSize: '14px',
                                         fontWeight: 'bold'
                                     }}

@@ -12,8 +12,9 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
     
-    // 보호된 페이지들 (토큰이 필요한 페이지)
-    const protectedPaths = ['/dashboard', '/mypage'];
+    // 보호된 페이지들 (토큰이 필요한 페이지) - 현재는 없음
+    // dashboard와 mypage는 샘플 데이터로 접근 가능하도록 허용
+    const protectedPaths: string[] = [];
     const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path));
     
     if (isProtectedPath) {

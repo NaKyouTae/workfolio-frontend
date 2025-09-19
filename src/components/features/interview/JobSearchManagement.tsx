@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { JobSearch } from '@/generated/common';
 import { JobSearchListResponse, JobSearchCreateRequest, JobSearchUpdateRequest } from '@/generated/job_search';
 import HttpMethod from '@/enums/HttpMethod';
 import DateUtil from '@/utils/DateUtil';
 import JobSearchCompanyManagement from './JobSearchCompanyManagement';
+import { useUser } from '@/hooks/useUser';
+import { createSampleJobSearches } from '@/utils/sampleData';
 
 const JobSearchManagement: React.FC = () => {
+  const { isLoggedIn } = useUser();
   const [jobSearches, setJobSearches] = useState<JobSearch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -26,29 +29,38 @@ const JobSearchManagement: React.FC = () => {
   });
 
   // 구직 목록 조회
-  const fetchJobSearches = async () => {
+  const fetchJobSearches = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/workers/job-searches', {
-        method: HttpMethod.GET,
-      });
+      
+      if (isLoggedIn) {
+        // 로그인된 경우 서버에서 데이터 조회
+        const response = await fetch('/api/workers/job-searches', {
+          method: HttpMethod.GET,
+        });
 
-      if (response.ok) {
-        const data: JobSearchListResponse = await response.json();
-        setJobSearches(data.jobSearches || []);
+        if (response.ok) {
+          const data: JobSearchListResponse = await response.json();
+          setJobSearches(data.jobSearches || []);
+        } else {
+          console.error('Failed to fetch job searches');
+        }
       } else {
-        console.error('Failed to fetch job searches');
+        // 로그인하지 않은 경우 샘플 데이터 사용
+        console.log('Using sample data for non-logged-in user');
+        const sampleData = createSampleJobSearches();
+        setJobSearches(sampleData);
       }
     } catch (error) {
       console.error('Error fetching job searches:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoggedIn]);
 
   useEffect(() => {
     fetchJobSearches();
-  }, []);
+  }, [isLoggedIn, fetchJobSearches]);
 
   // 폼 입력 핸들러
   const handleFormChange = (field: keyof JobSearchCreateRequest, value: string | number | undefined) => {
@@ -227,23 +239,31 @@ const JobSearchManagement: React.FC = () => {
         paddingBottom: '15px', 
         borderBottom: '2px solid #e0e0e0' 
       }}>
-        <h2 style={{ 
-          fontSize: '24px', 
-          fontWeight: 'bold', 
-          color: '#333', 
-          margin: 0 
-        }}>
-          구직 관리
-        </h2>
+        <div>
+          <h2 style={{ 
+            fontSize: '24px', 
+            fontWeight: 'bold', 
+            color: '#333', 
+            margin: 0 
+          }}>
+            구직 관리
+          </h2>
+          {!isLoggedIn && (
+            <p style={{ fontSize: '14px', color: '#666', margin: '5px 0 0 0' }}>
+              📋 샘플 데이터를 표시하고 있습니다. 로그인하면 실제 구직 정보를 관리할 수 있습니다.
+            </p>
+          )}
+        </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
             onClick={() => setIsCreateModalOpen(true)}
+            disabled={!isLoggedIn}
             style={{
-              backgroundColor: '#007bff',
+              backgroundColor: !isLoggedIn ? '#6c757d' : '#007bff',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: 'pointer',
+              cursor: !isLoggedIn ? 'not-allowed' : 'pointer',
               width: '70px',
               height: '30px',
               display: 'flex',

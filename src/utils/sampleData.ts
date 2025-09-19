@@ -1,4 +1,4 @@
-import { Record, RecordGroup, Record_RecordType } from '@/generated/common'
+import { Record, RecordGroup, Record_RecordType, Company, Certifications, Degrees, Education, Worker, JobSearch } from '@/generated/common'
 import dayjs from 'dayjs'
 
 export const createSampleRecordGroups = (): RecordGroup[] => {
@@ -368,3 +368,251 @@ export const createSampleRecords = (recordGroups: RecordGroup[]): Record[] => {
         }
     ]
 }
+
+// 샘플 Worker 데이터
+const createSampleWorker = (): Worker => ({
+    id: 'sample-worker-1',
+    name: '김개발',
+    nickName: 'devkim',
+    createdAt: Date.now() - 365 * 24 * 60 * 60 * 1000, // 1년 전
+    updatedAt: Date.now()
+});
+
+// 샘플 회사 데이터
+export const createSampleCompanies = (): Company[] => {
+    const now = Date.now();
+    const worker = createSampleWorker();
+    
+    return [
+        {
+            id: 'company-1',
+            name: '테크스타트업',
+            startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
+            endedAt: now - 1 * 365 * 24 * 60 * 60 * 1000, // 1년 전
+            isWorking: false,
+            worker,
+            createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'company-2',
+            name: '글로벌 IT 기업',
+            startedAt: now - 1 * 365 * 24 * 60 * 60 * 1000, // 1년 전
+            endedAt: 0, // 현재 재직 중
+            isWorking: true,
+            worker,
+            createdAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now
+        },
+        {
+            id: 'company-3',
+            name: '중견 소프트웨어 회사',
+            startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000, // 3년 전
+            endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
+            isWorking: false,
+            worker,
+            createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
+        }
+    ];
+};
+
+// 샘플 자격증 데이터
+export const createSampleCertifications = (): Certifications[] => {
+    const now = Date.now();
+    const worker = createSampleWorker();
+    
+    return [
+        {
+            id: 'cert-1',
+            name: 'AWS Solutions Architect Associate',
+            number: 'AWS-SAA-123456',
+            issuer: 'Amazon Web Services',
+            issuedAt: now - 6 * 30 * 24 * 60 * 60 * 1000, // 6개월 전
+            expirationPeriod: 3 * 365 * 24 * 60 * 60 * 1000, // 3년
+            worker,
+            createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 6 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'cert-2',
+            name: '정보처리기사',
+            number: '2024-123456',
+            issuer: '한국산업인력공단',
+            issuedAt: now - 1 * 365 * 24 * 60 * 60 * 1000, // 1년 전
+            expirationPeriod: 0, // 영구
+            worker,
+            createdAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'cert-3',
+            name: 'PMP (Project Management Professional)',
+            number: 'PMP-789012',
+            issuer: 'Project Management Institute',
+            issuedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
+            expirationPeriod: 3 * 365 * 24 * 60 * 60 * 1000, // 3년
+            worker,
+            createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'cert-4',
+            name: 'Google Cloud Professional Developer',
+            number: 'GCP-PD-345678',
+            issuer: 'Google Cloud',
+            issuedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
+            expirationPeriod: 3 * 365 * 24 * 60 * 60 * 1000, // 3년
+            worker,
+            createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+        }
+    ];
+};
+
+// 샘플 학위 데이터
+export const createSampleDegrees = (): Degrees[] => {
+    const now = Date.now();
+    const worker = createSampleWorker();
+    
+    return [
+        {
+            id: 'degree-1',
+            name: '컴퓨터공학 학사',
+            major: '컴퓨터공학',
+            startedAt: now - 6 * 365 * 24 * 60 * 60 * 1000, // 6년 전
+            endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
+            worker,
+            createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'degree-2',
+            name: '소프트웨어공학 석사',
+            major: '소프트웨어공학',
+            startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000, // 4년 전
+            endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
+            worker,
+            createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
+        }
+    ];
+};
+
+// 샘플 교육 데이터
+export const createSampleEducations = (): Education[] => {
+    const now = Date.now();
+    const worker = createSampleWorker();
+    
+    return [
+        {
+            id: 'edu-1',
+            name: 'React 고급 개발 과정',
+            startedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
+            endedAt: now - 2 * 30 * 24 * 60 * 60 * 1000, // 2개월 전
+            agency: '프로그래머스',
+            worker,
+            createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'edu-2',
+            name: 'AWS 클라우드 아키텍처 설계',
+            startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000, // 6개월 전
+            endedAt: now - 5 * 30 * 24 * 60 * 60 * 1000, // 5개월 전
+            agency: 'AWS 교육 파트너',
+            worker,
+            createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 5 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'edu-3',
+            name: '데이터베이스 최적화 기법',
+            startedAt: now - 1 * 30 * 24 * 60 * 60 * 1000, // 1개월 전
+            endedAt: now - 15 * 24 * 60 * 60 * 1000, // 15일 전
+            agency: '한국데이터베이스진흥원',
+            worker,
+            createdAt: now - 1 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 15 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'edu-4',
+            name: '프로젝트 관리 실무',
+            startedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
+            endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
+            agency: '한국프로젝트관리협회',
+            worker,
+            createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+        }
+    ];
+};
+
+// 샘플 구직 데이터
+export const createSampleJobSearches = (): JobSearch[] => {
+    const now = Date.now();
+    const worker = createSampleWorker();
+    
+    return [
+        {
+            id: 'jobsearch-1',
+            title: '2024년 상반기 구직 활동',
+            startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000, // 6개월 전
+            endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
+            memo: '대기업 중심으로 구직 활동을 진행했습니다. 총 15개 회사에 지원하여 3개 회사에서 최종 면접까지 진행했습니다.',
+            worker,
+            prevCompany: {
+                id: 'company-1',
+                name: '테크스타트업',
+                startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+                endedAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
+                isWorking: false,
+                worker,
+                createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
+            },
+            nextCompany: {
+                id: 'company-2',
+                name: '글로벌 IT 기업',
+                startedAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
+                endedAt: 0,
+                isWorking: true,
+                worker,
+                createdAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
+                updatedAt: now
+            },
+            createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'jobsearch-2',
+            title: '2023년 하반기 구직 활동',
+            startedAt: now - 12 * 30 * 24 * 60 * 60 * 1000, // 12개월 전
+            endedAt: now - 8 * 30 * 24 * 60 * 60 * 1000, // 8개월 전
+            memo: '스타트업과 중견기업을 중심으로 구직 활동을 진행했습니다. 개발자 커뮤니티를 통해 많은 기회를 얻을 수 있었습니다.',
+            worker,
+            prevCompany: {
+                id: 'company-3',
+                name: '중견 소프트웨어 회사',
+                startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+                endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+                isWorking: false,
+                worker,
+                createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
+            },
+            nextCompany: {
+                id: 'company-1',
+                name: '테크스타트업',
+                startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+                endedAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
+                isWorking: false,
+                worker,
+                createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 8 * 30 * 24 * 60 * 60 * 1000
+        }
+    ];
+};
