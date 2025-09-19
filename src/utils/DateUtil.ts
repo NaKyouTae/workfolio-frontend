@@ -22,8 +22,8 @@ export class DateUtil {
    * @param format - 출력 형식 (기본값: 'YYYY-MM-DD')
    * @returns 포맷된 날짜 문자열
    */
-  static formatTimestamp(timestamp: number, format: string = this.defaultFormat): string {
-    if (timestamp === 0) return '';
+  static formatTimestamp(timestamp: number, format: string = DateUtil.defaultFormat): string {
+    if (timestamp === 0 || timestamp === undefined) return '';
 
     const timestampString = timestamp.toString();
     const date = new Date(parseInt(timestampString));
@@ -52,8 +52,10 @@ export class DateUtil {
   static formatDateRange(
     startTimestamp: number, 
     endTimestamp: number = 0, 
-    format: string = this.defaultFormat
+    format: string = DateUtil.defaultFormat
   ): string {
+    if (startTimestamp === 0 || startTimestamp === undefined) return '';
+
     const startDate = this.formatTimestamp(startTimestamp, format);
     const endDate = endTimestamp === 0 ? '현재' : this.formatTimestamp(endTimestamp, format);
     return `${startDate} ~ ${endDate}`;
