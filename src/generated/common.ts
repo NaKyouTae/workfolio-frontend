@@ -214,7 +214,7 @@ export interface SuccessResponse {
   isSuccess: boolean;
 }
 
-export interface Interview {
+export interface JobSearch {
   id: string;
   title?: string | undefined;
   startedAt: number;
@@ -225,6 +225,133 @@ export interface Interview {
   nextCompany?: Company | undefined;
   createdAt: number;
   updatedAt: number;
+}
+
+export interface JobSearchCompany {
+  id: string;
+  name?: string | undefined;
+  status: JobSearchCompany_Status;
+  appliedAt: number;
+  closedAt: number;
+  endedAt?: number | undefined;
+  link?: string | undefined;
+  jobSearch?: JobSearch | undefined;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export enum JobSearchCompany_Status {
+  UNKNOWN = 0,
+  IN_PROGRESS = 1,
+  APPLIED = 2,
+  IN_INTERVIEW = 3,
+  CLOSED = 4,
+  UNRECOGNIZED = -1,
+}
+
+export function jobSearchCompany_StatusFromJSON(object: any): JobSearchCompany_Status {
+  switch (object) {
+    case 0:
+    case "UNKNOWN":
+      return JobSearchCompany_Status.UNKNOWN;
+    case 1:
+    case "IN_PROGRESS":
+      return JobSearchCompany_Status.IN_PROGRESS;
+    case 2:
+    case "APPLIED":
+      return JobSearchCompany_Status.APPLIED;
+    case 3:
+    case "IN_INTERVIEW":
+      return JobSearchCompany_Status.IN_INTERVIEW;
+    case 4:
+    case "CLOSED":
+      return JobSearchCompany_Status.CLOSED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return JobSearchCompany_Status.UNRECOGNIZED;
+  }
+}
+
+export function jobSearchCompany_StatusToJSON(object: JobSearchCompany_Status): string {
+  switch (object) {
+    case JobSearchCompany_Status.UNKNOWN:
+      return "UNKNOWN";
+    case JobSearchCompany_Status.IN_PROGRESS:
+      return "IN_PROGRESS";
+    case JobSearchCompany_Status.APPLIED:
+      return "APPLIED";
+    case JobSearchCompany_Status.IN_INTERVIEW:
+      return "IN_INTERVIEW";
+    case JobSearchCompany_Status.CLOSED:
+      return "CLOSED";
+    case JobSearchCompany_Status.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export interface Interview {
+  id: string;
+  title?: string | undefined;
+  type: Interview_Type;
+  startedAt?: number | undefined;
+  endedAt?: number | undefined;
+  memo?: string | undefined;
+  jobSearchCompany?: JobSearchCompany | undefined;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export enum Interview_Type {
+  UNKNOWN = 0,
+  IN_PROGRESS = 1,
+  APPLIED = 2,
+  IN_INTERVIEW = 3,
+  CLOSED = 4,
+  UNRECOGNIZED = -1,
+}
+
+export function interview_TypeFromJSON(object: any): Interview_Type {
+  switch (object) {
+    case 0:
+    case "UNKNOWN":
+      return Interview_Type.UNKNOWN;
+    case 1:
+    case "IN_PROGRESS":
+      return Interview_Type.IN_PROGRESS;
+    case 2:
+    case "APPLIED":
+      return Interview_Type.APPLIED;
+    case 3:
+    case "IN_INTERVIEW":
+      return Interview_Type.IN_INTERVIEW;
+    case 4:
+    case "CLOSED":
+      return Interview_Type.CLOSED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Interview_Type.UNRECOGNIZED;
+  }
+}
+
+export function interview_TypeToJSON(object: Interview_Type): string {
+  switch (object) {
+    case Interview_Type.UNKNOWN:
+      return "UNKNOWN";
+    case Interview_Type.IN_PROGRESS:
+      return "IN_PROGRESS";
+    case Interview_Type.APPLIED:
+      return "APPLIED";
+    case Interview_Type.IN_INTERVIEW:
+      return "IN_INTERVIEW";
+    case Interview_Type.CLOSED:
+      return "CLOSED";
+    case Interview_Type.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
 }
 
 function createBaseWorker(): Worker {
@@ -2177,7 +2304,7 @@ export const SuccessResponse: MessageFns<SuccessResponse> = {
   },
 };
 
-function createBaseInterview(): Interview {
+function createBaseJobSearch(): JobSearch {
   return {
     id: "",
     title: undefined,
@@ -2192,8 +2319,8 @@ function createBaseInterview(): Interview {
   };
 }
 
-export const Interview: MessageFns<Interview> = {
-  encode(message: Interview, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const JobSearch: MessageFns<JobSearch> = {
+  encode(message: JobSearch, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -2227,10 +2354,10 @@ export const Interview: MessageFns<Interview> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Interview {
+  decode(input: BinaryReader | Uint8Array, length?: number): JobSearch {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseInterview();
+    const message = createBaseJobSearch();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2323,7 +2450,7 @@ export const Interview: MessageFns<Interview> = {
     return message;
   },
 
-  fromJSON(object: any): Interview {
+  fromJSON(object: any): JobSearch {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       title: isSet(object.title) ? globalThis.String(object.title) : undefined,
@@ -2338,7 +2465,7 @@ export const Interview: MessageFns<Interview> = {
     };
   },
 
-  toJSON(message: Interview): unknown {
+  toJSON(message: JobSearch): unknown {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
@@ -2373,11 +2500,11 @@ export const Interview: MessageFns<Interview> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<Interview>, I>>(base?: I): Interview {
-    return Interview.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<JobSearch>, I>>(base?: I): JobSearch {
+    return JobSearch.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<Interview>, I>>(object: I): Interview {
-    const message = createBaseInterview();
+  fromPartial<I extends Exact<DeepPartial<JobSearch>, I>>(object: I): JobSearch {
+    const message = createBaseJobSearch();
     message.id = object.id ?? "";
     message.title = object.title ?? undefined;
     message.startedAt = object.startedAt ?? 0;
@@ -2391,6 +2518,423 @@ export const Interview: MessageFns<Interview> = {
       : undefined;
     message.nextCompany = (object.nextCompany !== undefined && object.nextCompany !== null)
       ? Company.fromPartial(object.nextCompany)
+      : undefined;
+    message.createdAt = object.createdAt ?? 0;
+    message.updatedAt = object.updatedAt ?? 0;
+    return message;
+  },
+};
+
+function createBaseJobSearchCompany(): JobSearchCompany {
+  return {
+    id: "",
+    name: undefined,
+    status: 0,
+    appliedAt: 0,
+    closedAt: 0,
+    endedAt: undefined,
+    link: undefined,
+    jobSearch: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
+}
+
+export const JobSearchCompany: MessageFns<JobSearchCompany> = {
+  encode(message: JobSearchCompany, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.status !== 0) {
+      writer.uint32(24).int32(message.status);
+    }
+    if (message.appliedAt !== 0) {
+      writer.uint32(32).uint64(message.appliedAt);
+    }
+    if (message.closedAt !== 0) {
+      writer.uint32(40).uint64(message.closedAt);
+    }
+    if (message.endedAt !== undefined) {
+      writer.uint32(48).uint64(message.endedAt);
+    }
+    if (message.link !== undefined) {
+      writer.uint32(58).string(message.link);
+    }
+    if (message.jobSearch !== undefined) {
+      JobSearch.encode(message.jobSearch, writer.uint32(402).fork()).join();
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(784).uint64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(792).uint64(message.updatedAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): JobSearchCompany {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseJobSearchCompany();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.appliedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.closedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.link = reader.string();
+          continue;
+        }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.jobSearch = JobSearch.decode(reader, reader.uint32());
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
+            break;
+          }
+
+          message.createdAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
+            break;
+          }
+
+          message.updatedAt = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): JobSearchCompany {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      status: isSet(object.status) ? jobSearchCompany_StatusFromJSON(object.status) : 0,
+      appliedAt: isSet(object.appliedAt) ? globalThis.Number(object.appliedAt) : 0,
+      closedAt: isSet(object.closedAt) ? globalThis.Number(object.closedAt) : 0,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      link: isSet(object.link) ? globalThis.String(object.link) : undefined,
+      jobSearch: isSet(object.jobSearch) ? JobSearch.fromJSON(object.jobSearch) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
+    };
+  },
+
+  toJSON(message: JobSearchCompany): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.name !== undefined) {
+      obj.name = message.name;
+    }
+    if (message.status !== 0) {
+      obj.status = jobSearchCompany_StatusToJSON(message.status);
+    }
+    if (message.appliedAt !== 0) {
+      obj.appliedAt = Math.round(message.appliedAt);
+    }
+    if (message.closedAt !== 0) {
+      obj.closedAt = Math.round(message.closedAt);
+    }
+    if (message.endedAt !== undefined) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.link !== undefined) {
+      obj.link = message.link;
+    }
+    if (message.jobSearch !== undefined) {
+      obj.jobSearch = JobSearch.toJSON(message.jobSearch);
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<JobSearchCompany>, I>>(base?: I): JobSearchCompany {
+    return JobSearchCompany.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<JobSearchCompany>, I>>(object: I): JobSearchCompany {
+    const message = createBaseJobSearchCompany();
+    message.id = object.id ?? "";
+    message.name = object.name ?? undefined;
+    message.status = object.status ?? 0;
+    message.appliedAt = object.appliedAt ?? 0;
+    message.closedAt = object.closedAt ?? 0;
+    message.endedAt = object.endedAt ?? undefined;
+    message.link = object.link ?? undefined;
+    message.jobSearch = (object.jobSearch !== undefined && object.jobSearch !== null)
+      ? JobSearch.fromPartial(object.jobSearch)
+      : undefined;
+    message.createdAt = object.createdAt ?? 0;
+    message.updatedAt = object.updatedAt ?? 0;
+    return message;
+  },
+};
+
+function createBaseInterview(): Interview {
+  return {
+    id: "",
+    title: undefined,
+    type: 0,
+    startedAt: undefined,
+    endedAt: undefined,
+    memo: undefined,
+    jobSearchCompany: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
+}
+
+export const Interview: MessageFns<Interview> = {
+  encode(message: Interview, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== undefined) {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.type !== 0) {
+      writer.uint32(24).int32(message.type);
+    }
+    if (message.startedAt !== undefined) {
+      writer.uint32(32).uint64(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      writer.uint32(40).uint64(message.endedAt);
+    }
+    if (message.memo !== undefined) {
+      writer.uint32(50).string(message.memo);
+    }
+    if (message.jobSearchCompany !== undefined) {
+      JobSearchCompany.encode(message.jobSearchCompany, writer.uint32(402).fork()).join();
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(784).uint64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(792).uint64(message.updatedAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Interview {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInterview();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.type = reader.int32() as any;
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.memo = reader.string();
+          continue;
+        }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.jobSearchCompany = JobSearchCompany.decode(reader, reader.uint32());
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
+            break;
+          }
+
+          message.createdAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
+            break;
+          }
+
+          message.updatedAt = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Interview {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      title: isSet(object.title) ? globalThis.String(object.title) : undefined,
+      type: isSet(object.type) ? interview_TypeFromJSON(object.type) : 0,
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      jobSearchCompany: isSet(object.jobSearchCompany) ? JobSearchCompany.fromJSON(object.jobSearchCompany) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
+    };
+  },
+
+  toJSON(message: Interview): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.title !== undefined) {
+      obj.title = message.title;
+    }
+    if (message.type !== 0) {
+      obj.type = interview_TypeToJSON(message.type);
+    }
+    if (message.startedAt !== undefined) {
+      obj.startedAt = Math.round(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
+    }
+    if (message.jobSearchCompany !== undefined) {
+      obj.jobSearchCompany = JobSearchCompany.toJSON(message.jobSearchCompany);
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Interview>, I>>(base?: I): Interview {
+    return Interview.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Interview>, I>>(object: I): Interview {
+    const message = createBaseInterview();
+    message.id = object.id ?? "";
+    message.title = object.title ?? undefined;
+    message.type = object.type ?? 0;
+    message.startedAt = object.startedAt ?? undefined;
+    message.endedAt = object.endedAt ?? undefined;
+    message.memo = object.memo ?? undefined;
+    message.jobSearchCompany = (object.jobSearchCompany !== undefined && object.jobSearchCompany !== null)
+      ? JobSearchCompany.fromPartial(object.jobSearchCompany)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;

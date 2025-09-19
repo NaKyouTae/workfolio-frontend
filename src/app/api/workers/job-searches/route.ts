@@ -2,14 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
-import {
-  InterviewListResponse,
-  InterviewResponse,
-  InterviewCreateRequest,
-  InterviewUpdateRequest
-} from '@/generated/interview';
+import { JobSearchCreateRequest, JobSearchListResponse, JobSearchResponse, JobSearchUpdateRequest } from '@/generated/job_search';
 
-// GET /api/workers/interviews - 면접 목록 조회
+
+// GET /api/workers/job-searches - 구직 목록 조회
 export async function GET() {
   try {
     const accessToken = await getCookie('accessToken');
@@ -17,8 +13,8 @@ export async function GET() {
       return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
     }
     
-    const res = await apiFetchHandler<InterviewListResponse>(
-      'http://localhost:8080/api/workers/interviews',
+    const res = await apiFetchHandler<JobSearchListResponse>(
+      'http://localhost:8080/api/workers/job-searches',
       HttpMethod.GET,
       null,
       accessToken,
@@ -27,22 +23,22 @@ export async function GET() {
     const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching interviews:', error);
-    return NextResponse.json({ error: 'Failed to fetch interviews' }, { status: 500 });
+    console.error('Error fetching job searches:', error);
+    return NextResponse.json({ error: 'Failed to fetch job searches' }, { status: 500 });
   }
 }
 
-// POST /api/workers/interviews - 면접 생성
+// POST /api/workers/job-searches - 구직 생성
 export async function POST(request: NextRequest) {
   try {
-    const body: InterviewCreateRequest = await request.json();
+    const body: JobSearchCreateRequest = await request.json();
     const accessToken = await getCookie('accessToken');
     if (!accessToken) {
       return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
     }
     
-    const res = await apiFetchHandler<InterviewResponse>(
-      'http://localhost:8080/api/workers/interviews',
+    const res = await apiFetchHandler<JobSearchResponse>(
+      'http://localhost:8080/api/workers/job-searches',
       HttpMethod.POST,
       body,
       accessToken,
@@ -51,22 +47,22 @@ export async function POST(request: NextRequest) {
     const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error creating interview:', error);
-    return NextResponse.json({ error: 'Failed to create interview' }, { status: 500 });
+    console.error('Error creating job search:', error);
+    return NextResponse.json({ error: 'Failed to create job search' }, { status: 500 });
   }
 }
 
-// PUT /api/workers/interviews - 면접 수정
+// PUT /api/workers/job-searches - 구직 수정
 export async function PUT(request: NextRequest) {
   try {
-    const body: InterviewUpdateRequest = await request.json();
+    const body: JobSearchUpdateRequest = await request.json();
     const accessToken = await getCookie('accessToken');
     if (!accessToken) {
       return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
     }
     
-    const res = await apiFetchHandler<InterviewResponse>(
-      'http://localhost:8080/api/workers/interviews',
+    const res = await apiFetchHandler<JobSearchResponse>(
+      'http://localhost:8080/api/workers/job-searches',
       HttpMethod.PUT,
       body,
       accessToken,
@@ -75,7 +71,7 @@ export async function PUT(request: NextRequest) {
     const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error updating interview:', error);
-    return NextResponse.json({ error: 'Failed to update interview' }, { status: 500 });
+    console.error('Error updating job search:', error);
+    return NextResponse.json({ error: 'Failed to update job search' }, { status: 500 });
   }
 }
