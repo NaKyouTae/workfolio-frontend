@@ -28,6 +28,10 @@ export interface PositionListResponse {
   positions: Position[];
 }
 
+export interface PositionResponse {
+  position?: Position | undefined;
+}
+
 function createBasePositionCreateRequest(): PositionCreateRequest {
   return { companyId: "", name: "", startedAt: 0, endedAt: undefined };
 }
@@ -302,6 +306,66 @@ export const PositionListResponse: MessageFns<PositionListResponse> = {
   fromPartial<I extends Exact<DeepPartial<PositionListResponse>, I>>(object: I): PositionListResponse {
     const message = createBasePositionListResponse();
     message.positions = object.positions?.map((e) => Position.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBasePositionResponse(): PositionResponse {
+  return { position: undefined };
+}
+
+export const PositionResponse: MessageFns<PositionResponse> = {
+  encode(message: PositionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.position !== undefined) {
+      Position.encode(message.position, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PositionResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePositionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.position = Position.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PositionResponse {
+    return { position: isSet(object.position) ? Position.fromJSON(object.position) : undefined };
+  },
+
+  toJSON(message: PositionResponse): unknown {
+    const obj: any = {};
+    if (message.position !== undefined) {
+      obj.position = Position.toJSON(message.position);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PositionResponse>, I>>(base?: I): PositionResponse {
+    return PositionResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PositionResponse>, I>>(object: I): PositionResponse {
+    const message = createBasePositionResponse();
+    message.position = (object.position !== undefined && object.position !== null)
+      ? Position.fromPartial(object.position)
+      : undefined;
     return message;
   },
 };

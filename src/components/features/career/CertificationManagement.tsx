@@ -51,7 +51,7 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
     if (!isInitialLoad.current && certifications.length >= 0 && onDataChange) {
       onDataChange(certifications);
     }
-  }, [certifications, onDataChange]);
+  }, [onDataChange]);
 
   // 데이터 변경 핸들러
   const handleDataChange = (newCertifications: Certifications[]) => {
@@ -60,7 +60,6 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
       onDataChange(newCertifications as Certifications[]);
     }
   };
-
 
   // 자격증 추가
   const addCertification = async () => {
@@ -147,18 +146,24 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
 
   // 공통 추가 버튼 렌더링 함수
   const renderAddButton = (title: string, backgroundColor: string = "#007bff", onClick: () => void) => (
-    <div>
-      <button 
-        onClick={onClick} 
-        style={{ 
-          width: '70px', 
-          height: '30px', 
-          backgroundColor: backgroundColor, 
-          color: 'white', 
-          border: 'none', 
+    <div style={{ display: 'inline-block' }}>
+      <button
+        onClick={onClick}
+        style={{
+          backgroundColor: backgroundColor,
+          color: 'white',
+          border: 'none',
           borderRadius: '4px',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          width: '50px',
+          height: '30px',
+          padding: '0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          whiteSpace: 'nowrap'
         }}
+        title={title}
       >
         {title}
       </button>
@@ -167,27 +172,8 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#333', margin: 0 }}>자격증</h3>
-        <button 
-          onClick={() => setShowCertificationInput(!showCertificationInput)}
-          style={{ 
-            width: '30px', 
-            height: '30px', 
-            backgroundColor: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '50%', 
-            cursor: 'pointer',
-            fontSize: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          title="자격증 추가"
-        >
-          +
-        </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0px' }}>
+        {renderAddButton('추가', '#007bff', () => setShowCertificationInput(!showCertificationInput))}
       </div>
       
       {/* 자격증 추가 입력 폼 */}

@@ -22,7 +22,9 @@ export async function GET() {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching educations:', error);
     return NextResponse.json({ error: 'Failed to fetch educations' }, { status: 500 });
@@ -49,7 +51,9 @@ export async function POST(request: NextRequest) {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error creating education:', error);
     return NextResponse.json({ error: 'Failed to create education' }, { status: 500 });
@@ -76,7 +80,9 @@ export async function PUT(request: NextRequest) {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error updating education:', error);
     return NextResponse.json({ error: 'Failed to update education' }, { status: 500 });

@@ -43,6 +43,10 @@ export interface UpdateRecordGroupRequest {
   priority: number;
 }
 
+export interface RecordGroupResponse {
+  recordGroup?: RecordGroup | undefined;
+}
+
 function createBaseCreateRecordGroupRequest(): CreateRecordGroupRequest {
   return { title: "", color: "", priority: 0 };
 }
@@ -547,6 +551,66 @@ export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
     message.isPublic = object.isPublic ?? false;
     message.color = object.color ?? "";
     message.priority = object.priority ?? 0;
+    return message;
+  },
+};
+
+function createBaseRecordGroupResponse(): RecordGroupResponse {
+  return { recordGroup: undefined };
+}
+
+export const RecordGroupResponse: MessageFns<RecordGroupResponse> = {
+  encode(message: RecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.recordGroup !== undefined) {
+      RecordGroup.encode(message.recordGroup, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordGroupResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecordGroupResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.recordGroup = RecordGroup.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RecordGroupResponse {
+    return { recordGroup: isSet(object.recordGroup) ? RecordGroup.fromJSON(object.recordGroup) : undefined };
+  },
+
+  toJSON(message: RecordGroupResponse): unknown {
+    const obj: any = {};
+    if (message.recordGroup !== undefined) {
+      obj.recordGroup = RecordGroup.toJSON(message.recordGroup);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RecordGroupResponse>, I>>(base?: I): RecordGroupResponse {
+    return RecordGroupResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RecordGroupResponse>, I>>(object: I): RecordGroupResponse {
+    const message = createBaseRecordGroupResponse();
+    message.recordGroup = (object.recordGroup !== undefined && object.recordGroup !== null)
+      ? RecordGroup.fromPartial(object.recordGroup)
+      : undefined;
     return message;
   },
 };

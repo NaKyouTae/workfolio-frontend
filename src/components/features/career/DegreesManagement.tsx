@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { WorkerCareerUpdateRequest_WorkerDegrees } from '../../../generated/worker_career';
+import { DegreesCreateRequest, DegreesUpdateRequest } from '../../../generated/degrees';
 import { Degrees } from '@/generated/common';
 import { DateUtil } from '../../../utils/DateUtil';
+import HttpMethod from '@/enums/HttpMethod';
 
 interface DegreesManagementProps {
   initialData?: Degrees[];
@@ -12,12 +13,12 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
   initialData = [], 
   onDataChange
 }) => {
-  const [degrees, setDegrees] = useState<WorkerCareerUpdateRequest_WorkerDegrees[]>([]);
-  const [newDegree, setNewDegree] = useState<WorkerCareerUpdateRequest_WorkerDegrees>({
+  const [degrees, setDegrees] = useState<Degrees[]>([]);
+  const [newDegree, setNewDegree] = useState<DegreesCreateRequest>({
     name: '',
     major: '',
     startedAt: 0,
-    endedAt: 0
+    endedAt: 0,
   });
 
   // Input 표시 상태
@@ -29,11 +30,14 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
   // 초기 데이터 로드
   useEffect(() => {
     if (initialData && initialData.length > 0) {
-      const degreesForm: WorkerCareerUpdateRequest_WorkerDegrees[] = initialData.map((degree: Degrees) => ({
+      const degreesForm: Degrees[] = initialData.map((degree: Degrees) => ({
+        id: degree.id,
         name: degree.name,
         major: degree.major,
         startedAt: degree.startedAt,
-        endedAt: degree.endedAt
+        endedAt: degree.endedAt,
+        createdAt: degree.createdAt,
+        updatedAt: degree.updatedAt
       }));
       setDegrees(degreesForm);
       isInitialLoad.current = false;
@@ -45,24 +49,22 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
     if (!isInitialLoad.current && degrees.length >= 0 && onDataChange) {
       onDataChange(degrees as Degrees[]);
     }
-  }, [degrees, onDataChange]);
+  }, [onDataChange]);
 
   // 데이터 변경 핸들러
-  const handleDataChange = (newDegrees: WorkerCareerUpdateRequest_WorkerDegrees[]) => {
+  const handleDataChange = (newDegrees: Degrees[]) => {
     setDegrees(newDegrees);
     if (onDataChange) {
       onDataChange(newDegrees as Degrees[]);
     }
   };
 
-
-
   // 학위 추가
   const addDegree = async () => {
     if (newDegree.name && newDegree.major && newDegree.startedAt) {
       try {
         const response = await fetch('/api/workers/degrees', {
-          method: 'POST',
+          method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -71,8 +73,8 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
 
         if (response.ok) {
           const result = await response.json();
-          if (result.success) {
-            handleDataChange([...degrees, result.data]);
+          if (result) {
+            handleDataChange([...degrees, result.degrees]);
             setNewDegree({
               name: '',
               major: '',
@@ -92,10 +94,10 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
   };
 
   // 학위 수정
-  const updateDegree = async (index: number, updatedDegree: WorkerCareerUpdateRequest_WorkerDegrees) => {
+  const updateDegree = async (index: number, updatedDegree: DegreesUpdateRequest) => {
     try {
       const response = await fetch('/api/workers/degrees', {
-        method: 'PUT',
+        method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -104,9 +106,9 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
 
       if (response.ok) {
         const result = await response.json();
-        if (result.success) {
+        if (result) {
           const updatedData = [...degrees];
-          updatedData[index] = result.data;
+          updatedData[index] = result.degrees;
           handleDataChange(updatedData);
         } else {
           console.error('Failed to update degree');
@@ -123,7 +125,7 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
   const removeDegree = async (index: number) => {
     try {
       const response = await fetch(`/api/workers/degrees/${index}`, {
-        method: 'DELETE',
+        method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -141,18 +143,24 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
 
   // 공통 추가 버튼 렌더링 함수
   const renderAddButton = (title: string, backgroundColor: string = "#007bff", onClick: () => void) => (
-    <div>
-      <button 
-        onClick={onClick} 
-        style={{ 
-          width: '70px', 
-          height: '30px', 
-          backgroundColor: backgroundColor, 
-          color: 'white', 
-          border: 'none', 
+    <div style={{ display: 'inline-block' }}>
+      <button
+        onClick={onClick}
+        style={{
+          backgroundColor: backgroundColor,
+          color: 'white',
+          border: 'none',
           borderRadius: '4px',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          width: '50px',
+          height: '30px',
+          padding: '0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          whiteSpace: 'nowrap'
         }}
+        title={title}
       >
         {title}
       </button>
@@ -161,27 +169,8 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#333', margin: 0 }}>학위</h3>
-        <button 
-          onClick={() => setShowDegreeInput(!showDegreeInput)}
-          style={{ 
-            width: '30px', 
-            height: '30px', 
-            backgroundColor: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '50%', 
-            cursor: 'pointer',
-            fontSize: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          title="학위 추가"
-        >
-          +
-        </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0px' }}>
+        {renderAddButton('추가', '#007bff', () => setShowDegreeInput(!showDegreeInput))}
       </div>
       
       {/* 학위 추가 입력 폼 */}

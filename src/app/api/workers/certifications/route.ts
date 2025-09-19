@@ -1,9 +1,8 @@
-import { CertificationsListResponse } from '@/generated/certifications';
+import { CertificationsListResponse, CertificationsResponse } from '@/generated/certifications';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { getCookie } from '@/utils/cookie';
 import HttpMethod from '@/enums/HttpMethod';
 import { NextRequest, NextResponse } from 'next/server';
-import { SuccessResponse } from '@/generated/common';
 
 // GET /api/workers/certifications - 자격증 목록 조회
 export async function GET() {
@@ -44,14 +43,16 @@ export async function POST(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<CertificationsResponse>(
       'http://localhost:8080/api/workers/certifications', 
       HttpMethod.POST, 
       body, 
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error creating certifications:', error);
     return NextResponse.json({ error: 'Failed to create certifications' }, { status: 500 });
@@ -70,14 +71,16 @@ export async function PUT(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<CertificationsResponse>(
       'http://localhost:8080/api/workers/certifications', 
       HttpMethod.PUT, 
       body, 
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error updating certification:', error);
     return NextResponse.json({ error: 'Failed to update certification' }, { status: 500 });

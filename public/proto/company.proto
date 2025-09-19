@@ -26,3 +26,7 @@ message CompanyUpdateRequest {
 message CompanyListResponse {
   repeated Company companies = 1;
 }
+
+message CompanyResponse {
+  Company company = 1;
+}

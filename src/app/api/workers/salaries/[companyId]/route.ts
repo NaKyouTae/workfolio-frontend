@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
-
-import { SuccessResponse } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
-import { SalaryListResponse } from '@/generated/salary';
+import { SalaryListResponse, SalaryResponse } from '@/generated/salary';
 
 // GET /api/workers/degrees - 학위 목록 조회
 export async function GET(request: NextRequest) {
@@ -24,7 +22,9 @@ export async function GET(request: NextRequest) {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching salaries:', error);
     return NextResponse.json({ error: 'Failed to fetch salaries' }, { status: 500 });
@@ -43,14 +43,16 @@ export async function POST(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<SalaryResponse>(
       'http://localhost:8080/api/workers/salaries', 
       HttpMethod.POST, 
       body, 
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error creating salary:', error);
     return NextResponse.json({ error: 'Failed to create salary' }, { status: 500 });
@@ -69,14 +71,16 @@ export async function PUT(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<SalaryResponse>(
       'http://localhost:8080/api/workers/salaries', 
       HttpMethod.PUT, 
       body, 
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error updating salary:', error);
     return NextResponse.json({ error: 'Failed to update salary' }, { status: 500 });

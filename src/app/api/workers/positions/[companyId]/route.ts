@@ -23,7 +23,9 @@ export async function GET(request: NextRequest) {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching positions:', error);
     return NextResponse.json({ error: 'Failed to fetch positions' }, { status: 500 });
@@ -49,7 +51,9 @@ export async function POST(request: NextRequest) {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error creating position:', error);
     return NextResponse.json({ error: 'Failed to create position' }, { status: 500 });
@@ -75,7 +79,9 @@ export async function PUT(request: NextRequest) {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error updating position:', error);
     return NextResponse.json({ error: 'Failed to update position' }, { status: 500 });

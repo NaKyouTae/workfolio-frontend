@@ -5,6 +5,7 @@ import CompanyManagement from './CompanyManagement';
 import CertificationManagement from './CertificationManagement';
 import DegreesManagement from './DegreesManagement';
 import EducationManagement from './EducationManagement';
+import HttpMethod from '@/enums/HttpMethod';
 
 const CareerManagement: React.FC = () => {
   // 로딩 상태
@@ -30,10 +31,13 @@ const CareerManagement: React.FC = () => {
   // 각 항목별 데이터 조회 함수들
   const fetchCompanies = async () => {
     try {
-      const response = await fetch('/api/workers/companies');
+      const response = await fetch('/api/workers/companies', {
+        method: HttpMethod.GET,
+      });
+
       if (response.ok) {
         const res = await response.json();
-        return res.data?.companies || [];
+        return res.companies || [];
       }
       return [];
     } catch (error) {
@@ -44,10 +48,16 @@ const CareerManagement: React.FC = () => {
 
   const fetchCertifications = async () => {
     try {
-      const response = await fetch('/api/workers/certifications');
+      const response = await fetch('/api/workers/certifications', {
+        method: HttpMethod.GET,
+      });
+
       if (response.ok) {
         const res = await response.json();
-        return res.data?.certifications || [];
+
+        console.log('test 2', res);
+
+        return res.certifications || [];
       }
       return [];
     } catch (error) {
@@ -58,10 +68,13 @@ const CareerManagement: React.FC = () => {
 
   const fetchDegrees = async () => {
     try {
-      const response = await fetch('/api/workers/degrees');
+      const response = await fetch('/api/workers/degrees', {
+        method: HttpMethod.GET,
+      });
+
       if (response.ok) {
         const res = await response.json();
-        return res.data?.degrees || [];
+        return res.degrees || [];
       }
       return [];
     } catch (error) {
@@ -72,10 +85,13 @@ const CareerManagement: React.FC = () => {
 
   const fetchEducations = async () => {
     try {
-      const response = await fetch('/api/workers/educations');
+      const response = await fetch('/api/workers/educations', {
+        method: HttpMethod.GET,
+      });
+
       if (response.ok) {
         const res = await response.json();
-        return res.data?.educations || [];
+        return res.educations || [];
       }
       return [];
     } catch (error) {
@@ -196,7 +212,7 @@ const CareerManagement: React.FC = () => {
         </div>
 
         {/* 자격증 섹션 */}
-        <div style={{ border: '1px solid #e0e0e0', borderRadius: '8px', overflow: 'hidden' }}>
+        <div style={{ borderRadius: '8px', overflow: 'hidden' }}>
           <div 
             style={{ 
               display: 'flex', 
@@ -225,7 +241,7 @@ const CareerManagement: React.FC = () => {
         </div>
 
         {/* 학위 섹션 */}
-        <div style={{ border: '1px solid #e0e0e0', borderRadius: '8px', overflow: 'hidden' }}>
+        <div style={{ borderRadius: '8px', overflow: 'hidden' }}>
           <div 
             style={{ 
               display: 'flex', 
@@ -254,7 +270,7 @@ const CareerManagement: React.FC = () => {
         </div>
 
         {/* 교육 섹션 */}
-        <div style={{ border: '1px solid #e0e0e0', borderRadius: '8px', overflow: 'hidden' }}>
+        <div style={{ borderRadius: '8px', overflow: 'hidden' }}>
           <div 
             style={{ 
               display: 'flex', 

@@ -29,6 +29,10 @@ export interface CompanyListResponse {
   companies: Company[];
 }
 
+export interface CompanyResponse {
+  company?: Company | undefined;
+}
+
 function createBaseCompanyCreateRequest(): CompanyCreateRequest {
   return { name: "", startedAt: 0, endedAt: 0, isWorking: false };
 }
@@ -319,6 +323,66 @@ export const CompanyListResponse: MessageFns<CompanyListResponse> = {
   fromPartial<I extends Exact<DeepPartial<CompanyListResponse>, I>>(object: I): CompanyListResponse {
     const message = createBaseCompanyListResponse();
     message.companies = object.companies?.map((e) => Company.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseCompanyResponse(): CompanyResponse {
+  return { company: undefined };
+}
+
+export const CompanyResponse: MessageFns<CompanyResponse> = {
+  encode(message: CompanyResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.company !== undefined) {
+      Company.encode(message.company, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CompanyResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCompanyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.company = Company.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CompanyResponse {
+    return { company: isSet(object.company) ? Company.fromJSON(object.company) : undefined };
+  },
+
+  toJSON(message: CompanyResponse): unknown {
+    const obj: any = {};
+    if (message.company !== undefined) {
+      obj.company = Company.toJSON(message.company);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CompanyResponse>, I>>(base?: I): CompanyResponse {
+    return CompanyResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CompanyResponse>, I>>(object: I): CompanyResponse {
+    const message = createBaseCompanyResponse();
+    message.company = (object.company !== undefined && object.company !== null)
+      ? Company.fromPartial(object.company)
+      : undefined;
     return message;
   },
 };

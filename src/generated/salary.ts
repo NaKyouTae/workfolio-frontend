@@ -28,6 +28,10 @@ export interface SalaryListResponse {
   Salaries: Salary[];
 }
 
+export interface SalaryResponse {
+  salary?: Salary | undefined;
+}
+
 function createBaseSalaryCreateRequest(): SalaryCreateRequest {
   return { companyId: "", amount: 0, startedAt: 0, endedAt: undefined };
 }
@@ -300,6 +304,66 @@ export const SalaryListResponse: MessageFns<SalaryListResponse> = {
   fromPartial<I extends Exact<DeepPartial<SalaryListResponse>, I>>(object: I): SalaryListResponse {
     const message = createBaseSalaryListResponse();
     message.Salaries = object.Salaries?.map((e) => Salary.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSalaryResponse(): SalaryResponse {
+  return { salary: undefined };
+}
+
+export const SalaryResponse: MessageFns<SalaryResponse> = {
+  encode(message: SalaryResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.salary !== undefined) {
+      Salary.encode(message.salary, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SalaryResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSalaryResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.salary = Salary.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SalaryResponse {
+    return { salary: isSet(object.salary) ? Salary.fromJSON(object.salary) : undefined };
+  },
+
+  toJSON(message: SalaryResponse): unknown {
+    const obj: any = {};
+    if (message.salary !== undefined) {
+      obj.salary = Salary.toJSON(message.salary);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SalaryResponse>, I>>(base?: I): SalaryResponse {
+    return SalaryResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SalaryResponse>, I>>(object: I): SalaryResponse {
+    const message = createBaseSalaryResponse();
+    message.salary = (object.salary !== undefined && object.salary !== null)
+      ? Salary.fromPartial(object.salary)
+      : undefined;
     return message;
   },
 };

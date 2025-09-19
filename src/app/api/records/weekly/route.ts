@@ -62,14 +62,7 @@ export async function GET(request: Request) {
         
         const data = await res.json()
         
-        return NextResponse.json({
-            records: data.records,
-            type: 'weekly',
-            year: yearNum,
-            month: monthNum,
-            week: weekNum,
-            recordGroupIds: recordGroupIds ? recordGroupIds.split(',').filter(id => id.trim() !== '') : []
-        })
+        return NextResponse.json(data)
     } catch (error) {
         console.error('Error in GET request for weekly records:', error);
         return new NextResponse(JSON.stringify({ error: 'Internal Server Error' }), { 

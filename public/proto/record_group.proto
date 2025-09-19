@@ -40,3 +40,7 @@ message UpdateRecordGroupRequest {
   string color = 3;
   uint64 priority = 4;
 }
+
+message RecordGroupResponse {
+  RecordGroup record_group = 1;
+}

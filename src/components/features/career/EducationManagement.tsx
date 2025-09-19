@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { WorkerCareerUpdateRequest_WorkerEducation } from '../../../generated/worker_career';
 import { Education } from '@/generated/common';
 import { DateUtil } from '../../../utils/DateUtil';
+import { EducationCreateRequest, EducationUpdateRequest } from '@/generated/education';
+import HttpMethod from '@/enums/HttpMethod';
 
 interface EducationManagementProps {
   initialData?: Education[];
@@ -12,8 +13,8 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
   initialData = [], 
   onDataChange
 }) => {
-  const [educations, setEducations] = useState<WorkerCareerUpdateRequest_WorkerEducation[]>([]);
-  const [newEducation, setNewEducation] = useState<WorkerCareerUpdateRequest_WorkerEducation>({
+  const [educations, setEducations] = useState<Education[]>([]);
+  const [newEducation, setNewEducation] = useState<EducationCreateRequest>({
     name: '',
     agency: '',
     startedAt: 0,
@@ -29,11 +30,14 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
   // 초기 데이터 로드
   useEffect(() => {
     if (initialData && initialData.length > 0) {
-      const educationsForm: WorkerCareerUpdateRequest_WorkerEducation[] = initialData.map((education: Education) => ({
+      const educationsForm: Education[] = initialData.map((education: Education) => ({
+        id: education.id,
         name: education.name,
         agency: education.agency,
         startedAt: education.startedAt,
-        endedAt: education.endedAt
+        endedAt: education.endedAt,
+        createdAt: education.createdAt,
+        updatedAt: education.updatedAt
       }));
       setEducations(educationsForm);
       isInitialLoad.current = false;
@@ -45,25 +49,23 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
     if (!isInitialLoad.current && educations.length >= 0 && onDataChange) {
       onDataChange(educations as Education[]);
     }
-  }, [educations, onDataChange]);
+  }, [onDataChange]);
 
 
   // 데이터 변경 핸들러
-  const handleDataChange = (newEducations: WorkerCareerUpdateRequest_WorkerEducation[]) => {
+  const handleDataChange = (newEducations: Education[]) => {
     setEducations(newEducations);
     if (onDataChange) {
       onDataChange(newEducations as Education[]);
     }
   };
 
-
-
   // 교육 이력 추가
   const addEducation = async () => {
     if (newEducation.name && newEducation.agency && newEducation.startedAt) {
       try {
         const response = await fetch('/api/workers/educations', {
-          method: 'POST',
+          method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -72,8 +74,8 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
 
         if (response.ok) {
           const result = await response.json();
-          if (result.success) {
-            handleDataChange([...educations, result.data]);
+            if (result) {
+            handleDataChange([...educations, result.education]);
             setNewEducation({
               name: '',
               agency: '',
@@ -93,10 +95,10 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
   };
 
   // 교육 이력 수정
-  const updateEducation = async (index: number, updatedEducation: WorkerCareerUpdateRequest_WorkerEducation) => {
+  const updateEducation = async (index: number, updatedEducation: EducationUpdateRequest) => {
     try {
       const response = await fetch('/api/workers/educations', {
-        method: 'PUT',
+        method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -105,9 +107,9 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
 
       if (response.ok) {
         const result = await response.json();
-        if (result.success) {
+        if (result) {
           const updatedData = [...educations];
-          updatedData[index] = result.data;
+          updatedData[index] = result.education;
           handleDataChange(updatedData);
         } else {
           console.error('Failed to update education');
@@ -124,7 +126,7 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
   const removeEducation = async (index: number) => {
     try {
       const response = await fetch(`/api/workers/educations/${index}`, {
-        method: 'DELETE',
+        method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -142,18 +144,24 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
 
   // 공통 추가 버튼 렌더링 함수
   const renderAddButton = (title: string, backgroundColor: string = "#007bff", onClick: () => void) => (
-    <div>
-      <button 
-        onClick={onClick} 
-        style={{ 
-          width: '70px', 
-          height: '30px', 
-          backgroundColor: backgroundColor, 
-          color: 'white', 
-          border: 'none', 
+    <div style={{ display: 'inline-block' }}>
+      <button
+        onClick={onClick}
+        style={{
+          backgroundColor: backgroundColor,
+          color: 'white',
+          border: 'none',
           borderRadius: '4px',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          width: '50px',
+          height: '30px',
+          padding: '0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          whiteSpace: 'nowrap'
         }}
+        title={title}
       >
         {title}
       </button>
@@ -162,27 +170,8 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#333', margin: 0 }}>교육 이력</h3>
-        <button 
-          onClick={() => setShowEducationInput(!showEducationInput)}
-          style={{ 
-            width: '30px', 
-            height: '30px', 
-            backgroundColor: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '50%', 
-            cursor: 'pointer',
-            fontSize: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          title="교육 추가"
-        >
-          +
-        </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0px' }}>
+        {renderAddButton('추가', '#007bff', () => setShowEducationInput(!showEducationInput))}
       </div>
       
       {/* 교육 추가 입력 폼 */}

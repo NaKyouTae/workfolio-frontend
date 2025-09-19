@@ -29,6 +29,10 @@ export interface DegreesUpdateRequest {
   endedAt?: number | undefined;
 }
 
+export interface DegreesResponse {
+  degrees?: Degrees | undefined;
+}
+
 function createBaseDegreesListResponse(): DegreesListResponse {
   return { degrees: [] };
 }
@@ -317,6 +321,66 @@ export const DegreesUpdateRequest: MessageFns<DegreesUpdateRequest> = {
     message.major = object.major ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
+    return message;
+  },
+};
+
+function createBaseDegreesResponse(): DegreesResponse {
+  return { degrees: undefined };
+}
+
+export const DegreesResponse: MessageFns<DegreesResponse> = {
+  encode(message: DegreesResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.degrees !== undefined) {
+      Degrees.encode(message.degrees, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DegreesResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDegreesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.degrees = Degrees.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DegreesResponse {
+    return { degrees: isSet(object.degrees) ? Degrees.fromJSON(object.degrees) : undefined };
+  },
+
+  toJSON(message: DegreesResponse): unknown {
+    const obj: any = {};
+    if (message.degrees !== undefined) {
+      obj.degrees = Degrees.toJSON(message.degrees);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DegreesResponse>, I>>(base?: I): DegreesResponse {
+    return DegreesResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<DegreesResponse>, I>>(object: I): DegreesResponse {
+    const message = createBaseDegreesResponse();
+    message.degrees = (object.degrees !== undefined && object.degrees !== null)
+      ? Degrees.fromPartial(object.degrees)
+      : undefined;
     return message;
   },
 };

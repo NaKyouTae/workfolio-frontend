@@ -31,6 +31,10 @@ export interface CertificationsUpdateRequest {
   expirationPeriod?: number | undefined;
 }
 
+export interface CertificationsResponse {
+  certifications?: Certifications | undefined;
+}
+
 function createBaseCertificationsListResponse(): CertificationsListResponse {
   return { certifications: [] };
 }
@@ -353,6 +357,68 @@ export const CertificationsUpdateRequest: MessageFns<CertificationsUpdateRequest
     message.issuer = object.issuer ?? "";
     message.issuedAt = object.issuedAt ?? 0;
     message.expirationPeriod = object.expirationPeriod ?? undefined;
+    return message;
+  },
+};
+
+function createBaseCertificationsResponse(): CertificationsResponse {
+  return { certifications: undefined };
+}
+
+export const CertificationsResponse: MessageFns<CertificationsResponse> = {
+  encode(message: CertificationsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.certifications !== undefined) {
+      Certifications.encode(message.certifications, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CertificationsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCertificationsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.certifications = Certifications.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CertificationsResponse {
+    return {
+      certifications: isSet(object.certifications) ? Certifications.fromJSON(object.certifications) : undefined,
+    };
+  },
+
+  toJSON(message: CertificationsResponse): unknown {
+    const obj: any = {};
+    if (message.certifications !== undefined) {
+      obj.certifications = Certifications.toJSON(message.certifications);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CertificationsResponse>, I>>(base?: I): CertificationsResponse {
+    return CertificationsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CertificationsResponse>, I>>(object: I): CertificationsResponse {
+    const message = createBaseCertificationsResponse();
+    message.certifications = (object.certifications !== undefined && object.certifications !== null)
+      ? Certifications.fromPartial(object.certifications)
+      : undefined;
     return message;
   },
 };

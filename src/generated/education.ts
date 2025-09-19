@@ -29,6 +29,10 @@ export interface EducationUpdateRequest {
   agency: string;
 }
 
+export interface EducationResponse {
+  education?: Education | undefined;
+}
+
 function createBaseEducationListResponse(): EducationListResponse {
   return { educations: [] };
 }
@@ -319,6 +323,66 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
     message.agency = object.agency ?? "";
+    return message;
+  },
+};
+
+function createBaseEducationResponse(): EducationResponse {
+  return { education: undefined };
+}
+
+export const EducationResponse: MessageFns<EducationResponse> = {
+  encode(message: EducationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.education !== undefined) {
+      Education.encode(message.education, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EducationResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEducationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.education = Education.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EducationResponse {
+    return { education: isSet(object.education) ? Education.fromJSON(object.education) : undefined };
+  },
+
+  toJSON(message: EducationResponse): unknown {
+    const obj: any = {};
+    if (message.education !== undefined) {
+      obj.education = Education.toJSON(message.education);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EducationResponse>, I>>(base?: I): EducationResponse {
+    return EducationResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<EducationResponse>, I>>(object: I): EducationResponse {
+    const message = createBaseEducationResponse();
+    message.education = (object.education !== undefined && object.education !== null)
+      ? Education.fromPartial(object.education)
+      : undefined;
     return message;
   },
 };

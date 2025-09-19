@@ -24,7 +24,7 @@ export async function GET() {
 
     const data = await res.json();
 
-    return NextResponse.json({ success: true, data: data });
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching companies:', error);
     return NextResponse.json({ error: 'Failed to fetch companies' }, { status: 500 });
@@ -50,7 +50,9 @@ export async function POST(request: NextRequest) {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error creating company:', error);
     return NextResponse.json({ error: 'Failed to create company' }, { status: 500 });
@@ -75,8 +77,9 @@ export async function PUT(request: NextRequest) {
       body, 
       accessToken,
     );
+    const data = await res.json();
 
-    return NextResponse.json({ success: true, data: res.json() });
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error updating company:', error);
     return NextResponse.json({ error: 'Failed to update company' }, { status: 500 });

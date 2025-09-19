@@ -1,8 +1,7 @@
 import { getCookie } from '@/utils/cookie';
 import { NextRequest, NextResponse } from 'next/server';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
-import { DegreesListResponse } from '@/generated/degrees';
-import { SuccessResponse } from '@/generated/common';
+import { DegreesListResponse, DegreesResponse } from '@/generated/degrees';
 import HttpMethod from '@/enums/HttpMethod';
 
 // GET /api/workers/degrees - 학위 목록 조회
@@ -22,7 +21,9 @@ export async function GET() {
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching degrees:', error);
     return NextResponse.json({ error: 'Failed to fetch degrees' }, { status: 500 });
@@ -41,14 +42,16 @@ export async function POST(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<DegreesResponse>(
       'http://localhost:8080/api/workers/degrees', 
       HttpMethod.POST, 
       body, 
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error creating degree:', error);
     return NextResponse.json({ error: 'Failed to create degree' }, { status: 500 });
@@ -67,14 +70,16 @@ export async function PUT(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<DegreesResponse>(
       'http://localhost:8080/api/workers/degrees', 
       HttpMethod.PUT, 
       body, 
       accessToken,
     );
 
-    return NextResponse.json({ success: true, data: res.json() });
+    const data = await res.json();
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error updating degree:', error);
     return NextResponse.json({ error: 'Failed to update degree' }, { status: 500 });
