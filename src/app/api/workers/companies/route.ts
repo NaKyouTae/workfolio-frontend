@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
-import { CompanyListResponse } from '@/generated/company';
-import { SuccessResponse } from '@/generated/common';
+import { CompanyListResponse, CompanyResponse } from '@/generated/company';
 
 // GET /api/workers/companies - 회사 목록 조회
 export async function GET() {
@@ -43,7 +42,7 @@ export async function POST(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<CompanyResponse>(
       'http://localhost:8080/api/workers/companies', 
       HttpMethod.POST, 
       body, 
@@ -71,7 +70,7 @@ export async function PUT(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<SuccessResponse>(
+    const res = await apiFetchHandler<CompanyResponse>(
       'http://localhost:8080/api/workers/companies', 
       HttpMethod.PUT, 
       body, 

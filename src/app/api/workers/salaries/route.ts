@@ -1,21 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
-import { EducationListResponse, EducationResponse } from '@/generated/education';
 import HttpMethod from '@/enums/HttpMethod';
+import { SalaryListResponse, SalaryResponse } from '@/generated/salary';
 
-// GET /api/workers/educations - 교육 목록 조회
-export async function GET() {
+// GET /api/workers/salaries - 급여 목록 조회
+export async function GET(request: NextRequest) {
+  const companiesIds = request.nextUrl.searchParams.get('companiesIds');
   try {
     const accessToken = await getCookie('accessToken');
       
-      // accessToken이 없으면 401 응답 반환
-      if (!accessToken) {
-          return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
-      }
+    // accessToken이 없으면 401 응답 반환
+    if (!accessToken) {
+        return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
+    }
     
-    const res = await apiFetchHandler<EducationListResponse>(
-      'http://localhost:8080/api/workers/educations', 
+    const res = await apiFetchHandler<SalaryListResponse>(
+      `http://localhost:8080/api/workers/salaries?companiesIds=${companiesIds}`, 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -25,17 +26,16 @@ export async function GET() {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching educations:', error);
-    return NextResponse.json({ error: 'Failed to fetch educations' }, { status: 500 });
+    console.error('Error fetching salaries:', error);
+    return NextResponse.json({ error: 'Failed to fetch salaries' }, { status: 500 });
   }
 }
 
-// POST /api/workers/educations - 교육 생성
+// POST /api/workers/degrees - 학위 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // TODO: 실제 데이터베이스에 교육 생성
     const accessToken = await getCookie('accessToken');
       
       // accessToken이 없으면 401 응답 반환
@@ -43,8 +43,8 @@ export async function POST(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<EducationResponse>(
-      'http://localhost:8080/api/workers/educations', 
+    const res = await apiFetchHandler<SalaryResponse>(
+      'http://localhost:8080/api/workers/salaries', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -54,26 +54,25 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error creating education:', error);
-    return NextResponse.json({ error: 'Failed to create education' }, { status: 500 });
+    console.error('Error creating salary:', error);
+    return NextResponse.json({ error: 'Failed to create salary' }, { status: 500 });
   }
 }
 
-// PUT /api/workers/educations - 교육 수정
+// PUT /api/workers/degrees - 학위 수정
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // TODO: 실제 데이터베이스에서 교육 수정
     const accessToken = await getCookie('accessToken');
       
-      // accessToken이 없으면 401 응답 반환
+        // accessToken이 없으면 401 응답 반환
       if (!accessToken) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-      const res = await apiFetchHandler<EducationResponse>(
-      'http://localhost:8080/api/workers/educations', 
+    const res = await apiFetchHandler<SalaryResponse>(
+      'http://localhost:8080/api/workers/salaries', 
       HttpMethod.PUT, 
       body, 
       accessToken,
@@ -83,7 +82,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error updating education:', error);
-    return NextResponse.json({ error: 'Failed to update education' }, { status: 500 });
+    console.error('Error updating salary:', error);
+    return NextResponse.json({ error: 'Failed to update salary' }, { status: 500 });
   }
 }

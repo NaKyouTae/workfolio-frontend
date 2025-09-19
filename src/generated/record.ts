@@ -18,16 +18,6 @@ export interface CreateRecordRequest {
   recordGroupId: string;
 }
 
-export interface CreateRecordResponse {
-  id: string;
-  title: string;
-  description: string;
-  startedAt: number;
-  endedAt: number;
-  createdAt: number;
-  updatedAt: number;
-}
-
 export interface ListRecordRequest {
   year: number;
   month: number;
@@ -36,6 +26,10 @@ export interface ListRecordRequest {
 
 export interface ListRecordResponse {
   records: Record[];
+}
+
+export interface RecordResponse {
+  record?: Record | undefined;
 }
 
 function createBaseCreateRecordRequest(): CreateRecordRequest {
@@ -158,162 +152,6 @@ export const CreateRecordRequest: MessageFns<CreateRecordRequest> = {
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
     message.recordGroupId = object.recordGroupId ?? "";
-    return message;
-  },
-};
-
-function createBaseCreateRecordResponse(): CreateRecordResponse {
-  return { id: "", title: "", description: "", startedAt: 0, endedAt: 0, createdAt: 0, updatedAt: 0 };
-}
-
-export const CreateRecordResponse: MessageFns<CreateRecordResponse> = {
-  encode(message: CreateRecordResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.title !== "") {
-      writer.uint32(18).string(message.title);
-    }
-    if (message.description !== "") {
-      writer.uint32(26).string(message.description);
-    }
-    if (message.startedAt !== 0) {
-      writer.uint32(32).int64(message.startedAt);
-    }
-    if (message.endedAt !== 0) {
-      writer.uint32(40).int64(message.endedAt);
-    }
-    if (message.createdAt !== 0) {
-      writer.uint32(800).int64(message.createdAt);
-    }
-    if (message.updatedAt !== 0) {
-      writer.uint32(808).int64(message.updatedAt);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): CreateRecordResponse {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCreateRecordResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.title = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.description = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.startedAt = longToNumber(reader.int64());
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.endedAt = longToNumber(reader.int64());
-          continue;
-        }
-        case 100: {
-          if (tag !== 800) {
-            break;
-          }
-
-          message.createdAt = longToNumber(reader.int64());
-          continue;
-        }
-        case 101: {
-          if (tag !== 808) {
-            break;
-          }
-
-          message.updatedAt = longToNumber(reader.int64());
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): CreateRecordResponse {
-    return {
-      id: isSet(object.id) ? globalThis.String(object.id) : "",
-      title: isSet(object.title) ? globalThis.String(object.title) : "",
-      description: isSet(object.description) ? globalThis.String(object.description) : "",
-      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
-      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
-      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
-      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
-    };
-  },
-
-  toJSON(message: CreateRecordResponse): unknown {
-    const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
-    }
-    if (message.title !== "") {
-      obj.title = message.title;
-    }
-    if (message.description !== "") {
-      obj.description = message.description;
-    }
-    if (message.startedAt !== 0) {
-      obj.startedAt = Math.round(message.startedAt);
-    }
-    if (message.endedAt !== 0) {
-      obj.endedAt = Math.round(message.endedAt);
-    }
-    if (message.createdAt !== 0) {
-      obj.createdAt = Math.round(message.createdAt);
-    }
-    if (message.updatedAt !== 0) {
-      obj.updatedAt = Math.round(message.updatedAt);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<CreateRecordResponse>, I>>(base?: I): CreateRecordResponse {
-    return CreateRecordResponse.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<CreateRecordResponse>, I>>(object: I): CreateRecordResponse {
-    const message = createBaseCreateRecordResponse();
-    message.id = object.id ?? "";
-    message.title = object.title ?? "";
-    message.description = object.description ?? "";
-    message.startedAt = object.startedAt ?? 0;
-    message.endedAt = object.endedAt ?? 0;
-    message.createdAt = object.createdAt ?? 0;
-    message.updatedAt = object.updatedAt ?? 0;
     return message;
   },
 };
@@ -468,6 +306,66 @@ export const ListRecordResponse: MessageFns<ListRecordResponse> = {
   fromPartial<I extends Exact<DeepPartial<ListRecordResponse>, I>>(object: I): ListRecordResponse {
     const message = createBaseListRecordResponse();
     message.records = object.records?.map((e) => Record.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseRecordResponse(): RecordResponse {
+  return { record: undefined };
+}
+
+export const RecordResponse: MessageFns<RecordResponse> = {
+  encode(message: RecordResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.record !== undefined) {
+      Record.encode(message.record, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecordResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.record = Record.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RecordResponse {
+    return { record: isSet(object.record) ? Record.fromJSON(object.record) : undefined };
+  },
+
+  toJSON(message: RecordResponse): unknown {
+    const obj: any = {};
+    if (message.record !== undefined) {
+      obj.record = Record.toJSON(message.record);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RecordResponse>, I>>(base?: I): RecordResponse {
+    return RecordResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RecordResponse>, I>>(object: I): RecordResponse {
+    const message = createBaseRecordResponse();
+    message.record = (object.record !== undefined && object.record !== null)
+      ? Record.fromPartial(object.record)
+      : undefined;
     return message;
   },
 };

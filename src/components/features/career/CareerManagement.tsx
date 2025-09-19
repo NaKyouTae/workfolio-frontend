@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { WorkerCareerListResponse } from '../../../generated/worker_career';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Company, Certifications, Degrees, Education } from '@/generated/common';
 import CompanyManagement from './CompanyManagement';
 import CertificationManagement from './CertificationManagement';
@@ -12,7 +11,12 @@ const CareerManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   
   // 서버에서 가져온 데이터
-  const [careerData, setCareerData] = useState<WorkerCareerListResponse>({
+  const [careerData, setCareerData] = useState<{
+    companies: Company[];
+    certifications: Certifications[];
+    degrees: Degrees[];
+    educations: Education[];
+  }>({
     companies: [],
     certifications: [],
     degrees: [],
@@ -27,9 +31,11 @@ const CareerManagement: React.FC = () => {
     educations: true
   });
 
+  // 초기 로드 여부를 추적하는 ref
+  const isInitialLoad = useRef(true);
 
   // 각 항목별 데이터 조회 함수들
-  const fetchCompanies = async () => {
+  const fetchCompanies = useCallback(async () => {
     try {
       const response = await fetch('/api/workers/companies', {
         method: HttpMethod.GET,
@@ -44,9 +50,9 @@ const CareerManagement: React.FC = () => {
       console.error('Error fetching companies:', error);
       return [];
     }
-  };
+  }, []);
 
-  const fetchCertifications = async () => {
+  const fetchCertifications = useCallback(async () => {
     try {
       const response = await fetch('/api/workers/certifications', {
         method: HttpMethod.GET,
@@ -55,8 +61,6 @@ const CareerManagement: React.FC = () => {
       if (response.ok) {
         const res = await response.json();
 
-        console.log('test 2', res);
-
         return res.certifications || [];
       }
       return [];
@@ -64,9 +68,9 @@ const CareerManagement: React.FC = () => {
       console.error('Error fetching certifications:', error);
       return [];
     }
-  };
+  }, []);
 
-  const fetchDegrees = async () => {
+  const fetchDegrees = useCallback(async () => {
     try {
       const response = await fetch('/api/workers/degrees', {
         method: HttpMethod.GET,
@@ -81,9 +85,9 @@ const CareerManagement: React.FC = () => {
       console.error('Error fetching degrees:', error);
       return [];
     }
-  };
+  }, []);
 
-  const fetchEducations = async () => {
+  const fetchEducations = useCallback(async () => {
     try {
       const response = await fetch('/api/workers/educations', {
         method: HttpMethod.GET,
@@ -98,35 +102,46 @@ const CareerManagement: React.FC = () => {
       console.error('Error fetching educations:', error);
       return [];
     }
-  };
-
+  }, []);
 
   // 컴포넌트 마운트 시 데이터 조회
   useEffect(() => {
-    const fetchAllCareerData = async () => {
-      try {
-        setIsLoading(true);
-        const [companies, certifications, degrees, educations] = await Promise.all([
-          fetchCompanies(),
-          fetchCertifications(),
-          fetchDegrees(),
-          fetchEducations()
-        ]);
+    if (isInitialLoad.current) {
+      const fetchAllCareerData = async () => {
+        try {
+          console.log('========================');
+          console.log('CareerManagement: Initial data fetch started');
+          console.log('========================');
+          
+          setIsLoading(true);
+          const [companies, certifications, degrees, educations] = await Promise.all([
+            fetchCompanies(),
+            fetchCertifications(),
+            fetchDegrees(),
+            fetchEducations()
+          ]);
 
-        setCareerData({
-          companies,
-          certifications,
-          degrees,
-          educations
-        });
-      } catch (error) {
-        console.error('Error fetching career data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+          setCareerData({
+            companies,
+            certifications,
+            degrees,
+            educations
+          });
+          
+          isInitialLoad.current = false; // 초기 로드 완료 표시
+          
+          console.log('========================');
+          console.log('CareerManagement: Initial data fetch completed');
+          console.log('========================');
+        } catch (error) {
+          console.error('Error fetching career data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
-    fetchAllCareerData();
+      fetchAllCareerData();
+    }
   }, []);
 
   // 데이터 변경 핸들러들

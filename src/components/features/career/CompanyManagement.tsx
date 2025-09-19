@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Company, Position, Salary } from '@/generated/common';
 import { DateUtil } from '../../../utils/DateUtil';
 import HttpMethod from '@/enums/HttpMethod';
 import { CompanyCreateRequest, CompanyUpdateRequest } from '@/generated/company';
 import { SalaryCreateRequest, SalaryUpdateRequest } from '@/generated/salary';
-import { PositionCreateRequest, PositionUpdateRequest } from '@/generated/position';
+import { PositionCreateRequest, PositionUpdateRequest } from '@/generated/position';  
 import dayjs from 'dayjs';
 
 interface CompanyManagementProps {
@@ -25,7 +25,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   });
 
   // Position 상태 (companyId를 포함한 확장 타입)
-  const [positions, setPositions] = useState<(Position & { companyId?: string })[]>([]);
+  const [positions, setPositions] = useState<Position[]>([]);
   const [newPosition, setNewPosition] = useState<PositionCreateRequest>({
     companyId: '',
     name: '',
@@ -34,7 +34,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   });
 
   // Salary 상태 (companyId를 포함한 확장 타입)
-  const [salaries, setSalaries] = useState<(Salary & { companyId?: string })[]>([]);
+  const [salaries, setSalaries] = useState<Salary[]>([]);
   const [newSalary, setNewSalary] = useState<SalaryCreateRequest>({
     companyId: '',
     amount: 0,
@@ -46,10 +46,49 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   const [showCompanyInput, setShowCompanyInput] = useState(false);
   const [showPositionInputs, setShowPositionInputs] = useState<{ [companyId: string]: boolean }>({});
   const [showSalaryInputs, setShowSalaryInputs] = useState<{ [companyId: string]: boolean }>({});
+  
+  // 초기 로드 여부를 추적하는 ref
+  const isInitialLoad = useRef(true);
+
+  // 모든 회사의 Position 조회
+  const fetchAllPositions = useCallback(async (companiesIds: string) => {
+    try {
+      const response = await fetch(`/api/workers/positions?companiesIds=${companiesIds}`);
+      if (response.ok) {
+        const result = await response.json();
+        
+        if (result && result.positions) {
+          setPositions(result.positions);
+        }
+      } else {
+        console.error('Failed to fetch all positions:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching all positions:', error);
+    }
+  }, []);
+
+  // 모든 회사의 Salary 조회
+  const fetchAllSalaries = useCallback(async (companiesIds: string) => {
+    try {
+      const response = await fetch(`/api/workers/salaries?companiesIds=${companiesIds}`);
+      if (response.ok) {
+        const result = await response.json();
+        
+        if (result && result.salaries) {
+          setSalaries(result.salaries);
+        }
+      } else {
+        console.error('Failed to fetch all salaries:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching all salaries:', error);
+    }
+  }, []);
 
   // 초기 데이터 로드
   useEffect(() => {
-    if (initialData && initialData.length > 0) {
+    if (isInitialLoad.current && initialData && initialData.length > 0) {
       const companiesForm: Company[] = initialData.map((company: Company) => ({
         id: company.id,
         createdAt: company.createdAt,
@@ -59,7 +98,14 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         endedAt: company.endedAt,
         isWorking: company.isWorking,
       }));
+      
       setCompanies(companiesForm);
+      isInitialLoad.current = false; // 초기 로드 완료 표시
+      
+      // 모든 회사의 position과 salary를 한 번에 조회
+      const companyIds = companiesForm.map(company => company.id).join(',');
+      fetchAllPositions(companyIds);
+      fetchAllSalaries(companyIds);
     }
   }, [initialData]);
 
@@ -70,7 +116,6 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
       onDataChange(newCompanies);
     }
   };
-
 
   // 회사 추가
   const addCompany = async () => {
@@ -86,8 +131,16 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
         if (response.ok) {
           const result = await response.json();
-          if (result.success) {
-            handleDataChange([...companies, result.data]);
+          if (result) {
+            const newCompanyData = result.company;
+            const updatedCompanies = [...companies, newCompanyData];
+            handleDataChange(updatedCompanies);
+            
+            // 모든 회사의 position과 salary를 다시 조회
+            const companyIds = updatedCompanies.map(company => company.id).join(',');
+            fetchAllPositions(companyIds);
+            fetchAllSalaries(companyIds);
+            
             setNewCompany({
               name: '',
               startedAt: 0,
@@ -118,7 +171,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         isWorking: selectedCompany.isWorking,
       };
       const response = await fetch('/api/workers/companies', {
-        method: 'PUT',
+        method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -127,9 +180,9 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
       if (response.ok) {
         const result = await response.json();
-        if (result.success) {
+        if (result) {
           const updatedData = [...companies];
-          updatedData[index] = result.data;
+          updatedData[index] = result.company;
           handleDataChange(updatedData);
         } else {
           console.error('Failed to update company');
@@ -171,8 +224,8 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
           companyId: companyId
         };
         
-        const response = await fetch('/api/workers/positions', {
-          method: 'POST',
+        const response = await fetch(`/api/workers/positions/${companyId}`, {
+          method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -181,10 +234,12 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
         if (response.ok) {
           const result = await response.json();
-          if (result.success) {
-            setPositions([...positions, { ...result.data, companyId: companyId }]);
+          if (result) {
+            // 성공 시 모든 회사의 position 데이터 다시 조회
+            const companyIds = companies.map(company => company.id).join(',');
+            fetchAllPositions(companyIds);
             setNewPosition({
-              companyId: '',
+              companyId: companyId,
               name: '',
               startedAt: 0,
               endedAt: 0,
@@ -213,7 +268,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         endedAt: selectedPosition.endedAt,
       };
       const response = await fetch('/api/workers/positions', {
-        method: 'PUT',
+        method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -222,10 +277,10 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
       if (response.ok) {
         const result = await response.json();
-        if (result.success) {
-          const updatedData = [...positions];
-          updatedData[index] = result.data;
-          setPositions(updatedData);
+        if (result) {
+          // 성공 시 모든 회사의 position 데이터 다시 조회
+          const companyIds = companies.map(company => company.id).join(',');
+          fetchAllPositions(companyIds);
         } else {
           console.error('Failed to update position');
         }
@@ -237,8 +292,26 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
     }
   };
 
-  const removePosition = (index: number) => {
-    setPositions(positions.filter((_, i) => i !== index));
+  const removePosition = async (index: number) => {
+    try {
+      const selectedPosition = positions[index];
+      const response = await fetch(`/api/workers/positions/${selectedPosition.id}`, {
+        method: HttpMethod.DELETE,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // 성공 시 모든 회사의 position 데이터 다시 조회
+        const companyIds = companies.map(company => company.id).join(',');
+        fetchAllPositions(companyIds);
+      } else {
+        console.error('Failed to delete position');
+      }
+    } catch (error) {
+      console.error('Error deleting position:', error);
+    }
   };
 
   // Salary 관련 함수들
@@ -250,8 +323,8 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
           companyId: companyId
         };
         
-        const response = await fetch('/api/workers/salaries', {
-          method: 'POST',
+        const response = await fetch(`/api/workers/salaries/${companyId}`, {
+          method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -260,10 +333,12 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
         if (response.ok) {
           const result = await response.json();
-          if (result.success) {
-            setSalaries([...salaries, { ...result.data, companyId: companyId }]);
+          if (result) {
+            // 성공 시 모든 회사의 salary 데이터 다시 조회
+            const companyIds = companies.map(company => company.id).join(',');
+            fetchAllSalaries(companyIds);
             setNewSalary({
-              companyId: '',
+              companyId: companyId,
               amount: 0,
               startedAt: 0,
               endedAt: 0,
@@ -291,8 +366,8 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         startedAt: selectedSalary.startedAt,
         endedAt: selectedSalary.endedAt,
       };
-      const response = await fetch('/api/workers/salaries', {
-        method: 'PUT',
+      const response = await fetch(`/api/workers/salaries/${selectedSalary.company?.id}`, {
+        method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -301,10 +376,10 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
       if (response.ok) {
         const result = await response.json();
-        if (result.success) {
-          const updatedData = [...salaries];
-          updatedData[index] = result.data;
-          setSalaries(updatedData);
+        if (result) {
+          // 성공 시 모든 회사의 salary 데이터 다시 조회
+          const companyIds = companies.map(company => company.id).join(',');
+          fetchAllSalaries(companyIds);
         } else {
           console.error('Failed to update salary');
         }
@@ -316,8 +391,26 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
     }
   };
 
-  const removeSalary = (index: number) => {
-    setSalaries(salaries.filter((_, i) => i !== index));
+  const removeSalary = async (index: number) => {
+    try {
+      const selectedSalary = salaries[index];
+      const response = await fetch(`/api/workers/salaries/${selectedSalary.company?.id}`, {
+        method: HttpMethod.DELETE,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // 성공 시 모든 회사의 salary 데이터 다시 조회
+        const companyIds = companies.map(company => company.id).join(',');
+        fetchAllSalaries(companyIds);
+      } else {
+        console.error('Failed to delete salary');
+      }
+    } catch (error) {
+      console.error('Error deleting salary:', error);
+    }
   };
 
   // 공통 추가 버튼 렌더링 함수
@@ -550,7 +643,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
                   </div>
                 )}
                 <div>
-                  {positions?.filter(pos => pos.companyId === company.id).map((position, posIndex) => (
+                  {positions?.filter(pos => pos.company?.id === company.id).map((position, posIndex) => (
                     <div 
                       key={posIndex} 
                       style={{ 
@@ -664,7 +757,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
                   </div>
                 )}
                 <div>
-                  {salaries?.filter(sal => sal.companyId === company.id).map((salary, salIndex) => (
+                  {salaries?.filter(sal => sal.company?.id === company.id).map((salary, salIndex) => (
                     <div 
                       key={salIndex} 
                       style={{ 

@@ -75,8 +75,8 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
 
         if (response.ok) {
           const result = await response.json();
-          if (result.success) {
-            handleDataChange([...certifications, result.data]);
+          if (result) {
+            handleDataChange([...certifications, result.certifications]);
             setNewCertification({
               name: '',
               issuer: '',

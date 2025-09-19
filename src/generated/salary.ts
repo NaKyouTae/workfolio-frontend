@@ -25,7 +25,7 @@ export interface SalaryUpdateRequest {
 }
 
 export interface SalaryListResponse {
-  Salaries: Salary[];
+  salaries: Salary[];
 }
 
 export interface SalaryResponse {
@@ -249,12 +249,12 @@ export const SalaryUpdateRequest: MessageFns<SalaryUpdateRequest> = {
 };
 
 function createBaseSalaryListResponse(): SalaryListResponse {
-  return { Salaries: [] };
+  return { salaries: [] };
 }
 
 export const SalaryListResponse: MessageFns<SalaryListResponse> = {
   encode(message: SalaryListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.Salaries) {
+    for (const v of message.salaries) {
       Salary.encode(v!, writer.uint32(10).fork()).join();
     }
     return writer;
@@ -272,7 +272,7 @@ export const SalaryListResponse: MessageFns<SalaryListResponse> = {
             break;
           }
 
-          message.Salaries.push(Salary.decode(reader, reader.uint32()));
+          message.salaries.push(Salary.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -286,14 +286,14 @@ export const SalaryListResponse: MessageFns<SalaryListResponse> = {
 
   fromJSON(object: any): SalaryListResponse {
     return {
-      Salaries: globalThis.Array.isArray(object?.Salaries) ? object.Salaries.map((e: any) => Salary.fromJSON(e)) : [],
+      salaries: globalThis.Array.isArray(object?.salaries) ? object.salaries.map((e: any) => Salary.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: SalaryListResponse): unknown {
     const obj: any = {};
-    if (message.Salaries?.length) {
-      obj.Salaries = message.Salaries.map((e) => Salary.toJSON(e));
+    if (message.salaries?.length) {
+      obj.salaries = message.salaries.map((e) => Salary.toJSON(e));
     }
     return obj;
   },
@@ -303,7 +303,7 @@ export const SalaryListResponse: MessageFns<SalaryListResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<SalaryListResponse>, I>>(object: I): SalaryListResponse {
     const message = createBaseSalaryListResponse();
-    message.Salaries = object.Salaries?.map((e) => Salary.fromPartial(e)) || [];
+    message.salaries = object.salaries?.map((e) => Salary.fromPartial(e)) || [];
     return message;
   },
 };
