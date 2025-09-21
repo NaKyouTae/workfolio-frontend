@@ -16,29 +16,36 @@ export interface InterviewCreateRequest {
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   memo?: string | undefined;
-  jobSearchId: string;
+  jobSearchCompanyId: string;
 }
 
 export interface InterviewUpdateRequest {
-  id: string;
   title?: string | undefined;
   type: Interview_Type;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   memo?: string | undefined;
-  jobSearchId: string;
+  id: string;
+  jobSearchCompanyId: string;
 }
 
 export interface InterviewListResponse {
-  jobSearchCompanies: Interview[];
+  interviews: Interview[];
 }
 
 export interface InterviewResponse {
-  jobSearchCompany?: Interview | undefined;
+  interview?: Interview | undefined;
 }
 
 function createBaseInterviewCreateRequest(): InterviewCreateRequest {
-  return { title: undefined, type: 0, startedAt: undefined, endedAt: undefined, memo: undefined, jobSearchId: "" };
+  return {
+    title: undefined,
+    type: 0,
+    startedAt: undefined,
+    endedAt: undefined,
+    memo: undefined,
+    jobSearchCompanyId: "",
+  };
 }
 
 export const InterviewCreateRequest: MessageFns<InterviewCreateRequest> = {
@@ -58,8 +65,8 @@ export const InterviewCreateRequest: MessageFns<InterviewCreateRequest> = {
     if (message.memo !== undefined) {
       writer.uint32(42).string(message.memo);
     }
-    if (message.jobSearchId !== "") {
-      writer.uint32(794).string(message.jobSearchId);
+    if (message.jobSearchCompanyId !== "") {
+      writer.uint32(794).string(message.jobSearchCompanyId);
     }
     return writer;
   },
@@ -116,7 +123,7 @@ export const InterviewCreateRequest: MessageFns<InterviewCreateRequest> = {
             break;
           }
 
-          message.jobSearchId = reader.string();
+          message.jobSearchCompanyId = reader.string();
           continue;
         }
       }
@@ -135,7 +142,7 @@ export const InterviewCreateRequest: MessageFns<InterviewCreateRequest> = {
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
-      jobSearchId: isSet(object.jobSearchId) ? globalThis.String(object.jobSearchId) : "",
+      jobSearchCompanyId: isSet(object.jobSearchCompanyId) ? globalThis.String(object.jobSearchCompanyId) : "",
     };
   },
 
@@ -156,8 +163,8 @@ export const InterviewCreateRequest: MessageFns<InterviewCreateRequest> = {
     if (message.memo !== undefined) {
       obj.memo = message.memo;
     }
-    if (message.jobSearchId !== "") {
-      obj.jobSearchId = message.jobSearchId;
+    if (message.jobSearchCompanyId !== "") {
+      obj.jobSearchCompanyId = message.jobSearchCompanyId;
     }
     return obj;
   },
@@ -172,45 +179,45 @@ export const InterviewCreateRequest: MessageFns<InterviewCreateRequest> = {
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.memo = object.memo ?? undefined;
-    message.jobSearchId = object.jobSearchId ?? "";
+    message.jobSearchCompanyId = object.jobSearchCompanyId ?? "";
     return message;
   },
 };
 
 function createBaseInterviewUpdateRequest(): InterviewUpdateRequest {
   return {
-    id: "",
     title: undefined,
     type: 0,
     startedAt: undefined,
     endedAt: undefined,
     memo: undefined,
-    jobSearchId: "",
+    id: "",
+    jobSearchCompanyId: "",
   };
 }
 
 export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
   encode(message: InterviewUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
     if (message.title !== undefined) {
-      writer.uint32(18).string(message.title);
+      writer.uint32(10).string(message.title);
     }
     if (message.type !== 0) {
-      writer.uint32(24).int32(message.type);
+      writer.uint32(16).int32(message.type);
     }
     if (message.startedAt !== undefined) {
-      writer.uint32(32).uint64(message.startedAt);
+      writer.uint32(24).uint64(message.startedAt);
     }
     if (message.endedAt !== undefined) {
-      writer.uint32(40).uint64(message.endedAt);
+      writer.uint32(32).uint64(message.endedAt);
     }
     if (message.memo !== undefined) {
-      writer.uint32(50).string(message.memo);
+      writer.uint32(42).string(message.memo);
     }
-    if (message.jobSearchId !== "") {
-      writer.uint32(794).string(message.jobSearchId);
+    if (message.id !== "") {
+      writer.uint32(786).string(message.id);
+    }
+    if (message.jobSearchCompanyId !== "") {
+      writer.uint32(794).string(message.jobSearchCompanyId);
     }
     return writer;
   },
@@ -227,15 +234,15 @@ export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
             break;
           }
 
-          message.id = reader.string();
+          message.title = reader.string();
           continue;
         }
         case 2: {
-          if (tag !== 18) {
+          if (tag !== 16) {
             break;
           }
 
-          message.title = reader.string();
+          message.type = reader.int32() as any;
           continue;
         }
         case 3: {
@@ -243,7 +250,7 @@ export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
             break;
           }
 
-          message.type = reader.int32() as any;
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -251,23 +258,23 @@ export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 6: {
-          if (tag !== 50) {
+        case 5: {
+          if (tag !== 42) {
             break;
           }
 
           message.memo = reader.string();
+          continue;
+        }
+        case 98: {
+          if (tag !== 786) {
+            break;
+          }
+
+          message.id = reader.string();
           continue;
         }
         case 99: {
@@ -275,7 +282,7 @@ export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
             break;
           }
 
-          message.jobSearchId = reader.string();
+          message.jobSearchCompanyId = reader.string();
           continue;
         }
       }
@@ -289,21 +296,18 @@ export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
 
   fromJSON(object: any): InterviewUpdateRequest {
     return {
-      id: isSet(object.id) ? globalThis.String(object.id) : "",
       title: isSet(object.title) ? globalThis.String(object.title) : undefined,
       type: isSet(object.type) ? interview_TypeFromJSON(object.type) : 0,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
-      jobSearchId: isSet(object.jobSearchId) ? globalThis.String(object.jobSearchId) : "",
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      jobSearchCompanyId: isSet(object.jobSearchCompanyId) ? globalThis.String(object.jobSearchCompanyId) : "",
     };
   },
 
   toJSON(message: InterviewUpdateRequest): unknown {
     const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
-    }
     if (message.title !== undefined) {
       obj.title = message.title;
     }
@@ -319,8 +323,11 @@ export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
     if (message.memo !== undefined) {
       obj.memo = message.memo;
     }
-    if (message.jobSearchId !== "") {
-      obj.jobSearchId = message.jobSearchId;
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.jobSearchCompanyId !== "") {
+      obj.jobSearchCompanyId = message.jobSearchCompanyId;
     }
     return obj;
   },
@@ -330,24 +337,24 @@ export const InterviewUpdateRequest: MessageFns<InterviewUpdateRequest> = {
   },
   fromPartial<I extends Exact<DeepPartial<InterviewUpdateRequest>, I>>(object: I): InterviewUpdateRequest {
     const message = createBaseInterviewUpdateRequest();
-    message.id = object.id ?? "";
     message.title = object.title ?? undefined;
     message.type = object.type ?? 0;
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.memo = object.memo ?? undefined;
-    message.jobSearchId = object.jobSearchId ?? "";
+    message.id = object.id ?? "";
+    message.jobSearchCompanyId = object.jobSearchCompanyId ?? "";
     return message;
   },
 };
 
 function createBaseInterviewListResponse(): InterviewListResponse {
-  return { jobSearchCompanies: [] };
+  return { interviews: [] };
 }
 
 export const InterviewListResponse: MessageFns<InterviewListResponse> = {
   encode(message: InterviewListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.jobSearchCompanies) {
+    for (const v of message.interviews) {
       Interview.encode(v!, writer.uint32(10).fork()).join();
     }
     return writer;
@@ -365,7 +372,7 @@ export const InterviewListResponse: MessageFns<InterviewListResponse> = {
             break;
           }
 
-          message.jobSearchCompanies.push(Interview.decode(reader, reader.uint32()));
+          message.interviews.push(Interview.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -379,16 +386,16 @@ export const InterviewListResponse: MessageFns<InterviewListResponse> = {
 
   fromJSON(object: any): InterviewListResponse {
     return {
-      jobSearchCompanies: globalThis.Array.isArray(object?.jobSearchCompanies)
-        ? object.jobSearchCompanies.map((e: any) => Interview.fromJSON(e))
+      interviews: globalThis.Array.isArray(object?.interviews)
+        ? object.interviews.map((e: any) => Interview.fromJSON(e))
         : [],
     };
   },
 
   toJSON(message: InterviewListResponse): unknown {
     const obj: any = {};
-    if (message.jobSearchCompanies?.length) {
-      obj.jobSearchCompanies = message.jobSearchCompanies.map((e) => Interview.toJSON(e));
+    if (message.interviews?.length) {
+      obj.interviews = message.interviews.map((e) => Interview.toJSON(e));
     }
     return obj;
   },
@@ -398,19 +405,19 @@ export const InterviewListResponse: MessageFns<InterviewListResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<InterviewListResponse>, I>>(object: I): InterviewListResponse {
     const message = createBaseInterviewListResponse();
-    message.jobSearchCompanies = object.jobSearchCompanies?.map((e) => Interview.fromPartial(e)) || [];
+    message.interviews = object.interviews?.map((e) => Interview.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseInterviewResponse(): InterviewResponse {
-  return { jobSearchCompany: undefined };
+  return { interview: undefined };
 }
 
 export const InterviewResponse: MessageFns<InterviewResponse> = {
   encode(message: InterviewResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.jobSearchCompany !== undefined) {
-      Interview.encode(message.jobSearchCompany, writer.uint32(10).fork()).join();
+    if (message.interview !== undefined) {
+      Interview.encode(message.interview, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -427,7 +434,7 @@ export const InterviewResponse: MessageFns<InterviewResponse> = {
             break;
           }
 
-          message.jobSearchCompany = Interview.decode(reader, reader.uint32());
+          message.interview = Interview.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -440,15 +447,13 @@ export const InterviewResponse: MessageFns<InterviewResponse> = {
   },
 
   fromJSON(object: any): InterviewResponse {
-    return {
-      jobSearchCompany: isSet(object.jobSearchCompany) ? Interview.fromJSON(object.jobSearchCompany) : undefined,
-    };
+    return { interview: isSet(object.interview) ? Interview.fromJSON(object.interview) : undefined };
   },
 
   toJSON(message: InterviewResponse): unknown {
     const obj: any = {};
-    if (message.jobSearchCompany !== undefined) {
-      obj.jobSearchCompany = Interview.toJSON(message.jobSearchCompany);
+    if (message.interview !== undefined) {
+      obj.interview = Interview.toJSON(message.interview);
     }
     return obj;
   },
@@ -458,8 +463,8 @@ export const InterviewResponse: MessageFns<InterviewResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<InterviewResponse>, I>>(object: I): InterviewResponse {
     const message = createBaseInterviewResponse();
-    message.jobSearchCompany = (object.jobSearchCompany !== undefined && object.jobSearchCompany !== null)
-      ? Interview.fromPartial(object.jobSearchCompany)
+    message.interview = (object.interview !== undefined && object.interview !== null)
+      ? Interview.fromPartial(object.interview)
       : undefined;
     return message;
   },

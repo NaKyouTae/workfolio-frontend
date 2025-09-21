@@ -322,10 +322,9 @@ export interface Interview {
 
 export enum Interview_Type {
   UNKNOWN = 0,
-  IN_PROGRESS = 1,
-  APPLIED = 2,
-  IN_INTERVIEW = 3,
-  CLOSED = 4,
+  PAPER = 1,
+  OFFLINE = 2,
+  ONLINE = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -335,17 +334,14 @@ export function interview_TypeFromJSON(object: any): Interview_Type {
     case "UNKNOWN":
       return Interview_Type.UNKNOWN;
     case 1:
-    case "IN_PROGRESS":
-      return Interview_Type.IN_PROGRESS;
+    case "PAPER":
+      return Interview_Type.PAPER;
     case 2:
-    case "APPLIED":
-      return Interview_Type.APPLIED;
+    case "OFFLINE":
+      return Interview_Type.OFFLINE;
     case 3:
-    case "IN_INTERVIEW":
-      return Interview_Type.IN_INTERVIEW;
-    case 4:
-    case "CLOSED":
-      return Interview_Type.CLOSED;
+    case "ONLINE":
+      return Interview_Type.ONLINE;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -357,14 +353,12 @@ export function interview_TypeToJSON(object: Interview_Type): string {
   switch (object) {
     case Interview_Type.UNKNOWN:
       return "UNKNOWN";
-    case Interview_Type.IN_PROGRESS:
-      return "IN_PROGRESS";
-    case Interview_Type.APPLIED:
-      return "APPLIED";
-    case Interview_Type.IN_INTERVIEW:
-      return "IN_INTERVIEW";
-    case Interview_Type.CLOSED:
-      return "CLOSED";
+    case Interview_Type.PAPER:
+      return "PAPER";
+    case Interview_Type.OFFLINE:
+      return "OFFLINE";
+    case Interview_Type.ONLINE:
+      return "ONLINE";
     case Interview_Type.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";

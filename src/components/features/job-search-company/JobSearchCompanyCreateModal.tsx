@@ -1,84 +1,100 @@
 import React, { useState } from 'react';
-import { JobSearchCompany } from '@/generated/common';
+import { JobSearchCompany_Status } from '@/generated/common';
 import JobSearchCompanyForm from './JobSearchCompanyForm';
-import { JobSearchCompanyUpsertRequest } from '@/generated/job_search_company';
-
 import HttpMethod from '@/enums/HttpMethod';
+import { JobSearchCompanyCreateRequest } from '@/generated/job_search_company';
 
-interface JobSearchCompanyUpdateModalProps {
+interface JobSearchCompanyCreateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editingCompany: JobSearchCompany | undefined;
   onSuccess: () => void;
   jobSearchId: string;
 }
 
-const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = ({
+const JobSearchCompanyCreateModal: React.FC<JobSearchCompanyCreateModalProps> = ({
   isOpen,
   onClose,
-  editingCompany,
   onSuccess,
-  jobSearchId,
+  jobSearchId
 }) => {
-  const [createForm, setCreateForm] = useState<JobSearchCompanyUpsertRequest>({
-    name: editingCompany?.name || '',
-    link: editingCompany?.link,
-    industry: editingCompany?.industry,
-    businessSize: editingCompany?.businessSize,
-    location: editingCompany?.location,
-    description: editingCompany?.description,
-    status: editingCompany?.status || 0,
-    appliedAt: editingCompany?.appliedAt || 0,
-    closedAt: editingCompany?.closedAt || 0,
-    endedAt: editingCompany?.endedAt,
-    memo: editingCompany?.memo,
+  // 폼 상태
+  const [createForm, setCreateForm] = useState<JobSearchCompanyCreateRequest>({
+    name: '',
+    status: JobSearchCompany_Status.UNKNOWN,
+    appliedAt: undefined,
+    closedAt: undefined,
+    endedAt: undefined,
+    link: undefined,
+    industry: undefined,
+    location: undefined,
+    businessSize: undefined,
+    description: undefined,
+    memo: undefined,
+    jobSearchId: jobSearchId
   });
 
-  if (!isOpen || !editingCompany) return null;
+  if (!isOpen) return null;
 
-  // 구직 회사 수정
-  const updateJobSearchCompany = async () => {
-    if (!editingCompany) return;
-
+  // 구직 회사 생성
+  const createJobSearchCompany = async () => {
     try {
-      const updateData: JobSearchCompanyUpsertRequest = {
+      // 필수 필드 검증
+      if (!createForm.name || !createForm.status) {
+        alert('회사명과 상태는 필수 입력 항목입니다.');
+        return;
+      }
+
+      console.log('jobSearchId', jobSearchId);
+
+      const createData: JobSearchCompanyCreateRequest = {
         name: createForm.name,
-        link: createForm.link,
-        industry: createForm.industry,
-        businessSize: createForm.businessSize,
-        location: createForm.location,
-        description: createForm.description,
         status: createForm.status,
         appliedAt: createForm.appliedAt,
         closedAt: createForm.closedAt,
         endedAt: createForm.endedAt,
-        memo: createForm.memo
+        link: createForm.link,
+        industry: createForm.industry,
+        location: createForm.location,
+        businessSize: createForm.businessSize,
+        description: createForm.description,
+        memo: createForm.memo,
+        jobSearchId: jobSearchId
       };
 
-      console.log('updateData', updateData);
-      console.log('jobSearchId', jobSearchId);
-      console.log('editingCompany.id', editingCompany.id);
-
-      const response = await fetch(`/api/workers/job-searches/${jobSearchId}/companies/${editingCompany.id}`, {
-        method: HttpMethod.PUT,
+      const response = await fetch(`/api/job-search-companies`, {
+        method: HttpMethod.POST,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify(createData),
       });
 
       if (response.ok) {
         // 성공 시 목록 새로고침
         onSuccess();
         onClose();
-        alert('구직 회사가 성공적으로 수정되었습니다.');
+        setCreateForm({
+          name: '',
+          status: JobSearchCompany_Status.UNKNOWN,
+          appliedAt: undefined,
+          closedAt: undefined,
+          endedAt: undefined,
+          link: undefined,
+          industry: undefined,
+          location: undefined,
+          businessSize: undefined,
+          description: undefined,
+          memo: undefined,
+          jobSearchId: jobSearchId
+        });
+        alert('구직 회사가 성공적으로 생성되었습니다.');
       } else {
         const errorData = await response.json();
-        alert(`구직 회사 수정 실패: ${errorData.error || '알 수 없는 오류'}`);
+        alert(`구직 회사 생성 실패: ${errorData.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
-      console.error('Error updating job search company:', error);
-      alert('구직 회사 수정 중 오류가 발생했습니다.');
+      console.error('Error creating job search company:', error);
+      alert('구직 회사 생성 중 오류가 발생했습니다.');
     }
   };
 
@@ -89,7 +105,6 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
       [field]: value
     }));
   };
-
 
   return (
     <div style={{
@@ -129,7 +144,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
             color: '#333',
             margin: 0
           }}>
-            구직 회사 수정
+            구직 회사 추가
           </h2>
           <button
             onClick={onClose}
@@ -152,7 +167,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
         </div>
 
         {/* 폼 */}
-        <form onSubmit={(e) => { e.preventDefault(); updateJobSearchCompany(); }}>
+        <form onSubmit={(e) => { e.preventDefault(); createJobSearchCompany(); }}>
           <JobSearchCompanyForm
             formData={createForm}
             onFormChange={handleFormChange}
@@ -187,7 +202,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
               type="submit"
               style={{
                 padding: '12px 24px',
-                backgroundColor: '#28a745',
+                backgroundColor: '#007bff',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
@@ -196,7 +211,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
                 fontWeight: 'bold'
               }}
             >
-              수정
+              생성
             </button>
           </div>
         </form>
@@ -205,4 +220,4 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
   );
 };
 
-export default JobSearchCompanyUpdateModal;
+export default JobSearchCompanyCreateModal;

@@ -3,7 +3,7 @@ import { JobSearchCompany, JobSearch, JobSearchCompany_Status } from '@/generate
 import { JobSearchCompanyListResponse } from '@/generated/job_search_company';
 import HttpMethod from '@/enums/HttpMethod';
 import DateUtil from '@/utils/DateUtil';
-import InterviewManagementDetail from './InterviewManagementDetail';
+import InterviewPage from '../interview/InterviewPage';
 import { useUser } from '@/hooks/useUser';
 import { createSampleJobSearchCompanies } from '@/utils/sampleData';
 import JobSearchCompanyCreateModal from './JobSearchCompanyCreateModal';
@@ -21,7 +21,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<JobSearchCompany | undefined>();
-  const [selectedCompany, setSelectedCompany] = useState<JobSearchCompany | null>(null);
+  const [expandedCompanies, setExpandedCompanies] = useState<Set<string>>(new Set());
 
   // 구직 회사 목록 조회
   const fetchJobSearchCompanies = useCallback(async () => {
@@ -32,7 +32,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
       
       if (isLoggedIn) {
         // 로그인된 경우 서버에서 데이터 조회
-        const response = await fetch(`/api/workers/job-searches/${jobSearch.id}/companies`, {
+        const response = await fetch(`/api/job-search-companies?jobSearchId=${jobSearch.id}`, {
           method: HttpMethod.GET,
         });
 
@@ -65,14 +65,22 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
     setIsEditModalOpen(true);
   };
 
-  // 회사 상세 보기
-  const viewCompanyDetail = (company: JobSearchCompany) => {
-    setSelectedCompany(company);
+  // 회사 행 확장/축소 토글
+  const toggleCompanyExpansion = (companyId: string) => {
+    setExpandedCompanies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(companyId)) {
+        newSet.delete(companyId);
+      } else {
+        newSet.add(companyId);
+      }
+      return newSet;
+    });
   };
 
-  // 뒤로가기
-  const goBack = () => {
-    setSelectedCompany(null);
+  // 모든 회사 행 축소
+  const collapseAllCompanies = () => {
+    setExpandedCompanies(new Set());
   };
 
   // 상태별 색상 반환
@@ -104,16 +112,6 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
       default: return '알 수 없음';
     }
   };
-
-  // 선택된 회사가 있으면 면접 관리 컴포넌트 표시
-  if (selectedCompany) {
-    return (
-      <InterviewManagementDetail 
-        jobSearchCompany={selectedCompany} 
-        onBack={goBack}
-      />
-    );
-  }
 
   // 로딩 중일 때
   if (isLoading) {
@@ -224,6 +222,24 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
           >
             새로고침
           </button>
+          <button
+            onClick={collapseAllCompanies}
+            style={{
+              backgroundColor: '#17a2b8',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              width: '80px',
+              height: '30px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '14px'
+            }}
+          >
+            모두 축소
+          </button>
         </div>
       </div>
 
@@ -232,6 +248,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ backgroundColor: '#f8f9fa' }}>
+              <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333', width: '50px' }}></th>
               <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>회사명</th>
               <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>상태</th>
               <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>업종</th>
@@ -248,16 +265,37 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
           <tbody>
             {jobSearchCompanies.length === 0 ? (
               <tr>
-                <td colSpan={10} style={{ padding: '40px', textAlign: 'center', color: '#666', fontSize: '16px' }}>
+                <td colSpan={11} style={{ padding: '40px', textAlign: 'center', color: '#666', fontSize: '16px' }}>
                   등록된 구직 회사가 없습니다
                 </td>
               </tr>
             ) : (
               jobSearchCompanies.map((company) => {
                 const statusColor = getStatusColor(company.status);
+                const isExpanded = expandedCompanies.has(company.id);
                 return (
-                  <tr key={company.id} style={{ borderBottom: '1px solid #e9ecef' }}>
-                    <td style={{ padding: '12px', fontSize: '14px', fontWeight: 'bold' }}>{company.name}</td>
+                  <React.Fragment key={company.id}>
+                    <tr style={{ borderBottom: '1px solid #e9ecef' }}>
+                      <td style={{ padding: '12px', textAlign: 'center' }}>
+                        <button
+                          onClick={() => toggleCompanyExpansion(company.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            color: '#666',
+                            padding: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                          title={isExpanded ? '면접 정보 숨기기' : '면접 정보 보기'}
+                        >
+                          {isExpanded ? '▼' : '▶'}
+                        </button>
+                      </td>
+                      <td style={{ padding: '12px', fontSize: '14px', fontWeight: 'bold' }}>{company.name}</td>
                     <td style={{ padding: '12px', fontSize: '14px' }}>
                       <span style={{
                         padding: '4px 8px',
@@ -318,20 +356,6 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
                     <td style={{ padding: '12px', textAlign: 'center' }}>
                       <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
                         <button
-                          onClick={() => viewCompanyDetail(company)}
-                          style={{
-                            padding: '6px 12px',
-                            backgroundColor: '#28a745',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '12px'
-                          }}
-                        >
-                          상세
-                        </button>
-                        <button
                           onClick={() => openEditModal(company)}
                           style={{
                             padding: '6px 12px',
@@ -348,6 +372,16 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
                       </div>
                     </td>
                   </tr>
+                    {isExpanded && (
+                      <tr>
+                        <td colSpan={12} style={{ padding: '0', backgroundColor: '#f8f9fa' }}>
+                          <div style={{ padding: '20px', borderTop: '1px solid #e9ecef' }}>
+                            <InterviewPage jobSearchCompany={company} />
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 );
               })
             )}

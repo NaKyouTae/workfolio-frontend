@@ -1,9 +1,9 @@
 import React from 'react';
 import DateUtil from '@/utils/DateUtil';
-import { JobSearchCompanyUpsertRequest } from '@/generated/job_search_company';
+import { JobSearchCompanyCreateRequest, JobSearchCompanyUpdateRequest } from '@/generated/job_search_company';
 
 interface JobSearchCompanyFormProps {
-  formData: JobSearchCompanyUpsertRequest;
+  formData: JobSearchCompanyCreateRequest | JobSearchCompanyUpdateRequest;
   onFormChange: (field: string, value: string | number | undefined) => void;
 }
 

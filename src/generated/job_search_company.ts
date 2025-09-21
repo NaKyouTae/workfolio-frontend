@@ -15,7 +15,7 @@ import {
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
-export interface JobSearchCompanyUpsertRequest {
+export interface JobSearchCompanyCreateRequest {
   name: string;
   status: JobSearchCompany_Status;
   closedAt?: number | undefined;
@@ -27,6 +27,23 @@ export interface JobSearchCompanyUpsertRequest {
   businessSize?: string | undefined;
   description?: string | undefined;
   memo?: string | undefined;
+  jobSearchId: string;
+}
+
+export interface JobSearchCompanyUpdateRequest {
+  name: string;
+  status: JobSearchCompany_Status;
+  closedAt?: number | undefined;
+  appliedAt?: number | undefined;
+  endedAt?: number | undefined;
+  link?: string | undefined;
+  industry?: string | undefined;
+  location?: string | undefined;
+  businessSize?: string | undefined;
+  description?: string | undefined;
+  memo?: string | undefined;
+  id: string;
+  jobSearchId: string;
 }
 
 export interface JobSearchCompanyListResponse {
@@ -37,7 +54,7 @@ export interface JobSearchCompanyResponse {
   jobSearchCompany?: JobSearchCompany | undefined;
 }
 
-function createBaseJobSearchCompanyUpsertRequest(): JobSearchCompanyUpsertRequest {
+function createBaseJobSearchCompanyCreateRequest(): JobSearchCompanyCreateRequest {
   return {
     name: "",
     status: 0,
@@ -50,11 +67,12 @@ function createBaseJobSearchCompanyUpsertRequest(): JobSearchCompanyUpsertReques
     businessSize: undefined,
     description: undefined,
     memo: undefined,
+    jobSearchId: "",
   };
 }
 
-export const JobSearchCompanyUpsertRequest: MessageFns<JobSearchCompanyUpsertRequest> = {
-  encode(message: JobSearchCompanyUpsertRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const JobSearchCompanyCreateRequest: MessageFns<JobSearchCompanyCreateRequest> = {
+  encode(message: JobSearchCompanyCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -88,13 +106,16 @@ export const JobSearchCompanyUpsertRequest: MessageFns<JobSearchCompanyUpsertReq
     if (message.memo !== undefined) {
       writer.uint32(90).string(message.memo);
     }
+    if (message.jobSearchId !== "") {
+      writer.uint32(794).string(message.jobSearchId);
+    }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): JobSearchCompanyUpsertRequest {
+  decode(input: BinaryReader | Uint8Array, length?: number): JobSearchCompanyCreateRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseJobSearchCompanyUpsertRequest();
+    const message = createBaseJobSearchCompanyCreateRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -186,6 +207,14 @@ export const JobSearchCompanyUpsertRequest: MessageFns<JobSearchCompanyUpsertReq
           message.memo = reader.string();
           continue;
         }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.jobSearchId = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -195,7 +224,7 @@ export const JobSearchCompanyUpsertRequest: MessageFns<JobSearchCompanyUpsertReq
     return message;
   },
 
-  fromJSON(object: any): JobSearchCompanyUpsertRequest {
+  fromJSON(object: any): JobSearchCompanyCreateRequest {
     return {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       status: isSet(object.status) ? jobSearchCompany_StatusFromJSON(object.status) : 0,
@@ -208,10 +237,11 @@ export const JobSearchCompanyUpsertRequest: MessageFns<JobSearchCompanyUpsertReq
       businessSize: isSet(object.businessSize) ? globalThis.String(object.businessSize) : undefined,
       description: isSet(object.description) ? globalThis.String(object.description) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      jobSearchId: isSet(object.jobSearchId) ? globalThis.String(object.jobSearchId) : "",
     };
   },
 
-  toJSON(message: JobSearchCompanyUpsertRequest): unknown {
+  toJSON(message: JobSearchCompanyCreateRequest): unknown {
     const obj: any = {};
     if (message.name !== "") {
       obj.name = message.name;
@@ -246,16 +276,19 @@ export const JobSearchCompanyUpsertRequest: MessageFns<JobSearchCompanyUpsertReq
     if (message.memo !== undefined) {
       obj.memo = message.memo;
     }
+    if (message.jobSearchId !== "") {
+      obj.jobSearchId = message.jobSearchId;
+    }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<JobSearchCompanyUpsertRequest>, I>>(base?: I): JobSearchCompanyUpsertRequest {
-    return JobSearchCompanyUpsertRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<JobSearchCompanyCreateRequest>, I>>(base?: I): JobSearchCompanyCreateRequest {
+    return JobSearchCompanyCreateRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<JobSearchCompanyUpsertRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<JobSearchCompanyCreateRequest>, I>>(
     object: I,
-  ): JobSearchCompanyUpsertRequest {
-    const message = createBaseJobSearchCompanyUpsertRequest();
+  ): JobSearchCompanyCreateRequest {
+    const message = createBaseJobSearchCompanyCreateRequest();
     message.name = object.name ?? "";
     message.status = object.status ?? 0;
     message.closedAt = object.closedAt ?? undefined;
@@ -267,6 +300,275 @@ export const JobSearchCompanyUpsertRequest: MessageFns<JobSearchCompanyUpsertReq
     message.businessSize = object.businessSize ?? undefined;
     message.description = object.description ?? undefined;
     message.memo = object.memo ?? undefined;
+    message.jobSearchId = object.jobSearchId ?? "";
+    return message;
+  },
+};
+
+function createBaseJobSearchCompanyUpdateRequest(): JobSearchCompanyUpdateRequest {
+  return {
+    name: "",
+    status: 0,
+    closedAt: undefined,
+    appliedAt: undefined,
+    endedAt: undefined,
+    link: undefined,
+    industry: undefined,
+    location: undefined,
+    businessSize: undefined,
+    description: undefined,
+    memo: undefined,
+    id: "",
+    jobSearchId: "",
+  };
+}
+
+export const JobSearchCompanyUpdateRequest: MessageFns<JobSearchCompanyUpdateRequest> = {
+  encode(message: JobSearchCompanyUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.status !== 0) {
+      writer.uint32(16).int32(message.status);
+    }
+    if (message.closedAt !== undefined) {
+      writer.uint32(24).uint64(message.closedAt);
+    }
+    if (message.appliedAt !== undefined) {
+      writer.uint32(32).uint64(message.appliedAt);
+    }
+    if (message.endedAt !== undefined) {
+      writer.uint32(40).uint64(message.endedAt);
+    }
+    if (message.link !== undefined) {
+      writer.uint32(50).string(message.link);
+    }
+    if (message.industry !== undefined) {
+      writer.uint32(58).string(message.industry);
+    }
+    if (message.location !== undefined) {
+      writer.uint32(66).string(message.location);
+    }
+    if (message.businessSize !== undefined) {
+      writer.uint32(74).string(message.businessSize);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(82).string(message.description);
+    }
+    if (message.memo !== undefined) {
+      writer.uint32(90).string(message.memo);
+    }
+    if (message.id !== "") {
+      writer.uint32(786).string(message.id);
+    }
+    if (message.jobSearchId !== "") {
+      writer.uint32(794).string(message.jobSearchId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): JobSearchCompanyUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseJobSearchCompanyUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.closedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.appliedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.link = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.industry = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.location = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.businessSize = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.memo = reader.string();
+          continue;
+        }
+        case 98: {
+          if (tag !== 786) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.jobSearchId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): JobSearchCompanyUpdateRequest {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      status: isSet(object.status) ? jobSearchCompany_StatusFromJSON(object.status) : 0,
+      closedAt: isSet(object.closedAt) ? globalThis.Number(object.closedAt) : undefined,
+      appliedAt: isSet(object.appliedAt) ? globalThis.Number(object.appliedAt) : undefined,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      link: isSet(object.link) ? globalThis.String(object.link) : undefined,
+      industry: isSet(object.industry) ? globalThis.String(object.industry) : undefined,
+      location: isSet(object.location) ? globalThis.String(object.location) : undefined,
+      businessSize: isSet(object.businessSize) ? globalThis.String(object.businessSize) : undefined,
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      jobSearchId: isSet(object.jobSearchId) ? globalThis.String(object.jobSearchId) : "",
+    };
+  },
+
+  toJSON(message: JobSearchCompanyUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.status !== 0) {
+      obj.status = jobSearchCompany_StatusToJSON(message.status);
+    }
+    if (message.closedAt !== undefined) {
+      obj.closedAt = Math.round(message.closedAt);
+    }
+    if (message.appliedAt !== undefined) {
+      obj.appliedAt = Math.round(message.appliedAt);
+    }
+    if (message.endedAt !== undefined) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.link !== undefined) {
+      obj.link = message.link;
+    }
+    if (message.industry !== undefined) {
+      obj.industry = message.industry;
+    }
+    if (message.location !== undefined) {
+      obj.location = message.location;
+    }
+    if (message.businessSize !== undefined) {
+      obj.businessSize = message.businessSize;
+    }
+    if (message.description !== undefined) {
+      obj.description = message.description;
+    }
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
+    }
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.jobSearchId !== "") {
+      obj.jobSearchId = message.jobSearchId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<JobSearchCompanyUpdateRequest>, I>>(base?: I): JobSearchCompanyUpdateRequest {
+    return JobSearchCompanyUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<JobSearchCompanyUpdateRequest>, I>>(
+    object: I,
+  ): JobSearchCompanyUpdateRequest {
+    const message = createBaseJobSearchCompanyUpdateRequest();
+    message.name = object.name ?? "";
+    message.status = object.status ?? 0;
+    message.closedAt = object.closedAt ?? undefined;
+    message.appliedAt = object.appliedAt ?? undefined;
+    message.endedAt = object.endedAt ?? undefined;
+    message.link = object.link ?? undefined;
+    message.industry = object.industry ?? undefined;
+    message.location = object.location ?? undefined;
+    message.businessSize = object.businessSize ?? undefined;
+    message.description = object.description ?? undefined;
+    message.memo = object.memo ?? undefined;
+    message.id = object.id ?? "";
+    message.jobSearchId = object.jobSearchId ?? "";
     return message;
   },
 };

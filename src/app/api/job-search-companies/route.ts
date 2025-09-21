@@ -3,29 +3,26 @@ import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { 
+  JobSearchCompanyCreateRequest,
   JobSearchCompanyListResponse, 
   JobSearchCompanyResponse, 
-  JobSearchCompanyUpsertRequest
 } from '@/generated/job_search_company';
 
 // GET /api/workers/job-search-companies - 구직 회사 목록 조회
-export async function GET(request: NextRequest, { params }: { params: Promise<{ jobSearchId: string }> }) {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const jobSearchId = searchParams.get('jobSearchId');
+  
   try {
-    const resolvedParams = await params;
-    console.log('params', resolvedParams);
-
-    const jobSearchId = resolvedParams.jobSearchId;
     const accessToken = await getCookie('accessToken');
       
     // accessToken이 없으면 401 응답 반환
     if (!accessToken) {
         return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
     }
-
-    console.log('jobSearchId', jobSearchId);
     
     const res = await apiFetchHandler<JobSearchCompanyListResponse>(
-      `http://localhost:8080/api/workers/job-searches/${jobSearchId}/companies`, 
+      `http://localhost:8080/api/job-search-companies?jobSearchId=${jobSearchId}`, 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -41,14 +38,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // POST /api/workers/job-search-companies - 구직 회사 생성
-export async function POST(request: NextRequest, { params }: { params: Promise<{ jobSearchId: string }> }) {
+export async function POST(request: NextRequest) {
   try {
-    const body: JobSearchCompanyUpsertRequest = await request.json();
-    const resolvedParams = await params;
-    const jobSearchId = resolvedParams.jobSearchId;
-
-    console.log('body', body);
-    console.log('jobSearchId', jobSearchId);
+    const body: JobSearchCompanyCreateRequest = await request.json();
 
     const accessToken = await getCookie('accessToken');
       
@@ -58,7 +50,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
   
     const res = await apiFetchHandler<JobSearchCompanyResponse>(
-      `http://localhost:8080/api/workers/job-searches/${jobSearchId}/companies`, 
+      `http://localhost:8080/api/job-search-companies`, 
       HttpMethod.POST, 
       body, 
       accessToken,

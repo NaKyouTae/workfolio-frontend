@@ -41,12 +41,11 @@ export async function apiFetchHandler<T>(
             redirect("http://localhost:3000/login");
         }
         
-        
         if (contentType && contentType.includes('application/json')) {
             const data = await response.json();
             return NextResponse.json(data, { status });
         } else {
-            const errorText = await response.text();
+            const errorText = await response.json();
             console.error('Unexpected Response:', errorText);
             return NextResponse.json({ message: 'Invalid response format' }, { status: 500 });
         }

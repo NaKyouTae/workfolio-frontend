@@ -4,16 +4,15 @@ import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { 
   JobSearchCompanyResponse, 
-  JobSearchCompanyUpsertRequest
+  JobSearchCompanyUpdateRequest
 } from '@/generated/job_search_company';
 
 // PUT /api/workers/job-search-companies - 구직 회사 수정
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ jobSearchId: string, jobSearchCompanyId: string }> }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const body: JobSearchCompanyUpsertRequest = await request.json();
+    const body: JobSearchCompanyUpdateRequest = await request.json();
     const resolvedParams = await params;
-    const jobSearchId = resolvedParams.jobSearchId;
-    const jobSearchCompanyId = resolvedParams.jobSearchCompanyId;
+    const id = resolvedParams.id;
 
     const accessToken = await getCookie('accessToken');
       
@@ -23,7 +22,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
   
     const res = await apiFetchHandler<JobSearchCompanyResponse>(
-      `http://localhost:8080/api/workers/job-searches/${jobSearchId}/companies/${jobSearchCompanyId}`, 
+      `http://localhost:8080/api/job-search-companies/${id}`, 
       HttpMethod.PUT, 
       body, 
       accessToken,

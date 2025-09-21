@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import CareerManagement from '@/components/features/career/CareerManagement';
-import JobSearchManagement from '@/components/features/interview/JobSearchManagement';
+import JobSearchManagement from '@/components/features/job-search/JobSearchManagement';
 import Header from '@/components/layouts/Header';
 
 const Mypage: React.FC = () => {

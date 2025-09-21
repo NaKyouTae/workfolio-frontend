@@ -10,13 +10,23 @@ import { JobSearch } from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
-export interface JobSearchUpsertRequest {
+export interface JobSearchCreateRequest {
   title: string;
   startedAt: number;
   endedAt?: number | undefined;
   prevCompanyId?: string | undefined;
   nextCompanyId?: string | undefined;
   memo?: string | undefined;
+}
+
+export interface JobSearchUpdateRequest {
+  title: string;
+  startedAt: number;
+  endedAt?: number | undefined;
+  prevCompanyId?: string | undefined;
+  nextCompanyId?: string | undefined;
+  memo?: string | undefined;
+  id: string;
 }
 
 export interface JobSearchListResponse {
@@ -27,7 +37,7 @@ export interface JobSearchResponse {
   jobSearch?: JobSearch | undefined;
 }
 
-function createBaseJobSearchUpsertRequest(): JobSearchUpsertRequest {
+function createBaseJobSearchCreateRequest(): JobSearchCreateRequest {
   return {
     title: "",
     startedAt: 0,
@@ -38,8 +48,8 @@ function createBaseJobSearchUpsertRequest(): JobSearchUpsertRequest {
   };
 }
 
-export const JobSearchUpsertRequest: MessageFns<JobSearchUpsertRequest> = {
-  encode(message: JobSearchUpsertRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const JobSearchCreateRequest: MessageFns<JobSearchCreateRequest> = {
+  encode(message: JobSearchCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.title !== "") {
       writer.uint32(10).string(message.title);
     }
@@ -61,10 +71,10 @@ export const JobSearchUpsertRequest: MessageFns<JobSearchUpsertRequest> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): JobSearchUpsertRequest {
+  decode(input: BinaryReader | Uint8Array, length?: number): JobSearchCreateRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseJobSearchUpsertRequest();
+    const message = createBaseJobSearchCreateRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -125,7 +135,7 @@ export const JobSearchUpsertRequest: MessageFns<JobSearchUpsertRequest> = {
     return message;
   },
 
-  fromJSON(object: any): JobSearchUpsertRequest {
+  fromJSON(object: any): JobSearchCreateRequest {
     return {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
@@ -136,7 +146,7 @@ export const JobSearchUpsertRequest: MessageFns<JobSearchUpsertRequest> = {
     };
   },
 
-  toJSON(message: JobSearchUpsertRequest): unknown {
+  toJSON(message: JobSearchCreateRequest): unknown {
     const obj: any = {};
     if (message.title !== "") {
       obj.title = message.title;
@@ -159,17 +169,181 @@ export const JobSearchUpsertRequest: MessageFns<JobSearchUpsertRequest> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<JobSearchUpsertRequest>, I>>(base?: I): JobSearchUpsertRequest {
-    return JobSearchUpsertRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<JobSearchCreateRequest>, I>>(base?: I): JobSearchCreateRequest {
+    return JobSearchCreateRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<JobSearchUpsertRequest>, I>>(object: I): JobSearchUpsertRequest {
-    const message = createBaseJobSearchUpsertRequest();
+  fromPartial<I extends Exact<DeepPartial<JobSearchCreateRequest>, I>>(object: I): JobSearchCreateRequest {
+    const message = createBaseJobSearchCreateRequest();
     message.title = object.title ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
     message.prevCompanyId = object.prevCompanyId ?? undefined;
     message.nextCompanyId = object.nextCompanyId ?? undefined;
     message.memo = object.memo ?? undefined;
+    return message;
+  },
+};
+
+function createBaseJobSearchUpdateRequest(): JobSearchUpdateRequest {
+  return {
+    title: "",
+    startedAt: 0,
+    endedAt: undefined,
+    prevCompanyId: undefined,
+    nextCompanyId: undefined,
+    memo: undefined,
+    id: "",
+  };
+}
+
+export const JobSearchUpdateRequest: MessageFns<JobSearchUpdateRequest> = {
+  encode(message: JobSearchUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.startedAt !== 0) {
+      writer.uint32(16).uint64(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      writer.uint32(24).uint64(message.endedAt);
+    }
+    if (message.prevCompanyId !== undefined) {
+      writer.uint32(34).string(message.prevCompanyId);
+    }
+    if (message.nextCompanyId !== undefined) {
+      writer.uint32(42).string(message.nextCompanyId);
+    }
+    if (message.memo !== undefined) {
+      writer.uint32(50).string(message.memo);
+    }
+    if (message.id !== "") {
+      writer.uint32(794).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): JobSearchUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseJobSearchUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.prevCompanyId = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.nextCompanyId = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.memo = reader.string();
+          continue;
+        }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): JobSearchUpdateRequest {
+    return {
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      prevCompanyId: isSet(object.prevCompanyId) ? globalThis.String(object.prevCompanyId) : undefined,
+      nextCompanyId: isSet(object.nextCompanyId) ? globalThis.String(object.nextCompanyId) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+    };
+  },
+
+  toJSON(message: JobSearchUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.startedAt !== 0) {
+      obj.startedAt = Math.round(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.prevCompanyId !== undefined) {
+      obj.prevCompanyId = message.prevCompanyId;
+    }
+    if (message.nextCompanyId !== undefined) {
+      obj.nextCompanyId = message.nextCompanyId;
+    }
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
+    }
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<JobSearchUpdateRequest>, I>>(base?: I): JobSearchUpdateRequest {
+    return JobSearchUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<JobSearchUpdateRequest>, I>>(object: I): JobSearchUpdateRequest {
+    const message = createBaseJobSearchUpdateRequest();
+    message.title = object.title ?? "";
+    message.startedAt = object.startedAt ?? 0;
+    message.endedAt = object.endedAt ?? undefined;
+    message.prevCompanyId = object.prevCompanyId ?? undefined;
+    message.nextCompanyId = object.nextCompanyId ?? undefined;
+    message.memo = object.memo ?? undefined;
+    message.id = object.id ?? "";
     return message;
   },
 };
