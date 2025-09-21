@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getCookie } from "@/utils/cookie";
 import { apiFetchHandler } from "@/utils/ApiFetchHandler";
 import HttpMethod from "@/enums/HttpMethod";
-import { CreateRecordGroupResponse } from "@/generated/record_group";
+import { RecordGroupResponse } from "@/generated/record_group";
 import { SuccessResponse } from "@/generated/common";
 
 export async function PUT(req: Request, { params }: { params: { recordGroupId: string } }) {
@@ -15,7 +15,7 @@ export async function PUT(req: Request, { params }: { params: { recordGroupId: s
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<CreateRecordGroupResponse>(`http://localhost:8080/api/record-groups/${recordGroupId}`, HttpMethod.PUT, requestData, accessToken);
+        const res = await apiFetchHandler<RecordGroupResponse>(`http://localhost:8080/api/record-groups/${recordGroupId}`, HttpMethod.PUT, requestData, accessToken);
         const data = await res.json();
         
         return NextResponse.json(data)

@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { JobSearch } from '@/generated/common';
-import { JobSearchListResponse, JobSearchCreateRequest, JobSearchUpdateRequest } from '@/generated/job_search';
+import { JobSearch, Company } from '@/generated/common';
+import { JobSearchListResponse, JobSearchUpsertRequest } from '@/generated/job_search';
 import HttpMethod from '@/enums/HttpMethod';
 import DateUtil from '@/utils/DateUtil';
-import JobSearchCompanyManagement from './JobSearchCompanyManagement';
+import JobSearchCompanyPage from './JobSearchCompanyPage';
 import { useUser } from '@/hooks/useUser';
-import { createSampleJobSearches } from '@/utils/sampleData';
+import { createSampleJobSearches, createSampleCompanies } from '@/utils/sampleData';
+import dayjs from 'dayjs';
 
 const JobSearchManagement: React.FC = () => {
   const { isLoggedIn } = useUser();
   const [jobSearches, setJobSearches] = useState<JobSearch[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -19,14 +21,40 @@ const JobSearchManagement: React.FC = () => {
   const [selectedJobSearch, setSelectedJobSearch] = useState<JobSearch | null>(null);
 
   // 폼 상태
-  const [createForm, setCreateForm] = useState<JobSearchCreateRequest>({
+  const [createForm, setCreateForm] = useState<JobSearchUpsertRequest>({
     title: '',
-    startedAt: 0,
+    startedAt: dayjs().unix(),
     endedAt: undefined,
-    prevCompanyId: '',
+    prevCompanyId: undefined,
     nextCompanyId: undefined,
     memo: ''
   });
+
+  // 회사 목록 조회
+  const fetchCompanies = useCallback(async () => {
+    try {
+      if (isLoggedIn) {
+        // 로그인된 경우 서버에서 데이터 조회
+        const response = await fetch('/api/workers/companies', {
+          method: HttpMethod.GET,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCompanies(data.companies || []);
+        } else {
+          console.error('Failed to fetch companies');
+        }
+      } else {
+        // 로그인하지 않은 경우 샘플 데이터 사용
+        console.log('Using sample company data for non-logged-in user');
+        const sampleData = createSampleCompanies();
+        setCompanies(sampleData);
+      }
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+    }
+  }, [isLoggedIn]);
 
   // 구직 목록 조회
   const fetchJobSearches = useCallback(async () => {
@@ -60,11 +88,12 @@ const JobSearchManagement: React.FC = () => {
 
   useEffect(() => {
     fetchJobSearches();
-  }, [isLoggedIn, fetchJobSearches]);
+    fetchCompanies();
+  }, [isLoggedIn, fetchJobSearches, fetchCompanies]);
 
   // 폼 입력 핸들러
-  const handleFormChange = (field: keyof JobSearchCreateRequest, value: string | number | undefined) => {
-    setCreateForm((prev: JobSearchCreateRequest) => ({
+  const handleFormChange = (field: keyof JobSearchUpsertRequest, value: string | number | undefined) => {
+    setCreateForm((prev: JobSearchUpsertRequest) => ({
       ...prev,
       [field]: value
     }));
@@ -76,8 +105,8 @@ const JobSearchManagement: React.FC = () => {
       setIsCreating(true);
       
       // 필수 필드 검증
-      if (!createForm.title || !createForm.startedAt || !createForm.prevCompanyId) {
-        alert('제목, 시작일, 이전 회사는 필수 입력 항목입니다.');
+      if (!createForm.title || !createForm.startedAt) {
+        alert('제목, 시작일은 필수 입력 항목입니다.');
         return;
       }
 
@@ -114,6 +143,20 @@ const JobSearchManagement: React.FC = () => {
     }
   };
 
+  // 수정 모달 열기
+  const openEditModal = (jobSearch: JobSearch) => {
+    setEditingJobSearch(jobSearch);
+    setCreateForm({
+      title: jobSearch.title || '',
+      startedAt: jobSearch.startedAt,
+      endedAt: jobSearch.endedAt,
+      prevCompanyId: jobSearch.prevCompany?.id || '',
+      nextCompanyId: jobSearch.nextCompany?.id || '',
+      memo: jobSearch.memo || ''
+    });
+    setIsEditModalOpen(true);
+  };
+
   // 구직 수정
   const updateJobSearch = async () => {
     if (!editingJobSearch) return;
@@ -121,8 +164,7 @@ const JobSearchManagement: React.FC = () => {
     try {
       setIsUpdating(true);
       
-      const updateData: JobSearchUpdateRequest = {
-        id: editingJobSearch.id,
+      const updateData: JobSearchUpsertRequest = {
         title: createForm.title,
         startedAt: createForm.startedAt,
         endedAt: createForm.endedAt,
@@ -131,7 +173,7 @@ const JobSearchManagement: React.FC = () => {
         memo: createForm.memo
       };
 
-      const response = await fetch('/api/workers/job-searches', {
+      const response = await fetch(`/api/workers/job-searches/${editingJobSearch.id}`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +190,7 @@ const JobSearchManagement: React.FC = () => {
           title: '',
           startedAt: 0,
           endedAt: undefined,
-          prevCompanyId: '',
+          prevCompanyId: undefined,
           nextCompanyId: undefined,
           memo: ''
         });
@@ -165,20 +207,6 @@ const JobSearchManagement: React.FC = () => {
     }
   };
 
-  // 수정 모달 열기
-  const openEditModal = (jobSearch: JobSearch) => {
-    setEditingJobSearch(jobSearch);
-    setCreateForm({
-      title: jobSearch.title || '',
-      startedAt: jobSearch.startedAt,
-      endedAt: jobSearch.endedAt,
-      prevCompanyId: jobSearch.prevCompany?.id || '',
-      nextCompanyId: jobSearch.nextCompany?.id || '',
-      memo: jobSearch.memo || ''
-    });
-    setIsEditModalOpen(true);
-  };
-
   // 구직 상세 보기
   const viewJobSearchDetail = (jobSearch: JobSearch) => {
     setSelectedJobSearch(jobSearch);
@@ -189,21 +217,10 @@ const JobSearchManagement: React.FC = () => {
     setSelectedJobSearch(null);
   };
 
-  // 날짜를 timestamp로 변환
-  const dateToTimestamp = (dateString: string) => {
-    return new Date(dateString).getTime();
-  };
-
-  // timestamp를 날짜 문자열로 변환 (폼용)
-  const timestampToDateString = (timestamp: number | undefined) => {
-    if (!timestamp) return '';
-    return new Date(timestamp).toISOString().split('T')[0];
-  };
-
   // 선택된 구직이 있으면 회사 관리 컴포넌트 표시
   if (selectedJobSearch) {
     return (
-      <JobSearchCompanyManagement 
+      <JobSearchCompanyPage 
         jobSearch={selectedJobSearch} 
         onBack={goBack}
       />
@@ -318,7 +335,19 @@ const JobSearchManagement: React.FC = () => {
               </tr>
             ) : (
               jobSearches.map((jobSearch) => (
-                <tr key={jobSearch.id} style={{ borderBottom: '1px solid #e9ecef' }}>
+                <tr 
+                  key={jobSearch.id} 
+                  style={{ 
+                    borderBottom: '1px solid #e9ecef',
+                    transition: 'background-color 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f8f9fa';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                >
                   <td style={{ padding: '12px', fontSize: '14px', fontWeight: 'bold' }}>{jobSearch.title}</td>
                   <td style={{ padding: '12px', fontSize: '14px' }}>
                     {DateUtil.formatTimestamp(jobSearch.startedAt)}
@@ -351,7 +380,14 @@ const JobSearchManagement: React.FC = () => {
                           border: 'none',
                           borderRadius: '4px',
                           cursor: 'pointer',
-                          fontSize: '12px'
+                          fontSize: '12px',
+                          transition: 'background-color 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#218838';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#28a745';
                         }}
                       >
                         상세
@@ -463,8 +499,8 @@ const JobSearchManagement: React.FC = () => {
                     </label>
                     <input
                       type="date"
-                      value={createForm.startedAt ? timestampToDateString(createForm.startedAt) : ''}
-                      onChange={(e) => handleFormChange('startedAt', e.target.value ? dateToTimestamp(e.target.value) : 0)}
+                      value={createForm.startedAt ? DateUtil.formatTimestamp(createForm.startedAt) : ''}
+                      onChange={(e) => handleFormChange('startedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : 0)}
                       style={{
                         width: '100%',
                         padding: '12px',
@@ -483,8 +519,8 @@ const JobSearchManagement: React.FC = () => {
                     </label>
                     <input
                       type="date"
-                      value={createForm.endedAt ? timestampToDateString(createForm.endedAt) : ''}
-                      onChange={(e) => handleFormChange('endedAt', e.target.value ? dateToTimestamp(e.target.value) : undefined)}
+                      value={createForm.endedAt && createForm.endedAt !== 0 ? DateUtil.formatTimestamp(createForm.endedAt) : ''}
+                      onChange={(e) => handleFormChange('endedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
                       style={{
                         width: '100%',
                         padding: '12px',
@@ -500,10 +536,9 @@ const JobSearchManagement: React.FC = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-                      이전 회사 *
+                      이전 회사 (선택사항)
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={createForm.prevCompanyId}
                       onChange={(e) => handleFormChange('prevCompanyId', e.target.value)}
                       style={{
@@ -512,19 +547,24 @@ const JobSearchManagement: React.FC = () => {
                         border: '1px solid #e9ecef',
                         borderRadius: '4px',
                         fontSize: '14px',
-                        outline: 'none'
+                        outline: 'none',
+                        backgroundColor: '#ffffff'
                       }}
-                      placeholder="이전 회사 ID"
-                      required
-                    />
+                    >
+                      <option value="">이전 회사를 선택하세요</option>
+                      {companies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                          {company.name} {company.isWorking ? '(현재 재직 중)' : ''}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>
                     <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-                      다음 회사
+                      다음 회사 (선택사항)
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={createForm.nextCompanyId || ''}
                       onChange={(e) => handleFormChange('nextCompanyId', e.target.value || undefined)}
                       style={{
@@ -533,10 +573,17 @@ const JobSearchManagement: React.FC = () => {
                         border: '1px solid #e9ecef',
                         borderRadius: '4px',
                         fontSize: '14px',
-                        outline: 'none'
+                        outline: 'none',
+                        backgroundColor: '#ffffff'
                       }}
-                      placeholder="다음 회사 ID"
-                    />
+                    >
+                      <option value="">다음 회사를 선택하세요 (선택사항)</option>
+                      {companies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                          {company.name} {company.isWorking ? '(현재 재직 중)' : ''}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
@@ -694,8 +741,8 @@ const JobSearchManagement: React.FC = () => {
                     </label>
                     <input
                       type="date"
-                      value={createForm.startedAt ? timestampToDateString(createForm.startedAt) : ''}
-                      onChange={(e) => handleFormChange('startedAt', e.target.value ? dateToTimestamp(e.target.value) : 0)}
+                      value={createForm.startedAt ? DateUtil.formatTimestamp(createForm.startedAt) : ''}
+                      onChange={(e) => handleFormChange('startedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : 0)}
                       style={{
                         width: '100%',
                         padding: '12px',
@@ -714,8 +761,8 @@ const JobSearchManagement: React.FC = () => {
                     </label>
                     <input
                       type="date"
-                      value={createForm.endedAt ? timestampToDateString(createForm.endedAt) : ''}
-                      onChange={(e) => handleFormChange('endedAt', e.target.value ? dateToTimestamp(e.target.value) : undefined)}
+                      value={createForm.endedAt && createForm.endedAt !== 0 ? DateUtil.formatTimestamp(createForm.endedAt) : ''}
+                      onChange={(e) => handleFormChange('endedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
                       style={{
                         width: '100%',
                         padding: '12px',
@@ -733,8 +780,7 @@ const JobSearchManagement: React.FC = () => {
                     <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
                       이전 회사 *
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={createForm.prevCompanyId}
                       onChange={(e) => handleFormChange('prevCompanyId', e.target.value)}
                       style={{
@@ -743,19 +789,25 @@ const JobSearchManagement: React.FC = () => {
                         border: '1px solid #e9ecef',
                         borderRadius: '4px',
                         fontSize: '14px',
-                        outline: 'none'
+                        outline: 'none',
+                        backgroundColor: '#ffffff'
                       }}
-                      placeholder="이전 회사 ID"
                       required
-                    />
+                    >
+                      <option value="">이전 회사를 선택하세요</option>
+                      {companies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                          {company.name} {company.isWorking ? '(현재 재직 중)' : ''}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>
                     <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
                       다음 회사
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={createForm.nextCompanyId || ''}
                       onChange={(e) => handleFormChange('nextCompanyId', e.target.value || undefined)}
                       style={{
@@ -764,10 +816,17 @@ const JobSearchManagement: React.FC = () => {
                         border: '1px solid #e9ecef',
                         borderRadius: '4px',
                         fontSize: '14px',
-                        outline: 'none'
+                        outline: 'none',
+                        backgroundColor: '#ffffff'
                       }}
-                      placeholder="다음 회사 ID"
-                    />
+                    >
+                      <option value="">다음 회사를 선택하세요 (선택사항)</option>
+                      {companies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                          {company.name} {company.isWorking ? '(현재 재직 중)' : ''}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
@@ -840,6 +899,7 @@ const JobSearchManagement: React.FC = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

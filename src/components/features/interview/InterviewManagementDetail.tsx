@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Interview } from '@/generated/common';
 import { InterviewListResponse, InterviewCreateRequest, InterviewUpdateRequest } from '@/generated/interview';
 import { JobSearchCompany } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
 import DateUtil from '@/utils/DateUtil';
+import { useUser } from '@/hooks/useUser';
+import { createSampleInterviews } from '@/utils/sampleData';
 
 interface InterviewManagementDetailProps {
   jobSearchCompany: JobSearchCompany;
@@ -11,6 +13,7 @@ interface InterviewManagementDetailProps {
 }
 
 const InterviewManagementDetail: React.FC<InterviewManagementDetailProps> = ({ jobSearchCompany, onBack }) => {
+  const { isLoggedIn } = useUser();
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -30,29 +33,38 @@ const InterviewManagementDetail: React.FC<InterviewManagementDetailProps> = ({ j
   });
 
   // 면접 목록 조회
-  const fetchInterviews = async () => {
+  const fetchInterviews = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/workers/interviews?jobSearchId=${jobSearchCompany.jobSearch?.id}`, {
-        method: HttpMethod.GET,
-      });
+      
+      if (isLoggedIn) {
+        // 로그인된 경우 서버에서 데이터 조회
+        const response = await fetch(`/api/workers/interviews?jobSearchId=${jobSearchCompany.jobSearch?.id}`, {
+          method: HttpMethod.GET,
+        });
 
-      if (response.ok) {
-        const data: InterviewListResponse = await response.json();
-        setInterviews(data.jobSearchCompanies || []);
+        if (response.ok) {
+          const data: InterviewListResponse = await response.json();
+          setInterviews(data.jobSearchCompanies || []);
+        } else {
+          console.error('Failed to fetch interviews');
+        }
       } else {
-        console.error('Failed to fetch interviews');
+        // 로그인하지 않은 경우 샘플 데이터 사용
+        console.log('Using sample data for non-logged-in user');
+        const sampleData = createSampleInterviews(jobSearchCompany.id, jobSearchCompany.jobSearch?.id || '');
+        setInterviews(sampleData);
       }
     } catch (error) {
       console.error('Error fetching interviews:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoggedIn, jobSearchCompany.id, jobSearchCompany.jobSearch?.id]);
 
   useEffect(() => {
     fetchInterviews();
-  }, [jobSearchCompany.jobSearch?.id]);
+  }, [fetchInterviews]);
 
   // 폼 입력 핸들러
   const handleFormChange = (field: keyof InterviewCreateRequest, value: string | number | undefined) => {
@@ -246,17 +258,23 @@ const InterviewManagementDetail: React.FC<InterviewManagementDetailProps> = ({ j
             }}>
               회사: {jobSearchCompany.name}
             </p>
+            {!isLoggedIn && (
+              <p style={{ fontSize: '12px', color: '#999', margin: '3px 0 0 0' }}>
+                📋 샘플 데이터를 표시하고 있습니다.
+              </p>
+            )}
           </div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
             onClick={() => setIsCreateModalOpen(true)}
+            disabled={!isLoggedIn}
             style={{
-              backgroundColor: '#007bff',
+              backgroundColor: !isLoggedIn ? '#6c757d' : '#007bff',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: 'pointer',
+              cursor: !isLoggedIn ? 'not-allowed' : 'pointer',
               width: '70px',
               height: '30px',
               display: 'flex',

@@ -229,11 +229,16 @@ export interface JobSearch {
 
 export interface JobSearchCompany {
   id: string;
-  name?: string | undefined;
+  name: string;
   status: JobSearchCompany_Status;
   appliedAt: number;
   closedAt: number;
   endedAt?: number | undefined;
+  industry?: string | undefined;
+  location?: string | undefined;
+  businessSize?: string | undefined;
+  description?: string | undefined;
+  memo?: string | undefined;
   link?: string | undefined;
   jobSearch?: JobSearch | undefined;
   createdAt: number;
@@ -242,10 +247,12 @@ export interface JobSearchCompany {
 
 export enum JobSearchCompany_Status {
   UNKNOWN = 0,
-  IN_PROGRESS = 1,
+  INTERESTED = 1,
   APPLIED = 2,
-  IN_INTERVIEW = 3,
-  CLOSED = 4,
+  INTERVIEWING = 3,
+  PASSED = 4,
+  REJECTED = 5,
+  ABANDONED = 6,
   UNRECOGNIZED = -1,
 }
 
@@ -255,17 +262,23 @@ export function jobSearchCompany_StatusFromJSON(object: any): JobSearchCompany_S
     case "UNKNOWN":
       return JobSearchCompany_Status.UNKNOWN;
     case 1:
-    case "IN_PROGRESS":
-      return JobSearchCompany_Status.IN_PROGRESS;
+    case "INTERESTED":
+      return JobSearchCompany_Status.INTERESTED;
     case 2:
     case "APPLIED":
       return JobSearchCompany_Status.APPLIED;
     case 3:
-    case "IN_INTERVIEW":
-      return JobSearchCompany_Status.IN_INTERVIEW;
+    case "INTERVIEWING":
+      return JobSearchCompany_Status.INTERVIEWING;
     case 4:
-    case "CLOSED":
-      return JobSearchCompany_Status.CLOSED;
+    case "PASSED":
+      return JobSearchCompany_Status.PASSED;
+    case 5:
+    case "REJECTED":
+      return JobSearchCompany_Status.REJECTED;
+    case 6:
+    case "ABANDONED":
+      return JobSearchCompany_Status.ABANDONED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -277,14 +290,18 @@ export function jobSearchCompany_StatusToJSON(object: JobSearchCompany_Status): 
   switch (object) {
     case JobSearchCompany_Status.UNKNOWN:
       return "UNKNOWN";
-    case JobSearchCompany_Status.IN_PROGRESS:
-      return "IN_PROGRESS";
+    case JobSearchCompany_Status.INTERESTED:
+      return "INTERESTED";
     case JobSearchCompany_Status.APPLIED:
       return "APPLIED";
-    case JobSearchCompany_Status.IN_INTERVIEW:
-      return "IN_INTERVIEW";
-    case JobSearchCompany_Status.CLOSED:
-      return "CLOSED";
+    case JobSearchCompany_Status.INTERVIEWING:
+      return "INTERVIEWING";
+    case JobSearchCompany_Status.PASSED:
+      return "PASSED";
+    case JobSearchCompany_Status.REJECTED:
+      return "REJECTED";
+    case JobSearchCompany_Status.ABANDONED:
+      return "ABANDONED";
     case JobSearchCompany_Status.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -2528,11 +2545,16 @@ export const JobSearch: MessageFns<JobSearch> = {
 function createBaseJobSearchCompany(): JobSearchCompany {
   return {
     id: "",
-    name: undefined,
+    name: "",
     status: 0,
     appliedAt: 0,
     closedAt: 0,
     endedAt: undefined,
+    industry: undefined,
+    location: undefined,
+    businessSize: undefined,
+    description: undefined,
+    memo: undefined,
     link: undefined,
     jobSearch: undefined,
     createdAt: 0,
@@ -2545,7 +2567,7 @@ export const JobSearchCompany: MessageFns<JobSearchCompany> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
     if (message.status !== 0) {
@@ -2560,8 +2582,23 @@ export const JobSearchCompany: MessageFns<JobSearchCompany> = {
     if (message.endedAt !== undefined) {
       writer.uint32(48).uint64(message.endedAt);
     }
+    if (message.industry !== undefined) {
+      writer.uint32(58).string(message.industry);
+    }
+    if (message.location !== undefined) {
+      writer.uint32(66).string(message.location);
+    }
+    if (message.businessSize !== undefined) {
+      writer.uint32(74).string(message.businessSize);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(82).string(message.description);
+    }
+    if (message.memo !== undefined) {
+      writer.uint32(90).string(message.memo);
+    }
     if (message.link !== undefined) {
-      writer.uint32(58).string(message.link);
+      writer.uint32(98).string(message.link);
     }
     if (message.jobSearch !== undefined) {
       JobSearch.encode(message.jobSearch, writer.uint32(402).fork()).join();
@@ -2635,6 +2672,46 @@ export const JobSearchCompany: MessageFns<JobSearchCompany> = {
             break;
           }
 
+          message.industry = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.location = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.businessSize = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.memo = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
           message.link = reader.string();
           continue;
         }
@@ -2674,11 +2751,16 @@ export const JobSearchCompany: MessageFns<JobSearchCompany> = {
   fromJSON(object: any): JobSearchCompany {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       status: isSet(object.status) ? jobSearchCompany_StatusFromJSON(object.status) : 0,
       appliedAt: isSet(object.appliedAt) ? globalThis.Number(object.appliedAt) : 0,
       closedAt: isSet(object.closedAt) ? globalThis.Number(object.closedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      industry: isSet(object.industry) ? globalThis.String(object.industry) : undefined,
+      location: isSet(object.location) ? globalThis.String(object.location) : undefined,
+      businessSize: isSet(object.businessSize) ? globalThis.String(object.businessSize) : undefined,
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
       link: isSet(object.link) ? globalThis.String(object.link) : undefined,
       jobSearch: isSet(object.jobSearch) ? JobSearch.fromJSON(object.jobSearch) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
@@ -2691,7 +2773,7 @@ export const JobSearchCompany: MessageFns<JobSearchCompany> = {
     if (message.id !== "") {
       obj.id = message.id;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
     }
     if (message.status !== 0) {
@@ -2705,6 +2787,21 @@ export const JobSearchCompany: MessageFns<JobSearchCompany> = {
     }
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.industry !== undefined) {
+      obj.industry = message.industry;
+    }
+    if (message.location !== undefined) {
+      obj.location = message.location;
+    }
+    if (message.businessSize !== undefined) {
+      obj.businessSize = message.businessSize;
+    }
+    if (message.description !== undefined) {
+      obj.description = message.description;
+    }
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
     }
     if (message.link !== undefined) {
       obj.link = message.link;
@@ -2727,11 +2824,16 @@ export const JobSearchCompany: MessageFns<JobSearchCompany> = {
   fromPartial<I extends Exact<DeepPartial<JobSearchCompany>, I>>(object: I): JobSearchCompany {
     const message = createBaseJobSearchCompany();
     message.id = object.id ?? "";
-    message.name = object.name ?? undefined;
+    message.name = object.name ?? "";
     message.status = object.status ?? 0;
     message.appliedAt = object.appliedAt ?? 0;
     message.closedAt = object.closedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
+    message.industry = object.industry ?? undefined;
+    message.location = object.location ?? undefined;
+    message.businessSize = object.businessSize ?? undefined;
+    message.description = object.description ?? undefined;
+    message.memo = object.memo ?? undefined;
     message.link = object.link ?? undefined;
     message.jobSearch = (object.jobSearch !== undefined && object.jobSearch !== null)
       ? JobSearch.fromPartial(object.jobSearch)

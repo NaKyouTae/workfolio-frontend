@@ -23,8 +23,6 @@ export async function GET() {
 
     const data = await res.json();
 
-    console.log("data", data);
-
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching companies:', error);

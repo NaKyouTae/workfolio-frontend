@@ -1,4 +1,4 @@
-import { Record, RecordGroup, Record_RecordType, Company, Certifications, Degrees, Education, Worker, JobSearch } from '@/generated/common'
+import { Record, RecordGroup, Record_RecordType, Company, Certifications, Degrees, Education, Worker, JobSearch, JobSearchCompany, Interview, JobSearchCompany_Status, Interview_Type } from '@/generated/common'
 import dayjs from 'dayjs'
 
 export const createSampleRecordGroups = (): RecordGroup[] => {
@@ -613,6 +613,222 @@ export const createSampleJobSearches = (): JobSearch[] => {
             },
             createdAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now - 8 * 30 * 24 * 60 * 60 * 1000
+        }
+    ];
+};
+
+// 샘플 구직 회사 데이터
+export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCompany[] => {
+    const now = Date.now();
+    const worker = createSampleWorker();
+    
+    return [
+        {
+            id: 'jobsearchcompany-1',
+            name: '네이버',
+            status: JobSearchCompany_Status.REJECTED,
+            appliedAt: now - 5 * 30 * 24 * 60 * 60 * 1000, // 5개월 전
+            closedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
+            endedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+            link: 'https://careers.naver.com',
+            jobSearch: {
+                id: jobSearchId,
+                title: '2024년 상반기 구직 활동',
+                startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                worker,
+                createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 5 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 4 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'jobsearchcompany-2',
+            name: '카카오',
+            status: JobSearchCompany_Status.PASSED,
+            appliedAt: now - 5 * 30 * 24 * 60 * 60 * 1000, // 5개월 전
+            closedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
+            endedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+            link: 'https://careers.kakao.com',
+            jobSearch: {
+                id: jobSearchId,
+                title: '2024년 상반기 구직 활동',
+                startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                worker,
+                createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 5 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 4 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'jobsearchcompany-3',
+            name: '당근마켓',
+            status: JobSearchCompany_Status.INTERVIEWING,
+            appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
+            closedAt: 0, // 아직 마감되지 않음
+            endedAt: undefined,
+            link: 'https://about.daangn.com/careers',
+            jobSearch: {
+                id: jobSearchId,
+                title: '2024년 상반기 구직 활동',
+                startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                worker,
+                createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'jobsearchcompany-4',
+            name: '토스',
+            status: JobSearchCompany_Status.APPLIED,
+            appliedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
+            closedAt: 0, // 아직 마감되지 않음
+            endedAt: undefined,
+            link: 'https://toss.im/careers',
+            jobSearch: {
+                id: jobSearchId,
+                title: '2024년 상반기 구직 활동',
+                startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                worker,
+                createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'jobsearchcompany-5',
+            name: '쿠팡',
+            status: JobSearchCompany_Status.INTERESTED,
+            appliedAt: now - 2 * 30 * 24 * 60 * 60 * 1000, // 2개월 전
+            closedAt: 0, // 아직 마감되지 않음
+            endedAt: undefined,
+            link: 'https://www.coupang.jobs',
+            jobSearch: {
+                id: jobSearchId,
+                title: '2024년 상반기 구직 활동',
+                startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                worker,
+                createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 2 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 30 * 24 * 60 * 60 * 1000
+        }
+    ];
+};
+
+// 샘플 면접 데이터
+export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: string): Interview[] => {
+    const now = Date.now();
+    const worker = createSampleWorker();
+    
+    return [
+        {
+            id: 'interview-1',
+            title: '1차 기술 면접',
+            type: Interview_Type.IN_INTERVIEW,
+            startedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
+            endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000, // 2시간 후
+            memo: '알고리즘 문제 해결과 시스템 설계에 대한 질문이 주를 이뤘습니다. 코딩 테스트는 중간 수준이었고, 시스템 설계는 대용량 트래픽 처리에 대한 질문이 나왔습니다.',
+            jobSearchCompany: {
+                id: jobSearchCompanyId,
+                name: '당근마켓',
+                status: JobSearchCompany_Status.INTERVIEWING,
+                appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+                closedAt: 0,
+                endedAt: undefined,
+                link: 'https://about.daangn.com/careers',
+                jobSearch: {
+                    id: jobSearchId,
+                    title: '2024년 상반기 구직 활동',
+                    startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                    memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                    worker,
+                    createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+                },
+                createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'interview-2',
+            title: '2차 문화 적합성 면접',
+            type: Interview_Type.IN_INTERVIEW,
+            startedAt: now - 2 * 30 * 24 * 60 * 60 * 1000, // 2개월 전
+            endedAt: now - 2 * 30 * 24 * 60 * 60 * 1000 + 1.5 * 60 * 60 * 1000, // 1.5시간 후
+            memo: '팀워크, 커뮤니케이션 스타일, 회사 문화에 대한 질문이 많았습니다. 이전 프로젝트에서의 협업 경험과 갈등 해결 방법에 대해 자세히 이야기했습니다.',
+            jobSearchCompany: {
+                id: jobSearchCompanyId,
+                name: '당근마켓',
+                status: JobSearchCompany_Status.INTERVIEWING,
+                appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+                closedAt: 0,
+                endedAt: undefined,
+                link: 'https://about.daangn.com/careers',
+                jobSearch: {
+                    id: jobSearchId,
+                    title: '2024년 상반기 구직 활동',
+                    startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                    memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                    worker,
+                    createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+                },
+                createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 2 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'interview-3',
+            title: '최종 면접',
+            type: Interview_Type.CLOSED,
+            startedAt: now - 1 * 30 * 24 * 60 * 60 * 1000, // 1개월 전
+            endedAt: now - 1 * 30 * 24 * 60 * 60 * 1000 + 2.5 * 60 * 60 * 1000, // 2.5시간 후
+            memo: 'CTO와의 최종 면접이었습니다. 기술적 역량과 리더십, 회사 비전에 대한 질문이 주를 이뤘습니다. 결과는 아직 기다리고 있는 상태입니다.',
+            jobSearchCompany: {
+                id: jobSearchCompanyId,
+                name: '당근마켓',
+                status: JobSearchCompany_Status.INTERVIEWING,
+                appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+                closedAt: 0,
+                endedAt: undefined,
+                link: 'https://about.daangn.com/careers',
+                jobSearch: {
+                    id: jobSearchId,
+                    title: '2024년 상반기 구직 활동',
+                    startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+                    memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                    worker,
+                    createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
+                },
+                createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
+                updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
+            },
+            createdAt: now - 1 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
         }
     ];
 };
