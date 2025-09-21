@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/useUser';
 import { createSampleInterviews } from '@/utils/sampleData';
 import InterviewCreateModal from './InterviewCreateModal';
 import InterviewUpdateModal from './InterviewUpdateModal';
+import styles from './InterviewPage.module.css';
 
 interface InterviewPageProps {
   jobSearchCompany: JobSearchCompany;
@@ -100,15 +101,8 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
   // 로딩 중일 때
   if (isLoading) {
     return (
-      <div style={{ padding: '20px' }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '300px',
-          fontSize: '18px',
-          color: '#666'
-        }}>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingContent}>
           로딩 중...
         </div>
       </div>
@@ -116,32 +110,16 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className={styles.container}>
       {/* 헤더 */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '20px',
-        paddingBottom: '15px',
-        borderBottom: '1px solid #e9ecef'
-      }}>
-        <h2 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0, color: '#333' }}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>
           면접 관리 - {jobSearchCompany.name}
         </h2>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className={styles.buttonGroup}>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            style={{
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              padding: '10px 20px',
-              fontSize: '14px',
-              fontWeight: 'bold'
-            }}
+            className={`${styles.button} ${styles.addButton}`}
           >
             면접 추가
           </button>
@@ -149,86 +127,59 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
       </div>
 
       {/* 면접 목록 */}
-      <div style={{ backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
           <thead>
-            <tr style={{ backgroundColor: '#f8f9fa' }}>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>제목</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>유형</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>시작일</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>종료일</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>메모</th>
-              <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>작업</th>
+            <tr className={styles.tableHeader}>
+              <th className={styles.tableHeaderCell}>제목</th>
+              <th className={styles.tableHeaderCell}>유형</th>
+              <th className={styles.tableHeaderCell}>시작일</th>
+              <th className={styles.tableHeaderCell}>종료일</th>
+              <th className={styles.tableHeaderCell}>메모</th>
+              <th className={styles.tableHeaderCell}>작업</th>
             </tr>
           </thead>
           <tbody>
             {interviews.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#666', fontSize: '16px' }}>
+                <td colSpan={6} className={styles.emptyCell}>
                   등록된 면접이 없습니다
                 </td>
               </tr>
             ) : (
               interviews.map((interview) => (
-                <tr key={interview.id} style={{ borderBottom: '1px solid #e9ecef' }}>
-                  <td style={{ padding: '12px', fontSize: '14px', fontWeight: 'bold' }}>{interview.title}</td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
-                    <span style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      backgroundColor: '#e9ecef',
-                      color: '#495057',
-                      fontWeight: 'bold'
-                    }}>
+                <tr key={interview.id} className={styles.tableRow}>
+                  <td className={styles.titleCell}>{interview.title}</td>
+                  <td className={styles.typeCell}>
+                    <span className={styles.typeBadge}>
                       {getTypeText(interview.type)}
                     </span>
                   </td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
+                  <td className={styles.tableCell}>
                     {interview.startedAt ? DateUtil.formatTimestamp(interview.startedAt) : '-'}
                   </td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
+                  <td className={styles.tableCell}>
                     {interview.endedAt ? DateUtil.formatTimestamp(interview.endedAt) : '-'}
                   </td>
-                  <td style={{ padding: '12px', fontSize: '14px', maxWidth: '200px' }}>
+                  <td className={styles.memoCell}>
                     <div 
-                      style={{ 
-                        overflow: 'hidden', 
-                        textOverflow: 'ellipsis', 
-                        whiteSpace: 'nowrap'
-                      }}
+                      className={styles.memoText}
                       title={interview.memo || ''}
                     >
                       {interview.memo || '-'}
                     </div>
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'center' }}>
-                    <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                  <td className={styles.actionCell}>
+                    <div className={styles.actionButtonGroup}>
                       <button
                         onClick={() => openEditModal(interview)}
-                        style={{
-                          padding: '6px 12px',
-                          backgroundColor: '#007bff',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '12px'
-                        }}
+                        className={`${styles.actionButton} ${styles.editButton}`}
                       >
                         수정
                       </button>
                       <button
                         onClick={() => deleteInterview(interview.id || '')}
-                        style={{
-                          padding: '6px 12px',
-                          backgroundColor: '#dc3545',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '12px'
-                        }}
+                        className={`${styles.actionButton} ${styles.deleteButton}`}
                       >
                         삭제
                       </button>

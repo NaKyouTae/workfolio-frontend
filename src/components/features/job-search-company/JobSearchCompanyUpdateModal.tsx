@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { JobSearchCompany, JobSearchCompany_Status } from '@/generated/common';
 import { JobSearchCompanyUpdateRequest } from '@/generated/job_search_company';
+import styles from './JobSearchCompanyUpdate.module.css';
 import HttpMethod from '@/enums/HttpMethod';
 import JobSearchCompanyForm from './JobSearchCompanyForm';
 
@@ -17,12 +18,9 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
   onClose,
   editingCompany,
   onSuccess,
-  jobSearchId,
+  jobSearchId
 }) => {
-
-  console.log('editingCompany', editingCompany);
-  console.log('jobSearchId', jobSearchId);
-
+  const [isUpdating, setIsUpdating] = useState(false);
   const [createForm, setCreateForm] = useState<JobSearchCompanyUpdateRequest>({
     id: '',
     name: '',
@@ -39,47 +37,53 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
     jobSearchId: jobSearchId
   });
 
-   // editingJobSearch가 변경될 때 폼 초기화
-   useEffect(() => {
+  // 편집할 회사 정보로 폼 초기화
+  useEffect(() => {
     if (editingCompany) {
       setCreateForm({
+        id: editingCompany.id,
         name: editingCompany.name,
-        link: editingCompany.link,
-        industry: editingCompany.industry,
-        businessSize: editingCompany.businessSize,
-        location: editingCompany.location,
-        description: editingCompany.description,
         status: editingCompany.status,
         appliedAt: editingCompany.appliedAt,
         closedAt: editingCompany.closedAt,
         endedAt: editingCompany.endedAt,
+        link: editingCompany.link,
+        industry: editingCompany.industry,
+        location: editingCompany.location,
+        businessSize: editingCompany.businessSize,
+        description: editingCompany.description,
         memo: editingCompany.memo,
-        id: editingCompany.id,
         jobSearchId: jobSearchId
       });
     }
-  }, [editingCompany]);
+  }, [editingCompany, jobSearchId]);
 
-  if (!isOpen || !editingCompany) return null;
+  if (!isOpen) return null;
 
   // 구직 회사 수정
   const updateJobSearchCompany = async () => {
-    if (!editingCompany) return;
-
     try {
+      // 필수 필드 검증
+      if (!createForm.name || !createForm.status) {
+        alert('회사명과 상태는 필수 입력 항목입니다.');
+        return;
+      }
+
+      setIsUpdating(true);
+
       const updateData: JobSearchCompanyUpdateRequest = {
+        id: createForm.id,
         name: createForm.name,
-        link: createForm.link,
-        industry: createForm.industry,
-        businessSize: createForm.businessSize,
-        location: createForm.location,
-        description: createForm.description,
         status: createForm.status,
         appliedAt: createForm.appliedAt,
         closedAt: createForm.closedAt,
         endedAt: createForm.endedAt,
+        link: createForm.link,
+        industry: createForm.industry,
+        location: createForm.location,
+        businessSize: createForm.businessSize,
+        description: createForm.description,
         memo: createForm.memo,
-        id: editingCompany.id,
         jobSearchId: jobSearchId
       };
 
@@ -92,13 +96,27 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify(updateData)
       });
 
       if (response.ok) {
-        // 성공 시 목록 새로고침
         onSuccess();
         onClose();
+        setCreateForm({
+          id: '',
+          name: '',
+          status: JobSearchCompany_Status.UNKNOWN,
+          appliedAt: undefined,
+          closedAt: undefined,
+          endedAt: undefined,
+          link: undefined,
+          industry: undefined,
+          location: undefined,
+          businessSize: undefined,
+          description: undefined,
+          memo: undefined,
+          jobSearchId: jobSearchId
+        });
         alert('구직 회사가 성공적으로 수정되었습니다.');
       } else {
         const errorData = await response.json();
@@ -107,6 +125,8 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
     } catch (error) {
       console.error('Error updating job search company:', error);
       alert('구직 회사 수정 중 오류가 발생했습니다.');
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -118,62 +138,17 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
     }));
   };
 
-
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        padding: '30px',
-        width: '90%',
-        maxWidth: '800px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
-      }}>
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
         {/* 헤더 */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '30px',
-          paddingBottom: '15px',
-          borderBottom: '2px solid #e0e0e0'
-        }}>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
-            color: '#333',
-            margin: 0
-          }}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>
             구직 회사 수정
           </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '24px',
-              cursor: 'pointer',
-              color: '#666',
-              padding: '0',
-              width: '30px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
+            className={styles.closeButton}
           >
             ×
           </button>
@@ -181,50 +156,35 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
 
         {/* 폼 */}
         <form onSubmit={(e) => { e.preventDefault(); updateJobSearchCompany(); }}>
-          <JobSearchCompanyForm
-            formData={createForm}
-            onFormChange={handleFormChange}
-          />
+          <div className={styles.content}>
+            <JobSearchCompanyForm
+              formData={createForm}
+              onFormChange={handleFormChange}
+            />
+          </div>
 
           {/* 버튼 */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '12px',
-            marginTop: '30px',
-            paddingTop: '20px',
-            borderTop: '1px solid #e0e0e0'
-          }}>
+          <div className={styles.footer}>
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: '12px 24px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 'bold'
-              }}
+              className={`${styles.button} ${styles.cancelButton}`}
             >
               취소
             </button>
             <button
               type="submit"
-              style={{
-                padding: '12px 24px',
-                backgroundColor: '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 'bold'
-              }}
+              disabled={isUpdating}
+              className={`${styles.button} ${styles.updateButton}`}
             >
-              수정
+              {isUpdating ? (
+                <div className={styles.loading}>
+                  <div className={styles.spinner}></div>
+                  수정 중...
+                </div>
+              ) : (
+                '수정'
+              )}
             </button>
           </div>
         </form>

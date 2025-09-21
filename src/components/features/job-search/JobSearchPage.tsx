@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/useUser';
 import { createSampleJobSearches, createSampleCompanies } from '@/utils/sampleData';
 import JobSearchCreateModal from './JobSearchCreateModal';
 import JobSearchUpdateModal from './JobSearchUpdateModal';
+import styles from './JobSearchPage.module.css';
 
 const JobSearchPage: React.FC = () => {
   const { isLoggedIn } = useUser();
@@ -99,15 +100,8 @@ const JobSearchPage: React.FC = () => {
   // 로딩 중일 때
   if (isLoading) {
     return (
-      <div style={{ padding: '20px' }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '300px',
-          fontSize: '18px',
-          color: '#666'
-        }}>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingContent}>
           로딩 중...
         </div>
       </div>
@@ -125,32 +119,16 @@ const JobSearchPage: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className={styles.container}>
       {/* 헤더 */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '20px',
-        paddingBottom: '15px',
-        borderBottom: '1px solid #e9ecef'
-      }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: 0, color: '#333' }}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>
           구직 관리
         </h1>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className={styles.buttonGroup}>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            style={{
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              padding: '10px 20px',
-              fontSize: '14px',
-              fontWeight: 'bold'
-            }}
+            className={`${styles.button} ${styles.addButton}`}
           >
             구직 추가
           </button>
@@ -158,81 +136,61 @@ const JobSearchPage: React.FC = () => {
       </div>
 
       {/* 구직 목록 */}
-      <div style={{ backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
           <thead>
-            <tr style={{ backgroundColor: '#f8f9fa' }}>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>제목</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>시작일</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>종료일</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>이전 회사</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>이후 회사</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>메모</th>
-              <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>작업</th>
+            <tr className={styles.tableHeader}>
+              <th className={styles.tableHeaderCell}>제목</th>
+              <th className={styles.tableHeaderCell}>시작일</th>
+              <th className={styles.tableHeaderCell}>종료일</th>
+              <th className={styles.tableHeaderCell}>이전 회사</th>
+              <th className={styles.tableHeaderCell}>이후 회사</th>
+              <th className={styles.tableHeaderCell}>메모</th>
+              <th className={styles.tableHeaderCell}>작업</th>
             </tr>
           </thead>
           <tbody>
             {jobSearches.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: '#666', fontSize: '16px' }}>
+                <td colSpan={7} className={styles.emptyCell}>
                   등록된 구직이 없습니다
                 </td>
               </tr>
             ) : (
               jobSearches.map((jobSearch) => (
-                <tr key={jobSearch.id} style={{ borderBottom: '1px solid #e9ecef' }}>
-                  <td style={{ padding: '12px', fontSize: '14px', fontWeight: 'bold' }}>{jobSearch.title}</td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
+                <tr key={jobSearch.id} className={styles.tableRow}>
+                  <td className={styles.titleCell}>{jobSearch.title}</td>
+                  <td className={styles.tableCell}>
                     {DateUtil.formatTimestamp(jobSearch.startedAt)}
                   </td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
+                  <td className={styles.tableCell}>
                     {jobSearch.endedAt ? DateUtil.formatTimestamp(jobSearch.endedAt) : '-'}
                   </td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
+                  <td className={styles.tableCell}>
                     {jobSearch.prevCompany?.name || '-'}
                   </td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
+                  <td className={styles.tableCell}>
                     {jobSearch.nextCompany?.name || '-'}
                   </td>
-                  <td style={{ padding: '12px', fontSize: '14px', maxWidth: '200px' }}>
+                  <td className={styles.memoCell}>
                     <div 
-                      style={{ 
-                        overflow: 'hidden', 
-                        textOverflow: 'ellipsis', 
-                        whiteSpace: 'nowrap'
-                      }}
+                      className={styles.memoText}
                       title={jobSearch.memo || ''}
                     >
                       {jobSearch.memo || '-'}
                     </div>
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'center' }}>
-                    <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                  <td className={styles.actionCell}>
+                    <div className={styles.actionButtonGroup}>
                       <button
                         onClick={() => viewJobSearchDetail(jobSearch)}
-                        style={{
-                          padding: '6px 12px',
-                          backgroundColor: '#28a745',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '12px'
-                        }}
+                        className={`${styles.actionButton} ${styles.detailButton}`}
                       >
                         상세
                       </button>
                       <button
                         onClick={() => openEditModal(jobSearch)}
-                        style={{
-                          padding: '6px 12px',
-                          backgroundColor: '#007bff',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '12px'
-                        }}
+                        className={`${styles.actionButton} ${styles.editButton}`}
                       >
                         수정
                       </button>

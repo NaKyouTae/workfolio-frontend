@@ -1,6 +1,7 @@
 import React from 'react';
 import DateUtil from '@/utils/DateUtil';
 import { JobSearchCompanyCreateRequest, JobSearchCompanyUpdateRequest } from '@/generated/job_search_company';
+import styles from './JobSearchCompanyForm.module.css';
 
 interface JobSearchCompanyFormProps {
   formData: JobSearchCompanyCreateRequest | JobSearchCompanyUpdateRequest;
@@ -12,46 +13,31 @@ const JobSearchCompanyForm: React.FC<JobSearchCompanyFormProps> = ({
   onFormChange,
 }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className={styles.container}>
       {/* 기본 정보 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            회사명 *
+      <div className={styles.section}>
+        <div className={styles.field}>
+          <label className={styles.label}>
+            회사명 <span className={styles.required}>*</span>
           </label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => onFormChange('name', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none'
-            }}
+            className={styles.input}
             placeholder="회사명을 입력하세요"
             required
           />
         </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            상태 *
+        <div className={styles.field}>
+          <label className={styles.label}>
+            상태 <span className={styles.required}>*</span>
           </label>
           <select
             value={formData.status}
             onChange={(e) => onFormChange('status', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: 'white'
-            }}
+            className={styles.select}
             required
           >
             <option value="INTERESTED">관심있음</option>
@@ -64,172 +50,101 @@ const JobSearchCompanyForm: React.FC<JobSearchCompanyFormProps> = ({
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            업종
-          </label>
+      {/* 날짜 정보 */}
+      <div className={styles.section}>
+        <div className={styles.field}>
+          <label className={styles.label}>지원일</label>
+          <input
+            type="datetime-local"
+            value={formData.appliedAt ? DateUtil.formatTimestamp(formData.appliedAt) : ''}
+            onChange={(e) => onFormChange('appliedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
+            className={styles.dateInput}
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label}>마감일</label>
+          <input
+            type="datetime-local"
+            value={formData.closedAt ? DateUtil.formatTimestamp(formData.closedAt) : ''}
+            onChange={(e) => onFormChange('closedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
+            className={styles.dateInput}
+          />
+        </div>
+      </div>
+
+      {/* 회사 정보 */}
+      <div className={styles.section}>
+        <div className={styles.field}>
+          <label className={styles.label}>업종</label>
           <input
             type="text"
             value={formData.industry || ''}
             onChange={(e) => onFormChange('industry', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: 'white'
-            }}
-            placeholder="IT, 금융, 제조업 등"
+            className={styles.input}
+            placeholder="예: IT, 금융, 제조업"
           />
         </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            규모
-          </label>
-          <input
-            type="text"
-            value={formData.businessSize || ''}
-            onChange={(e) => onFormChange('businessSize', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: 'white'
-            }}
-            placeholder="대기업, 중견기업, 스타트업 등"
-          />
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            위치
-          </label>
+        <div className={styles.field}>
+          <label className={styles.label}>위치</label>
           <input
             type="text"
             value={formData.location || ''}
             onChange={(e) => onFormChange('location', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: 'white'
-            }}
-            placeholder="서울, 경기, 부산 등"
+            className={styles.input}
+            placeholder="예: 서울, 경기, 부산"
           />
         </div>
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            링크
-          </label>
+      </div>
+
+      {/* 규모 */}
+      <div className={styles.section}>
+        <div className={styles.field}>
+          <label className={styles.label}>사업자 규모</label>
+          <input
+            type="text"
+            value={formData.businessSize || ''}
+            onChange={(e) => onFormChange('businessSize', e.target.value)}
+            className={styles.input}
+            placeholder="예: 대기업, 중견기업, 스타트업"
+          />
+        </div>
+        <div className={styles.field}>
+          <label className={styles.label}>링크</label>
           <input
             type="url"
             value={formData.link || ''}
             onChange={(e) => onFormChange('link', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: 'white'
-            }}
-            placeholder="https://example.com"
+            className={styles.input}
+            placeholder="회사 채용 공고 링크"
           />
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            지원일
-          </label>
-          <input
-            type="date"
-            value={formData.appliedAt ? DateUtil.formatTimestamp(formData.appliedAt) : ''}
-            onChange={(e) => onFormChange('appliedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none'
-            }}
+      {/* 설명 및 메모 */}
+      <div className={styles.fullWidthSection}>
+        <div className={styles.field}>
+          <label className={styles.label}>회사 설명</label>
+          <textarea
+            value={formData.description || ''}
+            onChange={(e) => onFormChange('description', e.target.value)}
+            className={styles.textarea}
+            placeholder="회사에 대한 간단한 설명을 입력하세요"
+            rows={4}
           />
         </div>
-        <div>
-          <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-            마감일
-          </label>
-          <input
-            type="date"
-            value={formData.closedAt ? DateUtil.formatTimestamp(formData.closedAt) : ''}
-            onChange={(e) => onFormChange('closedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none'
-            }}
+
+        <div className={styles.field}>
+          <label className={styles.label}>메모</label>
+          <textarea
+            value={formData.memo || ''}
+            onChange={(e) => onFormChange('memo', e.target.value)}
+            className={styles.textarea}
+            placeholder="추가 메모나 특이사항을 입력하세요"
+            rows={3}
           />
         </div>
-      </div>
-
-      <div>
-        <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-          회사 설명
-        </label>
-        <textarea
-          value={formData.description || ''}
-          onChange={(e) => onFormChange('description', e.target.value)}
-          style={{
-            width: '100%',
-            padding: '12px',
-            border: '1px solid #e9ecef',
-            borderRadius: '4px',
-            fontSize: '14px',
-            outline: 'none',
-            minHeight: '80px',
-            resize: 'vertical'
-          }}
-          placeholder="회사에 대한 간단한 설명을 입력하세요"
-        />
-      </div>
-
-      <div>
-        <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
-          메모
-        </label>
-        <textarea
-          value={formData.memo || ''}
-          onChange={(e) => onFormChange('memo', e.target.value)}
-          style={{
-            width: '100%',
-            padding: '12px',
-            border: '1px solid #e9ecef',
-            borderRadius: '4px',
-            fontSize: '14px',
-            outline: 'none',
-            minHeight: '80px',
-            resize: 'vertical'
-          }}
-          placeholder="추가 메모를 입력하세요"
-        />
       </div>
     </div>
   );

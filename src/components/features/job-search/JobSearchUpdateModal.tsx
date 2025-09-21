@@ -3,6 +3,7 @@ import { JobSearch, Company } from '@/generated/common';
 import { JobSearchUpdateRequest } from '@/generated/job_search';
 import JobSearchForm from './JobSearchForm';
 import HttpMethod from '@/enums/HttpMethod';
+import styles from './JobSearchUpdate.module.css';
 
 interface JobSearchUpdateModalProps {
   isOpen: boolean;
@@ -26,38 +27,36 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
     endedAt: undefined,
     prevCompanyId: undefined,
     nextCompanyId: undefined,
-    memo: ''
+    memo: undefined
   });
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // editingJobSearch가 변경될 때 폼 초기화
+  // 편집할 구직 정보로 폼 초기화
   useEffect(() => {
     if (editingJobSearch) {
       setCreateForm({
         id: editingJobSearch.id || '',
         title: editingJobSearch.title || '',
-        startedAt: editingJobSearch.startedAt || 0,
+        startedAt: editingJobSearch.startedAt,
         endedAt: editingJobSearch.endedAt,
         prevCompanyId: editingJobSearch.prevCompany?.id,
         nextCompanyId: editingJobSearch.nextCompany?.id,
-        memo: editingJobSearch.memo || ''
+        memo: editingJobSearch.memo
       });
     }
   }, [editingJobSearch]);
 
-  if (!isOpen || !editingJobSearch) return null;
-
-  // 폼 변경 핸들러
-  const handleFormChange = (field: string, value: string | number | undefined) => {
-    setCreateForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  if (!isOpen) return null;
 
   // 구직 수정
   const updateJobSearch = async () => {
     try {
+      // 필수 필드 검증
+      if (!createForm.title) {
+        alert('제목은 필수 입력 항목입니다.');
+        return;
+      }
+
       setIsUpdating(true);
 
       const updateData: JobSearchUpdateRequest = {
@@ -79,12 +78,21 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
       });
 
       if (response.ok) {
-        alert('구직이 성공적으로 수정되었습니다.');
         onSuccess();
         onClose();
+        setCreateForm({
+          id: '',
+          title: '',
+          startedAt: 0,
+          endedAt: undefined,
+          prevCompanyId: undefined,
+          nextCompanyId: undefined,
+          memo: undefined
+        });
+        alert('구직이 성공적으로 수정되었습니다.');
       } else {
         const errorData = await response.json();
-        alert(`구직 수정에 실패했습니다: ${errorData.error || '알 수 없는 오류'}`);
+        alert(`구직 수정 실패: ${errorData.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
       console.error('Error updating job search:', error);
@@ -94,103 +102,62 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
     }
   };
 
+  // 폼 입력 핸들러
+  const handleFormChange = (field: string, value: string | number | undefined) => {
+    setCreateForm((prev) => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        padding: '30px',
-        width: '500px',
-        maxHeight: '90vh',
-        overflow: 'auto',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-          paddingBottom: '15px',
-          borderBottom: '1px solid #e9ecef'
-        }}>
-          <h3 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0, color: '#333' }}>
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
+        {/* 헤더 */}
+        <div className={styles.header}>
+          <h2 className={styles.title}>
             구직 수정
-          </h3>
+          </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '24px',
-              cursor: 'pointer',
-              color: '#666',
-              padding: '0',
-              width: '30px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
+            className={styles.closeButton}
           >
             ×
           </button>
         </div>
 
+        {/* 폼 */}
         <form onSubmit={(e) => { e.preventDefault(); updateJobSearch(); }}>
-          <JobSearchForm
-            formData={createForm}
-            onFormChange={handleFormChange}
-            companies={companies}
-          />
+          <div className={styles.content}>
+            <JobSearchForm
+              formData={createForm}
+              onFormChange={handleFormChange}
+              companies={companies}
+            />
+          </div>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '10px',
-            marginTop: '30px',
-            paddingTop: '20px',
-            borderTop: '1px solid #e9ecef'
-          }}>
+          {/* 버튼 */}
+          <div className={styles.footer}>
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className={`${styles.button} ${styles.cancelButton}`}
             >
               취소
             </button>
             <button
               type="submit"
               disabled={isUpdating}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: isUpdating ? '#6c757d' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isUpdating ? 'not-allowed' : 'pointer',
-                fontSize: '14px'
-              }}
+              className={`${styles.button} ${styles.updateButton}`}
             >
-              {isUpdating ? '수정 중...' : '수정'}
+              {isUpdating ? (
+                <div className={styles.loading}>
+                  <div className={styles.spinner}></div>
+                  수정 중...
+                </div>
+              ) : (
+                '수정'
+              )}
             </button>
           </div>
         </form>

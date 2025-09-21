@@ -3,6 +3,7 @@ import { Interview, Interview_Type } from '@/generated/common';
 import { InterviewUpdateRequest } from '@/generated/interview';
 import InterviewForm from './InterviewForm';
 import HttpMethod from '@/enums/HttpMethod';
+import styles from './InterviewUpdate.module.css';
 
 interface InterviewUpdateModalProps {
   isOpen: boolean;
@@ -18,63 +19,51 @@ const InterviewUpdateModal: React.FC<InterviewUpdateModalProps> = ({
   onSuccess
 }) => {
   const [createForm, setCreateForm] = useState<InterviewUpdateRequest>({
-    id: editingInterview?.id || '',
-    title: editingInterview?.title || '',
-    type: Interview_Type[editingInterview?.type as unknown as keyof typeof Interview_Type],
-    startedAt: editingInterview?.startedAt,
-    endedAt: editingInterview?.endedAt,
-    memo: editingInterview?.memo || '',
-    jobSearchCompanyId: editingInterview?.jobSearchCompany?.id || ''
+    id: '',
+    title: '',
+    type: Interview_Type.UNKNOWN,
+    startedAt: undefined,
+    endedAt: undefined,
+    memo: undefined,
+    jobSearchCompanyId: ''
   });
   
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // editingInterview가 변경될 때 폼 초기화
+  // 편집할 면접 정보로 폼 초기화
   useEffect(() => {
     if (editingInterview) {
       setCreateForm({
-        id: editingInterview.id || '',
-        title: editingInterview.title || '',
-        type: editingInterview.type || 0,
+        id: editingInterview.id,
+        title: editingInterview.title,
+        type: editingInterview.type,
         startedAt: editingInterview.startedAt,
         endedAt: editingInterview.endedAt,
-        memo: editingInterview.memo || '',
+        memo: editingInterview.memo,
         jobSearchCompanyId: editingInterview.jobSearchCompany?.id || ''
       });
     }
   }, [editingInterview]);
 
-  if (!isOpen || !editingInterview) return null;
-
-  // 폼 변경 핸들러
-  const handleFormChange = (field: string, value: string | number | undefined) => {
-    setCreateForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  if (!isOpen) return null;
 
   // 면접 수정
   const updateInterview = async () => {
     try {
-      setIsUpdating(true);
+      // 필수 필드 검증
+      if (!createForm.title || !createForm.type) {
+        alert('제목과 면접 유형은 필수 입력 항목입니다.');
+        return;
+      }
 
-      const updateData: InterviewUpdateRequest = {
-        id: createForm.id,
-        title: createForm.title,
-        type: createForm.type,
-        startedAt: createForm.startedAt,
-        endedAt: createForm.endedAt,
-        memo: createForm.memo,
-        jobSearchCompanyId: createForm.jobSearchCompanyId,
-      };
+      setIsUpdating(true);
 
       const response = await fetch(`/api/interviews`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify(createForm)
       });
 
       if (response.ok) {
@@ -83,7 +72,7 @@ const InterviewUpdateModal: React.FC<InterviewUpdateModalProps> = ({
         onClose();
       } else {
         const errorData = await response.json();
-        alert(`면접 수정에 실패했습니다: ${errorData.error || '알 수 없는 오류'}`);
+        alert(`면접 수정 실패: ${errorData.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
       console.error('Error updating interview:', error);
@@ -93,102 +82,61 @@ const InterviewUpdateModal: React.FC<InterviewUpdateModalProps> = ({
     }
   };
 
+  // 폼 입력 핸들러
+  const handleFormChange = (field: string, value: string | number | undefined) => {
+    setCreateForm((prev) => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        padding: '30px',
-        width: '500px',
-        maxHeight: '90vh',
-        overflow: 'auto',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-          paddingBottom: '15px',
-          borderBottom: '1px solid #e9ecef'
-        }}>
-          <h3 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0, color: '#333' }}>
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
+        {/* 헤더 */}
+        <div className={styles.header}>
+          <h2 className={styles.title}>
             면접 수정
-          </h3>
+          </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '24px',
-              cursor: 'pointer',
-              color: '#666',
-              padding: '0',
-              width: '30px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
+            className={styles.closeButton}
           >
             ×
           </button>
         </div>
 
+        {/* 폼 */}
         <form onSubmit={(e) => { e.preventDefault(); updateInterview(); }}>
-          <InterviewForm
-            formData={createForm}
-            onFormChange={handleFormChange}
-          />
+          <div className={styles.content}>
+            <InterviewForm
+              formData={createForm}
+              onFormChange={handleFormChange}
+            />
+          </div>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '10px',
-            marginTop: '30px',
-            paddingTop: '20px',
-            borderTop: '1px solid #e9ecef'
-          }}>
+          {/* 버튼 */}
+          <div className={styles.footer}>
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className={`${styles.button} ${styles.cancelButton}`}
             >
               취소
             </button>
             <button
               type="submit"
               disabled={isUpdating}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: isUpdating ? '#6c757d' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isUpdating ? 'not-allowed' : 'pointer',
-                fontSize: '14px'
-              }}
+              className={`${styles.button} ${styles.updateButton}`}
             >
-              {isUpdating ? '수정 중...' : '수정'}
+              {isUpdating ? (
+                <div className={styles.loading}>
+                  <div className={styles.spinner}></div>
+                  수정 중...
+                </div>
+              ) : (
+                '수정'
+              )}
             </button>
           </div>
         </form>

@@ -3,11 +3,12 @@ import { JobSearchCompany, JobSearch, JobSearchCompany_Status } from '@/generate
 import { JobSearchCompanyListResponse } from '@/generated/job_search_company';
 import HttpMethod from '@/enums/HttpMethod';
 import DateUtil from '@/utils/DateUtil';
-import InterviewPage from '../interview/InterviewPage';
 import { useUser } from '@/hooks/useUser';
 import { createSampleJobSearchCompanies } from '@/utils/sampleData';
 import JobSearchCompanyCreateModal from './JobSearchCompanyCreateModal';
 import JobSearchCompanyUpdateModal from './JobSearchCompanyUpdateModal';
+import styles from './JobSearchCompanyPage.module.css';
+import InterviewPage from '../interview/InterviewPage';
 
 interface JobSearchCompanyPageProps {
   jobSearch: JobSearch;
@@ -83,32 +84,31 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
     setExpandedCompanies(new Set());
   };
 
-  // 상태별 색상 반환
+  // 상태 색상 반환
   const getStatusColor = (status: JobSearchCompany_Status) => {
     switch (status) {
-      case JobSearchCompany_Status.INTERESTED: return { bg: '#e3f2fd', color: '#1976d2' };
-      case JobSearchCompany_Status.APPLIED: return { bg: '#fff3e0', color: '#f57c00' };
-      case JobSearchCompany_Status.INTERVIEWING: return { bg: '#f3e5f5', color: '#7b1fa2' };
-      case JobSearchCompany_Status.PASSED: return { bg: '#e8f5e8', color: '#388e3c' };
-      case JobSearchCompany_Status.REJECTED: return { bg: '#ffebee', color: '#d32f2f' };
-      case JobSearchCompany_Status.ABANDONED: return { bg: '#f5f5f5', color: '#757575' };
-      case JobSearchCompany_Status.UNKNOWN: 
+      case JobSearchCompany_Status.UNKNOWN: return styles.statusUnknown;
+      case JobSearchCompany_Status.INTERESTED: return styles.statusInterested;
+      case JobSearchCompany_Status.APPLIED: return styles.statusApplied;
+      case JobSearchCompany_Status.INTERVIEWING: return styles.statusInterviewing;
+      case JobSearchCompany_Status.PASSED: return styles.statusPassed;
+      case JobSearchCompany_Status.REJECTED: return styles.statusRejected;
+      case JobSearchCompany_Status.ABANDONED: return styles.statusClosed;
       case JobSearchCompany_Status.UNRECOGNIZED:
-      default: return { bg: '#f5f5f5', color: '#757575' };
+      default: return styles.statusUnknown;
     }
   };
 
-  // 상태별 한국어 텍스트 반환
+  // 상태 텍스트 반환
   const getStatusText = (status: JobSearchCompany_Status) => {
-    const statusValue = JobSearchCompany_Status[status as unknown as keyof typeof JobSearchCompany_Status];
-    switch (statusValue) {
+    switch (status) {
+      case JobSearchCompany_Status.UNKNOWN: return '알 수 없음';
       case JobSearchCompany_Status.INTERESTED: return '관심있음';
       case JobSearchCompany_Status.APPLIED: return '지원함';
-      case JobSearchCompany_Status.INTERVIEWING: return '면접중';
-      case JobSearchCompany_Status.PASSED: return '최종합격';
+      case JobSearchCompany_Status.INTERVIEWING: return '면접 중';
+      case JobSearchCompany_Status.PASSED: return '합격';
       case JobSearchCompany_Status.REJECTED: return '불합격';
       case JobSearchCompany_Status.ABANDONED: return '포기';
-      case JobSearchCompany_Status.UNKNOWN: 
       case JobSearchCompany_Status.UNRECOGNIZED:
       default: return '알 수 없음';
     }
@@ -117,15 +117,8 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
   // 로딩 중일 때
   if (isLoading) {
     return (
-      <div style={{ padding: '20px' }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '300px',
-          fontSize: '18px',
-          color: '#666'
-        }}>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingContent}>
           로딩 중...
         </div>
       </div>
@@ -133,42 +126,18 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className={styles.container}>
       {/* 헤더 */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '30px', 
-        paddingBottom: '15px', 
-        borderBottom: '2px solid #e0e0e0' 
-      }}>
+      <div className={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <button
             onClick={onBack}
-            style={{
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              width: '70px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px'
-            }}
+            className={`${styles.button} ${styles.refreshButton}`}
           >
             ← 뒤로
           </button>
           <div>
-            <h2 style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#333', 
-              margin: 0 
-            }}>
+            <h2 className={styles.title}>
               구직 회사 관리
             </h2>
             <p style={{ 
@@ -185,59 +154,33 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
             )}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className={styles.buttonGroup}>
           <button
             onClick={() => setIsCreateModalOpen(true)}
             disabled={!isLoggedIn}
-            style={{
+            className={`${styles.button} ${styles.addButton}`}
+            style={{ 
+              width: '70px', 
+              height: '30px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: '14px',
               backgroundColor: !isLoggedIn ? '#6c757d' : '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: !isLoggedIn ? 'not-allowed' : 'pointer',
-              width: '70px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px'
+              cursor: !isLoggedIn ? 'not-allowed' : 'pointer'
             }}
           >
             추가
           </button>
           <button
             onClick={fetchJobSearchCompanies}
-            style={{
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              width: '70px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px'
-            }}
+            className={`${styles.button} ${styles.refreshButton}`}
           >
             새로고침
           </button>
           <button
             onClick={collapseAllCompanies}
-            style={{
-              backgroundColor: '#17a2b8',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              width: '80px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px'
-            }}
+            className={`${styles.button} ${styles.collapseButton}`}
           >
             모두 축소
           </button>
@@ -245,139 +188,107 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
       </div>
 
       {/* 구직 회사 테이블 */}
-      <div style={{ backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
           <thead>
-            <tr style={{ backgroundColor: '#f8f9fa' }}>
-              <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333', width: '50px' }}></th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>회사명</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>상태</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>업종</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>규모</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>위치</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>지원일</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>마감일</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>링크</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>설명</th>
-              <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>메모</th>
-              <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e9ecef', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>작업</th>
+            <tr className={styles.tableHeader}>
+              <th className={styles.expandHeaderCell}></th>
+              <th className={styles.tableHeaderCell}>회사명</th>
+              <th className={styles.tableHeaderCell}>상태</th>
+              <th className={styles.tableHeaderCell}>업종</th>
+              <th className={styles.tableHeaderCell}>규모</th>
+              <th className={styles.tableHeaderCell}>위치</th>
+              <th className={styles.tableHeaderCell}>지원일</th>
+              <th className={styles.tableHeaderCell}>마감일</th>
+              <th className={styles.tableHeaderCell}>링크</th>
+              <th className={styles.tableHeaderCell}>설명</th>
+              <th className={styles.tableHeaderCell}>메모</th>
+              <th className={styles.tableHeaderCell}>작업</th>
             </tr>
           </thead>
           <tbody>
             {jobSearchCompanies.length === 0 ? (
-              <tr>
-                <td colSpan={11} style={{ padding: '40px', textAlign: 'center', color: '#666', fontSize: '16px' }}>
+              <tr className={styles.emptyRow}>
+                <td colSpan={12} className={styles.emptyCell}>
                   등록된 구직 회사가 없습니다
                 </td>
               </tr>
             ) : (
               jobSearchCompanies.map((company) => {
-                const statusColor = getStatusColor(company.status);
                 const isExpanded = expandedCompanies.has(company.id);
                 return (
                   <React.Fragment key={company.id}>
-                    <tr style={{ borderBottom: '1px solid #e9ecef' }}>
-                      <td style={{ padding: '12px', textAlign: 'center' }}>
+                    <tr className={styles.tableRow}>
+                      <td className={styles.tableCell}>
                         <button
                           onClick={() => toggleCompanyExpansion(company.id)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: '16px',
-                            color: '#666',
-                            padding: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}
+                          className={styles.expandButton}
                           title={isExpanded ? '면접 정보 숨기기' : '면접 정보 보기'}
                         >
                           {isExpanded ? '▼' : '▶'}
                         </button>
                       </td>
-                      <td style={{ padding: '12px', fontSize: '14px', fontWeight: 'bold' }}>{company.name}</td>
-                    <td style={{ padding: '12px', fontSize: '14px' }}>
-                      <span style={{
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        backgroundColor: statusColor.bg,
-                        color: statusColor.color,
-                        fontWeight: 'bold'
-                      }}>
-                        {getStatusText(company.status)}
-                      </span>
-                    </td>
-                    <td style={{ padding: '12px', fontSize: '14px' }}>{company.industry || '-'}</td>
-                    <td style={{ padding: '12px', fontSize: '14px' }}>{company.businessSize || '-'}</td>
-                    <td style={{ padding: '12px', fontSize: '14px' }}>{company.location || '-'}</td>
-                    <td style={{ padding: '12px', fontSize: '14px' }}>
-                      {DateUtil.formatTimestamp(company.appliedAt)}
-                    </td>
-                    <td style={{ padding: '12px', fontSize: '14px' }}>
-                      {DateUtil.formatTimestamp(company.closedAt)}
-                    </td>
-                    <td style={{ padding: '12px', fontSize: '14px' }}>
-                      {company.link ? (
-                        <a 
-                          href={company.link.startsWith('http') ? company.link : `https://${company.link}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: '#007bff', textDecoration: 'none' }}
+                      <td className={styles.companyNameCell}>{company.name}</td>
+                      <td className={styles.statusCell}>
+                        <span className={`${styles.statusBadge} ${getStatusColor(company.status)}`}>
+                          {getStatusText(company.status)}
+                        </span>
+                      </td>
+                      <td className={styles.tableCell}>{company.industry || '-'}</td>
+                      <td className={styles.tableCell}>{company.businessSize || '-'}</td>
+                      <td className={styles.tableCell}>{company.location || '-'}</td>
+                      <td className={styles.tableCell}>
+                        {DateUtil.formatTimestamp(company.appliedAt)}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {DateUtil.formatTimestamp(company.closedAt)}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {company.link ? (
+                          <a 
+                            href={company.link.startsWith('http') ? company.link : `https://${company.link}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: '#007bff', textDecoration: 'none' }}
+                          >
+                            링크
+                          </a>
+                        ) : '-'}
+                      </td>
+                      <td className={styles.descriptionCell}>
+                        <div 
+                          className={styles.descriptionText}
+                          title={company.description || ''}
                         >
-                          링크
-                        </a>
-                      ) : '-'}
-                    </td>
-                    <td style={{ padding: '12px', fontSize: '14px', maxWidth: '200px' }}>
-                      <div 
-                        style={{ 
-                          overflow: 'hidden', 
-                          textOverflow: 'ellipsis', 
-                          whiteSpace: 'nowrap'
-                        }}
-                        title={company.description || ''}
-                      >
-                        {company.description || '-'}
-                      </div>
-                    </td>
-                    <td style={{ padding: '12px', fontSize: '14px', maxWidth: '200px' }}>
-                      <div 
-                        style={{ 
-                          overflow: 'hidden', 
-                          textOverflow: 'ellipsis', 
-                          whiteSpace: 'nowrap'
-                        }}
-                        title={company.memo || ''}
-                      >
-                        {company.memo || '-'}
-                      </div>
-                    </td>
-                    <td style={{ padding: '12px', textAlign: 'center' }}>
-                      <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
-                        <button
-                          onClick={() => openEditModal(company)}
-                          style={{
-                            padding: '6px 12px',
-                            backgroundColor: '#007bff',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '12px'
-                          }}
+                          {company.description || '-'}
+                        </div>
+                      </td>
+                      <td className={styles.memoCell}>
+                        <div 
+                          className={styles.memoText}
+                          title={company.memo || ''}
                         >
-                          수정
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          {company.memo || '-'}
+                        </div>
+                      </td>
+                      <td className={styles.actionCell}>
+                        <div className={styles.actionButtonGroup}>
+                          <button
+                            onClick={() => openEditModal(company)}
+                            className={`${styles.actionButton} ${styles.detailButton}`}
+                          >
+                            수정
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                     {isExpanded && (
-                      <tr>
-                        <td colSpan={12} style={{ padding: '0', backgroundColor: '#f8f9fa' }}>
-                          <div style={{ padding: '20px', borderTop: '1px solid #e9ecef' }}>
-                            <InterviewPage jobSearchCompany={company} />
+                      <tr className={styles.expandedRow}>
+                        <td colSpan={12} className={styles.expandedCell}>
+                          <div className={styles.expandedContent}>
+                            <InterviewPage
+                              jobSearchCompany={company}
+                            />
                           </div>
                         </td>
                       </tr>

@@ -3,6 +3,7 @@ import { JobSearchCompany_Status } from '@/generated/common';
 import JobSearchCompanyForm from './JobSearchCompanyForm';
 import HttpMethod from '@/enums/HttpMethod';
 import { JobSearchCompanyCreateRequest } from '@/generated/job_search_company';
+import styles from './JobSearchCompanyCreate.module.css';
 
 interface JobSearchCompanyCreateModalProps {
   isOpen: boolean;
@@ -107,60 +108,16 @@ const JobSearchCompanyCreateModal: React.FC<JobSearchCompanyCreateModalProps> = 
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        padding: '30px',
-        width: '90%',
-        maxWidth: '800px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
-      }}>
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
         {/* 헤더 */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '30px',
-          paddingBottom: '15px',
-          borderBottom: '2px solid #e0e0e0'
-        }}>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
-            color: '#333',
-            margin: 0
-          }}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>
             구직 회사 추가
           </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '24px',
-              cursor: 'pointer',
-              color: '#666',
-              padding: '0',
-              width: '30px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
+            className={styles.closeButton}
           >
             ×
           </button>
@@ -168,48 +125,25 @@ const JobSearchCompanyCreateModal: React.FC<JobSearchCompanyCreateModalProps> = 
 
         {/* 폼 */}
         <form onSubmit={(e) => { e.preventDefault(); createJobSearchCompany(); }}>
-          <JobSearchCompanyForm
-            formData={createForm}
-            onFormChange={handleFormChange}
-          />
+          <div className={styles.content}>
+            <JobSearchCompanyForm
+              formData={createForm}
+              onFormChange={handleFormChange}
+            />
+          </div>
 
           {/* 버튼 */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '12px',
-            marginTop: '30px',
-            paddingTop: '20px',
-            borderTop: '1px solid #e0e0e0'
-          }}>
+          <div className={styles.footer}>
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: '12px 24px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 'bold'
-              }}
+              className={`${styles.button} ${styles.cancelButton}`}
             >
               취소
             </button>
             <button
               type="submit"
-              style={{
-                padding: '12px 24px',
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 'bold'
-              }}
+              className={`${styles.button} ${styles.createButton}`}
             >
               생성
             </button>
