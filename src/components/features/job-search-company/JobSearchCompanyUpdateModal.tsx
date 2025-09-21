@@ -19,23 +19,27 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
   onSuccess,
   jobSearchId,
 }) => {
-  const [createForm, setCreateForm] = useState<JobSearchCompanyUpdateRequest>({
-    name: editingCompany?.name || '',
-    link: editingCompany?.link,
-    industry: editingCompany?.industry,
-    businessSize: editingCompany?.businessSize,
-    location: editingCompany?.location,
-    description: editingCompany?.description,
-    status: editingCompany?.status || 0,
-    appliedAt: editingCompany?.appliedAt || 0,
-    closedAt: editingCompany?.closedAt || 0,
-    endedAt: editingCompany?.endedAt,
-    memo: editingCompany?.memo,
-    id: editingCompany?.id || '',
-    jobSearchId: jobSearchId
-  });
 
   if (!isOpen || !editingCompany) return null;
+
+  console.log('editingCompany', editingCompany);
+  console.log('jobSearchId', jobSearchId);
+
+  const [createForm, setCreateForm] = useState<JobSearchCompanyUpdateRequest>({
+    name: editingCompany.name,
+    link: editingCompany.link,
+    industry: editingCompany.industry,
+    businessSize: editingCompany.businessSize,
+    location: editingCompany.location,
+    description: editingCompany.description,
+    status: editingCompany.status,
+    appliedAt: editingCompany.appliedAt,
+    closedAt: editingCompany.closedAt,
+    endedAt: editingCompany.endedAt,
+    memo: editingCompany.memo,
+    id: editingCompany.id,
+    jobSearchId: jobSearchId
+  });
 
   // 구직 회사 수정
   const updateJobSearchCompany = async () => {
@@ -54,7 +58,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
         closedAt: createForm.closedAt,
         endedAt: createForm.endedAt,
         memo: createForm.memo,
-        id: editingCompany?.id || '',
+        id: editingCompany.id,
         jobSearchId: jobSearchId
       };
 
@@ -62,7 +66,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
       console.log('jobSearchId', jobSearchId);
       console.log('editingCompany.id', editingCompany?.id);
 
-      const response = await fetch(`/api/job-search-companies/${editingCompany?.id}`, {
+      const response = await fetch(`/api/job-search-companies`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',

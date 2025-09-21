@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';  
-import { JobSearchListResponse } from '@/generated/job_search';
+import { JobSearchListResponse, JobSearchUpdateRequest } from '@/generated/job_search';
 import { JobSearchCreateRequest } from '@/generated/job_search';
 import { JobSearchResponse } from '@/generated/job_search';
 
@@ -50,5 +50,33 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating job search:', error);
     return NextResponse.json({ error: 'Failed to create job search' }, { status: 500 });
+  }
+}
+
+// PUT /api/workers/job-searches - 구직 수정
+export async function PUT(request: NextRequest) {
+  try {
+    const body: JobSearchUpdateRequest = await request.json();
+
+    const accessToken = await getCookie('accessToken');
+      
+    // accessToken이 없으면 401 응답 반환
+    if (!accessToken) {
+        return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
+    }
+  
+    const res = await apiFetchHandler<JobSearchResponse>(
+      `http://localhost:8080/api/job-searches`, 
+      HttpMethod.PUT, 
+      body, 
+      accessToken,
+    );
+
+    const data = await res.json();
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error updating job search:', error);
+    return NextResponse.json({ error: 'Failed to update job search' }, { status: 500 });
   }
 }

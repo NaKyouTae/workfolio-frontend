@@ -100,7 +100,8 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
 
   // 상태별 한국어 텍스트 반환
   const getStatusText = (status: JobSearchCompany_Status) => {
-    switch (status) {
+    const statusValue = JobSearchCompany_Status[status as unknown as keyof typeof JobSearchCompany_Status];
+    switch (statusValue) {
       case JobSearchCompany_Status.INTERESTED: return '관심있음';
       case JobSearchCompany_Status.APPLIED: return '지원함';
       case JobSearchCompany_Status.INTERVIEWING: return '면접중';

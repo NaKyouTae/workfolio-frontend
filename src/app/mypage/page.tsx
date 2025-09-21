@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import CareerManagement from '@/components/features/career/CareerManagement';
-import JobSearchManagement from '@/components/features/job-search/JobSearchManagement';
+import JobSearchPage from '@/components/features/job-search/JobSearchPage';
 import Header from '@/components/layouts/Header';
 
 const Mypage: React.FC = () => {
@@ -259,7 +259,7 @@ const Mypage: React.FC = () => {
                     )}
 
                     {activeMenu === 'jobsearch' && (
-                        <JobSearchManagement />
+                        <JobSearchPage />
                     )}
 
                     {activeMenu === 'withdraw' && (
