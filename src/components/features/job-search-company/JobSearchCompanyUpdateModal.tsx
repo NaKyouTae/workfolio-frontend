@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { JobSearchCompany } from '@/generated/common';
+import React, { useEffect, useState } from 'react';
+import { JobSearchCompany, JobSearchCompany_Status } from '@/generated/common';
 import { JobSearchCompanyUpdateRequest } from '@/generated/job_search_company';
 import HttpMethod from '@/enums/HttpMethod';
 import JobSearchCompanyForm from './JobSearchCompanyForm';
@@ -20,26 +20,47 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
   jobSearchId,
 }) => {
 
-  if (!isOpen || !editingCompany) return null;
-
   console.log('editingCompany', editingCompany);
   console.log('jobSearchId', jobSearchId);
 
   const [createForm, setCreateForm] = useState<JobSearchCompanyUpdateRequest>({
-    name: editingCompany.name,
-    link: editingCompany.link,
-    industry: editingCompany.industry,
-    businessSize: editingCompany.businessSize,
-    location: editingCompany.location,
-    description: editingCompany.description,
-    status: editingCompany.status,
-    appliedAt: editingCompany.appliedAt,
-    closedAt: editingCompany.closedAt,
-    endedAt: editingCompany.endedAt,
-    memo: editingCompany.memo,
-    id: editingCompany.id,
+    id: '',
+    name: '',
+    status: JobSearchCompany_Status.UNKNOWN,
+    appliedAt: undefined,
+    closedAt: undefined,
+    endedAt: undefined,
+    link: undefined,
+    industry: undefined,
+    location: undefined,
+    businessSize: undefined,
+    description: undefined,
+    memo: undefined,
     jobSearchId: jobSearchId
   });
+
+   // editingJobSearch가 변경될 때 폼 초기화
+   useEffect(() => {
+    if (editingCompany) {
+      setCreateForm({
+        name: editingCompany.name,
+        link: editingCompany.link,
+        industry: editingCompany.industry,
+        businessSize: editingCompany.businessSize,
+        location: editingCompany.location,
+        description: editingCompany.description,
+        status: editingCompany.status,
+        appliedAt: editingCompany.appliedAt,
+        closedAt: editingCompany.closedAt,
+        endedAt: editingCompany.endedAt,
+        memo: editingCompany.memo,
+        id: editingCompany.id,
+        jobSearchId: jobSearchId
+      });
+    }
+  }, [editingCompany]);
+
+  if (!isOpen || !editingCompany) return null;
 
   // 구직 회사 수정
   const updateJobSearchCompany = async () => {
