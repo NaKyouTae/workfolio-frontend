@@ -4,28 +4,21 @@ import HttpMethod from "@/enums/HttpMethod"
 import {NextResponse} from "next/server"
 import { SuccessResponse } from "@/generated/common"
 
-export async function POST(req: Request) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
-        const requestData = await req.json();
+        const id = params.id;
         const accessToken = await getCookie('accessToken');
-
-        console.log('requestData', requestData);
         
-        // accessToken이 없으면 401 응답 반환
         if (accessToken == null) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler('http://localhost:8080/api/records', HttpMethod.POST, requestData, accessToken);
-        
-        // 응답이 정상적인 경우
+        const res = await apiFetchHandler<SuccessResponse>(`http://localhost:8080/api/records/${id}`, HttpMethod.DELETE, null, accessToken);
         const data = await res.json();
-
-        console.log('data', data);
         
-        return NextResponse.json(data);
+        return NextResponse.json(data)
     } catch (error) {
-        console.error('Error in POST request:', error);
+        console.error('Error in DELETE request:', error);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 }

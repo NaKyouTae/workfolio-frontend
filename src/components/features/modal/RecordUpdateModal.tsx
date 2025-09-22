@@ -5,9 +5,9 @@ import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
 import {RecordGroup, Record} from "@/generated/common"
 import styles from './RecordCreateModal.module.css'
-import { RecordUpdateRequest } from '@/generated/record'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import dayjs from 'dayjs'
+import { RecordUpdateRequest } from '@/generated/record'
 
 interface ModalProps {
     isOpen: boolean;
@@ -89,12 +89,10 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
         try {
             const createRecordRequest: RecordUpdateRequest = {
                 id: record.id,
-                recordGroupId: recordGroupId,
                 title: title,
                 description: description,
                 startedAt: DateUtil.parseToTimestamp(startedAt),
                 endedAt: DateUtil.parseToTimestamp(endedAt),
-                isAllDay: isAllDay,
             };
 
             const response = await fetch('/api/records', {
@@ -135,7 +133,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                         <label htmlFor="recordGroup">기록장</label>
                         <Dropdown
                             options={dropdownOptions}
-                            value={recordGroupId}
+                            selectedValue={recordGroupId}
                             onChange={(value) => setRecordGroupId(value)}
                             placeholder="기록장을 선택하세요"
                         />
@@ -180,7 +178,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                         <DateTimeInput
                             value={startedAt}
                             onChange={setStartedAt}
-                            disabled={isAllDay}
+                            isDisabled={isAllDay}
                         />
                     </div>
 
@@ -189,7 +187,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                         <DateTimeInput
                             value={endedAt}
                             onChange={setEndedAt}
-                            disabled={isAllDay}
+                            isDisabled={isAllDay}
                         />
                     </div>
 

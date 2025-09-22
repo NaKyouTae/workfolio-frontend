@@ -7,6 +7,9 @@ import { useCalendarDays } from '../hooks'
 import { CalendarDay } from '../types'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import RecordDetail from '../../modal/RecordDetail'
+import { useRecords } from '@/hooks/useRecords'
+import { useRecordGroupStore } from '@/store/recordGroupStore'
+import HttpMethod from '@/enums/HttpMethod'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -14,13 +17,12 @@ dayjs.tz.setDefault('Asia/Seoul')
 
 interface MonthlyCalendarV1Props {
     initialDate: Date
-    records: Record[]
 }
 
 /**
  * Table 태그를 사용한 MonthlyCalendarV1 컴포넌트
  */
-export default function MonthlyCalendarV1({ initialDate, records }: MonthlyCalendarV1Props) {
+export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Props) {
     const [date] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
@@ -34,6 +36,8 @@ export default function MonthlyCalendarV1({ initialDate, records }: MonthlyCalen
 
     // 커스텀 훅 사용
     const calendarDays = useCalendarDays(date)
+    const { records } = useRecords()
+    const { triggerRecordRefresh } = useRecordGroupStore()
 
     // 레코드 클릭 핸들러
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLTableCellElement>) => {
@@ -117,13 +121,13 @@ export default function MonthlyCalendarV1({ initialDate, records }: MonthlyCalen
         
         try {
             const response = await fetch(`/api/records/${selectedRecord.id}`, {
-                method: 'DELETE',
+                method: HttpMethod.DELETE,
             });
             
             if (response.ok) {
-                // 삭제 성공 시 모달 닫기 및 새로고침
+                // 삭제 성공 시 모달 닫기 및 레코드 재조회
                 handleCloseDetailModal();
-                // 여기서 새로고침 로직 추가 (필요시)
+                triggerRecordRefresh();
             } else {
                 console.error('Failed to delete record');
             }
