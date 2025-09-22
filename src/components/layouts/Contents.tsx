@@ -1,15 +1,17 @@
 // src/components/layouts/Contents.tsx
-import React from 'react';
+import React, { useRef } from 'react';
 import Sidebar from "@/components/layouts/Sidebar"
-import BodyRight from "@/components/layouts/BodyRight"
+import BodyRight, { BodyRightRef } from "@/components/layouts/BodyRight"
 import Footer from "@/components/layouts/Footer"
 
 const Contents = () => {
+    const bodyRightRef = useRef<BodyRightRef>(null);
+
     return (
         <main>
             <Sidebar />
             <section>
-                <BodyRight />
+                <BodyRight ref={bodyRightRef} />
                 <Footer/>
             </section>
         </main>

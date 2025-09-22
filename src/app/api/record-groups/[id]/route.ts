@@ -5,17 +5,17 @@ import HttpMethod from "@/enums/HttpMethod";
 import { RecordGroupResponse } from "@/generated/record_group";
 import { SuccessResponse } from "@/generated/common";
 
-export async function PUT(req: Request, { params }: { params: { recordGroupId: string } }) {
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
     try {
         const requestData = await req.json();
-        const recordGroupId = params.recordGroupId;
+        const id = params.id;
         const accessToken = await getCookie('accessToken');
         
         if (accessToken == null) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<RecordGroupResponse>(`http://localhost:8080/api/record-groups/${recordGroupId}`, HttpMethod.PUT, requestData, accessToken);
+        const res = await apiFetchHandler<RecordGroupResponse>(`http://localhost:8080/api/record-groups/${id}`, HttpMethod.PUT, requestData, accessToken);
         const data = await res.json();
         
         return NextResponse.json(data)
@@ -25,17 +25,21 @@ export async function PUT(req: Request, { params }: { params: { recordGroupId: s
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { recordGroupId: string } }) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
-        const recordGroupId = params.recordGroupId;
+        const id = params.id;
         const accessToken = await getCookie('accessToken');
         
         if (accessToken == null) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
+
+        console.log('id', id);
         
-        const res = await apiFetchHandler<SuccessResponse>(`http://localhost:8080/api/record-groups/${recordGroupId}`, HttpMethod.DELETE, null, accessToken);
+        const res = await apiFetchHandler<SuccessResponse>(`http://localhost:8080/api/record-groups/${id}`, HttpMethod.DELETE, null, accessToken);
         const data = await res.json();
+        
+        console.log('data', data);
         
         return NextResponse.json(data)
     } catch (error) {

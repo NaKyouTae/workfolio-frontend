@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { RecordGroup } from '../../generated/common';
+import { RecordGroup } from '@/generated/common';
 
 interface RecordGroupState {
     // RecordGroup 데이터
@@ -9,6 +9,9 @@ interface RecordGroupState {
     // 체크된 그룹들
     checkedGroups: Set<string>;
     
+    // 레코드 새로고침을 위한 상태
+    recordRefreshTrigger: number;
+    
     // 액션들
     setOwnedRecordGroups: (groups: RecordGroup[]) => void;
     setSharedRecordGroups: (groups: RecordGroup[]) => void;
@@ -16,6 +19,9 @@ interface RecordGroupState {
     initializeGroups: (groupIds: string[]) => void;
     clearAllGroups: () => void;
     toggleAllGroups: () => void;
+    
+    // 레코드 새로고침 액션
+    triggerRecordRefresh: () => void;
     
     // 계산된 값들
     getAllRecordGroups: () => RecordGroup[];
@@ -28,6 +34,7 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     ownedRecordGroups: [],
     sharedRecordGroups: [],
     checkedGroups: new Set<string>(),
+    recordRefreshTrigger: 0,
     
     // 액션들
     setOwnedRecordGroups: (groups: RecordGroup[]) => 
@@ -71,6 +78,10 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
                 return { checkedGroups: new Set(allGroupIds) };
             }
         }),
+    
+    // 레코드 새로고침 액션
+    triggerRecordRefresh: () => 
+        set((state) => ({ recordRefreshTrigger: state.recordRefreshTrigger + 1 })),
     
     // 계산된 값들
     getAllRecordGroups: () => {

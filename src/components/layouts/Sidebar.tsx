@@ -4,15 +4,20 @@ import RecordGroupsShared from '@/components/features/sidebar/record-groups/reco
 import SidebarButton from '@/components/features/sidebar/SidebarButton';
 import SidebarConfig from '@/components/features/sidebar/SidebarConfig';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
     const defaultExpanded = true;
+
     return (
         <aside>
             <SidebarButton />
             <div className="aside-cont">
                 <SidebarConfig />
-                <RecordGroupsOwned defaultExpanded={defaultExpanded} />
-                <RecordGroupsShared defaultExpanded={defaultExpanded} />
+                <RecordGroupsOwned 
+                    defaultExpanded={defaultExpanded} 
+                />
+                <RecordGroupsShared 
+                    defaultExpanded={defaultExpanded} 
+                />
             </div>
         </aside>
     );

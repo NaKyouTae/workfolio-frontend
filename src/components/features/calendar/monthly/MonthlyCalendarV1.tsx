@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { createDateModel, DateModel } from "@/models/DateModel"
-import { Record } from '../../../../../../generated/common'
+import { Record } from '@/generated/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import { useCalendarDays } from '../hooks'

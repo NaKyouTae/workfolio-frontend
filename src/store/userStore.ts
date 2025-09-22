@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Worker } from '../../generated/common';
+import { Worker } from '@/generated/common';
 
 interface UserState {
     // 유저 정보

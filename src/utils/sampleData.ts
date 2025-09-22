@@ -740,7 +740,7 @@ export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: 
         {
             id: 'interview-1',
             title: '1차 기술 면접',
-            type: Interview_Type.IN_INTERVIEW,
+            type: Interview_Type.OFFLINE,
             startedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
             endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000, // 2시간 후
             memo: '알고리즘 문제 해결과 시스템 설계에 대한 질문이 주를 이뤘습니다. 코딩 테스트는 중간 수준이었고, 시스템 설계는 대용량 트래픽 처리에 대한 질문이 나왔습니다.',
@@ -771,7 +771,7 @@ export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: 
         {
             id: 'interview-2',
             title: '2차 문화 적합성 면접',
-            type: Interview_Type.IN_INTERVIEW,
+            type: Interview_Type.OFFLINE,
             startedAt: now - 2 * 30 * 24 * 60 * 60 * 1000, // 2개월 전
             endedAt: now - 2 * 30 * 24 * 60 * 60 * 1000 + 1.5 * 60 * 60 * 1000, // 1.5시간 후
             memo: '팀워크, 커뮤니케이션 스타일, 회사 문화에 대한 질문이 많았습니다. 이전 프로젝트에서의 협업 경험과 갈등 해결 방법에 대해 자세히 이야기했습니다.',
@@ -802,7 +802,7 @@ export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: 
         {
             id: 'interview-3',
             title: '최종 면접',
-            type: Interview_Type.CLOSED,
+            type: Interview_Type.OFFLINE,
             startedAt: now - 1 * 30 * 24 * 60 * 60 * 1000, // 1개월 전
             endedAt: now - 1 * 30 * 24 * 60 * 60 * 1000 + 2.5 * 60 * 60 * 1000, // 2.5시간 후
             memo: 'CTO와의 최종 면접이었습니다. 기술적 역량과 리더십, 회사 비전에 대한 질문이 주를 이뤘습니다. 결과는 아직 기다리고 있는 상태입니다.',

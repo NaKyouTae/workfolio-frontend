@@ -2,7 +2,7 @@ import {getCookie} from "@/utils/cookie"
 import {apiFetchHandler} from "@/utils/ApiFetchHandler"
 import HttpMethod from "@/enums/HttpMethod"
 import {NextResponse} from "next/server"
-import {CreateRecordGroupResponse} from "@/generated/record_group"
+import {RecordGroupResponse} from "@/generated/record_group"
 
 export async function POST(req: Request) {
     try {
@@ -13,11 +13,15 @@ export async function POST(req: Request) {
         if (accessToken == null) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
+
+        console.log('requestData', requestData);
         
-        const res = await apiFetchHandler<CreateRecordGroupResponse>('http://localhost:8080/api/record-groups', HttpMethod.POST, requestData, accessToken);
+        const res = await apiFetchHandler<RecordGroupResponse>('http://localhost:8080/api/record-groups', HttpMethod.POST, requestData, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();
+
+        console.log('data', data);
         
         return NextResponse.json(data)
     } catch (error) {

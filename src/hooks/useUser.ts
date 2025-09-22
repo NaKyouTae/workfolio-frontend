@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useUserStore } from '@/store/userStore';
-import { WorkerGetResponse, WorkerUpdateNickNameResponse } from '../../generated/worker';
+import { WorkerGetResponse, WorkerUpdateNickNameResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
 
 export const useUser = () => {

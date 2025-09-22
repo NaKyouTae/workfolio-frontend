@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import RecordCreateModal from '../modal/RecordCreateModal';
 
-interface SidebarButtonProps {}
-
-const SidebarButton: React.FC<SidebarButtonProps> = ({}) => {
+const SidebarButton: React.FC = () => {
     const [isRecordCreateModalOpen, setIsRecordCreateModalOpen] = useState(false);
 
     const closeRecordCreateModal = () => {
@@ -17,7 +15,10 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({}) => {
     return (
         <div className="aside-button">
             <button className="md" onClick={openRecordCreateModal}>새 기록 추가</button>
-            <RecordCreateModal isOpen={isRecordCreateModalOpen} onClose={closeRecordCreateModal}/>
+            <RecordCreateModal 
+                isOpen={isRecordCreateModalOpen} 
+                onClose={closeRecordCreateModal}
+            />
         </div>
     );
 };

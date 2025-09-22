@@ -5,7 +5,8 @@ import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
 import {RecordGroup} from "@/generated/common"
 import styles from './RecordCreateModal.module.css'
-import { CreateRecordRequest } from '@/generated/record'
+import { RecordCreateRequest } from '@/generated/record'
+import { useRecordGroupStore } from '@/store/recordGroupStore'
 import dayjs from 'dayjs'
 
 interface ModalProps {
@@ -14,22 +15,24 @@ interface ModalProps {
 }
 
 const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-    const defaultFormat: string = 'YYYY-MM-DD HH:mm:ss';
     const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
     const [recordGroupId, setRecordGroupId] = useState<string>('');
     const [title, setTitle] = useState('');
-    const [memo, setMemo] = useState('');
-    const [startedAt, setStartedAt] = useState(dayjs().format(defaultFormat));
-    const [endedAt, setEndedAt] = useState(dayjs().add(1, 'day').format(defaultFormat));
+    const [description, setDescription] = useState('');
+    const [startedAt, setStartedAt] = useState(dayjs().toISOString());
+    const [endedAt, setEndedAt] = useState(dayjs().add(1, 'day').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    
+    // store에서 triggerRecordRefresh 가져오기
+    const { triggerRecordRefresh } = useRecordGroupStore();
     
     useEffect(() => {
         if (isOpen) {
             setTitle('');
-            setMemo('');
-            setStartedAt(dayjs().format(defaultFormat));
-            setEndedAt(dayjs().add(1, 'day').format(defaultFormat));
+            setDescription('');
+            setStartedAt(dayjs().toISOString());
+            setEndedAt(dayjs().add(1, 'day').toISOString());
             setRecordGroupId('');
             setIsAllDay(false);
             setSelectedFile(null);
@@ -69,20 +72,27 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const createRecordRequest = CreateRecordRequest.create({
+        const createRecordRequest = RecordCreateRequest.create({
             startedAt: DateUtil.parseToTimestamp(startedAt),
             endedAt: DateUtil.parseToTimestamp(endedAt),
             recordGroupId: recordGroupId,
             title: title,
-            memo: memo,
+            description: description,
         });
             
         try {
             const response = await fetch('/api/records', {
                 method: HttpMethod.POST,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify(createRecordRequest),
             });
             if (!response.ok) throw new Error('Failed to create record');
+            
+            // 레코드 생성 성공 시 store를 통해 새로고침 트리거
+            triggerRecordRefresh();
+            
             onClose();
         } catch (error) {
             console.error('Error creating record:', error);
@@ -162,8 +172,8 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     <div className={styles.formGroup}>
                         <label>메모</label>
                         <textarea
-                            value={memo}
-                            onChange={(e) => setMemo(e.target.value)}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                             placeholder="텍스트를 입력해 주세요."
                         />
                     </div>

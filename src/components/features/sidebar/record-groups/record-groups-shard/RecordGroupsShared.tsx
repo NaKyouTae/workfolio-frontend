@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import RecordGroupsSharedHeader from './RecordGroupsSharedHeader';
 import RecordGroups from '../RecordGroups';
-import { RecordGroup } from '@/generated/common';
 import { JoinRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
-import { useRecordGroupStore } from '@/store/recordGroupStore';
+import { useRecordGroups } from '@/hooks/useRecordGroups';
 import { useUser } from '@/hooks/useUser';
-import { createSampleRecordGroups } from '@/utils/sampleData';
 import NewRecordGroupItem from '../NewRecordGroupItem';
 
 interface RecordGroupSectionProps {
@@ -18,9 +16,8 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
 }) => {
     const { 
         sharedRecordGroups, 
-        setSharedRecordGroups, 
-        initializeGroups 
-    } = useRecordGroupStore();
+        refreshRecordGroups 
+    } = useRecordGroups();
     
     const { user } = useUser();
     
@@ -61,15 +58,8 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
             if (response.ok) {
                 const result = await response.json();
                 if (result.isSuccess) {
-                    // 성공 시 그룹 목록 새로고침
-                    const sharedRes = await fetch('/api/record-groups/shared', { 
-                        method: HttpMethod.GET 
-                    });
-                    if (sharedRes.ok) {
-                        const sharedData = await sharedRes.json();
-                        const sharedGroups = sharedData.groups || [];
-                        setSharedRecordGroups(sharedGroups);
-                    }
+                    // 성공 시 레코드 그룹 다시 조회
+                    refreshRecordGroups();
                     setIsCreatingGroup(false);
                 } else {
                     console.error('Failed to join group');
@@ -86,43 +76,6 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
     const handleCreateGroupRequest = () => {
         setIsCreatingGroup(true);
     };
-    
-    useEffect(() => {
-        const fetchRecordGroups = async () => {
-            try {
-                // 토큰이 없으면 샘플 데이터 사용
-                const accessToken = document.cookie
-                    .split('; ')
-                    .find(row => row.startsWith('accessToken='))
-                    ?.split('=')[1];
-                
-                if (!accessToken) {
-                    // 로그인이 안되어 있으면 샘플 데이터 사용
-                    const sampleRecordGroups = createSampleRecordGroups();
-                    setSharedRecordGroups(sampleRecordGroups);
-                    initializeGroups(sampleRecordGroups.map((group: RecordGroup) => group.id));
-                    return;
-                }
-
-                // 공유받은 레코드 그룹 조회
-                const sharedRes = await fetch('/api/record-groups/shared', { 
-                    method: HttpMethod.GET 
-                });
-
-                const sharedData = await sharedRes.json();
-                
-                // 공유받은 레코드 그룹 설정
-                const sharedGroups = sharedData.groups || [];
-                setSharedRecordGroups(sharedGroups);
-                // 공유받은 그룹들을 기본적으로 체크된 상태로 초기화
-                const groupIds = sharedGroups.map((group: RecordGroup) => group.id);
-                initializeGroups(groupIds);
-            } catch (error) {
-                console.error('Error fetching record groups:', error);
-            }
-        }
-        fetchRecordGroups();
-    }, [setSharedRecordGroups, initializeGroups]);
 
     return (
         <div className="record-group">
@@ -142,7 +95,7 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                     )}
                     <RecordGroups 
                         recordGroups={sharedRecordGroups} 
-                        onUpdateRecordGroups={setSharedRecordGroups}
+                        onUpdateRecordGroups={() => refreshRecordGroups()}
                     />
                 </ul>
             )}

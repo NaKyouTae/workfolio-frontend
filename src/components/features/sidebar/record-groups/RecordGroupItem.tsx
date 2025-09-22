@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import HttpMethod from '@/enums/HttpMethod';
-import { RecordGroup } from '../../../../../../generated/common';
-import { SuccessRecordGroupResponse } from '../../../../../../generated/record_group';
+import { RecordGroup } from '@/generated/common';
 import ColorSelectModal from './RecordGroupColorModal';
 
 interface RecordGroupItemProps {
@@ -43,35 +41,9 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
         setIsEditing(false);
     };
 
-    const handleCancel = async () => {
-        try {
-            const response = await fetch(`/api/record-groups/${group.id}`, {
-                method: HttpMethod.DELETE,
-            });
-
-            if (response.ok) {
-                const result: SuccessRecordGroupResponse = await response.json();
-                if (result.isSuccess) {
-                    // 삭제 성공 시 부모 컴포넌트에 알림
-                    if (onDelete) {
-                        onDelete(group.id);
-                    }
-                } else {
-                    console.error('Failed to delete record group:', result);
-                }
-            } else {
-                console.error('Failed to delete record group');
-            }
-        } catch (error) {
-            console.error('Error deleting record group:', error);
-        }
-    };
-
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handleSave();
-        } else if (e.key === 'Escape') {
-            handleCancel();
         }
     };
 
@@ -113,6 +85,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                 <button className="trans active" onClick={() => setShowColorModal(true)}><i className="ic-more" /></button>
                 {showColorModal && (
                     <div className="record-edit-modal-wrap" ref={modalRef}>
+                        <button onClick={() => onDelete?.(group.id)}>기록장 삭제</button>
                         <button onClick={() => setIsEditing(true)}>기록장 이름 변경</button>
                         <ColorSelectModal
                             isOpen={showColorModal}

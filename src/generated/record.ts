@@ -10,12 +10,22 @@ import { Record } from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
-export interface CreateRecordRequest {
+export interface RecordCreateRequest {
   title: string;
-  memo: string;
+  description: string;
   startedAt: number;
   endedAt: number;
+  companyId?: string | undefined;
   recordGroupId: string;
+}
+
+export interface RecordUpdateRequest {
+  title: string;
+  description: string;
+  startedAt: number;
+  endedAt: number;
+  companyId?: string | undefined;
+  id: string;
 }
 
 export interface ListRecordRequest {
@@ -32,17 +42,17 @@ export interface RecordResponse {
   record?: Record | undefined;
 }
 
-function createBaseCreateRecordRequest(): CreateRecordRequest {
-  return { title: "", memo: "", startedAt: 0, endedAt: 0, recordGroupId: "" };
+function createBaseRecordCreateRequest(): RecordCreateRequest {
+  return { title: "", description: "", startedAt: 0, endedAt: 0, companyId: undefined, recordGroupId: "" };
 }
 
-export const CreateRecordRequest: MessageFns<CreateRecordRequest> = {
-  encode(message: CreateRecordRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
+  encode(message: RecordCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.title !== "") {
       writer.uint32(10).string(message.title);
     }
-    if (message.memo !== "") {
-      writer.uint32(18).string(message.memo);
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
     }
     if (message.startedAt !== 0) {
       writer.uint32(24).int64(message.startedAt);
@@ -50,16 +60,19 @@ export const CreateRecordRequest: MessageFns<CreateRecordRequest> = {
     if (message.endedAt !== 0) {
       writer.uint32(32).int64(message.endedAt);
     }
+    if (message.companyId !== undefined) {
+      writer.uint32(786).string(message.companyId);
+    }
     if (message.recordGroupId !== "") {
-      writer.uint32(42).string(message.recordGroupId);
+      writer.uint32(794).string(message.recordGroupId);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): CreateRecordRequest {
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordCreateRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCreateRecordRequest();
+    const message = createBaseRecordCreateRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -76,7 +89,7 @@ export const CreateRecordRequest: MessageFns<CreateRecordRequest> = {
             break;
           }
 
-          message.memo = reader.string();
+          message.description = reader.string();
           continue;
         }
         case 3: {
@@ -95,8 +108,16 @@ export const CreateRecordRequest: MessageFns<CreateRecordRequest> = {
           message.endedAt = longToNumber(reader.int64());
           continue;
         }
-        case 5: {
-          if (tag !== 42) {
+        case 98: {
+          if (tag !== 786) {
+            break;
+          }
+
+          message.companyId = reader.string();
+          continue;
+        }
+        case 99: {
+          if (tag !== 794) {
             break;
           }
 
@@ -112,23 +133,24 @@ export const CreateRecordRequest: MessageFns<CreateRecordRequest> = {
     return message;
   },
 
-  fromJSON(object: any): CreateRecordRequest {
+  fromJSON(object: any): RecordCreateRequest {
     return {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
-      memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
+      companyId: isSet(object.companyId) ? globalThis.String(object.companyId) : undefined,
       recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
     };
   },
 
-  toJSON(message: CreateRecordRequest): unknown {
+  toJSON(message: RecordCreateRequest): unknown {
     const obj: any = {};
     if (message.title !== "") {
       obj.title = message.title;
     }
-    if (message.memo !== "") {
-      obj.memo = message.memo;
+    if (message.description !== "") {
+      obj.description = message.description;
     }
     if (message.startedAt !== 0) {
       obj.startedAt = Math.round(message.startedAt);
@@ -136,22 +158,166 @@ export const CreateRecordRequest: MessageFns<CreateRecordRequest> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
+    if (message.companyId !== undefined) {
+      obj.companyId = message.companyId;
+    }
     if (message.recordGroupId !== "") {
       obj.recordGroupId = message.recordGroupId;
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<CreateRecordRequest>, I>>(base?: I): CreateRecordRequest {
-    return CreateRecordRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<RecordCreateRequest>, I>>(base?: I): RecordCreateRequest {
+    return RecordCreateRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<CreateRecordRequest>, I>>(object: I): CreateRecordRequest {
-    const message = createBaseCreateRecordRequest();
+  fromPartial<I extends Exact<DeepPartial<RecordCreateRequest>, I>>(object: I): RecordCreateRequest {
+    const message = createBaseRecordCreateRequest();
     message.title = object.title ?? "";
-    message.memo = object.memo ?? "";
+    message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
+    message.companyId = object.companyId ?? undefined;
     message.recordGroupId = object.recordGroupId ?? "";
+    return message;
+  },
+};
+
+function createBaseRecordUpdateRequest(): RecordUpdateRequest {
+  return { title: "", description: "", startedAt: 0, endedAt: 0, companyId: undefined, id: "" };
+}
+
+export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
+  encode(message: RecordUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.startedAt !== 0) {
+      writer.uint32(24).int64(message.startedAt);
+    }
+    if (message.endedAt !== 0) {
+      writer.uint32(32).int64(message.endedAt);
+    }
+    if (message.companyId !== undefined) {
+      writer.uint32(786).string(message.companyId);
+    }
+    if (message.id !== "") {
+      writer.uint32(794).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecordUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.int64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.int64());
+          continue;
+        }
+        case 98: {
+          if (tag !== 786) {
+            break;
+          }
+
+          message.companyId = reader.string();
+          continue;
+        }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RecordUpdateRequest {
+    return {
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
+      companyId: isSet(object.companyId) ? globalThis.String(object.companyId) : undefined,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+    };
+  },
+
+  toJSON(message: RecordUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.startedAt !== 0) {
+      obj.startedAt = Math.round(message.startedAt);
+    }
+    if (message.endedAt !== 0) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.companyId !== undefined) {
+      obj.companyId = message.companyId;
+    }
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RecordUpdateRequest>, I>>(base?: I): RecordUpdateRequest {
+    return RecordUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RecordUpdateRequest>, I>>(object: I): RecordUpdateRequest {
+    const message = createBaseRecordUpdateRequest();
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.startedAt = object.startedAt ?? 0;
+    message.endedAt = object.endedAt ?? 0;
+    message.companyId = object.companyId ?? undefined;
+    message.id = object.id ?? "";
     return message;
   },
 };

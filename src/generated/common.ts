@@ -138,8 +138,9 @@ export interface Record {
   description: string;
   startedAt: number;
   endedAt: number;
-  recordGroup?: RecordGroup | undefined;
   worker?: Worker | undefined;
+  company?: Company | undefined;
+  recordGroup?: RecordGroup | undefined;
   createdAt: number;
   updatedAt: number;
 }
@@ -1702,8 +1703,9 @@ function createBaseRecord(): Record {
     description: "",
     startedAt: 0,
     endedAt: 0,
-    recordGroup: undefined,
     worker: undefined,
+    company: undefined,
+    recordGroup: undefined,
     createdAt: 0,
     updatedAt: 0,
   };
@@ -1729,11 +1731,14 @@ export const Record: MessageFns<Record> = {
     if (message.endedAt !== 0) {
       writer.uint32(48).uint64(message.endedAt);
     }
-    if (message.recordGroup !== undefined) {
-      RecordGroup.encode(message.recordGroup, writer.uint32(58).fork()).join();
-    }
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(402).fork()).join();
+    }
+    if (message.company !== undefined) {
+      Company.encode(message.company, writer.uint32(410).fork()).join();
+    }
+    if (message.recordGroup !== undefined) {
+      RecordGroup.encode(message.recordGroup, writer.uint32(418).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -1799,20 +1804,28 @@ export const Record: MessageFns<Record> = {
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.recordGroup = RecordGroup.decode(reader, reader.uint32());
-          continue;
-        }
         case 50: {
           if (tag !== 402) {
             break;
           }
 
           message.worker = Worker.decode(reader, reader.uint32());
+          continue;
+        }
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.company = Company.decode(reader, reader.uint32());
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.recordGroup = RecordGroup.decode(reader, reader.uint32());
           continue;
         }
         case 98: {
@@ -1848,8 +1861,9 @@ export const Record: MessageFns<Record> = {
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
-      recordGroup: isSet(object.recordGroup) ? RecordGroup.fromJSON(object.recordGroup) : undefined,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
+      company: isSet(object.company) ? Company.fromJSON(object.company) : undefined,
+      recordGroup: isSet(object.recordGroup) ? RecordGroup.fromJSON(object.recordGroup) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -1875,11 +1889,14 @@ export const Record: MessageFns<Record> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.recordGroup !== undefined) {
-      obj.recordGroup = RecordGroup.toJSON(message.recordGroup);
-    }
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
+    }
+    if (message.company !== undefined) {
+      obj.company = Company.toJSON(message.company);
+    }
+    if (message.recordGroup !== undefined) {
+      obj.recordGroup = RecordGroup.toJSON(message.recordGroup);
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -1901,11 +1918,14 @@ export const Record: MessageFns<Record> = {
     message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
-    message.recordGroup = (object.recordGroup !== undefined && object.recordGroup !== null)
-      ? RecordGroup.fromPartial(object.recordGroup)
-      : undefined;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
+      : undefined;
+    message.company = (object.company !== undefined && object.company !== null)
+      ? Company.fromPartial(object.company)
+      : undefined;
+    message.recordGroup = (object.recordGroup !== undefined && object.recordGroup !== null)
+      ? RecordGroup.fromPartial(object.recordGroup)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;

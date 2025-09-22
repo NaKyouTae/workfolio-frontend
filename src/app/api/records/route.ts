@@ -7,6 +7,8 @@ export async function POST(req: Request) {
     try {
         const requestData = await req.json();
         const accessToken = await getCookie('accessToken');
+
+        console.log('requestData', requestData);
         
         // accessToken이 없으면 401 응답 반환
         if (accessToken == null) {
@@ -17,6 +19,8 @@ export async function POST(req: Request) {
         
         // 응답이 정상적인 경우
         const data = await res.json();
+
+        console.log('data', data);
         
         return NextResponse.json(data);
     } catch (error) {

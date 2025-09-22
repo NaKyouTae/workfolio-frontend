@@ -4,6 +4,7 @@ import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { UpdateRecordGroupRequest } from '@/generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
+import { useRecordGroups } from '@/hooks/useRecordGroups';
 import RecordGroupItem from './RecordGroupItem';
 
 interface RecordGroupsProps {
@@ -16,6 +17,7 @@ const RecordGroups = ({
     onUpdateRecordGroups,
 }: RecordGroupsProps) => {
     const { checkedGroups, toggleGroup } = useRecordGroupStore();
+    const { refreshRecordGroups } = useRecordGroups();
 
     const updateRecordGroup = async (id: string, title: string) => {
         try {
@@ -158,8 +160,8 @@ const RecordGroups = ({
             }
 
             if (response.ok) {
-                const updatedGroups = recordGroups.filter(group => group.id !== id);
-                onUpdateRecordGroups(updatedGroups);
+                // 레코드 그룹 삭제 성공 시 레코드 그룹 다시 조회
+                refreshRecordGroups();
             } else {
                 console.error('Failed to delete group');
             }
@@ -169,17 +171,19 @@ const RecordGroups = ({
     };
 
     return (
-        recordGroups?.map((group) => (
-            <RecordGroupItem
-                key={group.id}
-                group={group}
-                isChecked={checkedGroups.has(group.id)}
-                onToggle={toggleGroup}
-                onUpdate={updateRecordGroup}
-                onUpdateColor={updateRecordGroupColor}
-                onDelete={deleteRecordGroup}
-            />
-        ))
+        <>
+            {recordGroups?.map((group, index) => (
+                <RecordGroupItem
+                    key={group.id || `group-${index}`}
+                    group={group}
+                    isChecked={checkedGroups.has(group.id)}
+                    onToggle={toggleGroup}
+                    onUpdate={updateRecordGroup}
+                    onUpdateColor={updateRecordGroupColor}
+                    onDelete={deleteRecordGroup}
+                />
+            ))}
+        </>
     );
 };
 
