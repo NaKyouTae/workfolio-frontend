@@ -5,6 +5,8 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import { useCalendarDays } from '../hooks'
 import { CalendarDay } from '../types'
+import RecordUpdateModal from '../../modal/RecordUpdateModal'
+import RecordDetail from '../../modal/RecordDetail'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -24,8 +26,111 @@ export default function MonthlyCalendarV1({ initialDate, records }: MonthlyCalen
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
     })
 
+    // 모달 상태
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+    const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
+    const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+
     // 커스텀 훅 사용
     const calendarDays = useCalendarDays(date)
+
+    // 레코드 클릭 핸들러
+    const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLTableCellElement>) => {
+        const rect = event.currentTarget.getBoundingClientRect()
+        const calendarContainer = event.currentTarget.closest('.calendar-monthly')?.getBoundingClientRect()
+        
+        if (calendarContainer) {
+            const viewportHeight = window.innerHeight
+            const viewportWidth = window.innerWidth
+            const detailHeight = 300 // CSS에서 설정한 max-height
+            const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5)) // 최소 200px, 최대 400px
+            
+            // 세로 위치 계산
+            let top = rect.bottom - calendarContainer.top + 2 // 5px에서 2px로 줄임
+            const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
+            const spaceAbove = rect.top - detailHeight
+            
+            // 아래쪽 공간이 부족하고 위쪽에 공간이 있으면 위쪽에 표시
+            if (spaceBelow < 0 && spaceAbove > 0) {
+                top = rect.top - calendarContainer.top - detailHeight + 58 // 5px에서 2px로 줄임
+            }
+            
+            // 여전히 위쪽도 공간이 부족하면 가능한 공간에 맞춰 조정
+            if (top < 0) {
+                top = 5
+            }
+            
+            // 가로 위치 계산
+            let left = rect.left - calendarContainer.left
+            const spaceRight = viewportWidth - rect.left
+            const spaceLeft = rect.left
+            
+            // 오른쪽 공간이 부족하면 왼쪽으로 이동
+            if (spaceRight < detailWidth && spaceLeft > detailWidth) {
+                left = rect.right - calendarContainer.left - detailWidth
+            }
+            
+            // 여전히 화면을 벗어나면 중앙 정렬
+            if (left < 0) {
+                left = Math.max(5, (calendarContainer.width - detailWidth) / 2)
+            }
+            
+            // 오른쪽 경계도 확인
+            if (left + detailWidth > calendarContainer.width) {
+                left = Math.max(5, calendarContainer.width - detailWidth - 5)
+            }
+            
+            setDetailPosition({
+                top: Math.max(5, top),
+                left: Math.max(5, left),
+                width: detailWidth
+            })
+        }
+        
+        setSelectedRecord(record)
+        setIsDetailModalOpen(true)
+    }
+
+    // 상세 모달 닫기 핸들러
+    const handleCloseDetailModal = () => {
+        setIsDetailModalOpen(false)
+        setSelectedRecord(null)
+        setDetailPosition(null)
+    }
+
+    // 수정 모달 열기 핸들러
+    const handleOpenUpdateModal = () => {
+        setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(true)
+    }
+
+    // 수정 모달 닫기 핸들러
+    const handleCloseUpdateModal = () => {
+        setIsUpdateModalOpen(false)
+        setSelectedRecord(null)
+    }
+
+    // 삭제 핸들러
+    const handleDeleteRecord = async () => {
+        if (!selectedRecord) return;
+        
+        try {
+            const response = await fetch(`/api/records/${selectedRecord.id}`, {
+                method: 'DELETE',
+            });
+            
+            if (response.ok) {
+                // 삭제 성공 시 모달 닫기 및 새로고침
+                handleCloseDetailModal();
+                // 여기서 새로고침 로직 추가 (필요시)
+            } else {
+                console.error('Failed to delete record');
+            }
+        } catch (error) {
+            console.error('Error deleting record:', error);
+        }
+    }
 
     // 주별로 날짜들을 그룹화
     const weeks: (CalendarDay | null)[][] = []
@@ -286,7 +391,9 @@ export default function MonthlyCalendarV1({ initialDate, records }: MonthlyCalen
                                 color: 'white',
                                 padding: '0 4px',
                                 position: 'relative',
+                                cursor: 'pointer',
                             }}
+                            onClick={(e) => handleRecordClick(item.record, e)}
                             title={
                                 isContinuation && continuesToNextWeek ? `${item.record.title} (이전 주에서 이어짐, 다음 주로 이어짐)` :
                                 isContinuation ? `${item.record.title} (이전 주에서 이어짐)` :
@@ -355,7 +462,7 @@ export default function MonthlyCalendarV1({ initialDate, records }: MonthlyCalen
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            <div className="calendar-monthly" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            <div className="calendar-monthly" style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
                 <div className="calendar-weekdays" style={{ display: 'flex', width: '100%' }}>
                     {weekdays.map((day) => (
                         <div 
@@ -420,7 +527,24 @@ export default function MonthlyCalendarV1({ initialDate, records }: MonthlyCalen
                         </table> 
                     </div>
                 ))}
+                
+                {/* RecordDetail Modal */}
+                <RecordDetail
+                    isOpen={isDetailModalOpen}
+                    onClose={handleCloseDetailModal}
+                    record={selectedRecord}
+                    onEdit={handleOpenUpdateModal}
+                    onDelete={handleDeleteRecord}
+                    position={detailPosition || undefined}
+                />
             </div>
+            
+            {/* RecordUpdateModal */}
+            <RecordUpdateModal
+                isOpen={isUpdateModalOpen}
+                onClose={handleCloseUpdateModal}
+                record={selectedRecord}
+            />
         </div>
     )
 }
