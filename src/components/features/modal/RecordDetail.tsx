@@ -72,77 +72,52 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
     };
 
     return (
-        <div className={styles.overlay}>
-            <div 
-                ref={containerRef}
-                className={styles.container} 
-                style={position ? {
-                    position: 'absolute',
-                    top: position.top,
-                    left: position.left,
-                    width: position.width,
-                    zIndex: 1000
-                } : {}}
-            >
-                {/* 연결선 */}
-                <div className={styles.connector}></div>
-                {/* 헤더 */}
-                <div className={styles.header}>
-                    <div className={styles.headerLeft}>
-                        <div className={styles.colorBar} style={{ backgroundColor: record.recordGroup?.color || '#e0e0e0' }}></div>
-                        <h2 className={styles.title}>{record.title}</h2>
-                    </div>
-                    <button className={styles.closeButton} onClick={onClose}>×</button>
+        <div 
+            className="record-modal-wrap"
+            ref={containerRef}
+            style={position ? {
+                top: position.top,
+                left: position.left,
+                width: position.width,
+                zIndex: 1000
+            } : {}}
+        >
+            <div className="record-modal-tit">
+                <div>
+                    <div style={{ backgroundColor: record.recordGroup?.color || '#e0e0e0' }}></div>
+                    <h2>{record.title}</h2>
                 </div>
-
-                {/* 내용 */}
-                <div className={styles.content}>
-                    {/* 일시 */}
-                    <div className={styles.section}>
-                        <div className={styles.label}>일시</div>
-                        <div className={styles.value}>{getTimeRange()}</div>
-                    </div>
-
-                    {/* 메모 */}
+                <button onClick={onClose}><i className="ic-close" /></button>
+            </div>
+            <div className="record-modal-cont">
+                <ul className="record-info">
+                    <li><span>일시</span><p>{getTimeRange()}</p></li>
                     {record.description && (
-                        <div className={styles.section}>
-                            <div className={styles.label}>메모</div>
-                            <div className={styles.value}>
+                        <li>
+                            <span>메모</span>
+                            <p>
                                 {record.description.split('\n').map((line, index) => (
                                     <div key={index}>{line}</div>
                                 ))}
-                            </div>
-                        </div>
+                            </p>
+                        </li>
                     )}
-
-                    {/* 첨부파일 - Record 타입에 attachments가 없으므로 제거 */}
-
-                    {/* 기록장 정보 */}
-                    {record.recordGroup && (
-                        <div className={styles.section}>
-                            <div className={styles.label}>기록장</div>
-                            <div className={styles.value}>
-                                <div className={styles.recordGroup}>
-                                    <div 
-                                        className={styles.recordGroupColor} 
-                                        style={{ backgroundColor: record.recordGroup.color || '#e0e0e0' }}
-                                    ></div>
-                                    {record.recordGroup.title}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* 액션 버튼들 */}
-                <div className={styles.actions}>
-                    <button className={styles.editButton} onClick={onEdit}>
-                        수정
-                    </button>
-                    <button className={styles.deleteButton} onClick={onDelete}>
-                        삭제
-                    </button>
-                </div>
+                    {/* {record.recordGroup && (
+                        <li>
+                            <span>기록장</span>
+                            <p className={styles.value}>
+                                <div 
+                                    style={{ backgroundColor: record.recordGroup.color || '#e0e0e0' }}
+                                ></div>
+                                {record.recordGroup.title}
+                            </p>
+                        </li>
+                    )} */}
+                </ul>
+            </div>
+            <div className="record-modal-btn">
+                <button className="xsm line gray" onClick={onEdit}>수정</button>
+                <button className="xsm gray" onClick={onDelete}>삭제</button>
             </div>
         </div>
     );

@@ -121,96 +121,93 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
     if (!isOpen || !record) return null;
 
     return (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-                <div className={styles.modalHeader}>
-                    <h2>레코드 수정</h2>
-                    <button className={styles.closeButton} onClick={onClose}>×</button>
+        <div className="modal">
+            <div className="modal-wrap">
+                <div className="modal-tit">
+                    <h2>기록 수정</h2>
+                    <button onClick={onClose}><i className="ic-close" /></button>
                 </div>
-                
-                <form onSubmit={handleSubmit} className={styles.modalForm}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="recordGroup">기록장</label>
-                        <Dropdown
-                            options={dropdownOptions}
-                            selectedValue={recordGroupId}
-                            onChange={(value) => setRecordGroupId(value)}
-                            placeholder="기록장을 선택하세요"
-                        />
+                <form onSubmit={handleSubmit}>
+                    <div className="modal-cont">
+                        <ul className="record-info-input">
+                            <li>
+                                <p>기록장</p>
+                                <Dropdown
+                                    options={dropdownOptions}
+                                    selectedValue={recordGroupId}
+                                    onChange={(value) => setRecordGroupId(value)}
+                                    placeholder="기록장을 선택하세요"
+                                />
+                            </li>
+                            <li>
+                                <p>제목</p>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
+                                />
+                            </li>
+                            <li>
+                                <p>시작 일시</p>
+                                <DateTimeInput
+                                    value={startedAt}
+                                    onChange={setStartedAt}
+                                    isDisabled={isAllDay}
+                                />
+                            </li>
+                            <li>
+                                <p>종료 일시</p>
+                                <DateTimeInput
+                                    value={endedAt}
+                                    onChange={setEndedAt}
+                                    isDisabled={isAllDay}
+                                />
+                            </li>
+                            <li>
+                                <input
+                                    type="checkbox"
+                                    checked={isAllDay}
+                                    onChange={(e) => setIsAllDay(e.target.checked)}
+                                    id="allday"
+                                />
+                                <label htmlFor="allday"><p>종일</p></label>
+                            </li>
+                            <li>
+                                <p>메모</p>
+                                <textarea
+                                    id="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    rows={4}
+                                />
+                            </li>
+                            <li>
+                                <p>첨부파일</p>
+                                <label className="file">
+                                    <input
+                                        type="file"
+                                        id="file"
+                                        onChange={handleFileChange}
+                                    />
+                                    <input type="text" placeholder="파일을 선택해 주세요." readOnly />
+                                    <button>파일 찾기</button>
+                                </label>
+                                {selectedFile && (
+                                    <ul className="file-list">
+                                        <li>
+                                            <p>{selectedFile.name}</p>
+                                            <button><i className="ic-delete"/></button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
                     </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="title">제목</label>
-                        <input
-                            type="text"
-                            id="title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className={styles.input}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="description">설명</label>
-                        <textarea
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className={styles.textarea}
-                            rows={3}
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={isAllDay}
-                                onChange={(e) => setIsAllDay(e.target.checked)}
-                            />
-                            종일
-                        </label>
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="startedAt">시작일시</label>
-                        <DateTimeInput
-                            value={startedAt}
-                            onChange={setStartedAt}
-                            isDisabled={isAllDay}
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="endedAt">종료일시</label>
-                        <DateTimeInput
-                            value={endedAt}
-                            onChange={setEndedAt}
-                            isDisabled={isAllDay}
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="file">첨부파일</label>
-                        <input
-                            type="file"
-                            id="file"
-                            onChange={handleFileChange}
-                            className={styles.fileInput}
-                        />
-                        {selectedFile && (
-                            <p className={styles.fileName}>{selectedFile.name}</p>
-                        )}
-                    </div>
-
-                    <div className={styles.modalActions}>
-                        <button type="button" onClick={onClose} className={styles.cancelButton}>
-                            취소
-                        </button>
-                        <button type="submit" className={styles.submitButton}>
-                            수정
-                        </button>
+                    <div className="modal-btn">
+                        <button type="button" onClick={onClose}>삭제</button>
+                        <button type="submit">저장</button>
                     </div>
                 </form>
             </div>

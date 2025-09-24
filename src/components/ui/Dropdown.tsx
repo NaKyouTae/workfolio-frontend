@@ -29,22 +29,20 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
     const selectedLabel = options.find(option => option.value === selectedOption)?.label || '선택해주세요';
     
     return (
-        <div className={styles.dropdown}>
+        <div className="dropdown">
             <button 
                 type="button"
                 onClick={toggleDropdown} 
-                className={styles.dropdownToggle}
                 style={{color: 'black'}}
             >
                 {selectedLabel}
-                <span className={styles.arrow}>▼</span>
             </button>
             {isOpen && (
-                <ul className={styles.dropdownMenu}>
+                <ul>
                     {options.map((option, index) => (
                         <li
                             key={`${option.value}-${index}`}
-                            className={`${styles.dropdownItem} ${
+                            className={`${
                                 option.value === selectedOption ? styles.selected : ''
                             }`}
                             onClick={() => handleOptionClick(option.value)}

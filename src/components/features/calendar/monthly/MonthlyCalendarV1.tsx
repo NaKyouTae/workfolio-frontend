@@ -336,7 +336,7 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                 rows.push(
                     <tr key={`empty-row-${rowIndex}`}>
                         {Array.from({ length: 7 }, (_, j) => (
-                            <td key={`empty-${j}`} style={{ height: '18px' }}>&nbsp;</td>
+                            <td key={`empty-${j}`}></td>
                         ))}
                     </tr>
                 )
@@ -352,7 +352,7 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                     // 시작일 이전의 빈 td들
                     while (currentDay < item.startDayIndex) {
                         tds.push(
-                            <td key={`empty-${currentDay}`} style={{ height: '18px' }}>&nbsp;</td>
+                            <td className="record" key={`empty-${currentDay}`}></td>
                         )
                         currentDay++
                     }
@@ -379,24 +379,7 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                         <td 
                             key={`event-${item.startDayIndex}`}
                             colSpan={item.colSpan} 
-                            className="calendar-record-item" 
-                            style={{
-                                backgroundColor: item.record.recordGroup?.color || '#e0e0e0',
-                                height: '18px',
-                                margin: '1px 0',
-                                borderRadius: isContinuation && continuesToNextWeek ? '0' : 
-                                             isContinuation ? '0 3px 3px 0' : 
-                                             continuesToNextWeek ? '3px 0 0 3px' : '3px',
-                                fontSize: '10px',
-                                textAlign: 'center',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                color: 'white',
-                                padding: '0 4px',
-                                position: 'relative',
-                                cursor: 'pointer',
-                            }}
+                            className="record" 
                             onClick={(e) => handleRecordClick(item.record, e)}
                             title={
                                 isContinuation && continuesToNextWeek ? `${item.record.title} (이전 주에서 이어짐, 다음 주로 이어짐)` :
@@ -405,7 +388,7 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                                 item.record.title
                             }
                         >
-                            {isContinuation && (
+                            {/* {isContinuation && (
                                 <span style={{
                                     position: 'absolute',
                                     left: '2px',
@@ -428,14 +411,14 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                                 }}>
                                     →
                                 </span>
-                            )}
-                            <span style={{
-                                display: 'block',
-                                paddingLeft: isContinuation ? '12px' : '0',
-                                paddingRight: continuesToNextWeek ? '12px' : '0'
-                            }}>
+                            )} */}
+                            <p
+                                style={{
+                                    backgroundColor: item.record.recordGroup?.color || '#e0e0e0',
+                                }}
+                            >
                                 {item.record.title}
-                            </span>
+                            </p>
                         </td>
                     )
                     
@@ -445,7 +428,7 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                 // 마지막 일정 이후의 빈 td들
                 while (currentDay < 7) {
                     tds.push(
-                        <td key={`empty-after-${currentDay}`} style={{ height: '18px' }}>&nbsp;</td>
+                        <td className="record" key={`empty-after-${currentDay}`}></td>
                     )
                     currentDay++
                 }
@@ -465,62 +448,35 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            <div className="calendar-monthly" style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
-                <div className="calendar-weekdays" style={{ display: 'flex', width: '100%' }}>
-                    {weekdays.map((day) => (
-                        <div 
-                            key={day} 
-                            className={`${day === '일' ? 'holiday' : ''}`}
-                            style={{ 
-                                flex: '1', 
-                                textAlign: 'center', 
-                                padding: '8px 0',
-                                border: '1px solid #ddd'
-                            }}
-                        >
-                            {day}
-                        </div>
-                    ))}
-                </div>
+        <>
+            <table className="week">
+                <thead>
+                    <tr>
+                        {weekdays.map((day) => (
+                            <th
+                                key={day} 
+                                className={`${day === '일' ? 'holiday' : ''}`}
+                            >
+                                {day}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+            </table>
+            <div className="days">
                 {weeks.map((week, weekIndex) => (
-                    <div key={weekIndex} style={{ position: 'relative', width: '100%' }}>
-                        <table style={{ 
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            tableLayout: 'fixed',
-                            borderCollapse: 'collapse',
-                            borderBottom: '1px solid #e6e6e6',
-                        }}>
-                            <tbody>
-                                <tr>
-                                    {week.map((day, dayIndex) => (
-                                        <td key={dayIndex}>&nbsp;</td>
-                                    ))}
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table style={{ 
-                            position: 'relative',
-                            tableLayout: 'fixed',
-                            width: '100%',
-                            height: '100%',
-                            color: '#222',
-                            borderSpacing: '0 4px',
-                        }}>
+                    <div className="weekly" key={weekIndex}>
+                        <table>
                             <tbody>
                                 <tr>
                                     {week.map((day, dayIndex) => (
                                         <td key={dayIndex}
-                                        className={`${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''}`}
+                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''}`}
                                         >
                                             {day && (
                                                 <div>
-                                                    <p>a{day.day}</p>
-                                                    <span></span>
+                                                    <p>{day.day}</p>
+                                                    <span>a</span>
                                                 </div>
                                             )}
                                         </td>
@@ -528,20 +484,20 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                                 </tr>
                                 {renderRecords(week)}
                             </tbody>
-                        </table> 
+                        </table>
                     </div>
                 ))}
-                
-                {/* RecordDetail Modal */}
-                <RecordDetail
-                    isOpen={isDetailModalOpen}
-                    onClose={handleCloseDetailModal}
-                    record={selectedRecord}
-                    onEdit={handleOpenUpdateModal}
-                    onDelete={handleDeleteRecord}
-                    position={detailPosition || undefined}
-                />
             </div>
+            
+            {/* RecordDetail Modal */}
+            <RecordDetail
+                isOpen={isDetailModalOpen}
+                onClose={handleCloseDetailModal}
+                record={selectedRecord}
+                onEdit={handleOpenUpdateModal}
+                onDelete={handleDeleteRecord}
+                position={detailPosition || undefined}
+            />
             
             {/* RecordUpdateModal */}
             <RecordUpdateModal
@@ -549,6 +505,6 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                 onClose={handleCloseUpdateModal}
                 record={selectedRecord}
             />
-        </div>
+        </>
     )
 }

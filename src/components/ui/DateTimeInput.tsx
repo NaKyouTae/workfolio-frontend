@@ -156,80 +156,76 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({ value, onChange, label, s
     };
     
     return (
-        <div className={styles.container}>
-            <div className={styles.inputGroup}>
-                <div className={styles.dateContainer}>
-                    <input
-                        type="text"
-                        value={dateInputValue}
-                        onChange={handleDateInputChange}
-                        onClick={() => setIsCalendarOpen(true)}
-                        placeholder="yyyy. MM. dd."
-                        className={styles.dateInput}
-                    />
-                    {isCalendarOpen && (
-                        <div ref={calendarRef} className={styles.calendar}>
-                            <div className={styles.calendarHeader}>
-                                <button onClick={handlePrevMonth}>&lt;</button>
-                                <span>{dateTime.toFormat('yyyy년 MM월')}</span>
-                                <button onClick={handleNextMonth}>&gt;</button>
-                            </div>
-                            <div className={styles.weekDays}>
+        <ul className="date-time">
+            <li>
+                <input
+                    type="text"
+                    value={dateInputValue}
+                    onChange={handleDateInputChange}
+                    onClick={() => setIsCalendarOpen(true)}
+                    placeholder="yyyy. MM. dd."
+                />
+                {isCalendarOpen && (
+                    <div ref={calendarRef} className="date-picker">
+                        <div className="controller">
+                            <button onClick={handlePrevMonth}><i className="ic-arrow-left-14" /></button>
+                            <p>{dateTime.toFormat('yyyy년 MM월')}</p>
+                            <button onClick={handleNextMonth}><i className="ic-arrow-right-14" /></button>
+                        </div>
+                        <div className="calendar">
+                            <ul className="week">
                                 {['일', '월', '화', '수', '목', '금', '토'].map(day => (
-                                    <div key={day} className={styles.weekDay}>{day}</div>
+                                    <li key={day}>{day}</li>
                                 ))}
-                            </div>
-                            <div className={styles.days}>
+                            </ul>
+                            <ul className="days">
                                 {generateCalendarDays().map((day, index) => (
-                                    <button
+                                    <li
                                         key={index}
                                         onClick={() => handleDateSelect(day)}
-                                        className={`${styles.day} ${
-                                            day.month === dateTime.month ? '' : styles.otherMonth
+                                        className={`${
+                                            day.month === dateTime.month ? '' : 'other'
                                         } ${
-                                            day.hasSame(dateTime, 'day') ? styles.selectedDay : ''
+                                            day.hasSame(dateTime, 'day') ? 'today' : ''
                                         }`}
                                     >
-                                        {day.day}
-                                    </button>
+                                        <p>{day.day}</p>
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         </div>
-                    )}
-                </div>
-                {showTime && (
-                    <div className={styles.timeContainer}>
-                        <input
-                            type="text"
-                            value={timeInputValue}
-                            onChange={handleTimeInputChange}
-                            onClick={() => setIsTimeOpen(true)}
-                            placeholder="HH:mm"
-                            className={styles.timeInput}
-                        />
-                        {isTimeOpen && (
-                            <div ref={timeRef} className={styles.timeSelector}>
-                                <div className={styles.timeList}>
-                                    {generateTimeOptions().map((time, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => handleTimeSelect(time.hour, time.minute)}
-                                            className={`${styles.timeOption} ${
-                                                dateTime.hour === time.hour && 
-                                                dateTime.minute === time.minute ? 
-                                                styles.selectedTime : ''
-                                            }`}
-                                        >
-                                            {time.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
                     </div>
                 )}
-            </div>
-        </div>
+            </li>
+            {showTime && (
+                <li>
+                    <input
+                        type="text"
+                        value={timeInputValue}
+                        onChange={handleTimeInputChange}
+                        onClick={() => setIsTimeOpen(true)}
+                        placeholder="HH:mm"
+                    />
+                    {isTimeOpen && (
+                        <ul ref={timeRef} className="time-picker">
+                            {generateTimeOptions().map((time, index) => (
+                                <li
+                                    key={index}
+                                    onClick={() => handleTimeSelect(time.hour, time.minute)}
+                                    className={`${
+                                        dateTime.hour === time.hour && 
+                                        dateTime.minute === time.minute ? 
+                                        'active' : ''
+                                    }`}
+                                >
+                                    {time.label}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </li>
+            )}
+        </ul>
     );
 };
 
