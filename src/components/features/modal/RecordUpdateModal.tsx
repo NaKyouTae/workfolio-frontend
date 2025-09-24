@@ -132,12 +132,18 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                         <ul className="record-info-input">
                             <li>
                                 <p>기록장</p>
-                                <Dropdown
-                                    options={dropdownOptions}
-                                    selectedValue={recordGroupId}
-                                    onChange={(value) => setRecordGroupId(value)}
-                                    placeholder="기록장을 선택하세요"
-                                />
+                                <div className="record-select">
+                                    <div className="color" style={{
+                                        // backgroundColor: item.record.recordGroup?.color || '#e0e0e0',
+                                        backgroundColor: '#e0e0e0',
+                                    }}></div>
+                                    <Dropdown
+                                        options={dropdownOptions}
+                                        selectedValue={recordGroupId}
+                                        onChange={(value) => setRecordGroupId(value)}
+                                        placeholder="기록장을 선택하세요"
+                                    />
+                                </div>
                             </li>
                             <li>
                                 <p>제목</p>

@@ -147,3 +147,8 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); overflow-y: auto; displ
 .record-info-input > li > p {font-size: 1.2rem; font-weight: 500; color: var(--gray005);}
 .record-info-input > li input {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
 .record-info-input > li input + label > p {font-size: 1.2rem;}
+.record-info-input > li input[type="checkbox"] + label:before {background-color: transparent; border: 1px solid var(--gray003);}
+.record-info-input > li input[type="checkbox"]:checked + label:before {background-image: url(../img/ico/ic-check-line-ov.svg);}
+.record-info-input > li .record-select {display: flex; align-items: center; column-gap: .6rem;}
+.record-info-input > li .record-select .color {display: block; width: .8rem; height: 3.2rem; border-radius: .2rem;}
+.record-info-input > li .record-select .dropdown {flex: 1;}
