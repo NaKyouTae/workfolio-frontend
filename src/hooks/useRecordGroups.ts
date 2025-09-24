@@ -64,9 +64,13 @@ export const useRecordGroups = () => {
         fetchRecordGroups();
     }, [fetchRecordGroups]);
 
+    // ownedRecordGroups와 sharedRecordGroups를 통합
+    const allRecordGroups = [...ownedRecordGroups, ...sharedRecordGroups];
+
     return {
         ownedRecordGroups,
         sharedRecordGroups,
+        allRecordGroups,
         isLoading,
         refreshRecordGroups: fetchRecordGroups
     };

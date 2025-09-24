@@ -202,7 +202,7 @@ select::-ms-expand {display: none;/*for IE10,11*/}
 .dropdown {position: relative;}
 .dropdown > button {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; justify-content: flex-start; background-color: transparent; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; cursor: pointer;}
 .dropdown > button:has(+ ul) {background-image: url(../img/ico/ic-select-ov.svg);}
-.dropdown > ul {position: absolute; top: 3.4rem; width: 100%; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem;}
+.dropdown > ul {position: absolute; top: 3.4rem; width: 100%; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000;}
 .dropdown > ul > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer;}
 .dropdown > ul > li:hover {background-color: var(--gray002);}
 

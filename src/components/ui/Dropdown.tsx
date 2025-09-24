@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import styles from './Dropdown.module.css';
+import { useState, useRef, useEffect } from 'react';
 
 export interface IDropdown {
     value: string;
@@ -15,6 +14,7 @@ interface DropdownProps {
 
 const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -25,11 +25,28 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
         setIsOpen(false); // 드롭다운 닫기
     };
 
+    // 외부 클릭 감지
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
+
     // 선택된 옵션의 라벨 찾기
     const selectedLabel = options.find(option => option.value === selectedOption)?.label || '선택해주세요';
     
     return (
-        <div className="dropdown">
+        <div className="dropdown" ref={dropdownRef}>
             <button 
                 type="button"
                 onClick={toggleDropdown} 
@@ -43,7 +60,7 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
                         <li
                             key={`${option.value}-${index}`}
                             className={`${
-                                option.value === selectedOption ? styles.selected : ''
+                                option.value === selectedOption ? 'selected' : ''
                             }`}
                             onClick={() => handleOptionClick(option.value)}
                         >

@@ -3,10 +3,12 @@ import HttpMethod from "@/enums/HttpMethod"
 import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
-import {RecordGroup, Record} from "@/generated/common"
+import {Record} from "@/generated/common"
 import { useRecordGroupStore } from '@/store/recordGroupStore'
+import { useRecordGroups } from '@/hooks/useRecordGroups'
 import dayjs from 'dayjs'
 import { RecordUpdateRequest } from '@/generated/record'
+import { useCompanies } from '@/hooks/useCompanies'
 
 interface ModalProps {
     isOpen: boolean;
@@ -16,17 +18,47 @@ interface ModalProps {
 }
 
 const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, record }) => {
-    const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
     const [recordGroupId, setRecordGroupId] = useState<string>('');
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [title, setTitle] = useState<string | null>(null);
+    const [description, setDescription] = useState<string | null>(null);
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'day').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    
+    const [companyId, setCompanyId] = useState<string | null>(null);
+
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
+    
+    // record groups hook 사용
+    const { allRecordGroups } = useRecordGroups();
+    
+    // companies hook 사용
+    const { companies, refreshCompanies } = useCompanies();
+    
+    // record groups를 dropdown options로 변환
+    const dropdownOptions: IDropdown[] = allRecordGroups.map(group => ({
+        value: group.id || '',
+        label: group.title || '',
+        color: group.color
+    }));
+    
+    // companies를 dropdown options로 변환
+    const companyOptions: IDropdown[] = companies.map(company => ({
+        value: company.id || '',
+        label: company.name || ''
+    }));
+
+    // isAllDay 변경 시 시간 고정 로직
+    useEffect(() => {
+        if (isAllDay) {
+            // 하루 종일이면 시작 시간을 00:00:00으로, 종료 시간을 23:59:59로 설정
+            const startDate = dayjs(startedAt).startOf('day').toISOString();
+            const endDate = dayjs(endedAt).endOf('day').toISOString();
+            setStartedAt(startDate);
+            setEndedAt(endDate);
+        }
+    }, [isAllDay, startedAt, endedAt]);
     
     useEffect(() => {
         if (isOpen && record) {
@@ -43,43 +75,10 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
 
     useEffect(() => {
         if (isOpen) {
-            // RecordGroup 목록을 가져와서 드롭다운 옵션 생성
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (accessToken) {
-                // 로그인한 경우 - API에서 RecordGroup 목록 가져오기
-                fetch('/api/record-groups/owned', { method: HttpMethod.GET })
-                    .then(res => res.json())
-                    .then(data => {
-                        const groups = data.groups || [];
-                        const options: IDropdown[] = groups.map((group: RecordGroup) => ({
-                            value: group.id,
-                            label: group.title
-                        }));
-                        setDropdownOptions(options);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching record groups:', error);
-                        setDropdownOptions([]);
-                    });
-            } else {
-                // 로그인하지 않은 경우 - 샘플 데이터 사용
-                const sampleGroups = [
-                    { id: '1', title: '업무' },
-                    { id: '2', title: '개인' },
-                    { id: '3', title: '학습' }
-                ];
-                const options: IDropdown[] = sampleGroups.map(group => ({
-                    value: group.id,
-                    label: group.title
-                }));
-                setDropdownOptions(options);
-            }
+            setCompanyId(record?.company?.id || '');
+            refreshCompanies();
         }
-    }, [isOpen]);
+    }, [isOpen, record, refreshCompanies]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -91,6 +90,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
                 id: record.id,
                 title: title,
                 description: description,
+                companyId: companyId,
                 startedAt: DateUtil.parseToTimestamp(startedAt),
                 endedAt: DateUtil.parseToTimestamp(endedAt),
             };
@@ -140,6 +140,16 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
                                         options={dropdownOptions}
                                         selectedOption={recordGroupId}
                                         setValue={setRecordGroupId}
+                                    />
+                                </div>
+                            </li>
+                            <li>
+                                <p>기록 할 회사</p>
+                                <div className="record-select">
+                                    <Dropdown
+                                        options={companyOptions}
+                                        selectedOption={companyId}
+                                        setValue={setCompanyId}
                                     />
                                 </div>
                             </li>

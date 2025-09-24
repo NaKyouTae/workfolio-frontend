@@ -4,9 +4,9 @@ import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
 import {RecordGroup} from "@/generated/common"
-import styles from './RecordCreateModal.module.css'
 import { RecordCreateRequest } from '@/generated/record'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
+import { useCompanies } from '@/hooks/useCompanies'
 import dayjs from 'dayjs'
 
 interface ModalProps {
@@ -16,27 +16,49 @@ interface ModalProps {
 
 const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
-    const [recordGroupId, setRecordGroupId] = useState<string>('');
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [recordGroupId, setRecordGroupId] = useState<string | null>(null);
+    const [title, setTitle] = useState<string | null>(null);
+    const [description, setDescription] = useState<string | null>(null);
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'day').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    
+    const [companyId, setCompanyId] = useState<string | null>(null);
+
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
     
+    // companies hook 사용
+    const { companies, refreshCompanies } = useCompanies();
+    
+    // companies를 dropdown options로 변환
+    const companyOptions: IDropdown[] = companies.map(company => ({
+        value: company.id || '',
+        label: company.name || ''
+    }));
+
+    // isAllDay 변경 시 시간 고정 로직
+    useEffect(() => {
+        if (isAllDay) {
+            // 하루 종일이면 시작 시간을 00:00:00으로, 종료 시간을 23:59:59로 설정
+            const startDate = dayjs(startedAt).startOf('day').toISOString();
+            const endDate = dayjs(endedAt).endOf('day').toISOString();
+            setStartedAt(startDate);
+            setEndedAt(endDate);
+        }
+    }, [isAllDay, startedAt, endedAt]);
+    
     useEffect(() => {
         if (isOpen) {
-            setTitle('');
-            setDescription('');
+            setTitle(null);
+            setDescription(null);
             setStartedAt(dayjs().toISOString());
             setEndedAt(dayjs().add(1, 'day').toISOString());
-            setRecordGroupId('');
+            setRecordGroupId(null);
             setIsAllDay(false);
             setSelectedFile(null);
-            
+            setCompanyId(null);
+
             const fetchRecordGroups = async () => {
                 try {
                     const res = await fetch('/api/record-groups/editable', { method: HttpMethod.GET });
@@ -66,8 +88,9 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             };
             
             fetchRecordGroups();
+            refreshCompanies();
         }
-    }, [isOpen]);
+    }, [isOpen, refreshCompanies]);
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -75,9 +98,10 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         const createRecordRequest = RecordCreateRequest.create({
             startedAt: DateUtil.parseToTimestamp(startedAt),
             endedAt: DateUtil.parseToTimestamp(endedAt),
-            recordGroupId: recordGroupId,
-            title: title,
-            description: description,
+            companyId: companyId || undefined,
+            recordGroupId: recordGroupId || undefined,
+            title: title || undefined,
+            description: description || undefined,
         });
             
         try {
@@ -108,101 +132,107 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
     
     return (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-                <div className={styles.modalHeader}>
-                    <h2>새 기록 추가</h2>
-                    <button className={styles.closeButton} onClick={onClose}>×</button>
+        <div className="modal">
+            <div className="modal-wrap">
+                <div className="modal-tit">
+                    <h2>기록 수정</h2>
+                    <button onClick={onClose}><i className="ic-close" /></button>
                 </div>
                 <form onSubmit={handleSubmit}>
-                    <div className={styles.formGroup}>
-                        <label>기록장</label>
-                        <div className={styles.labelWithColor}>
-                            <span 
-                                className={styles.colorPipeline}
-                                style={{
-                                    backgroundColor: dropdownOptions.find(
-                                        option => option.value === recordGroupId
-                                    )?.color || '#ddd'
-                                }}
-                            />
-                            <Dropdown 
-                                selectedOption={recordGroupId} 
-                                options={dropdownOptions} 
-                                setValue={setRecordGroupId}
-                            />
-                        </div>
-                        
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>제목</label>
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="텍스트 입력"
-                            required
-                        />
-                    </div>
-                    <div className={styles.dateTimeGroup}>
-                        <label>일시</label>
-                        <DateTimeInput 
-                            value={startedAt} 
-                            onChange={setStartedAt}
-                            showTime={!isAllDay}
-                            label="시작 시간"
-                        />
-                        <DateTimeInput 
-                            value={endedAt} 
-                            onChange={setEndedAt}
-                            showTime={!isAllDay}
-                            label="종료 시간"
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label className={styles.allDayCheckbox}>
-                            <input
-                                type="checkbox"
-                                checked={isAllDay}
-                                onChange={(e) => setIsAllDay(e.target.checked)}
-                            />
-                            하루 종일
-                        </label>
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>메모</label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder="텍스트를 입력해 주세요."
-                        />
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label>파일정보 <span className={styles.fileSize}>(최대 25MB)</span></label>
-                        <div className={styles.fileUpload}>
-                            <input
-                                type="text"
-                                readOnly
-                                value={selectedFile?.name || ''}
-                                placeholder="파일을 선택해 주세요."
-                            />
-                            <label className={styles.fileButton}>
-                                파일 찾기
+                    <div className="modal-cont">
+                        <ul className="record-info-input">
+                            <li>
+                                <p>기록장</p>
+                                <div className="record-select">
+                                    <div className="color" style={{
+                                        backgroundColor: dropdownOptions.find(
+                                            option => option.value === recordGroupId
+                                        )?.color || '#ddd'
+                                    }}></div>
+                                    <Dropdown
+                                        options={dropdownOptions}
+                                        selectedOption={recordGroupId || ''}
+                                        setValue={setRecordGroupId}
+                                    />
+                                </div>
+                            </li>
+                            <li>
+                                <p>기록 할 회사</p>
+                                <div className="record-select">
+                                    <Dropdown
+                                        options={companyOptions}
+                                        selectedOption={companyId || ''}
+                                        setValue={setCompanyId}
+                                    />
+                                </div>
+                            </li>
+                            <li>
+                                <p>제목</p>
                                 <input
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    style={{ display: 'none' }}
+                                    type="text"
+                                    id="title"
+                                    value={title || ''}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
                                 />
-                            </label>
-                        </div>
+                            </li>
+                            <li>
+                                <p>시작 일시</p>
+                                <DateTimeInput
+                                    value={startedAt}
+                                    onChange={setStartedAt}
+                                />
+                            </li>
+                            <li>
+                                <p>종료 일시</p>
+                                <DateTimeInput
+                                    value={endedAt}
+                                    onChange={setEndedAt}
+                                />
+                            </li>
+                            <li>
+                                <input
+                                    type="checkbox"
+                                    checked={isAllDay}
+                                    onChange={(e) => setIsAllDay(e.target.checked)}
+                                    id="allday"
+                                />
+                                <label htmlFor="allday"><p>종일</p></label>
+                            </li>
+                            <li>
+                                <p>메모</p>
+                                <textarea
+                                    id="description"
+                                    value={description || ''}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    rows={4}
+                                />
+                            </li>
+                            <li>
+                                <p>첨부파일</p>
+                                <label className="file">
+                                    <input
+                                        type="file"
+                                        id="file"
+                                        onChange={handleFileChange}
+                                    />
+                                    <input type="text" placeholder="파일을 선택해 주세요." readOnly />
+                                    <button>파일 찾기</button>
+                                </label>
+                                {selectedFile && (
+                                    <ul className="file-list">
+                                        <li>
+                                            <p>{selectedFile.name}</p>
+                                            <button><i className="ic-delete"/></button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
                     </div>
-                    <div className={styles.buttonGroup}>
-                        <button type="button" className={styles.manageButton}>
-                            기록장 관리
-                        </button>
-                        <button type="submit" className={styles.submitButton}>
-                            저장
-                        </button>
+                    <div className="modal-btn">
+                        <button type="button" onClick={onClose}>취소</button>
+                        <button type="submit">저장</button>
                     </div>
                 </form>
             </div>

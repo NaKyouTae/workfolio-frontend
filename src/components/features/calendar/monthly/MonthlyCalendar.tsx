@@ -7,6 +7,7 @@ import { useCalendarDays } from '../hooks'
 import { CalendarDay } from '../types'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import RecordDetail from '../../modal/RecordDetail'
+import MonthlyCalendarItem from './MonthlyCalendarItem'
 import { useRecords } from '@/hooks/useRecords'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import HttpMethod from '@/enums/HttpMethod'
@@ -15,14 +16,14 @@ dayjs.locale('ko')
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Seoul')
 
-interface MonthlyCalendarV1Props {
+interface MonthlyCalendarProps {
     initialDate: Date
 }
 
 /**
  * Table 태그를 사용한 MonthlyCalendarV1 컴포넌트
  */
-export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Props) {
+export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
     const [date] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
@@ -376,26 +377,15 @@ export default function MonthlyCalendarV1({ initialDate }: MonthlyCalendarV1Prop
                     
                     // 일정 td
                     tds.push(
-                        <td 
+                        <MonthlyCalendarItem
                             key={`event-${item.startDayIndex}`}
-                            colSpan={item.colSpan} 
-                            className="record" 
-                            onClick={(e) => handleRecordClick(item.record, e)}
-                            title={
-                                isContinuation && continuesToNextWeek ? `${item.record.title} (이전 주에서 이어짐, 다음 주로 이어짐)` :
-                                isContinuation ? `${item.record.title} (이전 주에서 이어짐)` :
-                                continuesToNextWeek ? `${item.record.title} (다음 주로 이어짐)` : 
-                                item.record.title
-                            }
-                        >
-                            <p
-                                style={{
-                                    backgroundColor: item.record.recordGroup?.color || '#e0e0e0',
-                                }}
-                            >
-                                {item.record.title}
-                            </p>
-                        </td>
+                            record={item.record}
+                            startDayIndex={item.startDayIndex}
+                            colSpan={item.colSpan}
+                            isContinuation={isContinuation}
+                            continuesToNextWeek={continuesToNextWeek}
+                            onRecordClick={handleRecordClick}
+                        />
                     )
                     
                     currentDay += item.colSpan
