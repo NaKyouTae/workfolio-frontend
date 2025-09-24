@@ -4,7 +4,6 @@ import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
 import {RecordGroup, Record} from "@/generated/common"
-import styles from './RecordCreateModal.module.css'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import dayjs from 'dayjs'
 import { RecordUpdateRequest } from '@/generated/record'
@@ -12,10 +11,11 @@ import { RecordUpdateRequest } from '@/generated/record'
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onDelete?: () => void;
     record: Record | null;
 }
 
-const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) => {
+const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, record }) => {
     const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
     const [recordGroupId, setRecordGroupId] = useState<string>('');
     const [title, setTitle] = useState('');
@@ -134,14 +134,12 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                                 <p>기록장</p>
                                 <div className="record-select">
                                     <div className="color" style={{
-                                        // backgroundColor: item.record.recordGroup?.color || '#e0e0e0',
-                                        backgroundColor: '#e0e0e0',
+                                        backgroundColor: record.recordGroup?.color || '#e0e0e0',
                                     }}></div>
                                     <Dropdown
                                         options={dropdownOptions}
-                                        selectedValue={recordGroupId}
-                                        onChange={(value) => setRecordGroupId(value)}
-                                        placeholder="기록장을 선택하세요"
+                                        selectedOption={recordGroupId}
+                                        setValue={setRecordGroupId}
                                     />
                                 </div>
                             </li>
@@ -160,7 +158,6 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                                 <DateTimeInput
                                     value={startedAt}
                                     onChange={setStartedAt}
-                                    isDisabled={isAllDay}
                                 />
                             </li>
                             <li>
@@ -168,7 +165,6 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                                 <DateTimeInput
                                     value={endedAt}
                                     onChange={setEndedAt}
-                                    isDisabled={isAllDay}
                                 />
                             </li>
                             <li>
@@ -212,7 +208,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, record }) =>
                         </ul>
                     </div>
                     <div className="modal-btn">
-                        <button type="button" onClick={onClose}>삭제</button>
+                        <button type="button" onClick={onDelete}>삭제</button>
                         <button type="submit">저장</button>
                     </div>
                 </form>

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { Record } from '@/generated/common'
 import dayjs from 'dayjs'
-import styles from './RecordDetail.module.css'
 
 interface RecordDetailProps {
     isOpen: boolean;

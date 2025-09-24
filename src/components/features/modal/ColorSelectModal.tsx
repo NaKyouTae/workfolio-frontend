@@ -3,11 +3,10 @@ import styles from './ColorSelectModal.module.css';
 import { useRecordGroupCreateStore } from '@/store/recordGroupCreateStore';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 
-interface ColorSelectModalProps {}
 
 const COLORS = Object.values(RecordGroupColor); 
 
-const ColorSelectModal: React.FC<ColorSelectModalProps> = ({}) => {
+const ColorSelectModal: React.FC = ({}) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const { selectedColor, setSelectedColor } = useRecordGroupCreateStore();
 

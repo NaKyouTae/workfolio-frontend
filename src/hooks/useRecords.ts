@@ -130,17 +130,57 @@ export const useRecords = (recordType: 'weekly' | 'monthly' | 'list' = 'weekly',
         }
     }, [checkedGroupIdsString, getCheckedGroupIds, loadApiData]);
 
-    // 레코드 조회 useEffect
+    // 레코드 조회 useEffect - month, year 변경 시에만 실행
     useEffect(() => {
-        fetchRecords();
-    }, [fetchRecords]);
+        const accessToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')[1];
+        
+        if (!accessToken) {
+            // 로그인하지 않은 경우 - 샘플 데이터 로드
+            const sampleRecordGroups = createSampleRecordGroups();
+            const sampleRecords = createSampleRecords(sampleRecordGroups);
+            
+            const currentCheckedGroupIds = getCheckedGroupIds();
+            
+            const filteredRecords = sampleRecords.filter((record: Record) => 
+                currentCheckedGroupIds.includes(record.recordGroup?.id || '')
+            );
+            
+            setRecords(filteredRecords);
+        } else {
+            // 로그인한 경우 - API 데이터 로드
+            loadApiData(month, year);
+        }
+    }, [month, year, getCheckedGroupIds, loadApiData]);
 
     // recordRefreshTrigger 변경 시 새로고침
     useEffect(() => {
         if (recordRefreshTrigger > 0) {
-            fetchRecords();
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                // 로그인하지 않은 경우 - 샘플 데이터 로드
+                const sampleRecordGroups = createSampleRecordGroups();
+                const sampleRecords = createSampleRecords(sampleRecordGroups);
+                
+                const currentCheckedGroupIds = getCheckedGroupIds();
+                
+                const filteredRecords = sampleRecords.filter((record: Record) => 
+                    currentCheckedGroupIds.includes(record.recordGroup?.id || '')
+                );
+                
+                setRecords(filteredRecords);
+            } else {
+                // 로그인한 경우 - API 데이터 로드
+                loadApiData(month, year);
+            }
         }
-    }, [recordRefreshTrigger, fetchRecords]);
+    }, [recordRefreshTrigger, month, year, getCheckedGroupIds, loadApiData]);
 
     return {
         records,

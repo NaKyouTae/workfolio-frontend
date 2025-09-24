@@ -1,6 +1,5 @@
 import { DateTime } from "luxon";
 import { useState, useRef, useEffect } from "react";
-import styles from './DateTimeInput.module.css';
 
 interface DateTimeInputProps {
     value: string;
@@ -9,7 +8,7 @@ interface DateTimeInputProps {
     showTime?: boolean;
 }
 
-const DateTimeInput: React.FC<DateTimeInputProps> = ({ value, onChange, label, showTime = true }) => {
+const DateTimeInput: React.FC<DateTimeInputProps> = ({ value, onChange, showTime = true }) => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const [isTimeOpen, setIsTimeOpen] = useState(false);
     const [dateInputValue, setDateInputValue] = useState('');
@@ -108,7 +107,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({ value, onChange, label, s
         const match = inputValue.match(datePattern);
 
         if (match) {
-            const [_, year, month, day] = match;
+            const [year, month, day] = match;
             const newDate = DateTime.fromObject({
                 year: parseInt(year),
                 month: parseInt(month),
@@ -143,7 +142,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({ value, onChange, label, s
         const match = formattedValue.match(timePattern);
 
         if (match) {
-            const [_, hours, minutes] = match;
+            const [hours, minutes] = match;
             const hour = parseInt(hours);
             const minute = parseInt(minutes);
 
@@ -207,7 +206,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({ value, onChange, label, s
                         placeholder="HH:mm"
                     />
                     {isTimeOpen && (
-                        <ul ref={timeRef} className="time-picker">
+                        <ul ref={timeRef as unknown as React.RefObject<HTMLUListElement>} className="time-picker">
                             {generateTimeOptions().map((time, index) => (
                                 <li
                                     key={index}

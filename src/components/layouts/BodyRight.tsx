@@ -4,15 +4,14 @@ import ListCalendar from '@/components/features/calendar/list/ListCalendar'
 import CalendarHeader from '@/components/features/calendar/CalendarHeader'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { useRecords } from '@/hooks/useRecords'
-import MonthlyCalendarV2 from '@/components/features/calendar/monthly/MonthlyCalendarV2'
-import MonthlyCalendarV1 from '@/components/features/calendar/monthly/MonthlyCalendarV1'
+import MonthlyCalendar from '@/components/features/calendar/monthly/MonthlyCalendar'
 
 export interface BodyRightRef {
     refreshRecords: () => void;
 }
 
 const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
-    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('weekly')
+    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('monthly')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     
@@ -99,14 +98,16 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                         onRecordClick={handleRecordClick}
                     />
                 ) : recordType === 'monthly' ? (
-                    <MonthlyCalendarV2 
-                        initialDate={date} 
-                        records={filteredRecords}
+                    <MonthlyCalendar
+                        initialDate={date}
                     />
                 ) : (
-                    <MonthlyCalendarV1
+                    <ListCalendar
                         initialDate={date} 
                         records={filteredRecords}
+                        recordGroups={checkedRecordGroups}
+                        onAddRecord={handleAddRecordForDate}
+                        onRecordClick={handleRecordClick}
                     />
                 )}
             </div>

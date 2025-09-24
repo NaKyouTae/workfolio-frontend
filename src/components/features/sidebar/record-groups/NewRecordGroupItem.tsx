@@ -50,8 +50,8 @@ const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupIte
                 </label>
             </div>
             <div className="more">
-                <button className="trans active" style={{ color: '#fff' }} onClick={handleSave}><i className="ic-check" /></button>
-                <button className="trans" style={{ color: '#fff' }} onClick={onCancel}><i className="ic-close" /></button>
+                <button className="trans active" style={{ color: '#000', backgroundColor: '#000' }} onClick={handleSave}><i className="ic-check" /></button>
+                <button className="trans active" style={{ color: '#000', backgroundColor: '#000' }} onClick={onCancel}><i className="ic-close" /></button>
             </div>
         </li>
     );
