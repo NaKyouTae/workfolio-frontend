@@ -89,9 +89,9 @@ aside {border-right: 1px solid var(--gray002); display: flex; flex-flow: column;
 .aside-cont .record-group .record-group-list > li:hover {background-color: var(--gray002);}
 .aside-cont .record-group .record-group-list > li:hover .more > button {opacity: 1;}
 
-.aside-cont .record-group .record-edit-modal-wrap {width: 16rem; border-radius: .6rem; background-color: var(--white); border: 1px solid var(--gray002); display: flex; flex-flow: column; position: absolute; left: 4rem; top: -0.7rem; z-index: 100;}
+.aside-cont .record-group .record-edit-modal-wrap {width: 16rem; border-radius: .6rem; background-color: var(--white); border: 1px solid var(--gray002); display: flex; flex-flow: column; position: absolute; left: 4rem; top: -0.7rem; z-index: 100; overflow: hidden;}
 .aside-cont .record-group .record-edit-modal-wrap > * + * {border-top: 1px solid var(--gray002);}
-.aside-cont .record-group .record-edit-modal-wrap > button {width: 100%; height: 3.6rem; padding: 0 1.2rem; font-size: 1.4rem; font-weight: 500; color: var(--black); background-color: transparent; justify-content: flex-start;}
+.aside-cont .record-group .record-edit-modal-wrap > button {width: 100%; height: 3.6rem; padding: 0 1.2rem; font-size: 1.4rem; font-weight: 500; color: var(--black); background-color: transparent; justify-content: flex-start; border-radius: 0;}
 .aside-cont .record-group .record-edit-modal-wrap > button:hover {background-color: var(--gray002);}
 .aside-cont .record-group .record-edit-modal-wrap .record-edit-color {padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; grid-gap: .6rem;}
 .aside-cont .record-group .record-edit-modal-wrap .record-edit-color > button {width: 1.6rem; height: 1.6rem; padding: 0; border-radius: .2rem;}

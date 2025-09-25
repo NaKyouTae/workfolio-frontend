@@ -77,7 +77,7 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
             style={position ? {
                 top: position.top,
                 left: position.left,
-                width: position.width,
+                // width: position.width,
                 zIndex: 1000
             } : {}}
         >
