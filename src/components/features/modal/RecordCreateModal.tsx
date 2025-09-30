@@ -20,7 +20,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const [title, setTitle] = useState<string | null>(null);
     const [description, setDescription] = useState<string | null>(null);
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
-    const [endedAt, setEndedAt] = useState(dayjs().add(1, 'day').toISOString());
+    const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [companyId, setCompanyId] = useState<string | null>(null);
@@ -53,7 +53,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             setTitle(null);
             setDescription(null);
             setStartedAt(dayjs().toISOString());
-            setEndedAt(dayjs().add(1, 'day').toISOString());
+            setEndedAt(dayjs().add(1, 'hour').toISOString());
             setRecordGroupId(null);
             setIsAllDay(false);
             setSelectedFile(null);

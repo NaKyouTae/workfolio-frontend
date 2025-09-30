@@ -19,10 +19,10 @@ interface ModalProps {
 
 const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, record }) => {
     const [recordGroupId, setRecordGroupId] = useState<string>('');
-    const [title, setTitle] = useState<string | null>(null);
-    const [description, setDescription] = useState<string | null>(null);
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
-    const [endedAt, setEndedAt] = useState(dayjs().add(1, 'day').toISOString());
+    const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [companyId, setCompanyId] = useState<string | null>(null);
@@ -65,8 +65,8 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
             // 기존 레코드 데이터로 폼 초기화
             setTitle(record.title || '');
             setDescription(record.description || '');
-            setStartedAt(record.startedAt ? dayjs(parseInt(record.startedAt.toString())).toISOString() : dayjs().toISOString());
-            setEndedAt(record.endedAt ? dayjs(parseInt(record.endedAt.toString())).toISOString() : dayjs().add(1, 'day').toISOString());
+            setStartedAt(record.startedAt ? dayjs(record.startedAt).toISOString() : dayjs().toISOString());
+            setEndedAt(record.endedAt ? dayjs(parseInt(record.endedAt.toString())).toISOString() : dayjs().add(1, 'hour').toISOString());
             setRecordGroupId(record.recordGroup?.id || '');
             setIsAllDay(false); // 기본값으로 설정
             setSelectedFile(null);
@@ -90,7 +90,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
                 id: record.id,
                 title: title,
                 description: description,
-                companyId: companyId,
+                companyId: companyId || undefined,
                 startedAt: DateUtil.parseToTimestamp(startedAt),
                 endedAt: DateUtil.parseToTimestamp(endedAt),
             };
@@ -148,7 +148,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
                                 <div className="record-select">
                                     <Dropdown
                                         options={companyOptions}
-                                        selectedOption={companyId}
+                                        selectedOption={companyId || ''}
                                         setValue={setCompanyId}
                                     />
                                 </div>
@@ -190,7 +190,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
                                 <p>메모</p>
                                 <textarea
                                     id="description"
-                                    value={description}
+                                    value={description || ''}
                                     onChange={(e) => setDescription(e.target.value)}
                                     rows={4}
                                 />

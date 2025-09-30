@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Record } from '@/generated/common'
 import dayjs from 'dayjs'
+import { DateUtil } from '@/utils/DateUtil';
 
 interface RecordDetailProps {
     isOpen: boolean;
@@ -24,7 +25,7 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
     position
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
-
+    const format = 'YYYY. MM. DD. A hh:mm';
     // 외부 클릭 감지
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -44,16 +45,11 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
 
     if (!isOpen || !record) return null;
 
-    // 날짜 포맷팅
-    const formatDateTime = (timestamp: number) => {
-        return dayjs(parseInt(timestamp.toString())).format('YYYY. MM. DD. A hh:mm');
-    };
-
     // 시작일과 종료일이 같은지 확인
     const isSameDay = () => {
         if (!record.startedAt || !record.endedAt) return false;
-        const startDate = dayjs(parseInt(record.startedAt.toString()));
-        const endDate = dayjs(parseInt(record.endedAt.toString()));
+        const startDate = dayjs(record.startedAt);
+        const endDate = dayjs(record.endedAt);
         return startDate.isSame(endDate, 'day');
     };
 
@@ -61,12 +57,10 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
     const getTimeRange = () => {
         if (!record.startedAt || !record.endedAt) return '';
         
-        const endDate = dayjs(parseInt(record.endedAt.toString()));
-        
         if (isSameDay()) {
-            return `${formatDateTime(record.startedAt)} ~ ${endDate.format('A hh:mm')}`;
+            return `${DateUtil.formatTimestamp(record.startedAt, format)} ~ ${DateUtil.formatTimestamp(record.endedAt, format)}`;
         } else {
-            return `${formatDateTime(record.startedAt)} ~ ${formatDateTime(record.endedAt)}`;
+            return `${DateUtil.formatTimestamp(record.startedAt, format)} ~ ${DateUtil.formatTimestamp(record.endedAt, format)}`;
         }
     };
 
