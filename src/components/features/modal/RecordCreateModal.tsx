@@ -181,6 +181,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                                 <DateTimeInput
                                     value={startedAt}
                                     onChange={setStartedAt}
+                                    showTime={!isAllDay}
                                 />
                             </li>
                             <li>
@@ -188,6 +189,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                                 <DateTimeInput
                                     value={endedAt}
                                     onChange={setEndedAt}
+                                    showTime={!isAllDay}
                                 />
                             </li>
                             <li>

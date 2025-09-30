@@ -168,6 +168,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
                                 <DateTimeInput
                                     value={startedAt}
                                     onChange={setStartedAt}
+                                    showTime={!isAllDay}
                                 />
                             </li>
                             <li>
@@ -175,6 +176,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
                                 <DateTimeInput
                                     value={endedAt}
                                     onChange={setEndedAt}
+                                    showTime={!isAllDay}
                                 />
                             </li>
                             <li>
