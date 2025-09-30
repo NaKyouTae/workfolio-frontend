@@ -5,13 +5,14 @@ import CalendarHeader from '@/components/features/calendar/CalendarHeader'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { useRecords } from '@/hooks/useRecords'
 import MonthlyCalendar from '@/components/features/calendar/monthly/MonthlyCalendar'
+import { CalendarViewType } from '@/models/CalendarTypes'
 
 export interface BodyRightRef {
     refreshRecords: () => void;
 }
 
 const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
-    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('list')
+    const [recordType, setRecordType] = useState<CalendarViewType>('list')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     
@@ -31,7 +32,7 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
 
 
     // 이벤트 핸들러들
-    const handleTypeChange = useCallback((type: 'weekly' | 'monthly' | 'list') => {
+    const handleTypeChange = useCallback((type: CalendarViewType) => {
         setRecordType(type)
     }, [])
 

@@ -1,12 +1,11 @@
 import React from 'react';
 import CalendarNavigation from './CalendarNavigation';
-
-type RecordType = 'weekly' | 'monthly' | 'list';
+import { CalendarViewType } from '@/models/CalendarTypes';
 
 interface CalendarHeaderProps {
     date: Date;
-    recordType: RecordType;
-    onTypeChange: (type: RecordType) => void;
+    recordType: CalendarViewType;
+    onTypeChange: (type: CalendarViewType) => void;
     onPreviousMonth: () => void;
     onNextMonth: () => void;
     onTodayMonth: () => void;

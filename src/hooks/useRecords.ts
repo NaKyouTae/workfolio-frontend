@@ -3,8 +3,9 @@ import { Record } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleData';
 import HttpMethod from '@/enums/HttpMethod';
+import { CalendarViewType } from '@/models/CalendarTypes';
 
-export const useRecords = (recordType: 'weekly' | 'monthly' | 'list' = 'weekly', month?: number, year?: number) => {
+export const useRecords = (recordType: CalendarViewType = 'weekly', month?: number, year?: number) => {
     const [records, setRecords] = useState<Record[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     
@@ -30,7 +31,7 @@ export const useRecords = (recordType: 'weekly' | 'monthly' | 'list' = 'weekly',
             
             // recordType에 따라 다른 API URL 구성
             let apiUrl: string;
-            if (recordType === 'list') {
+            if (recordType === 'weekly') {
                 // 주간 레코드 조회 (현재 주차 계산)
                 const firstDay = new Date(targetYearValue, targetMonthValue - 1, 1);
                 const currentWeek = Math.ceil((firstDay.getDay() + new Date().getDate()) / 7);

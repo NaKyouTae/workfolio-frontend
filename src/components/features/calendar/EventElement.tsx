@@ -1,5 +1,5 @@
 import React from 'react'
-import { CalendarEvent, EventElementProps } from './types'
+import { CalendarEvent, EventElementProps } from '@/models/CalendarTypes'
 import styles from '@/styles/MonthlyCalendarV2.module.css'
 
 /**

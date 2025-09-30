@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import { Record } from "../../../../../generated/common"
-import { CalendarEvent } from './types'
+import { Record } from '@/generated/common'
+import { CalendarEvent } from '@/models/CalendarTypes'
 import { 
     generateCalendarDays, 
     generateCalendarEvents, 
     getSingleDayEventsForDate, 
     getMultiDayEvents 
-} from './utils'
+} from '@/utils/calendarUtils'
 import { DateModel } from '@/models/DateModel'
 
 /**

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { Record, Record_RecordType } from "@/generated/common"
-import { CalendarEvent, CalendarDay } from './types'
+import { CalendarEvent, CalendarDay } from '@/models/CalendarTypes'
 import { DateModel } from '@/models/DateModel'
 
 /**

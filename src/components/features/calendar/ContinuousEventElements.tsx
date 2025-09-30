@@ -1,13 +1,13 @@
 import React from 'react'
-import { CalendarEvent, CalendarDay } from './types'
+import { CalendarEvent, CalendarDay } from '@/models/CalendarTypes'
 import { MultiDayEventElement } from './EventElement'
 import { 
     getBorderRadiusClass,
     isContinuingToNextWeek,
     isStartingFromPreviousWeek,
     isLastDayOfWeek
-} from './utils'
-import { Record_RecordType } from "../../../../../generated/common"
+} from '@/utils/calendarUtils'
+import { Record_RecordType } from '@/generated/common'
 
 interface ContinuousEventElementsProps {
     events: CalendarEvent[]

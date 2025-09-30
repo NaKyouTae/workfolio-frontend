@@ -1,5 +1,8 @@
 import { DateModel } from "@/models/DateModel"
-import { Record } from "../../../../../generated/common"
+import { Record } from '@/generated/common'
+
+// Calendar view type definition
+export type CalendarViewType = 'weekly' | 'monthly' | 'list';
 
 export interface CalendarEvent {
     record: Record
@@ -19,8 +22,8 @@ export interface CalendarDay {
 
 export interface CalendarProps {
     date: DateModel
-    recordType: string
-    onTypeChange: (type: string) => void
+    recordType: CalendarViewType
+    onTypeChange: (type: CalendarViewType) => void
     onPreviousMonth: () => void
     onNextMonth: () => void
     onTodayMonth: () => void
