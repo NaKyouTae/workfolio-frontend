@@ -133,65 +133,51 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     }
 
     return (
-        <div className={styles.container}>
-            {/* 테이블 헤더 */}
-            <div className={styles.tableHeader}>
-                <div className={styles.headerCell}>일자</div>
-                <div className={`${styles.headerCell} ${styles.headerCellCenter}`}>추가</div>
-                <div className={styles.headerCell}>시간</div>
-                <div className={styles.headerCell}>캘린더</div>
-                <div className={styles.headerCell}>내용</div>
-            </div>
-
-            {/* 테이블 바디 */}
-            <div className={styles.tableBody}>
+        <table className="list">
+            <colgroup>
+                <col style={{width: '8rem'}} />
+                <col style={{width: '4rem'}} />
+                <col style={{width: '16rem'}} />
+                <col style={{width: '16rem'}} />
+                <col style={{width: 'auto'}} />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>일자</th>
+                    <th>추가</th>
+                    <th>시간</th>
+                    <th>캘린더</th>
+                    <th>내용</th>
+                </tr>
+            </thead>
+            <tbody>
                 {listRecords.map((item) => {
                     // 빈 날짜인 경우
                     if ('isEmpty' in item) {
                         return (
-                            <div
+                            <tr
                                 key={`empty-${item.date}`}
-                                className={styles.tableRow}
                             >
-                                <div className={`${styles.tableCell} ${item.isWeekend ? styles.weekendDate : ''}`}>
-                                    {item.displayDate}
-                                </div>
-                                <div className={`${styles.tableCell} ${styles.tableCellCenter}`}>
-                                    <button
-                                        className={styles.addButton}
-                                        onClick={() => onAddRecord(dayjs(item.date).toDate())}
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                                <div className={`${styles.tableCell} ${styles.emptyDate}`}>
-                                    -
-                                </div>
-                                <div className={`${styles.tableCell} ${styles.emptyDate}`}>
-                                    -
-                                </div>
-                                <div className={`${styles.tableCell} ${styles.emptyDate}`}>
-                                    -
-                                </div>
-                            </div>
+                                <td className={`$${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
+                                <td><button onClick={() => onAddRecord(dayjs(item.date).toDate())}><i className="ic-add" /></button></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         )
                     }
 
                     // 레코드가 있는 경우
                     const record = item as ListRecord
                     return (
-                        <div
+                        <tr
                             key={record.id}
-                            className={`${styles.tableRow} ${styles.clickableRow}`}
                             onClick={() => handleRecordClick(record as Record)}
                         >
-                            <div className={`${styles.tableCell} ${record.isWeekend ? styles.weekendDate : ''}`}>
-                                {record.isFirstRecordOfDay ? record.displayDate : ''}
-                            </div>
-                            <div className={`${styles.tableCell} ${styles.tableCellCenter}`}>
+                            <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? record.displayDate : ''}</td>
+                            <td>
                                 {record.isFirstRecordOfDay ? (
                                     <button
-                                        className={styles.addButton}
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             // 문자열 타임스탬프를 숫자로 변환 후 처리
@@ -200,95 +186,70 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                             onAddRecord(startDate.toDate())
                                         }}
                                     >
-                                        +
+                                        <i className="ic-add" />
                                     </button>
                                 ) : ''}
-                            </div>
-                            <div className={styles.tableCell}>
-                                {record.displayTime}
-                            </div>
-                            <div className={styles.tableCell}>
-                                <div className={styles.recordGroupInfo}>
-                                    <div
-                                        className={styles.recordGroupColorBox}
-                                        style={{ backgroundColor: getRecordGroupColor(record.recordGroup) }}
-                                    />
-                                    <span>
-                                        {record.recordGroup?.title || '기본'}
-                                    </span>
+                            </td>
+                            <td><p>{record.displayTime}</p></td>
+                            <td>
+                                <div>
+                                    <div style={{ backgroundColor: getRecordGroupColor(record.recordGroup) }} />
+                                    <p>{record.recordGroup?.title || '기본'}</p>
                                 </div>
-                            </div>
-                            <div className={styles.tableCell}>
-                                {record.title}
-                            </div>
-                        </div>
+                            </td>
+                            <td><p className="text-left">{record.title}</p></td> 
+                        </tr>
                     )
                 })}
-            </div>
+            </tbody>
 
             {/* 레코드 상세 모달 */}
             {selectedRecord && (
-                <div className={styles.modalOverlay} onClick={handleCloseModal}>
-                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                        <div className={styles.modalHeader}>
-                            <div className={styles.modalTitleGroup}>
-                                <div
-                                    className={styles.recordGroupColorBox}
-                                    style={{ backgroundColor: getRecordGroupColor(selectedRecord.recordGroup) }}
-                                />
-                                <h3 className={styles.modalTitle}>
-                                    ■ {selectedRecord.title}
-                                </h3>
+                <div className="modal" onClick={handleCloseModal}>
+                    <div className="record-modal-wrap" onClick={(e) => e.stopPropagation()}>
+                        <div className="record-modal-tit">
+                            <div>
+                                <div style={{ backgroundColor: getRecordGroupColor(selectedRecord.recordGroup) }} />
+                                <h2>{selectedRecord.title}</h2>
                             </div>
-                            <button
-                                onClick={handleCloseModal}
-                                className={styles.modalCloseButton}
-                            >
-                                ×
-                            </button>
+                            <button onClick={handleCloseModal}><i className="ic-close" /></button>
                         </div>
 
-                        <div className={styles.modalField}>
-                            <div className={styles.modalFieldLabel}>
-                                일시
-                            </div>
-                            <div className={styles.modalFieldValue}>
-                                {(() => {
-                                    // 문자열 타임스탬프를 숫자로 변환 후 처리
-                                    const startTimestamp = parseInt(selectedRecord.startedAt.toString());
-                                    const endTimestamp = parseInt(selectedRecord.endedAt.toString());
-                                    const startDate = dayjs(startTimestamp);
-                                    const endDate = dayjs(endTimestamp);
-                                    
-                                    return `${startDate.format('YYYY. MM. DD. A hh:mm')} ~ ${endDate.format('YYYY. MM. DD. A hh:mm')}`;
-                                })()}
-                            </div>
+                        <div className="record-modal-cont">
+                            <ul className="record-info">
+                                <li>
+                                    <span>일시</span>
+                                    <p>
+                                        {(() => {
+                                            // 문자열 타임스탬프를 숫자로 변환 후 처리
+                                            const startTimestamp = parseInt(selectedRecord.startedAt.toString());
+                                            const endTimestamp = parseInt(selectedRecord.endedAt.toString());
+                                            const startDate = dayjs(startTimestamp);
+                                            const endDate = dayjs(endTimestamp);
+                                            
+                                            return `${startDate.format('YYYY. MM. DD. A hh:mm')} ~ ${endDate.format('YYYY. MM. DD. A hh:mm')}`;
+                                        })()}
+                                    </p>
+                                </li>
+                                {selectedRecord.description && (
+                                    <li>
+                                        <span>메모</span>
+                                        <p>
+                                            {selectedRecord.description}
+                                        </p>
+                                    </li>
+                                )}
+                            </ul>
                         </div>
-
-                        {selectedRecord.description && (
-                            <div className={styles.modalField}>
-                                <div className={styles.modalFieldLabel}>
-                                    메모
-                                </div>
-                                <div className={styles.modalFieldValue}>
-                                    {selectedRecord.description}
-                                </div>
-                            </div>
-                        )}
-
-                        <div className={styles.modalActions}>
-                            <button className={styles.modalButton}>
-                                수정
-                            </button>
-                            <button className={`${styles.modalButton} ${styles.modalButtonSecondary}`}>
-                                삭제
-                            </button>
+                        <div className="record-modal-btn">
+                            <button className="xsm line gray">수정</button>
+                            <button className="xsm gray">삭제</button>
                         </div>
                     </div>
                 </div>
             )}
 
-        </div>
+        </table>
     )
 }
 

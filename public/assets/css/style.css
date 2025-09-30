@@ -50,7 +50,7 @@ header > ul > li + li::before {content: ''; width: 1px; height: 1rem; background
 header > ul > li > a {font-size: 1.2rem; color: var(--gray005);}
 
 /* 푸터 */
-footer {height: 2.4rem; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;}
+footer {height: 2.4rem; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--gray002);}
 footer > ul {display: flex; align-items: center; column-gap: .6rem;}
 footer > ul > li {display: flex; align-items: center; column-gap: .6rem;}
 footer > ul > li + li::before {content: ''; width: 1px; height: .8rem; background-color: var(--gray004);}
@@ -98,10 +98,10 @@ aside {border-right: 1px solid var(--gray002); display: flex; flex-flow: column;
 
 /* 레이아웃 - 본문 */
 section {height: calc(100vh - 6.4rem); display: flex; flex-flow: column;}
-section .contents {flex: 1; height: calc(100% - 2.4rem); overflow-y: auto; display: flex; flex-flow: column;}
+section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flow: column;}
 
 /* 달력 - 상단 */
-.calendar-option {height: 7.3rem; padding: 0 2rem; border-bottom: 1px solid var(--gray002); display: flex; align-items: center; justify-content: space-between;}
+.calendar-option {height: 7.3rem; padding: 0 2rem; border-bottom: 1px solid var(--gray002); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background-color: var(--white); z-index: 10;}
 .calendar-option .calendar-nav {display: flex; align-items: center; column-gap: 1.6rem;}
 .calendar-option .calendar-nav > h2 {font-size: 1.8rem; font-weight: 600;}
 .calendar-option .calendar-nav > ul {height: 3.2rem; display: flex; border: 1px solid var(--gray003); border-radius: .6rem; background-color: var(--white); overflow: hidden;}
@@ -110,8 +110,8 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); overflow-y: auto; displ
 .calendar-option .calendar-nav > ul > li > button:hover {background-color: var(--gray002);}
 .calendar-option .calendar-type {display: flex; align-items: center; column-gap: 1.6rem;}
 
-/* 달력 - 본문  */
-.calendar-wrap {flex: 1; display: flex; flex-flow: column; position: relative;}
+/* 달력 - 월간  */
+.calendar-wrap {flex: 1; max-height: calc(100vh - 6.4rem - 7.3rem - 2.4rem); display: flex; flex-flow: column; position: relative; overflow-y: auto;}
 
 .calendar-wrap .week {width: 100%; border-spacing: 0; border-collapse: collapse; table-layout: fixed; border-bottom: 1px solid var(--gray002);}
 .calendar-wrap .week th {height: 2.4rem; text-align: center; font-size: 1.2rem; color: var(--gray005); vertical-align: middle; position: relative;}
@@ -120,6 +120,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); overflow-y: auto; displ
 
 .calendar-wrap .days {flex: 1; display: flex; flex-flow: column;}
 .calendar-wrap .days .weekly {flex: 1; border-bottom: 1px solid var(--gray002); position: relative;}
+.calendar-wrap .days .weekly:last-child {border-bottom: 0;}
 .calendar-wrap .days .weekly table {width: 100%; border-spacing: 0; border-collapse: collapse; table-layout: fixed;}
 .calendar-wrap .days .weekly table tr:nth-child(1) td + td::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); position: absolute; z-index: 1;}
 
@@ -127,21 +128,21 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); overflow-y: auto; displ
 .calendar-wrap .days .weekly table .record {padding: .1rem 0; position: relative;}
 .calendar-wrap .days .weekly table .record > p {height: 2rem; padding: 0 1rem; margin-left: 1px; font-size: 1.2rem; line-height: 2rem; color: var(--white); position: relative; z-index: 10; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
 
-/* 달력 > 일정 상세 */
-.record-modal-wrap {position: absolute; z-index: 100; background-color: var(--white); width: 38.2rem; border-radius: .6rem; border: 1px solid var(--gray002); display: flex; flex-flow: column;}
-.record-modal-wrap .record-modal-tit {height: 3.6rem; padding: 0 1.2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray002);}
+/* 달력 - 월간 > 일정 상세 */
+.record-modal-wrap {position: absolute; z-index: 100; background-color: var(--white); width: 40rem; border-radius: .6rem; border: 1px solid var(--gray002); display: flex; flex-flow: column;}
+.record-modal-wrap .record-modal-tit {height: 4.8rem; padding: 0 1.6rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray002);}
 .record-modal-wrap .record-modal-tit > div {display: flex; align-items: center; column-gap: 1rem;}
 .record-modal-wrap .record-modal-tit > div > div {width: .8rem; height: 2rem; border-radius: .2rem;}
-.record-modal-wrap .record-modal-tit > div > h2 {font-size: 1.4rem; font-weight: 500;}
+.record-modal-wrap .record-modal-tit > div > h2 {font-size: 1.4rem; font-weight: 600;}
 .record-modal-wrap .record-modal-tit > button {width: fit-content; height: fit-content; padding: 0; background-color: transparent;}
-.record-modal-wrap .record-modal-cont {padding: 1.2rem;}
+.record-modal-wrap .record-modal-cont {padding: 1.6rem;}
 .record-modal-wrap .record-modal-cont > ul {display: flex; flex-flow: column; row-gap: 1.2rem;}
 .record-modal-wrap .record-modal-cont > ul > li {display: flex; align-items: center; column-gap: .6rem;}
 .record-modal-wrap .record-modal-cont > ul > li > span {display: block; width: 6rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005);}
 .record-modal-wrap .record-modal-cont > ul > li > p {font-size: 1.2rem; font-weight: 500; line-height: 1.6;}
-.record-modal-wrap .record-modal-btn {padding: .8rem 1.2rem 1.2rem; display: flex; align-items: center; justify-content: center; column-gap: 1rem;}
+.record-modal-wrap .record-modal-btn {padding: 0 1.6rem 1.6rem; display: flex; align-items: center; justify-content: center; column-gap: 1rem;}
 
-/* 달력 > 일정 상세 > 수정 */
+/* 달력 - 월간 > 일정 상세 > 수정 */
 .record-info-input {display: flex; flex-flow: column; row-gap: 1.2rem;}
 .record-info-input > li {display: flex; flex-flow: column; row-gap: .6rem;}
 .record-info-input > li > p {font-size: 1.2rem; font-weight: 500; color: var(--gray005);}
@@ -152,3 +153,19 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); overflow-y: auto; displ
 .record-info-input > li .record-select {display: flex; align-items: center; column-gap: .6rem;}
 .record-info-input > li .record-select .color {display: block; width: .8rem; height: 3.2rem; border-radius: .2rem;}
 .record-info-input > li .record-select .dropdown {flex: 1;}
+
+/* 달력 - 목록 */
+table.list {width: 100%;}
+table.list thead {position: sticky; top: 0;}
+table.list thead th {height: 2.4rem; text-align: center; font-size: 1.2rem; color: var(--gray005); vertical-align: middle; border-bottom: 1px solid var(--gray002); background-color: var(--white);}
+table.list thead th + th {border-left: 1px solid var(--gray002);}
+table.list tbody tr:last-child td {border-bottom: 0;}
+table.list tbody td {height: 2.4rem; padding: 0 1rem; text-align: center; font-size: 1.2rem; vertical-align: middle; border-bottom: 1px solid var(--gray002); cursor: pointer;}
+table.list tbody td.holiday {color: var(--red);}
+table.list tbody td + td {border-left: 1px solid var(--gray002);}
+table.list tbody td > button {width: 1.6rem; height: 1.6rem; border-radius: .2rem; background-color: var(--gray002); padding: 0; margin: 0 auto;}
+table.list tbody td > button > i {width: 1.2rem; height: 1.2rem;}
+table.list tbody td > div {display: flex; align-items: center; column-gap: .6rem;}
+table.list tbody td > div > div {width: .6rem; height: 1.4rem; border-radius: .2rem;}
+table.list tbody td > div > p {flex: 1; max-width: 12.8rem; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; display: -webkit-box; line-clamp: 1; -webkit-line-clamp: 1; -webkit-box-orient: vertical;}

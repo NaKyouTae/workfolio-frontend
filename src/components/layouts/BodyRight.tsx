@@ -11,7 +11,7 @@ export interface BodyRightRef {
 }
 
 const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
-    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('monthly')
+    const [recordType, setRecordType] = useState<'weekly' | 'monthly' | 'list'>('list')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     
