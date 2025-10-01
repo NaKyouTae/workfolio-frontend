@@ -43,9 +43,35 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()
+    const [date] = useState<DateModel>(() => {
+        const d = new Date(initialDate)
+        return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
+    })
+    const calendarDays = useCalendarDays(date)
+    
+    // initialDate 기준으로 현재 주 데이터만 추출
+    const currentWeekStart = dayjs(initialDate).startOf('week')
+    const currentWeekDays = Array.from({ length: 7 }, (_, i) => {
+        const day = currentWeekStart.add(i, 'day')
+        const dayDate = day.toDate()
+        
+        // calendarDays에서 해당 날짜 찾기
+        const calendarDay = calendarDays.find(calDay => 
+            calDay && dayjs(calDay.date).isSame(day, 'day')
+        )
+        
+        return calendarDay || null
+    })
+    
+    // weeks에 현재 주 데이터만 넣기
+    const weeks: (CalendarDay | null)[][] = [currentWeekDays]
+
+    console.log(weeks)
+
 
 
     // 컴포넌트 마운트 시 07시 위치로 스크롤
@@ -172,6 +198,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 }
             }
         })
+
         return specialDayEvents
     }
 
@@ -181,11 +208,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     }
 
     // 특정 날짜의 이벤트 필터링 (TIME 타입만)
-    const getEventsForDay = (events: WeeklyEvent[], dayOfWeek: number) => {
-        return events.filter(event => 
-            event.dayOfWeek === dayOfWeek && 
-            isRecordType(event.record.type, Record_RecordType.TIME)
-        )
+    const getEventsForDay = (events: WeeklyEvent[]) => {
+        return events.filter(event => isRecordType(event.record.type, Record_RecordType.TIME))
     }
 
     // 이벤트가 특정 30분 슬롯에 속하는지 확인 (날짜도 비교)
@@ -378,7 +402,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 {/* 주간 컬럼들 */}
                 <div className="week-columns">
                     {weekDays.map((day, dayIndex) => {
-                        const dayEvents = getEventsForDay(timedEvents, day.dayOfWeek)
+                        const dayEvents = getEventsForDay(timedEvents)
                         return (
                             <div key={dayIndex} className="day-column">
                                 {/* 시간 슬롯들 */}
