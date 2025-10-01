@@ -5,6 +5,7 @@ import 'dayjs/locale/ko'
 import timezone from 'dayjs/plugin/timezone'
 import RecordDetail from '../../modal/RecordDetail'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
+import RecordCreateModal from '../../modal/RecordCreateModal'
 import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 
@@ -27,20 +28,18 @@ interface ListCalendarProps {
     initialDate: Date
     records: Record[]
     recordGroups: RecordGroup[]
-    onAddRecord: (date: Date) => void
-    onRecordClick: (record: Record) => void
 }
 
 const ListCalendar: React.FC<ListCalendarProps> = ({ 
     initialDate,
-    records, 
-    onAddRecord, 
-    onRecordClick 
+    records,
 }) => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    const [createDate, setCreateDate] = useState<Date | null>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()  
 
@@ -143,7 +142,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
 
                 listRecords.push({
                     ...record,
-                    displayDate: startDate.format(dateFormat),
+                    displayDate: dayInfo.displayDate,
                     displayTime,
                     dayOfWeek: startDate.format('ddd'),
                     isWeekend: startDate.day() === 0 || startDate.day() === 6,
@@ -156,7 +155,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
         }
     })
 
-    const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLTableRowElement>) => {
+    const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLSpanElement>) => {
         const rect = event.currentTarget.getBoundingClientRect()
         const tableContainer = event.currentTarget.closest('table')?.getBoundingClientRect()
         
@@ -182,7 +181,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
             }
             
             // 가로 위치 계산
-            let left = rect.left - tableContainer.left + 445
+            let left = rect.left - tableContainer.left
             const spaceRight = viewportWidth - rect.left
             const spaceLeft = rect.left
             
@@ -210,12 +209,24 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
         
         setSelectedRecord(record)
         setIsDetailModalOpen(true)
-        onRecordClick(record)
     }
 
     const handleCloseModal = () => {
         setSelectedRecord(null)
         setDetailPosition(null)
+        setIsDetailModalOpen(false)
+    }
+
+    // 레코드 생성 모달 열기 핸들러
+    const handleOpenCreateModal = (date: Date) => {
+        setCreateDate(date)
+        setIsCreateModalOpen(true)
+    }
+
+    // 레코드 생성 모달 닫기 핸들러
+    const handleCloseCreateModal = () => {
+        setIsCreateModalOpen(false)
+        setCreateDate(null)
     }
 
     // 수정 모달 열기 핸들러
@@ -256,7 +267,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 <colgroup>
                     <col style={{width: '8rem'}} />
                     <col style={{width: '4rem'}} />
-                    <col style={{width: '16rem'}} />
+                    <col style={{width: '8rem'}} />
                     <col style={{width: '16rem'}} />
                     <col style={{width: 'auto'}} />
                 </colgroup>
@@ -278,7 +289,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                     key={`empty-${item.date}`}
                                 >
                                     <td className={`$${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
-                                    <td><button onClick={() => onAddRecord(dayjs(item.date).toDate())}><i className="ic-add" /></button></td>
+                                    <td><button onClick={() => handleOpenCreateModal(dayjs(item.date).toDate())}><i className="ic-add" /></button></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -289,11 +300,8 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                         // 레코드가 있는 경우
                         const record = item as ListRecord
                         return (
-                            <tr
-                                key={`${record.id}-${index}`}
-                                onClick={(e) => handleRecordClick(record as Record, e)}
-                            >
-                                <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? record.displayDate : ''}</td>
+                            <tr key={`${record.id}-${index}`}>
+                                <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? item.displayDate : ''}</td>
                                 <td>
                                     {record.isFirstRecordOfDay ? (
                                         <button
@@ -302,7 +310,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                                 // 문자열 타임스탬프를 숫자로 변환 후 처리
                                                 const startTimestamp = parseInt(record.startedAt.toString());
                                                 const startDate = dayjs(startTimestamp);
-                                                onAddRecord(startDate.toDate())
+                                                handleOpenCreateModal(startDate.toDate())
                                             }}
                                         >
                                             <i className="ic-add" />
@@ -327,7 +335,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                 </td>
                                 <td>
                                     <p className={`text-left ${record.isMultiDayMiddle ? 'multi-day-middle' : ''}`}>
-                                        {record.title}
+                                        <span onClick={(e) => handleRecordClick(record as Record, e)}>{record.title}</span>
                                     </p>
                                 </td> 
                             </tr>
@@ -352,6 +360,12 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 onClose={handleCloseUpdateModal}
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
+            />
+
+            {/* RecordCreateModal */}
+            <RecordCreateModal
+                isOpen={isCreateModalOpen}
+                onClose={handleCloseCreateModal}
             />
         </>
     )

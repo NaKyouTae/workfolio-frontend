@@ -1,5 +1,4 @@
 import React, {useState, useCallback, forwardRef, useImperativeHandle} from 'react'
-import { Record } from '@/generated/common'
 import ListCalendar from '@/components/features/calendar/list/ListCalendar'
 import CalendarHeader from '@/components/features/calendar/CalendarHeader'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
@@ -61,16 +60,6 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
         setSearchTerm(term)
     }, [])
 
-    const handleAddRecordForDate = useCallback((date: Date) => {
-        // TODO: 특정 날짜에 레코드 추가 로직 구현
-        console.log('Add record for date:', date)
-    }, [])
-
-    const handleRecordClick = useCallback((record: Record) => {
-        // TODO: 레코드 클릭 로직 구현
-        console.log('Record clicked:', record)
-    }, [])
-
     // 검색 필터링된 레코드
     const filteredRecords = Array.isArray(records) ? records : []
     
@@ -95,8 +84,6 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                         initialDate={date} 
                         records={filteredRecords}
                         recordGroups={checkedRecordGroups}
-                        onAddRecord={handleAddRecordForDate}
-                        onRecordClick={handleRecordClick}
                     />
                 ) : recordType === 'monthly' ? (
                     <MonthlyCalendar
@@ -107,8 +94,6 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                         initialDate={date} 
                         records={filteredRecords}
                         recordGroups={checkedRecordGroups}
-                        onAddRecord={handleAddRecordForDate}
-                        onRecordClick={handleRecordClick}
                     />
                 )}
             </div>
