@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Record, RecordGroup } from '@/generated/common'
+import { Record, Record_RecordType, RecordGroup } from '@/generated/common'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import timezone from 'dayjs/plugin/timezone'
@@ -14,6 +14,9 @@ interface ListRecord extends Record {
     dayOfWeek: string
     isWeekend: boolean
     isFirstRecordOfDay: boolean
+    isMultiDayStart?: boolean
+    isMultiDayEnd?: boolean
+    isMultiDayMiddle?: boolean
 }
 
 interface ListCalendarProps {
@@ -56,16 +59,35 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     const recordsByDate = (Array.isArray(records) ? records : []).reduce((acc, record) => {
         
         // 문자열 타임스탬프를 숫자로 변환 후 처리
-        const timestamp = parseInt(record.startedAt.toString());
+        const startTimestamp = parseInt(record.startedAt.toString());
+        const endTimestamp = parseInt(record.endedAt.toString());
         
         // 숫자로 변환된 타임스탬프로 날짜 생성
-        const startDate = dayjs(timestamp);
-        const dateKey = startDate.format('YYYY-MM-DD')
+        const startDate = dayjs(startTimestamp);
+        const endDate = dayjs(endTimestamp);
         
-        if (!acc[dateKey]) {
-            acc[dateKey] = []
+        // 멀티데이 레코드인 경우 시작일부터 종료일까지 모든 날짜에 추가
+        if (Record_RecordType[record.type] == Record_RecordType.MULTI_DAY.toString()) { // MULTI_DAY
+            let currentDate = startDate.clone();
+
+            // 종료일까지 포함하여 모든 날짜에 레코드 추가
+            while (currentDate.isSame(endDate, 'day') || currentDate.isBefore(endDate, 'day')) {
+                const dateKey = currentDate.format('YYYY-MM-DD');
+                if (!acc[dateKey]) {
+                    acc[dateKey] = []
+                }
+                acc[dateKey].push(record)
+                currentDate = currentDate.add(1, 'day')
+            }
+        } else {
+            // 단일일 레코드는 시작 날짜에만 추가
+            const dateKey = startDate.format('YYYY-MM-DD')
+            if (!acc[dateKey]) {
+                acc[dateKey] = []
+            }
+            acc[dateKey].push(record)
         }
-        acc[dateKey].push(record)
+        
         return acc
     }, {} as { [key: string]: Record[] })
 
@@ -74,7 +96,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     
     allDaysInMonth.forEach(dayInfo => {
         const recordsForDay = recordsByDate[dayInfo.date] || []
-        
+
         if (recordsForDay.length === 0) {
             // 레코드가 없는 날은 빈 행 표시
             listRecords.push({
@@ -92,8 +114,13 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 const endTimestamp = parseInt(record.endedAt.toString());
                 const startDate = dayjs(startTimestamp);
                 const endDate = dayjs(endTimestamp);
+                const currentDay = dayjs(dayInfo.date);
             
                 let displayTime = ''
+                let isMultiDayStart = false
+                let isMultiDayEnd = false
+                let isMultiDayMiddle = false
+                
                 if (record.type === 2) { // DAY
                     displayTime = '하루 종일'
                 } else if (record.type === 1) { // TIME
@@ -101,6 +128,18 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                         displayTime = `${startDate.format('A hh:mm')} ~ ${endDate.format('A hh:mm')}`
                     } else {
                         displayTime = `${startDate.format('MM/DD A hh:mm')} ~ ${endDate.format('MM/DD A hh:mm')}`
+                    }
+                } else if (record.type === 3) { // MULTI_DAY
+                    isMultiDayStart = currentDay.isSame(startDate, 'day')
+                    isMultiDayEnd = currentDay.isSame(endDate, 'day')
+                    isMultiDayMiddle = !isMultiDayStart && !isMultiDayEnd
+                    
+                    if (isMultiDayStart) {
+                        displayTime = `${startDate.format('MM/DD')} ~ ${endDate.format('MM/DD')}`
+                    } else if (isMultiDayEnd) {
+                        displayTime = '종료'
+                    } else {
+                        displayTime = '계속'
                     }
                 }
 
@@ -110,7 +149,10 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                     displayTime,
                     dayOfWeek: startDate.format('ddd'),
                     isWeekend: startDate.day() === 0 || startDate.day() === 6,
-                    isFirstRecordOfDay: index === 0 // 같은 날짜의 첫 번째 레코드인지 표시
+                    isFirstRecordOfDay: index === 0, // 같은 날짜의 첫 번째 레코드인지 표시
+                    isMultiDayStart,
+                    isMultiDayEnd,
+                    isMultiDayMiddle
                 })
             })
         }
@@ -150,7 +192,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 </tr>
             </thead>
             <tbody>
-                {listRecords.map((item) => {
+                {listRecords.map((item, index) => {
                     // 빈 날짜인 경우
                     if ('isEmpty' in item) {
                         return (
@@ -170,7 +212,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                     const record = item as ListRecord
                     return (
                         <tr
-                            key={record.id}
+                            key={`${record.id}-${index}`}
                             onClick={() => handleRecordClick(record as Record)}
                         >
                             <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? record.displayDate : ''}</td>
@@ -189,14 +231,29 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                     </button>
                                 ) : ''}
                             </td>
-                            <td><p>{record.displayTime}</p></td>
+                            <td>
+                                <p className={record.isMultiDayMiddle ? 'multi-day-middle' : ''}>
+                                    {record.displayTime}
+                                </p>
+                            </td>
                             <td>
                                 <div>
-                                    <div style={{ backgroundColor: getRecordGroupColor(record.recordGroup) }} />
+                                    <div 
+                                        style={{ 
+                                            backgroundColor: getRecordGroupColor(record.recordGroup),
+                                            opacity: record.isMultiDayMiddle ? 0.6 : 1
+                                        }} 
+                                    />
                                     <p>{record.recordGroup?.title || '기본'}</p>
                                 </div>
                             </td>
-                            <td><p className="text-left">{record.title}</p></td> 
+                            <td>
+                                <p className={`text-left ${record.isMultiDayMiddle ? 'multi-day-middle' : ''}`}>
+                                    {record.isMultiDayStart && '▶ '}
+                                    {record.title}
+                                    {record.isMultiDayEnd && ' ◀'}
+                                </p>
+                            </td> 
                         </tr>
                     )
                 })}
