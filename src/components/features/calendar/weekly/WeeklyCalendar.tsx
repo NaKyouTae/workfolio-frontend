@@ -8,6 +8,7 @@ import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import RecordCreateModal from '../../modal/RecordCreateModal'
 import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
+import { isRecordType } from '@/utils/calendarUtils'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -99,8 +100,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             const startDate = dayjs(startTimestamp)
             const endDate = dayjs(endTimestamp)
             
-            const isAllDay = Record_RecordType[record.type] === Record_RecordType.DAY.toString() || 
-                            Record_RecordType[record.type] === Record_RecordType.MULTI_DAY.toString()
+            const isAllDay = isRecordType(record.type, Record_RecordType.DAY) || 
+                            isRecordType(record.type, Record_RecordType.MULTI_DAY)
             
             return {
                 record,
@@ -130,8 +131,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         
         // MULTI_DAY와 DAY 타입 레코드만 필터링
         const specialRecords = records.filter(record => 
-            record.type === Record_RecordType.MULTI_DAY || 
-            record.type === Record_RecordType.DAY
+            isRecordType(record.type, Record_RecordType.MULTI_DAY) || 
+            isRecordType(record.type, Record_RecordType.DAY)
         )
         
         specialRecords.forEach(record => {
@@ -188,8 +189,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     }
 
     // 특정 날짜의 이벤트 필터링 (TIME 타입만)
-    const getEventsForDay = (events: WeeklyEvent[]) => {
-        return events.filter(event => Record_RecordType[event.record.type] == Record_RecordType.TIME.toString())
+    const getEventsForDay = (events: WeeklyEvent[], dayOfWeek: number) => {
+        return events.filter(event => 
+            event.dayOfWeek === dayOfWeek && 
+            isRecordType(event.record.type, Record_RecordType.TIME)
+        )
     }
 
     // 이벤트가 특정 시간 슬롯에 속하는지 확인
@@ -201,7 +205,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     // 이벤트가 특정 30분 슬롯에 속하는지 확인 (날짜도 비교)
     const isEventInSubSlot = (event: WeeklyEvent, slotHour: number, subSlotMinute: number, dayOfWeek: number) => {
         // TIME 타입이 아니면 false
-        if (Record_RecordType[event.record.type] != Record_RecordType.TIME.toString()) {
+        if (!isRecordType(event.record.type, Record_RecordType.TIME)) {
             return false
         }
         
@@ -356,7 +360,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                     .map((event) => (
                                         <div
                                             key={`${event.record.id}-${dayIndex}`}
-                                            className={`special-day-event ${event.record.type === Record_RecordType.MULTI_DAY ? 'multi-day' : 'day'}`}
+                                            className={`special-day-event ${isRecordType(event.record.type, Record_RecordType.MULTI_DAY) ? 'multi-day' : 'day'}`}
                                             style={{ 
                                                 backgroundColor: getRecordGroupColor(event.record.recordGroup),
                                                 gridColumn: event.dayIndex === dayIndex ? `span ${event.colSpan}` : '1'
@@ -365,7 +369,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                         >
                                             <div className="event-title">{event.record.title}</div>
                                             <div className="event-type">
-                                                {event.record.type === Record_RecordType.MULTI_DAY ? '여러날' : '하루'}
+                                                {isRecordType(event.record.type, Record_RecordType.MULTI_DAY) ? '여러날' : '하루'}
                                             </div>
                                         </div>
                                     ))}
@@ -389,7 +393,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 {/* 주간 컬럼들 */}
                 <div className="week-columns">
                     {weekDays.map((day, dayIndex) => {
-                        const dayEvents = getEventsForDay(timedEvents)
+                        const dayEvents = getEventsForDay(timedEvents, day.dayOfWeek)
                         return (
                             <div key={dayIndex} className="day-column">
                                 {/* 시간 슬롯들 */}

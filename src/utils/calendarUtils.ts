@@ -39,10 +39,17 @@ export const generateCalendarDays = (date: DateModel): (CalendarDay | null)[] =>
 }
 
 /**
+ * Record 타입이 특정 Record_RecordType과 일치하는지 확인하는 함수
+ */
+export const isRecordType = (recordType: Record_RecordType, targetType: Record_RecordType): boolean => {
+    return Record_RecordType[recordType] == targetType.toString()
+}
+
+/**
  * 이벤트의 시간 텍스트를 생성하는 함수
  */
 export const generateTimeText = (record: Record): string => {
-    if (Record_RecordType[record.type] === Record_RecordType.TIME.toString()) {
+    if (isRecordType(record.type, Record_RecordType.TIME)) {
         const time = dayjs(Number(record.startedAt)).format('HH:mm')
         return `(${time})`
     }
@@ -69,7 +76,7 @@ export const generateCalendarEvents = (
     sortedRecords.forEach(record => {
         const startDate = dayjs(Number(record.startedAt)).format('YYYYMMDD')
         const endDate = dayjs(Number(record.endedAt)).format('YYYYMMDD')
-        const isMultiDay = Record_RecordType[record.type] == Record_RecordType.MULTI_DAY.toString()
+        const isMultiDay = isRecordType(record.type, Record_RecordType.MULTI_DAY)
         
         const timeText = generateTimeText(record)
         const displayText = timeText ? `${timeText} ${record.title}` : record.title
