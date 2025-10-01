@@ -63,6 +63,19 @@
     opacity: 0.8;
 }
 
+.weekly-days {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    height: 150px;
+}
+
+.weekly-days-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: calc(100% - 80px);
+}
+
 /* 날짜 헤더 */
 .day-headers {
     display: flex;

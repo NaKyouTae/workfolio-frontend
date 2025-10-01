@@ -70,7 +70,203 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     // weeks에 현재 주 데이터만 넣기
     const weeks: (CalendarDay | null)[][] = [currentWeekDays]
 
-    console.log(weeks)
+    // renderRecords 함수 - MonthlyCalendar 스타일
+    const renderRecords = (week: (CalendarDay | null)[]) => {
+        // 현재 주의 모든 일정을 수집
+        const weekRecords: Array<{
+            record: Record;
+            startDayIndex: number;
+            colSpan: number;
+        }> = []
+
+        week.forEach((day, dayIndex) => {
+            if (!day) return
+
+            const dayDate = dayjs(day.date)
+
+            // 해당 날짜의 레코드 필터링 (MULTI_DAY, DAY 타입만)
+            const dayRecords = records.filter(record => {
+                const recordStartDate = dayjs(parseInt(record.startedAt.toString()))
+                const recordEndDate = dayjs(parseInt(record.endedAt.toString()))
+
+                // MULTI_DAY, DAY 타입만 필터링
+                const isSpecialType = isRecordType(record.type, Record_RecordType.MULTI_DAY) || 
+                                    isRecordType(record.type, Record_RecordType.DAY)
+
+                // 일정이 해당 날짜를 포함하는지 확인
+                const isInDate = (dayDate.isAfter(recordStartDate, 'day') || dayDate.isSame(recordStartDate, 'day')) &&
+                               (dayDate.isBefore(recordEndDate, 'day') || dayDate.isSame(recordEndDate, 'day'))
+
+                return isSpecialType && isInDate
+            })
+
+            dayRecords.forEach(record => {
+                const recordStartDate = dayjs(parseInt(record.startedAt.toString()))
+                const recordEndDate = dayjs(parseInt(record.endedAt.toString()))
+                
+                // 일정이 시작되는 날짜인지 확인
+                const isStartDate = dayDate.isSame(recordStartDate, 'day')
+                
+                if (isStartDate) {
+                    // 일정이 현재 주에서 몇 일 동안 지속되는지 계산
+                    let colSpan = 1
+                    
+                    // 현재 주의 마지막 날짜
+                    const lastDayOfWeek = week.findLast(day => day !== null)
+                    const lastDayDate = lastDayOfWeek ? dayjs(lastDayOfWeek.date) : dayDate
+                    
+                    // 일정이 현재 주에서 끝나는지 확인
+                    const endsInCurrentWeek = recordEndDate.isSame(lastDayDate, 'day') || recordEndDate.isBefore(lastDayDate, 'day')
+                    
+                    if (endsInCurrentWeek) {
+                        // 현재 주에서 끝나는 경우
+                        colSpan = recordEndDate.diff(recordStartDate, 'day') + 1
+                    } else {
+                        // 다음 주로 이어지는 경우
+                        colSpan = lastDayDate.diff(recordStartDate, 'day') + 1
+                        colSpan = Math.min(colSpan, 7 - dayIndex)
+                    }
+
+                    // colSpan이 1 이상인 경우만 추가
+                    if (colSpan > 0) {
+                        weekRecords.push({
+                            record,
+                            startDayIndex: dayIndex,
+                            colSpan
+                        })
+                    }
+                } else {
+                    // 일정이 현재 주 이전에 시작되어 현재 주에서 계속되는 경우
+                    const firstDayOfWeek = week.find(day => day !== null)
+                    const firstDayDate = firstDayOfWeek ? dayjs(firstDayOfWeek.date) : dayDate
+                    
+                    const startedBeforeCurrentWeek = recordStartDate.isBefore(firstDayDate, 'day')
+                    const endsInOrAfterCurrentWeek = recordEndDate.isSame(firstDayDate, 'day') || recordEndDate.isAfter(firstDayDate, 'day')
+                    
+                    // 중복 체크
+                    const alreadyExists = weekRecords.some(existing => existing.record.id === record.id)
+                    
+                    if (startedBeforeCurrentWeek && endsInOrAfterCurrentWeek && !alreadyExists) {
+                        const lastDayOfWeek = week.findLast(day => day !== null)
+                        const lastDayDate = lastDayOfWeek ? dayjs(lastDayOfWeek.date) : dayDate
+                        
+                        const endsInCurrentWeek = recordEndDate.isSame(lastDayDate, 'day') || recordEndDate.isBefore(lastDayDate, 'day')
+                        
+                        let colSpan = 1
+                        if (endsInCurrentWeek) {
+                            colSpan = recordEndDate.diff(firstDayDate, 'day') + 1
+                        } else {
+                            colSpan = lastDayDate.diff(firstDayDate, 'day') + 1
+                        }
+                        
+                        if (colSpan > 0) {
+                            weekRecords.push({
+                                record,
+                                startDayIndex: 0,
+                                colSpan
+                            })
+                        }
+                    }
+                }
+            })
+        })
+
+        // 일정들을 시작일 순으로 정렬
+        weekRecords.sort((a, b) => a.startDayIndex - b.startDayIndex)
+
+        // 최대 5개의 행을 생성
+        const maxRows = 5
+        const rows = []
+
+        // 일정들을 행별로 그룹화
+        const rowGroups: Array<Array<{ record: Record; startDayIndex: number; colSpan: number }>> = []
+        
+        for (let i = 0; i < weekRecords.length; i++) {
+            const item = weekRecords[i]
+            let placed = false
+            
+            // 기존 행들 중에 배치할 수 있는 곳 찾기
+            for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+                if (!rowGroups[rowIndex]) {
+                    rowGroups[rowIndex] = []
+                }
+                
+                // 현재 행에 추가할 수 있는지 확인 (겹치는지 체크)
+                let canAddToCurrentRow = true
+                for (const existingItem of rowGroups[rowIndex]) {
+                    const existingEnd = existingItem.startDayIndex + existingItem.colSpan - 1
+                    const newEnd = item.startDayIndex + item.colSpan - 1
+                    
+                    if (!(newEnd < existingItem.startDayIndex || item.startDayIndex > existingEnd)) {
+                        canAddToCurrentRow = false
+                        break
+                    }
+                }
+                
+                if (canAddToCurrentRow) {
+                    rowGroups[rowIndex].push(item)
+                    placed = true
+                    break
+                }
+            }
+            
+            // 배치할 수 없으면 첫 번째 빈 행에 추가
+            if (!placed) {
+                for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+                    if (!rowGroups[rowIndex]) {
+                        rowGroups[rowIndex] = []
+                    }
+                    if (rowGroups[rowIndex].length === 0) {
+                        rowGroups[rowIndex].push(item)
+                        break
+                    }
+                }
+            }
+        }
+
+        // 행 그룹들을 렌더링
+        for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+            const rowItems = rowGroups[rowIndex] || []
+            
+            if (rowItems.length === 0) {
+                // 빈 행
+                rows.push(
+                    <tr key={`empty-row-${rowIndex}`} style={{ height: '20px' }}>
+                        {Array.from({ length: 7 }, (_, j) => (
+                            <td key={`empty-${j}`} className="day"></td>
+                        ))}
+                    </tr>
+                )
+            } else {
+                // 일정이 있는 행
+                const cells = []
+                
+                for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+                    const item = rowItems.find(item => item.startDayIndex === dayIndex)
+                    
+                    if (item) {
+                        cells.push(
+                            <td key={dayIndex} colSpan={item.colSpan} className="record-cell">
+                                <div
+                                    className={`record-item ${isRecordType(item.record.type, Record_RecordType.MULTI_DAY) ? 'multi-day' : 'day'}`}
+                                    style={{ backgroundColor: getRecordGroupColor(item.record.recordGroup) }}
+                                    onClick={(e) => handleRecordClick(item.record, e)}
+                                >
+                                    <div className="record-title">{item.record.title}</div>
+                                </div>
+                            </td>
+                        )
+                    } else {
+                        cells.push(<td key={dayIndex} className="day"></td>)
+                    }
+                }
+                
+                rows.push(<tr key={`row-${rowIndex}`} className="day">{cells}</tr>)
+            }
+        }
+
+        return rows
+    }
 
 
 
@@ -357,34 +553,35 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 </div>
             </div>
 
-            {/* 특별한 날 이벤트들 */}
-            <div className="special-day-events-container">
+            {/* 특별한 날 이벤트들 - MonthlyCalendar 스타일 */}
+            <div className="weekly-days">
                 <div className="time-labels-header">하루 종일</div>
-                <div className="week-columns">
-                    {weekDays.map((day, dayIndex) => (
-                        <div key={dayIndex} className="day-column">
-                            <div className="special-day-events">
-                                {specialDayEvents
-                                    .filter(event => event.dayIndex <= dayIndex && event.dayIndex + event.colSpan > dayIndex)
-                                    .map((event) => (
-                                        <div
-                                            key={`${event.record.id}-${dayIndex}`}
-                                            className={`special-day-event ${isRecordType(event.record.type, Record_RecordType.MULTI_DAY) ? 'multi-day' : 'day'}`}
-                                            style={{ 
-                                                backgroundColor: getRecordGroupColor(event.record.recordGroup),
-                                                gridColumn: event.dayIndex === dayIndex ? `span ${event.colSpan}` : '1'
-                                            }}
-                                            onClick={(e) => handleRecordClick(event.record, e)}
-                                        >
-                                            <div className="event-title">{event.record.title}</div>
-                                            <div className="event-type">
-                                                {isRecordType(event.record.type, Record_RecordType.MULTI_DAY) ? '여러날' : '하루'}
-                                            </div>
-                                        </div>
-                                    ))}
+                <div className="calendar-wrap">
+                    <table className="week">
+                        <thead>
+                            <tr>
+                                {weekDays.map((day) => (
+                                    <th
+                                        key={day.dayOfWeek} 
+                                        className={`${day.dayOfWeek === 0 ? 'holiday' : ''}`}
+                                    >
+                                        {day.displayDay}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                    </table>
+                    <div className="days">
+                        {weeks.map((week, weekIndex) => (
+                            <div className="weekly" key={weekIndex} style={{ height: '100%' }}>
+                                <table style={{ height: '100%' }}>
+                                    <tbody>
+                                        {renderRecords(week)}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
 
