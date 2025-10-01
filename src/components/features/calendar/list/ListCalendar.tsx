@@ -39,7 +39,6 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
-    const [createDate, setCreateDate] = useState<Date | null>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()  
 
@@ -218,15 +217,13 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     }
 
     // 레코드 생성 모달 열기 핸들러
-    const handleOpenCreateModal = (date: Date) => {
-        setCreateDate(date)
+    const handleOpenCreateModal = () => {
         setIsCreateModalOpen(true)
     }
 
     // 레코드 생성 모달 닫기 핸들러
     const handleCloseCreateModal = () => {
         setIsCreateModalOpen(false)
-        setCreateDate(null)
     }
 
     // 수정 모달 열기 핸들러
@@ -289,7 +286,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                     key={`empty-${item.date}`}
                                 >
                                     <td className={`$${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
-                                    <td><button onClick={() => handleOpenCreateModal(dayjs(item.date).toDate())}><i className="ic-add" /></button></td>
+                                    <td><button onClick={handleOpenCreateModal}><i className="ic-add" /></button></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -304,15 +301,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                 <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? item.displayDate : ''}</td>
                                 <td>
                                     {record.isFirstRecordOfDay ? (
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                // 문자열 타임스탬프를 숫자로 변환 후 처리
-                                                const startTimestamp = parseInt(record.startedAt.toString());
-                                                const startDate = dayjs(startTimestamp);
-                                                handleOpenCreateModal(startDate.toDate())
-                                            }}
-                                        >
+                                        <button onClick={handleOpenCreateModal}>
                                             <i className="ic-add" />
                                         </button>
                                     ) : ''}
