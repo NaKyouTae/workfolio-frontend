@@ -65,7 +65,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
             // 기존 레코드 데이터로 폼 초기화
             setTitle(record.title || '');
             setDescription(record.description || '');
-            setStartedAt(record.startedAt ? dayjs(record.startedAt).toISOString() : dayjs().toISOString());
+            setStartedAt(record.startedAt ? dayjs(parseInt(record.startedAt.toString())).toISOString() : dayjs().toISOString());
             setEndedAt(record.endedAt ? dayjs(parseInt(record.endedAt.toString())).toISOString() : dayjs().add(1, 'hour').toISOString());
             setRecordGroupId(record.recordGroup?.id || '');
             setIsAllDay(false); // 기본값으로 설정

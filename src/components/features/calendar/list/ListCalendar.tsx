@@ -3,6 +3,10 @@ import { Record, Record_RecordType, RecordGroup } from '@/generated/common'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import timezone from 'dayjs/plugin/timezone'
+import RecordDetail from '../../modal/RecordDetail'
+import RecordUpdateModal from '../../modal/RecordUpdateModal'
+import HttpMethod from '@/enums/HttpMethod'
+import { useRecordGroupStore } from '@/store/recordGroupStore'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -33,7 +37,12 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     onAddRecord, 
     onRecordClick 
 }) => {
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
+    const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+
+    const { triggerRecordRefresh } = useRecordGroupStore()  
 
     const dateFormat = "MM.DD. ddd"
 
@@ -121,26 +130,15 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 let isMultiDayEnd = false
                 let isMultiDayMiddle = false
                 
-                if (record.type === 2) { // DAY
+                if (Record_RecordType[record.type] == Record_RecordType.DAY.toString()) {
                     displayTime = '하루 종일'
-                } else if (record.type === 1) { // TIME
-                    if (startDate.isSame(endDate, 'day')) {
-                        displayTime = `${startDate.format('A hh:mm')} ~ ${endDate.format('A hh:mm')}`
-                    } else {
-                        displayTime = `${startDate.format('MM/DD A hh:mm')} ~ ${endDate.format('MM/DD A hh:mm')}`
-                    }
-                } else if (record.type === 3) { // MULTI_DAY
+                } else if (Record_RecordType[record.type] == Record_RecordType.TIME.toString()) { // TIME
+                    displayTime = startDate.format('A hh:mm')
+                } else if (Record_RecordType[record.type] == Record_RecordType.MULTI_DAY.toString()) { // MULTI_DAY
                     isMultiDayStart = currentDay.isSame(startDate, 'day')
                     isMultiDayEnd = currentDay.isSame(endDate, 'day')
                     isMultiDayMiddle = !isMultiDayStart && !isMultiDayEnd
-                    
-                    if (isMultiDayStart) {
-                        displayTime = `${startDate.format('MM/DD')} ~ ${endDate.format('MM/DD')}`
-                    } else if (isMultiDayEnd) {
-                        displayTime = '종료'
-                    } else {
-                        displayTime = '계속'
-                    }
+                    displayTime = '하루 종일'
                 }
 
                 listRecords.push({
@@ -158,154 +156,204 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
         }
     })
 
-    // 레코드 그룹 색상 매핑
-    const getRecordGroupColor = (recordGroup: RecordGroup | undefined) => {
-        if (!recordGroup) return '#f0f0f0'
-        return recordGroup.color || '#f0f0f0'
-    }
-
-    const handleRecordClick = (record: Record) => {
+    const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLTableRowElement>) => {
+        const rect = event.currentTarget.getBoundingClientRect()
+        const tableContainer = event.currentTarget.closest('table')?.getBoundingClientRect()
+        
+        if (tableContainer) {
+            const viewportHeight = window.innerHeight
+            const viewportWidth = window.innerWidth
+            const detailHeight = 300 // CSS에서 설정한 max-height
+            const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5)) // 최소 200px, 최대 400px
+            
+            // 세로 위치 계산
+            let top = rect.bottom - tableContainer.top
+            const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
+            const spaceAbove = rect.top - detailHeight
+            
+            // 아래쪽 공간이 부족하고 위쪽에 공간이 있으면 위쪽에 표시
+            if (spaceBelow < 0 && spaceAbove > 0) {
+                top = rect.top - tableContainer.top - detailHeight + 125
+            }
+            
+            // 여전히 위쪽도 공간이 부족하면 가능한 공간에 맞춰 조정
+            if (top < 0) {
+                top = 5
+            }
+            
+            // 가로 위치 계산
+            let left = rect.left - tableContainer.left + 445
+            const spaceRight = viewportWidth - rect.left
+            const spaceLeft = rect.left
+            
+            // 오른쪽 공간이 부족하면 왼쪽으로 이동
+            if (spaceRight < detailWidth && spaceLeft > detailWidth) {
+                left = rect.right - tableContainer.left - detailWidth
+            }
+            
+            // 여전히 화면을 벗어나면 중앙 정렬
+            if (left < 0) {
+                left = Math.max(5, (tableContainer.width - detailWidth) / 2)
+            }
+            
+            // 오른쪽 경계도 확인
+            if (left + detailWidth > tableContainer.width) {
+                left = Math.max(5, tableContainer.width - detailWidth - 5)
+            }
+            
+            setDetailPosition({
+                top: Math.max(5, top),
+                left: Math.max(5, left),
+                width: detailWidth
+            })
+        }
+        
         setSelectedRecord(record)
+        setIsDetailModalOpen(true)
         onRecordClick(record)
     }
 
     const handleCloseModal = () => {
         setSelectedRecord(null)
+        setDetailPosition(null)
+    }
+
+    // 수정 모달 열기 핸들러
+    const handleOpenUpdateModal = () => {
+        setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(true)
+    }
+
+    // 수정 모달 닫기 핸들러
+    const handleCloseUpdateModal = () => {
+        setIsUpdateModalOpen(false)
+        setSelectedRecord(null)
+    }
+
+    const handleDeleteRecord = async () => {
+        if (!selectedRecord) return;
+        
+        try {
+            const response = await fetch(`/api/records/${selectedRecord.id}`, {
+                method: HttpMethod.DELETE,
+            });
+            
+            if (response.ok) {
+                // 삭제 성공 시 모달 닫기 및 레코드 재조회
+                handleCloseModal();
+                triggerRecordRefresh();
+            } else {
+                console.error('Failed to delete record');
+            }
+        } catch (error) {
+            console.error('Error deleting record:', error);
+        }
     }
 
     return (
-        <table className="list">
-            <colgroup>
-                <col style={{width: '8rem'}} />
-                <col style={{width: '4rem'}} />
-                <col style={{width: '16rem'}} />
-                <col style={{width: '16rem'}} />
-                <col style={{width: 'auto'}} />
-            </colgroup>
-            <thead>
-                <tr>
-                    <th>일자</th>
-                    <th>추가</th>
-                    <th>시간</th>
-                    <th>캘린더</th>
-                    <th>내용</th>
-                </tr>
-            </thead>
-            <tbody>
-                {listRecords.map((item, index) => {
-                    // 빈 날짜인 경우
-                    if ('isEmpty' in item) {
+        <>
+            <table className="list">
+                <colgroup>
+                    <col style={{width: '8rem'}} />
+                    <col style={{width: '4rem'}} />
+                    <col style={{width: '16rem'}} />
+                    <col style={{width: '16rem'}} />
+                    <col style={{width: 'auto'}} />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>일자</th>
+                        <th>추가</th>
+                        <th>시간</th>
+                        <th>캘린더</th>
+                        <th>내용</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {listRecords.map((item, index) => {
+                        // 빈 날짜인 경우
+                        if ('isEmpty' in item) {
+                            return (
+                                <tr
+                                    key={`empty-${item.date}`}
+                                >
+                                    <td className={`$${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
+                                    <td><button onClick={() => onAddRecord(dayjs(item.date).toDate())}><i className="ic-add" /></button></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            )
+                        }
+
+                        // 레코드가 있는 경우
+                        const record = item as ListRecord
                         return (
                             <tr
-                                key={`empty-${item.date}`}
+                                key={`${record.id}-${index}`}
+                                onClick={(e) => handleRecordClick(record as Record, e)}
                             >
-                                <td className={`$${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
-                                <td><button onClick={() => onAddRecord(dayjs(item.date).toDate())}><i className="ic-add" /></button></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? record.displayDate : ''}</td>
+                                <td>
+                                    {record.isFirstRecordOfDay ? (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                // 문자열 타임스탬프를 숫자로 변환 후 처리
+                                                const startTimestamp = parseInt(record.startedAt.toString());
+                                                const startDate = dayjs(startTimestamp);
+                                                onAddRecord(startDate.toDate())
+                                            }}
+                                        >
+                                            <i className="ic-add" />
+                                        </button>
+                                    ) : ''}
+                                </td>
+                                <td>
+                                    <p className={record.isMultiDayMiddle ? 'multi-day-middle' : ''}>
+                                        {record.displayTime}
+                                    </p>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div 
+                                            style={{ 
+                                                backgroundColor: record.recordGroup?.color || '#e0e0e0',
+                                                opacity: record.isMultiDayMiddle ? 0.6 : 1
+                                            }} 
+                                        />
+                                        <p>{record.recordGroup?.title || '기본'}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p className={`text-left ${record.isMultiDayMiddle ? 'multi-day-middle' : ''}`}>
+                                        {record.title}
+                                    </p>
+                                </td> 
                             </tr>
                         )
-                    }
-
-                    // 레코드가 있는 경우
-                    const record = item as ListRecord
-                    return (
-                        <tr
-                            key={`${record.id}-${index}`}
-                            onClick={() => handleRecordClick(record as Record)}
-                        >
-                            <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? record.displayDate : ''}</td>
-                            <td>
-                                {record.isFirstRecordOfDay ? (
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            // 문자열 타임스탬프를 숫자로 변환 후 처리
-                                            const startTimestamp = parseInt(record.startedAt.toString());
-                                            const startDate = dayjs(startTimestamp);
-                                            onAddRecord(startDate.toDate())
-                                        }}
-                                    >
-                                        <i className="ic-add" />
-                                    </button>
-                                ) : ''}
-                            </td>
-                            <td>
-                                <p className={record.isMultiDayMiddle ? 'multi-day-middle' : ''}>
-                                    {record.displayTime}
-                                </p>
-                            </td>
-                            <td>
-                                <div>
-                                    <div 
-                                        style={{ 
-                                            backgroundColor: getRecordGroupColor(record.recordGroup),
-                                            opacity: record.isMultiDayMiddle ? 0.6 : 1
-                                        }} 
-                                    />
-                                    <p>{record.recordGroup?.title || '기본'}</p>
-                                </div>
-                            </td>
-                            <td>
-                                <p className={`text-left ${record.isMultiDayMiddle ? 'multi-day-middle' : ''}`}>
-                                    {record.isMultiDayStart && '▶ '}
-                                    {record.title}
-                                    {record.isMultiDayEnd && ' ◀'}
-                                </p>
-                            </td> 
-                        </tr>
-                    )
-                })}
-            </tbody>
+                    })}
+                </tbody>
+            </table>
 
             {/* 레코드 상세 모달 */}
-            {selectedRecord && (
-                <div className="modal" onClick={handleCloseModal}>
-                    <div className="record-modal-wrap" onClick={(e) => e.stopPropagation()}>
-                        <div className="record-modal-tit">
-                            <div>
-                                <div style={{ backgroundColor: getRecordGroupColor(selectedRecord.recordGroup) }} />
-                                <h2>{selectedRecord.title}</h2>
-                            </div>
-                            <button onClick={handleCloseModal}><i className="ic-close" /></button>
-                        </div>
+            <RecordDetail
+                isOpen={isDetailModalOpen}
+                onClose={handleCloseModal}
+                record={selectedRecord}
+                onEdit={handleOpenUpdateModal}
+                onDelete={handleDeleteRecord}
+                position={detailPosition || undefined}
+            />
 
-                        <div className="record-modal-cont">
-                            <ul className="record-info">
-                                <li>
-                                    <span>일시</span>
-                                    <p>
-                                        {(() => {
-                                            // 문자열 타임스탬프를 숫자로 변환 후 처리
-                                            const startTimestamp = parseInt(selectedRecord.startedAt.toString());
-                                            const endTimestamp = parseInt(selectedRecord.endedAt.toString());
-                                            const startDate = dayjs(startTimestamp);
-                                            const endDate = dayjs(endTimestamp);
-                                            
-                                            return `${startDate.format('YYYY. MM. DD. A hh:mm')} ~ ${endDate.format('YYYY. MM. DD. A hh:mm')}`;
-                                        })()}
-                                    </p>
-                                </li>
-                                {selectedRecord.description && (
-                                    <li>
-                                        <span>메모</span>
-                                        <p>
-                                            {selectedRecord.description}
-                                        </p>
-                                    </li>
-                                )}
-                            </ul>
-                        </div>
-                        <div className="record-modal-btn">
-                            <button className="xsm line gray">수정</button>
-                            <button className="xsm gray">삭제</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-        </table>
+            {/* RecordUpdateModal */}
+            <RecordUpdateModal
+                isOpen={isUpdateModalOpen}
+                onClose={handleCloseUpdateModal}
+                onDelete={handleDeleteRecord}
+                record={selectedRecord}
+            />
+        </>
     )
 }
 
