@@ -1,13 +1,10 @@
 import { useMemo } from 'react'
 import { Record } from '@/generated/common'
-import { CalendarEvent } from '@/models/CalendarTypes'
-import { 
-    generateCalendarDays, 
-    generateCalendarEvents, 
-    getSingleDayEventsForDate, 
-    getMultiDayEvents 
-} from '@/utils/calendarUtils'
 import { DateModel } from '@/models/DateModel'
+import { generateCalendarDays, generateCalendarEvents } from '@/utils/calendarUtils'
+import { CalendarEvent } from '@/models/CalendarTypes'
+import { getSingleDayEventsForDate } from '@/utils/calendarUtils'
+import { getMultiDayEvents } from '@/utils/calendarUtils'
 
 /**
  * 캘린더 날짜들을 관리하는 훅

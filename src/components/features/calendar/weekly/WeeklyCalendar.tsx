@@ -9,6 +9,9 @@ import RecordCreateModal from '../../modal/RecordCreateModal'
 import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { isRecordType } from '@/utils/calendarUtils'
+import { CalendarDay } from '@/models/CalendarTypes'
+import { useCalendarDays } from '@/hooks/useCalendar'
+import { createDateModel, DateModel } from '@/models/DateModel'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -43,6 +46,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()
+
 
     // 컴포넌트 마운트 시 07시 위치로 스크롤
     useEffect(() => {
@@ -115,58 +119,47 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         })
     }
 
-    // 하루종일 이벤트 필터링
-    const getAllDayEvents = (events: WeeklyEvent[]) => {
-        return events.filter(event => event.isAllDay)
-    }
-
-    // 특별한 날 이벤트 필터링 (MULTI_DAY, DAY) - MonthlyCalendar 로직 사용
+    // 특별한 날 이벤트 필터링 (MULTI_DAY, DAY)
     const getSpecialDayEvents = (records: Record[]) => {
         const specialDayEvents: Array<{ record: Record; dayIndex: number; colSpan: number }> = []
         
         // 현재 주의 날짜들
         const weekDays = getWeekDays(initialDate)
-        const year = initialDate.getFullYear()
-        const month = initialDate.getMonth() + 1
+        const firstDayDate = dayjs(weekDays[0].date)
+        const lastDayDate = dayjs(weekDays[6].date)
         
         // MULTI_DAY와 DAY 타입 레코드만 필터링
-        const specialRecords = records.filter(record => 
-            isRecordType(record.type, Record_RecordType.MULTI_DAY) || 
-            isRecordType(record.type, Record_RecordType.DAY)
-        )
+        const specialRecords = records.filter(record => {
+            const isMultiDay = isRecordType(record.type, Record_RecordType.MULTI_DAY)
+            const isDay = isRecordType(record.type, Record_RecordType.DAY)
+            return isMultiDay || isDay
+        })
         
         specialRecords.forEach(record => {
             const recordStartDate = dayjs(parseInt(record.startedAt.toString()))
             const recordEndDate = dayjs(parseInt(record.endedAt.toString()))
             
-            // 현재 주의 첫 번째와 마지막 날짜
-            const firstDayOfWeek = weekDays[0]
-            const lastDayOfWeek = weekDays[weekDays.length - 1]
-            const firstDayDate = dayjs(firstDayOfWeek.date)
-            const lastDayDate = dayjs(lastDayOfWeek.date)
-            
             // 일정이 현재 주와 겹치는지 확인
-            const startsInCurrentWeek = recordStartDate.isSame(firstDayDate, 'day') && recordStartDate.isSame(lastDayDate, 'day')
-            const endsInCurrentWeek = recordEndDate.isSame(firstDayDate, 'day') && recordEndDate.isSame(lastDayDate, 'day')
-            const spansCurrentWeek = recordStartDate.isBefore(firstDayDate, 'day') && recordEndDate.isAfter(lastDayDate, 'day')
+            const isInCurrentWeek = !(recordEndDate.isBefore(firstDayDate, 'day') || recordStartDate.isAfter(lastDayDate, 'day'))
             
-            if (startsInCurrentWeek || endsInCurrentWeek || spansCurrentWeek) {
+            if (isInCurrentWeek) {
                 let startDayIndex = 0
                 let colSpan = 1
                 
-                if (startsInCurrentWeek) {
+                // 일정이 현재 주에서 시작하는지 확인
+                if (recordStartDate.isSame(firstDayDate, 'day') || recordStartDate.isAfter(firstDayDate, 'day')) {
                     // 현재 주에서 시작하는 경우
                     startDayIndex = recordStartDate.diff(firstDayDate, 'day')
                     const endDateInWeek = recordEndDate.isAfter(lastDayDate, 'day') ? lastDayDate : recordEndDate
                     colSpan = endDateInWeek.diff(recordStartDate, 'day') + 1
-                } else if (spansCurrentWeek) {
-                    // 현재 주를 포함하는 경우
-                    startDayIndex = 0
-                    colSpan = lastDayDate.diff(firstDayDate, 'day') + 1
-                } else if (endsInCurrentWeek) {
+                } else if (recordEndDate.isSame(lastDayDate, 'day') || recordEndDate.isBefore(lastDayDate, 'day')) {
                     // 현재 주에서 끝나는 경우
                     startDayIndex = 0
                     colSpan = recordEndDate.diff(firstDayDate, 'day') + 1
+                } else {
+                    // 현재 주를 포함하는 경우
+                    startDayIndex = 0
+                    colSpan = 7
                 }
                 
                 // colSpan이 1 이상이고 7 이하인 경우만 추가
@@ -179,7 +172,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 }
             }
         })
-        
         return specialDayEvents
     }
 
@@ -194,12 +186,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             event.dayOfWeek === dayOfWeek && 
             isRecordType(event.record.type, Record_RecordType.TIME)
         )
-    }
-
-    // 이벤트가 특정 시간 슬롯에 속하는지 확인
-    const isEventInTimeSlot = (event: WeeklyEvent, slotHour: number) => {
-        const [eventHours] = event.startTime.split(':').map(Number)
-        return eventHours === slotHour
     }
 
     // 이벤트가 특정 30분 슬롯에 속하는지 확인 (날짜도 비교)
@@ -234,7 +220,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const weekDays = getWeekDays(initialDate)
     const timeSlots = getTimeSlots()
     const allEvents = convertRecordsToEvents(records)
-    const allDayEvents = getAllDayEvents(allEvents)
     const specialDayEvents = getSpecialDayEvents(records)
     const timedEvents = getTimedEvents(allEvents)
 

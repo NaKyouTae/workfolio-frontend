@@ -42,7 +42,7 @@ export const generateCalendarDays = (date: DateModel): (CalendarDay | null)[] =>
  * Record 타입이 특정 Record_RecordType과 일치하는지 확인하는 함수
  */
 export const isRecordType = (recordType: Record_RecordType, targetType: Record_RecordType): boolean => {
-    return Record_RecordType[recordType] == targetType.toString()
+    return recordType === targetType
 }
 
 /**

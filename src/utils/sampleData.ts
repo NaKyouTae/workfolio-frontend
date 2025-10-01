@@ -376,7 +376,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
     const currentWeek = now.startOf('week')
     
     return [
-        // 월요일 (MULTI_DAY)
+        // ===== SPECIAL-DAY-EVENTS 영역 (MULTI_DAY, DAY 타입) =====
+        
+        // 월요일~수요일 (MULTI_DAY) - special-day-events에 표시
         {
             id: 'w1',
             title: '주간 프로젝트 리뷰',
@@ -388,33 +390,10 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
-        // 월요일 (TIME)
+        
+        // 화요일 (DAY) - special-day-events에 표시
         {
             id: 'w2',
-            title: '월요일 아침 미팅',
-            type: Record_RecordType.TIME,
-            description: '주간 시작 미팅 및 우선순위 논의',
-            startedAt: currentWeek.add(1, 'day').hour(9).minute(0).valueOf(),
-            endedAt: currentWeek.add(1, 'day').hour(10).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 월요일 (TIME)
-        {
-            id: 'w3',
-            title: '코드 리뷰',
-            type: Record_RecordType.TIME,
-            description: '팀원들의 코드 리뷰 및 피드백',
-            startedAt: currentWeek.add(1, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(1, 'day').hour(16).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 화요일 (DAY)
-        {
-            id: 'w4',
             title: '화요일 집중 작업일',
             type: Record_RecordType.DAY,
             description: '개발 작업에 집중하는 하루',
@@ -424,57 +403,10 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
-        // 화요일 (TIME)
+        
+        // 목요일~금요일 (MULTI_DAY) - special-day-events에 표시
         {
-            id: 'w5',
-            title: '클라이언트 미팅',
-            type: Record_RecordType.TIME,
-            description: '고객사와의 프로젝트 진행 상황 미팅',
-            startedAt: currentWeek.add(2, 'day').hour(10).minute(0).valueOf(),
-            endedAt: currentWeek.add(2, 'day').hour(11).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 화요일 (TIME)
-        {
-            id: 'w6',
-            title: '기술 스터디',
-            type: Record_RecordType.TIME,
-            description: 'React 18 신기능 스터디',
-            startedAt: currentWeek.add(2, 'day').hour(19).minute(0).valueOf(),
-            endedAt: currentWeek.add(2, 'day').hour(21).minute(0).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 수요일 (TIME)
-        {
-            id: 'w7',
-            title: '스프린트 플래닝',
-            type: Record_RecordType.TIME,
-            description: '다음 스프린트 계획 수립',
-            startedAt: currentWeek.add(3, 'day').hour(9).minute(0).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(11).minute(0).valueOf(),
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 수요일 (TIME)
-        {
-            id: 'w8',
-            title: '데이터베이스 최적화',
-            type: Record_RecordType.TIME,
-            description: '성능 개선을 위한 DB 쿼리 최적화',
-            startedAt: currentWeek.add(3, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(17).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 목요일 (MULTI_DAY)
-        {
-            id: 'w9',
+            id: 'w3',
             title: '출장 (2일)',
             type: Record_RecordType.MULTI_DAY,
             description: '부산 고객사 방문 및 현장 점검',
@@ -484,69 +416,10 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
-        // 목요일 (TIME)
+        
+        // 토요일 (DAY) - special-day-events에 표시
         {
-            id: 'w10',
-            title: '출장 준비',
-            type: Record_RecordType.TIME,
-            description: '부산 출장을 위한 준비 작업',
-            startedAt: currentWeek.add(4, 'day').hour(8).minute(0).valueOf(),
-            endedAt: currentWeek.add(4, 'day').hour(10).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 목요일 (TIME)
-        {
-            id: 'w11',
-            title: '출장 이동',
-            type: Record_RecordType.TIME,
-            description: '부산으로 이동',
-            startedAt: currentWeek.add(4, 'day').hour(11).minute(0).valueOf(),
-            endedAt: currentWeek.add(4, 'day').hour(15).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 금요일 (TIME)
-        {
-            id: 'w12',
-            title: '고객사 미팅',
-            type: Record_RecordType.TIME,
-            description: '부산 고객사와의 프로젝트 미팅',
-            startedAt: currentWeek.add(5, 'day').hour(9).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(12).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 금요일 (TIME)
-        {
-            id: 'w13',
-            title: '현장 점검',
-            type: Record_RecordType.TIME,
-            description: '고객사 시스템 현장 점검',
-            startedAt: currentWeek.add(5, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(16).minute(30).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 금요일 (TIME)
-        {
-            id: 'w14',
-            title: '주간 회고',
-            type: Record_RecordType.TIME,
-            description: '이번 주 작업 내용 회고 및 다음 주 계획',
-            startedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 토요일 (DAY)
-        {
-            id: 'w15',
+            id: 'w4',
             title: '개인 프로젝트',
             type: Record_RecordType.DAY,
             description: '워크폴리오 사이드 프로젝트 작업',
@@ -556,21 +429,10 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
-        // 토요일 (TIME)
+        
+        // 일요일 (DAY) - special-day-events에 표시
         {
-            id: 'w16',
-            title: '개발 작업',
-            type: Record_RecordType.TIME,
-            description: '새로운 기능 개발',
-            startedAt: currentWeek.add(6, 'day').hour(10).minute(0).valueOf(),
-            endedAt: currentWeek.add(6, 'day').hour(14).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 일요일 (DAY)
-        {
-            id: 'w17',
+            id: 'w5',
             title: '가족 시간',
             type: Record_RecordType.DAY,
             description: '가족과 함께하는 시간',
@@ -580,9 +442,178 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
-        // 일요일 (TIME)
+        
+        // ===== TIME 그리드 영역 (TIME 타입) =====
+        
+        // 월요일 TIME 이벤트들
+        {
+            id: 'w6',
+            title: '월요일 아침 미팅',
+            type: Record_RecordType.TIME,
+            description: '주간 시작 미팅 및 우선순위 논의',
+            startedAt: currentWeek.add(1, 'day').hour(9).minute(0).valueOf(),
+            endedAt: currentWeek.add(1, 'day').hour(10).minute(30).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w7',
+            title: '코드 리뷰',
+            type: Record_RecordType.TIME,
+            description: '팀원들의 코드 리뷰 및 피드백',
+            startedAt: currentWeek.add(1, 'day').hour(14).minute(0).valueOf(),
+            endedAt: currentWeek.add(1, 'day').hour(16).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w8',
+            title: '팀 미팅',
+            type: Record_RecordType.TIME,
+            description: '주간 업무 계획 및 이슈 논의',
+            startedAt: currentWeek.add(1, 'day').hour(17).minute(0).valueOf(),
+            endedAt: currentWeek.add(1, 'day').hour(18).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 화요일 TIME 이벤트들
+        {
+            id: 'w9',
+            title: '클라이언트 미팅',
+            type: Record_RecordType.TIME,
+            description: '고객사와의 프로젝트 진행 상황 미팅',
+            startedAt: currentWeek.add(2, 'day').hour(10).minute(0).valueOf(),
+            endedAt: currentWeek.add(2, 'day').hour(11).minute(30).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w10',
+            title: '기술 스터디',
+            type: Record_RecordType.TIME,
+            description: 'React 18 신기능 스터디',
+            startedAt: currentWeek.add(2, 'day').hour(19).minute(0).valueOf(),
+            endedAt: currentWeek.add(2, 'day').hour(21).minute(0).valueOf(),
+            recordGroup: recordGroups[4], // 독서 토론 동호회
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 수요일 TIME 이벤트들
+        {
+            id: 'w11',
+            title: '스프린트 플래닝',
+            type: Record_RecordType.TIME,
+            description: '다음 스프린트 계획 수립',
+            startedAt: currentWeek.add(3, 'day').hour(9).minute(0).valueOf(),
+            endedAt: currentWeek.add(3, 'day').hour(11).minute(0).valueOf(),
+            recordGroup: recordGroups[1], // 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w12',
+            title: '데이터베이스 최적화',
+            type: Record_RecordType.TIME,
+            description: '성능 개선을 위한 DB 쿼리 최적화',
+            startedAt: currentWeek.add(3, 'day').hour(14).minute(0).valueOf(),
+            endedAt: currentWeek.add(3, 'day').hour(17).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 목요일 TIME 이벤트들
+        {
+            id: 'w13',
+            title: '출장 준비',
+            type: Record_RecordType.TIME,
+            description: '부산 출장을 위한 준비 작업',
+            startedAt: currentWeek.add(4, 'day').hour(8).minute(0).valueOf(),
+            endedAt: currentWeek.add(4, 'day').hour(10).minute(0).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w14',
+            title: '출장 이동',
+            type: Record_RecordType.TIME,
+            description: '부산으로 이동',
+            startedAt: currentWeek.add(4, 'day').hour(11).minute(0).valueOf(),
+            endedAt: currentWeek.add(4, 'day').hour(15).minute(0).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 금요일 TIME 이벤트들
+        {
+            id: 'w15',
+            title: '고객사 미팅',
+            type: Record_RecordType.TIME,
+            description: '부산 고객사와의 프로젝트 미팅',
+            startedAt: currentWeek.add(5, 'day').hour(9).minute(0).valueOf(),
+            endedAt: currentWeek.add(5, 'day').hour(12).minute(0).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w16',
+            title: '현장 점검',
+            type: Record_RecordType.TIME,
+            description: '고객사 시스템 현장 점검',
+            startedAt: currentWeek.add(5, 'day').hour(14).minute(0).valueOf(),
+            endedAt: currentWeek.add(5, 'day').hour(16).minute(30).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w17',
+            title: '주간 회고',
+            type: Record_RecordType.TIME,
+            description: '이번 주 작업 내용 회고 및 다음 주 계획',
+            startedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
+            endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 토요일 TIME 이벤트들
         {
             id: 'w18',
+            title: '개발 작업',
+            type: Record_RecordType.TIME,
+            description: '새로운 기능 개발',
+            startedAt: currentWeek.add(6, 'day').hour(10).minute(0).valueOf(),
+            endedAt: currentWeek.add(6, 'day').hour(14).minute(0).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w19',
+            title: '코드 리팩토링',
+            type: Record_RecordType.TIME,
+            description: '기존 코드 개선 및 최적화',
+            startedAt: currentWeek.add(6, 'day').hour(15).minute(0).valueOf(),
+            endedAt: currentWeek.add(6, 'day').hour(17).minute(0).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 일요일 TIME 이벤트들
+        {
+            id: 'w20',
             title: '독서 시간',
             type: Record_RecordType.TIME,
             description: '개인 성장을 위한 독서',
