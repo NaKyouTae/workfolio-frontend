@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { RecordGroup } from '@/generated/common';
-import ColorSelectModal from './RecordGroupColorModal';
+import RecordGroupColorModal from './RecordGroupColorModal';
 
 interface RecordGroupItemProps {
     group: RecordGroup;
@@ -87,7 +87,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                     <div className="record-edit-modal-wrap" ref={modalRef}>
                         <button onClick={() => onDelete?.(group.id)}>기록장 삭제</button>
                         <button onClick={() => setIsEditing(true)}>기록장 이름 변경</button>
-                        <ColorSelectModal
+                        <RecordGroupColorModal
                             isOpen={showColorModal}
                             currentColor={group.color}
                             onColorSelect={handleColorSelect}

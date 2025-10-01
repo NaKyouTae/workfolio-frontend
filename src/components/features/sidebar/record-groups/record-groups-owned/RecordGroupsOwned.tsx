@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import RecordGroupsOwnedHeader from './RecordGroupsOwnedHeader';
 import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@/generated/record_group';
-import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
 import NewRecordGroupItem from '../NewRecordGroupItem';
@@ -27,11 +26,11 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
     };
 
     // 새 그룹 생성 함수
-    const createRecordGroup = async (title: string) => {
+    const createRecordGroup = async (title: string, color: string) => {
         try {
             const message = CreateRecordGroupRequest.create({
                 title: title,
-                color: RecordGroupColor.RED,
+                color: color,
                 priority: 1,
             });
             
