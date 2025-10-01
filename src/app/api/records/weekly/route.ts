@@ -4,14 +4,6 @@ import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
 import { Record } from "@/generated/common"
 
-/**
- * 주간 레코드 조회 API
- * Query Parameters:
- * - year: int (년도)
- * - month: int (월, 1-12)
- * - week: int (주차, 1-5)
- * - recordGroupIds: List<String> (레코드 그룹 ID 목록)
- */
 export async function GET(request: Request) {
     try {
         const accessToken = await getCookie('accessToken');
@@ -23,33 +15,21 @@ export async function GET(request: Request) {
         
         // URL에서 쿼리 파라미터 추출
         const { searchParams } = new URL(request.url);
-        const year = searchParams.get('year');
-        const month = searchParams.get('month');
-        const week = searchParams.get('week');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
         const recordGroupIds = searchParams.get('recordGroupIds');
         
         // 필수 파라미터 검증
-        if (!year || !month || !week) {
+        if (!startDate || !endDate) {
             return new Response(JSON.stringify({ 
-                error: 'Missing required parameters: year, month, and week are required' 
+                error: 'Missing required parameters: startDate and endDate are required' 
             }), { status: 400 });
         }
-        
-        // 년도, 월, 주차가 유효한지 검증
-        const yearNum = parseInt(year);
-        const monthNum = parseInt(month);
-        const weekNum = parseInt(week);
-        
-        if (isNaN(yearNum) || isNaN(monthNum) || isNaN(weekNum) || 
-            monthNum < 1 || monthNum > 12 || weekNum < 1 || weekNum > 5) {
-            return new Response(JSON.stringify({ 
-                error: 'Invalid parameters: year must be a valid number, month must be between 1-12, and week must be between 1-5' 
-            }), { status: 400 });
-        }
-        
+    
+
         // 백엔드 API URL 구성
-        let backendUrl = `http://localhost:8080/api/records/weekly?year=${yearNum}&month=${monthNum}&week=${weekNum}`;
-        
+        let backendUrl = `http://localhost:8080/api/records/weekly?startDate=${startDate}&endDate=${endDate}`;
+
         // recordGroupIds가 있으면 추가
         if (recordGroupIds) {
             const groupIds = recordGroupIds.split(',').filter(id => id.trim() !== '');

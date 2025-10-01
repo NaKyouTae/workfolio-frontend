@@ -112,6 +112,11 @@
     font-weight: 700;
 }
 
+.day-headers .day-header.sunday .day-number {
+    color: #dc3545;
+    font-weight: 600;
+}
+
 /* 특별한 날 이벤트 컨테이너 */
 .special-day-events-container {
     display: flex;
@@ -190,6 +195,8 @@
     width: 80px;
     background: #f8f9fa;
     border-right: 1px solid #e0e0e0;
+    top: -2.4rem;
+    position: relative;
 }
 
 .time-label {
@@ -197,7 +204,6 @@
     padding: 4px 8px;
     font-size: 11px;
     color: #666;
-    border-bottom: 1px solid #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -278,7 +284,7 @@
     z-index: 1;
     transition: all 0.2s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    height: 2.4rem;
+    height: 0.8rem; /* 기본 높이 - 30분에 2.4rem 기준 */
 }
 
 .timed-event:hover {

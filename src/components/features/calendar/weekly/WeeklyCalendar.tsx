@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Record, Record_RecordType, RecordGroup } from '@/generated/common'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
@@ -39,8 +39,18 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    const weeklyGridRef = useRef<HTMLDivElement>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()
+
+    // 컴포넌트 마운트 시 07시 위치로 스크롤
+    useEffect(() => {
+        if (weeklyGridRef.current) {
+            // 07시까지의 높이 계산: 7시간 * 4.8rem = 33.6rem
+            const scrollTop = 19.2 * 16 // rem을 px로 변환 (1rem = 16px)
+            weeklyGridRef.current.scrollTop = scrollTop
+        }
+    }, [])
 
     // 주간 날짜 생성 (일요일부터 토요일까지)
     const getWeekDays = (date: Date) => {
@@ -178,11 +188,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     }
 
     // 특정 날짜의 이벤트 필터링 (TIME 타입만)
-    const getEventsForDay = (events: WeeklyEvent[], dayOfWeek: number) => {
-        return events.filter(event => 
-            event.dayOfWeek === dayOfWeek && 
-            event.record.type === Record_RecordType.TIME
-        )
+    const getEventsForDay = (events: WeeklyEvent[]) => {
+        return events.filter(event => Record_RecordType[event.record.type] == Record_RecordType.TIME.toString())
     }
 
     // 이벤트가 특정 시간 슬롯에 속하는지 확인
@@ -191,19 +198,31 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         return eventHours === slotHour
     }
 
-    // 이벤트가 특정 30분 슬롯에 속하는지 확인
-    const isEventInSubSlot = (event: WeeklyEvent, slotHour: number, subSlotMinute: number) => {
+    // 이벤트가 특정 30분 슬롯에 속하는지 확인 (날짜도 비교)
+    const isEventInSubSlot = (event: WeeklyEvent, slotHour: number, subSlotMinute: number, dayOfWeek: number) => {
+        // TIME 타입이 아니면 false
+        if (Record_RecordType[event.record.type] != Record_RecordType.TIME.toString()) {
+            return false
+        }
+        
+        // 날짜가 맞지 않으면 false
+        if (event.dayOfWeek !== dayOfWeek) {
+            return false
+        }
+        
+        // 시간이 해당 슬롯에 속하는지 확인
         const [eventHours, eventMinutes] = event.startTime.split(':').map(Number)
         return eventHours === slotHour && eventMinutes >= subSlotMinute && eventMinutes < subSlotMinute + 30
     }
 
-    // 이벤트 위치 계산 (시간 기반)
+    // 이벤트 위치 계산 (시간 기반) - 30분에 2.4rem
     const calculateEventPosition = (event: WeeklyEvent, slotHour: number, subSlotMinute: number) => {
         const [hours, minutes] = event.startTime.split(':').map(Number)
         const totalMinutes = hours * 60 + minutes
         const slotStartMinutes = slotHour * 60 + subSlotMinute
-        const top = (totalMinutes - slotStartMinutes) * 2 // 2px per minute
-        const height = Math.max(event.duration * 2, 20) // 최소 20px
+        const minutesFromSlotStart = totalMinutes - slotStartMinutes
+        const top = (minutesFromSlotStart / 30) * 2.4 // 30분에 2.4rem
+        const height = Math.max((event.duration / 30) * 2.4, 0.8) // 최소 0.8rem (20px)
         
         return { top, height }
     }
@@ -317,7 +336,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 <div className="week-columns">
                     {weekDays.map((day, dayIndex) => (
                         <div key={dayIndex} className="day-column">
-                            <div className={`day-header ${day.isToday ? 'today' : ''}`}>
+                            <div className={`day-header ${day.isToday ? 'today' : ''} ${day.dayOfWeek === 0 ? 'sunday' : ''}`}>
                                 <div className="day-number">{day.displayDate}({day.displayDay})</div>
                             </div>
                         </div>
@@ -357,7 +376,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             </div>
 
             {/* 주간 그리드 */}
-            <div className="weekly-grid">
+            <div className="weekly-grid" ref={weeklyGridRef}>
                 {/* 시간 라벨 */}
                 <div className="time-labels">
                     {timeSlots.map((slot, index) => (
@@ -370,7 +389,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 {/* 주간 컬럼들 */}
                 <div className="week-columns">
                     {weekDays.map((day, dayIndex) => {
-                        const dayEvents = getEventsForDay(timedEvents, day.dayOfWeek)
+                        const dayEvents = getEventsForDay(timedEvents)
                         return (
                             <div key={dayIndex} className="day-column">
                                 {/* 시간 슬롯들 */}
@@ -382,15 +401,15 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                 <div key={subIndex} className="sub-slot">
                                                     {/* 이벤트 렌더링 */}
                                                     {dayEvents.map((event, eventIndex) => {
-                                                        if (isEventInSubSlot(event, slot.hour, subSlot.minute)) {
+                                                        if (isEventInSubSlot(event, slot.hour, subSlot.minute, day.dayOfWeek)) {
                                                             const position = calculateEventPosition(event, slot.hour, subSlot.minute)
                                                             return (
                                                                 <div
                                                                     key={eventIndex}
                                                                     className="timed-event"
                                                                     style={{
-                                                                        top: position.top,
-                                                                        height: position.height,
+                                                                        top: `${position.top}rem`,
+                                                                        height: `${position.height}rem`,
                                                                         backgroundColor: event.color
                                                                     }}
                                                                     onClick={(e) => handleRecordClick(event.record, e)}
