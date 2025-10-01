@@ -4,6 +4,7 @@ import CalendarHeader from '@/components/features/calendar/CalendarHeader'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { useRecords } from '@/hooks/useRecords'
 import MonthlyCalendar from '@/components/features/calendar/monthly/MonthlyCalendar'
+import WeeklyCalendar from '@/components/features/calendar/weekly/WeeklyCalendar'
 import { CalendarViewType } from '@/models/CalendarTypes'
 
 export interface BodyRightRef {
@@ -11,7 +12,7 @@ export interface BodyRightRef {
 }
 
 const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
-    const [recordType, setRecordType] = useState<CalendarViewType>('list')
+    const [recordType, setRecordType] = useState<CalendarViewType>('weekly')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     
@@ -88,6 +89,12 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                 ) : recordType === 'monthly' ? (
                     <MonthlyCalendar
                         initialDate={date}
+                    />
+                ) : recordType === 'weekly' ? (
+                    <WeeklyCalendar
+                        initialDate={date}
+                        records={filteredRecords}
+                        recordGroups={checkedRecordGroups}
                     />
                 ) : (
                     <ListCalendar

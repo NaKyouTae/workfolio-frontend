@@ -1,0 +1,399 @@
+/* WeeklyCalendar Styles */
+.weekly-calendar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+/* 하루종일 이벤트 행 */
+.all-day-events {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f9fa;
+}
+
+.all-day-label {
+    width: 80px;
+    padding: 12px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    background: #f0f0f0;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.all-day-content {
+    display: flex;
+    flex: 1;
+}
+
+.all-day-column {
+    flex: 1;
+    padding: 4px;
+    border-right: 1px solid #e0e0e0;
+    min-height: 40px;
+    position: relative;
+}
+
+.all-day-column:last-child {
+    border-right: none;
+}
+
+.all-day-event {
+    padding: 4px 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.2s;
+}
+
+.all-day-event:hover {
+    opacity: 0.8;
+}
+
+/* 날짜 헤더 */
+.day-headers {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    background: #f8f9fa;
+}
+
+.time-labels-header {
+    width: 80px;
+    background: #f8f9fa;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.day-headers .week-columns {
+    display: flex;
+    flex: 1;
+}
+
+.day-headers .day-column {
+    flex: 1;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-headers .day-header {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.day-headers .day-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.day-headers .day-header.today .day-number {
+    color: #007bff;
+    font-weight: 700;
+}
+
+/* 특별한 날 이벤트 컨테이너 */
+.special-day-events-container {
+    display: flex;
+    height: 80px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fafafa;
+}
+
+.special-day-events-container .week-columns {
+    display: flex;
+    flex: 1;
+}
+
+.special-day-events-container .day-column {
+    flex: 1;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 특별한 날 이벤트들 */
+.special-day-events {
+    flex: 1;
+    padding: 4px;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+    overflow-y: auto;
+}
+
+.special-day-event {
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.special-day-event:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.special-day-event.multi-day {
+    border-left: 4px solid #ff6b6b;
+}
+
+.special-day-event.day {
+    border-left: 4px solid #4ecdc4;
+}
+
+.special-day-event .event-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.special-day-event .event-type {
+    font-size: 9px;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* 주간 그리드 */
+.weekly-grid {
+    display: flex;
+    height: calc(100% - 100px);
+    overflow: auto;
+}
+
+/* 시간 라벨 */
+.time-labels {
+    width: 80px;
+    background: #f8f9fa;
+    border-right: 1px solid #e0e0e0;
+}
+
+.time-label {
+    height: 4.8rem; /* 1시간 = 120px (30분 * 2) */
+    padding: 4px 8px;
+    font-size: 11px;
+    color: #666;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 주간 컬럼들 */
+.week-columns {
+    display: flex;
+    flex: 1;
+}
+
+.day-column {
+    flex: 1;
+    border-right: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.day-column:last-child {
+    border-right: none;
+}
+
+/* 날짜 헤더 */
+.day-header {
+    height: 40px;
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f9fa;
+}
+
+.day-header.today {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.day-number {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.day-name {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* 시간 슬롯들 */
+.time-slots {
+    position: relative;
+    height: calc(100% - 40px);
+}
+
+.time-slot {
+    height: 4.8rem; /* 1시간 = 120px */
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+}
+
+/* 30분 단위 서브 슬롯 */
+.sub-slot {
+    height: 2.4rem; /* 30분 = 60px */
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+}
+
+/* 시간 이벤트 */
+.timed-event {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    z-index: 1;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    height: 2.4rem;
+}
+
+.timed-event:hover {
+    z-index: 2;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.event-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-time {
+    font-size: 10px;
+    opacity: 0.9;
+}
+
+/* 추가 버튼 */
+.add-event-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #ff6b35;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.add-event-btn:hover {
+    background: #e55a2b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+}
+
+.add-event-btn i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .all-day-label {
+        width: 60px;
+        font-size: 10px;
+    }
+    
+    .day-headers {
+        height: 80px;
+    }
+    
+    .special-day-events-container {
+        height: 60px;
+    }
+    
+    .time-labels-header {
+        width: 60px;
+    }
+    
+    .time-labels {
+        width: 60px;
+    }
+    
+    .time-label {
+        font-size: 10px;
+        height: 100px; /* 모바일에서 1시간 = 100px */
+    }
+    
+    .time-slot {
+        height: 100px; /* 모바일에서 1시간 = 100px */
+    }
+    
+    .sub-slot {
+        height: 50px; /* 모바일에서 30분 = 50px */
+    }
+    
+    .day-headers .day-header {
+        padding: 4px;
+    }
+    
+    .day-headers .day-number {
+        font-size: 12px;
+    }
+    
+    .special-day-event {
+        padding: 2px 4px;
+    }
+    
+    .special-day-event .event-title {
+        font-size: 10px;
+    }
+    
+    .special-day-event .event-type {
+        font-size: 8px;
+    }
+    
+    .timed-event {
+        font-size: 10px;
+        padding: 2px 4px;
+    }
+    
+    .event-time {
+        font-size: 9px;
+    }
+}

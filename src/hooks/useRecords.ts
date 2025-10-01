@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Record } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleData';
+import { createSampleRecordGroups, createSampleRecords, createSampleRecordsForMonthly, createSampleRecordsForWeekly } from '@/utils/sampleData';
 import HttpMethod from '@/enums/HttpMethod';
 import { CalendarViewType } from '@/models/CalendarTypes';
 
@@ -82,7 +82,11 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             // 로그인하지 않은 경우 - 샘플 데이터 로드 및 필터링
             if (!accessToken) {
                 const sampleRecordGroups = createSampleRecordGroups();
-                const sampleRecords = createSampleRecords(sampleRecordGroups);
+                
+                // recordType에 따라 다른 샘플 데이터 사용
+                const sampleRecords = recordType === 'weekly' 
+                    ? createSampleRecordsForWeekly(sampleRecordGroups)
+                    : createSampleRecordsForMonthly(sampleRecordGroups);
                 
                 const currentCheckedGroupIds = getCheckedGroupIds();
                 
@@ -116,7 +120,9 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
         if (!accessToken) {
             // 로그인하지 않은 경우 - 샘플 데이터 로드
             const sampleRecordGroups = createSampleRecordGroups();
-            const sampleRecords = createSampleRecords(sampleRecordGroups);
+            const sampleRecords = recordType === 'weekly' 
+                ? createSampleRecordsForWeekly(sampleRecordGroups)
+                : createSampleRecordsForMonthly(sampleRecordGroups);
             
             const currentCheckedGroupIds = getCheckedGroupIds();
             
@@ -141,7 +147,9 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
         if (!accessToken) {
             // 로그인하지 않은 경우 - 샘플 데이터 로드
             const sampleRecordGroups = createSampleRecordGroups();
-            const sampleRecords = createSampleRecords(sampleRecordGroups);
+            const sampleRecords = recordType === 'weekly' 
+                ? createSampleRecordsForWeekly(sampleRecordGroups)
+                : createSampleRecordsForMonthly(sampleRecordGroups);
             
             const currentCheckedGroupIds = getCheckedGroupIds();
             
