@@ -64,6 +64,18 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
         }
     };
 
+    // 설명 텍스트를 줄바꿈으로 분리하여 렌더링
+    const renderDescription = () => {
+        if (!record.description) return null;
+        
+        return record.description.split('\n').map((line, index) => (
+            <span key={index}>
+                {line}
+                {index < record.description.split('\n').length - 1 && <br />}
+            </span>
+        ));
+    };
+
     return (
         <div 
             className="record-modal-wrap"
@@ -89,9 +101,7 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
                         <li>
                             <span>메모</span>
                             <p>
-                                {record.description.split('\n').map((line, index) => (
-                                    <div key={index}>{line}</div>
-                                ))}
+                                {renderDescription()}
                             </p>
                         </li>
                     )}
