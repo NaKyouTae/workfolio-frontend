@@ -94,7 +94,6 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                     <WeeklyCalendar
                         initialDate={date}
                         records={filteredRecords}
-                        recordGroups={checkedRecordGroups}
                     />
                 ) : (
                     <ListCalendar

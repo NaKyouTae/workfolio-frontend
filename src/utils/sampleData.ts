@@ -1,7 +1,7 @@
-import { Record, RecordGroup, Record_RecordType, Company, Certifications, Degrees, Education, Worker, JobSearch, JobSearchCompany, Interview, JobSearchCompany_Status, Interview_Type } from '@/generated/common'
+import { Company, Certifications, Degrees, Education, Worker, JobSearch, JobSearchCompany, Interview, JobSearchCompany_Status, Interview_Type } from '@/generated/common'
 import dayjs from 'dayjs'
 
-export const createSampleRecordGroups = (): RecordGroup[] => {
+export const createSampleRecordGroups = () => {
     return [
         {
             id: '1',
@@ -67,7 +67,7 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
 }
 
 // Monthly용 샘플 레코드
-export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Record[] => {
+export const createSampleRecordsForMonthly = (recordGroups: object[]) => {
     const now = dayjs()
     const currentMonth = now.month()
     const currentYear = now.year()
@@ -76,7 +76,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '1',
             title: '대전 출장',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '대전 고객사 방문 및 미팅',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-01`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-01`).valueOf(),
@@ -87,7 +87,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '2',
             title: '뉴스레터 발송 확인',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '월간 뉴스레터 발송 및 수신자 반응 확인',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).hour(10).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).hour(11).minute(30).valueOf(),
@@ -98,7 +98,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '3',
             title: '제안 요청서 검토',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '신규 프로젝트 제안서 검토 및 피드백',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-05`).hour(7).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-05`).hour(9).minute(0).valueOf(),
@@ -109,7 +109,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '4',
             title: '리브랜딩 프로젝트 시작',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '회사 리브랜딩 프로젝트 킥오프',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).valueOf(),
@@ -120,7 +120,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '5',
             title: '리브랜딩 킥오프 미팅',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '리브랜딩 프로젝트 팀 킥오프 미팅',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).hour(14).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).hour(16).minute(0).valueOf(),
@@ -131,7 +131,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '6',
             title: '현장 사전 점검',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '신규 사무실 이전을 위한 현장 점검',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(9).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(12).minute(30).valueOf(),
@@ -142,7 +142,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '7',
             title: '독서 토론 동호회 참석',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '장소 : 종로 스타벅스\n참석자 : 홍길동, 김철수, 김영희\n첨부파일 : 독서감상문_250308.hwp',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(20).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(22).minute(30).valueOf(),
@@ -153,7 +153,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '7-2',
             title: '독서 토론 동호회 사전 준비',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '독서 토론 자료 준비 및 발표 자료 정리',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(18).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(19).minute(30).valueOf(),
@@ -164,7 +164,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '8',
             title: '주간 팀 미팅',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '주간 진행 상황 공유 및 다음 주 계획 수립',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`).hour(10).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`).hour(11).minute(30).valueOf(),
@@ -175,7 +175,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '9',
             title: '개인 일정',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '가족과의 시간',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-16`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-16`).valueOf(),
@@ -186,7 +186,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '10',
             title: '워크폴리오 사이드 프로젝트 회의',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '사이드 프로젝트 진행 상황 점검 및 다음 단계 계획',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-20`).hour(19).minute(0).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-20`).hour(21).minute(0).valueOf(),
@@ -198,7 +198,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '11',
             title: '부산 출장 (3일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '부산 고객사 방문 및 현장 점검 (3일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-22`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-24`).valueOf(),
@@ -210,7 +210,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '12',
             title: '리브랜딩 프로젝트 집중 작업 (5일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '리브랜딩 프로젝트 핵심 작업 기간 (5일간 집중)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-25`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-29`).valueOf(),
@@ -222,7 +222,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '13',
             title: '연수 및 교육 (7일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '신기술 연수 및 교육 과정 참여 (7일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-01`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-07`).valueOf(),
@@ -234,7 +234,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '14',
             title: '해외 출장 (10일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '싱가포르 지사 방문 및 글로벌 미팅 (10일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-10`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-19`).valueOf(),
@@ -246,7 +246,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '15',
             title: '개인 휴가 (3일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '가족과 함께하는 개인 휴가 (3일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-25`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-27`).valueOf(),
@@ -258,7 +258,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '16',
             title: '워크폴리오 개발 스프린트 (5일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '워크폴리오 사이드 프로젝트 집중 개발 기간 (5일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 3).toString().padStart(2, '0')}-01`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 3).toString().padStart(2, '0')}-05`).valueOf(),
@@ -270,7 +270,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '17',
             title: '긴급 프로젝트 (3일 겹침)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '리브랜딩 프로젝트와 겹치는 긴급 프로젝트 (3일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-07`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-09`).valueOf(),
@@ -281,7 +281,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '18',
             title: '추가 출장 (2일 겹침)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '부산 출장과 겹치는 추가 출장 (2일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-23`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-24`).valueOf(),
@@ -292,7 +292,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '19',
             title: '개인 프로젝트 (4일 겹침)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '리브랜딩 프로젝트 집중 작업과 겹치는 개인 프로젝트 (4일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-26`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-29`).valueOf(),
@@ -303,7 +303,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '20',
             title: '워크샵 (3일 겹침)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '연수 및 교육과 겹치는 워크샵 (3일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-03`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-05`).valueOf(),
@@ -314,7 +314,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '21',
             title: '해외 컨퍼런스 (5일 겹침)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '해외 출장과 겹치는 컨퍼런스 참석 (5일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-15`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-19`).valueOf(),
@@ -326,7 +326,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '22',
             title: '월간 계획 수립 (3일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '새로운 월의 계획 수립 및 목표 설정 (3일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-01`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).valueOf(),
@@ -337,7 +337,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '23',
             title: '팀 빌딩 워크샵 (2일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '팀원들과의 빌딩 활동 및 소통 시간 (2일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-02`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).valueOf(),
@@ -348,7 +348,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '24',
             title: '신규 프로젝트 킥오프 (4일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '새로운 프로젝트의 킥오프 미팅 및 계획 수립 (4일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-04`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-07`).valueOf(),
@@ -359,7 +359,7 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
         {
             id: '25',
             title: '개인 스터디 캠프 (3일)',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '개인 성장을 위한 스터디 그룹 집중 캠프 (3일간)',
             startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-06`).valueOf(),
             endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).valueOf(),
@@ -371,18 +371,31 @@ export const createSampleRecordsForMonthly = (recordGroups: RecordGroup[]): Reco
 }
 
 // Weekly용 샘플 레코드
-export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Record[] => {
+export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
     const now = dayjs()
     const currentWeek = now.startOf('week')
     
     return [
         // ===== SPECIAL-DAY-EVENTS 영역 (MULTI_DAY, DAY 타입) =====
         
-        // 월요일~수요일 (MULTI_DAY) - special-day-events에 표시
+        // 일요일~월요일 (MULTI_DAY) - special-day-events에 표시
         {
             id: 'w1',
+            title: '주말 워크샵',
+            type: 'MULTI_DAY',
+            description: '주말 동안 진행되는 팀 워크샵',
+            startedAt: currentWeek.add(0, 'day').valueOf(), // 일요일
+            endedAt: currentWeek.add(1, 'day').valueOf(), // 월요일
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 월요일~수요일 (MULTI_DAY) - special-day-events에 표시
+        {
+            id: 'w2',
             title: '주간 프로젝트 리뷰',
-            type: Record_RecordType.MULTI_DAY,
+            type: 'MULTI_DAY',
             description: '주간 프로젝트 진행 상황 리뷰 및 다음 주 계획 수립',
             startedAt: currentWeek.add(1, 'day').valueOf(), // 월요일
             endedAt: currentWeek.add(3, 'day').valueOf(), // 수요일
@@ -393,9 +406,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
         
         // 화요일 (DAY) - special-day-events에 표시
         {
-            id: 'w2',
+            id: 'w3',
             title: '화요일 집중 작업일',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '개발 작업에 집중하는 하루',
             startedAt: currentWeek.add(2, 'day').valueOf(),
             endedAt: currentWeek.add(2, 'day').valueOf(),
@@ -404,11 +417,24 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         
+        // 수요일 (DAY) - special-day-events에 표시
+        {
+            id: 'w4',
+            title: '개인 스터디 데이',
+            type: 'DAY',
+            description: '개인 성장을 위한 스터디 시간',
+            startedAt: currentWeek.add(3, 'day').valueOf(),
+            endedAt: currentWeek.add(3, 'day').valueOf(),
+            recordGroup: recordGroups[4], // 독서 토론 동호회
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
         // 목요일~금요일 (MULTI_DAY) - special-day-events에 표시
         {
-            id: 'w3',
+            id: 'w5',
             title: '출장 (2일)',
-            type: Record_RecordType.MULTI_DAY,
+            type: 'MULTI_DAY',
             description: '부산 고객사 방문 및 현장 점검',
             startedAt: currentWeek.add(4, 'day').valueOf(), // 목요일
             endedAt: currentWeek.add(5, 'day').valueOf(), // 금요일
@@ -419,9 +445,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
         
         // 토요일 (DAY) - special-day-events에 표시
         {
-            id: 'w4',
+            id: 'w6',
             title: '개인 프로젝트',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '워크폴리오 사이드 프로젝트 작업',
             startedAt: currentWeek.add(6, 'day').valueOf(),
             endedAt: currentWeek.add(6, 'day').valueOf(),
@@ -432,9 +458,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
         
         // 일요일 (DAY) - special-day-events에 표시
         {
-            id: 'w5',
+            id: 'w7',
             title: '가족 시간',
-            type: Record_RecordType.DAY,
+            type: 'DAY',
             description: '가족과 함께하는 시간',
             startedAt: currentWeek.add(0, 'day').valueOf(), // 일요일
             endedAt: currentWeek.add(0, 'day').valueOf(),
@@ -445,11 +471,35 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
         
         // ===== TIME 그리드 영역 (TIME 타입) =====
         
+        // 일요일 TIME 이벤트들
+        {
+            id: 'w8',
+            title: '일요일 독서 시간',
+            type: 'TIME',
+            description: '개인 성장을 위한 독서',
+            startedAt: currentWeek.add(0, 'day').hour(10).minute(0).valueOf(),
+            endedAt: currentWeek.add(0, 'day').hour(12).minute(0).valueOf(),
+            recordGroup: recordGroups[4], // 독서 토론 동호회
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w9',
+            title: '가족 식사',
+            type: 'TIME',
+            description: '가족과 함께하는 식사 시간',
+            startedAt: currentWeek.add(0, 'day').hour(18).minute(0).valueOf(),
+            endedAt: currentWeek.add(0, 'day').hour(20).minute(0).valueOf(),
+            recordGroup: recordGroups[3], // 개인 일정
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
         // 월요일 TIME 이벤트들
         {
-            id: 'w6',
+            id: 'w10',
             title: '월요일 아침 미팅',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '주간 시작 미팅 및 우선순위 논의',
             startedAt: currentWeek.add(1, 'day').hour(9).minute(0).valueOf(),
             endedAt: currentWeek.add(1, 'day').hour(10).minute(30).valueOf(),
@@ -458,9 +508,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w7',
+            id: 'w11',
             title: '코드 리뷰',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '팀원들의 코드 리뷰 및 피드백',
             startedAt: currentWeek.add(1, 'day').hour(14).minute(0).valueOf(),
             endedAt: currentWeek.add(1, 'day').hour(16).minute(0).valueOf(),
@@ -469,9 +519,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w8',
+            id: 'w12',
             title: '팀 미팅',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '주간 업무 계획 및 이슈 논의',
             startedAt: currentWeek.add(1, 'day').hour(17).minute(0).valueOf(),
             endedAt: currentWeek.add(1, 'day').hour(18).minute(0).valueOf(),
@@ -482,9 +532,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
         
         // 화요일 TIME 이벤트들
         {
-            id: 'w9',
+            id: 'w13',
             title: '클라이언트 미팅',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '고객사와의 프로젝트 진행 상황 미팅',
             startedAt: currentWeek.add(2, 'day').hour(10).minute(0).valueOf(),
             endedAt: currentWeek.add(2, 'day').hour(11).minute(30).valueOf(),
@@ -493,9 +543,20 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w10',
+            id: 'w14',
+            title: '개발 작업',
+            type: 'TIME',
+            description: '새로운 기능 개발 작업',
+            startedAt: currentWeek.add(2, 'day').hour(14).minute(0).valueOf(),
+            endedAt: currentWeek.add(2, 'day').hour(17).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w15',
             title: '기술 스터디',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: 'React 18 신기능 스터디',
             startedAt: currentWeek.add(2, 'day').hour(19).minute(0).valueOf(),
             endedAt: currentWeek.add(2, 'day').hour(21).minute(0).valueOf(),
@@ -506,9 +567,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
         
         // 수요일 TIME 이벤트들
         {
-            id: 'w11',
+            id: 'w16',
             title: '스프린트 플래닝',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '다음 스프린트 계획 수립',
             startedAt: currentWeek.add(3, 'day').hour(9).minute(0).valueOf(),
             endedAt: currentWeek.add(3, 'day').hour(11).minute(0).valueOf(),
@@ -517,9 +578,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w12',
+            id: 'w17',
             title: '데이터베이스 최적화',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '성능 개선을 위한 DB 쿼리 최적화',
             startedAt: currentWeek.add(3, 'day').hour(14).minute(0).valueOf(),
             endedAt: currentWeek.add(3, 'day').hour(17).minute(0).valueOf(),
@@ -527,12 +588,23 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
+        {
+            id: 'w18',
+            title: '코드 리팩토링',
+            type: 'TIME',
+            description: '기존 코드 개선 및 최적화',
+            startedAt: currentWeek.add(3, 'day').hour(19).minute(0).valueOf(),
+            endedAt: currentWeek.add(3, 'day').hour(21).minute(0).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
         
         // 목요일 TIME 이벤트들
         {
-            id: 'w13',
+            id: 'w19',
             title: '출장 준비',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '부산 출장을 위한 준비 작업',
             startedAt: currentWeek.add(4, 'day').hour(8).minute(0).valueOf(),
             endedAt: currentWeek.add(4, 'day').hour(10).minute(0).valueOf(),
@@ -541,9 +613,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w14',
+            id: 'w20',
             title: '출장 이동',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '부산으로 이동',
             startedAt: currentWeek.add(4, 'day').hour(11).minute(0).valueOf(),
             endedAt: currentWeek.add(4, 'day').hour(15).minute(0).valueOf(),
@@ -551,13 +623,24 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
+        {
+            id: 'w21',
+            title: '고객사 미팅',
+            type: 'TIME',
+            description: '부산 고객사와의 프로젝트 미팅',
+            startedAt: currentWeek.add(4, 'day').hour(16).minute(0).valueOf(),
+            endedAt: currentWeek.add(4, 'day').hour(18).minute(0).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
         
         // 금요일 TIME 이벤트들
         {
-            id: 'w15',
-            title: '고객사 미팅',
-            type: Record_RecordType.TIME,
-            description: '부산 고객사와의 프로젝트 미팅',
+            id: 'w22',
+            title: '현장 점검',
+            type: 'TIME',
+            description: '고객사 시스템 현장 점검',
             startedAt: currentWeek.add(5, 'day').hour(9).minute(0).valueOf(),
             endedAt: currentWeek.add(5, 'day').hour(12).minute(0).valueOf(),
             recordGroup: recordGroups[2], // 출장
@@ -565,10 +648,10 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w16',
-            title: '현장 점검',
-            type: Record_RecordType.TIME,
-            description: '고객사 시스템 현장 점검',
+            id: 'w23',
+            title: '프로젝트 보고서 작성',
+            type: 'TIME',
+            description: '출장 결과 보고서 작성',
             startedAt: currentWeek.add(5, 'day').hour(14).minute(0).valueOf(),
             endedAt: currentWeek.add(5, 'day').hour(16).minute(30).valueOf(),
             recordGroup: recordGroups[2], // 출장
@@ -576,9 +659,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w17',
+            id: 'w24',
             title: '주간 회고',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '이번 주 작업 내용 회고 및 다음 주 계획',
             startedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
             endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
@@ -589,9 +672,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
         
         // 토요일 TIME 이벤트들
         {
-            id: 'w18',
+            id: 'w25',
             title: '개발 작업',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '새로운 기능 개발',
             startedAt: currentWeek.add(6, 'day').hour(10).minute(0).valueOf(),
             endedAt: currentWeek.add(6, 'day').hour(14).minute(0).valueOf(),
@@ -600,9 +683,9 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             updatedAt: Date.now()
         },
         {
-            id: 'w19',
+            id: 'w26',
             title: '코드 리팩토링',
-            type: Record_RecordType.TIME,
+            type: 'TIME',
             description: '기존 코드 개선 및 최적화',
             startedAt: currentWeek.add(6, 'day').hour(15).minute(0).valueOf(),
             endedAt: currentWeek.add(6, 'day').hour(17).minute(0).valueOf(),
@@ -610,16 +693,14 @@ export const createSampleRecordsForWeekly = (recordGroups: RecordGroup[]): Recor
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
-        
-        // 일요일 TIME 이벤트들
         {
-            id: 'w20',
-            title: '독서 시간',
-            type: Record_RecordType.TIME,
-            description: '개인 성장을 위한 독서',
-            startedAt: currentWeek.add(0, 'day').hour(20).minute(0).valueOf(),
-            endedAt: currentWeek.add(0, 'day').hour(22).minute(0).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
+            id: 'w27',
+            title: '테스트 작성',
+            type: 'TIME',
+            description: '단위 테스트 및 통합 테스트 작성',
+            startedAt: currentWeek.add(6, 'day').hour(19).minute(0).valueOf(),
+            endedAt: currentWeek.add(6, 'day').hour(21).minute(0).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
             createdAt: Date.now(),
             updatedAt: Date.now()
         }

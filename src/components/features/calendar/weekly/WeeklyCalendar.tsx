@@ -10,8 +10,6 @@ import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { isRecordType } from '@/utils/calendarUtils'
 import { CalendarDay } from '@/models/CalendarTypes'
-import { useCalendarDays } from '@/hooks/useCalendar'
-import { createDateModel, DateModel } from '@/models/DateModel'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -20,7 +18,6 @@ dayjs.tz.setDefault('Asia/Seoul')
 interface WeeklyCalendarProps {
     initialDate: Date
     records: Record[]
-    recordGroups: RecordGroup[]
 }
 
 interface WeeklyEvent {
@@ -35,8 +32,7 @@ interface WeeklyEvent {
 
 const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ 
     initialDate,
-    records,
-    recordGroups
+    records
 }) => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -47,31 +43,24 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()
-    const [date] = useState<DateModel>(() => {
-        const d = new Date(initialDate)
-        return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
-    })
-    const calendarDays = useCalendarDays(date)
     
     // initialDate 기준으로 현재 주 데이터만 추출
     const currentWeekStart = dayjs(initialDate).startOf('week')
     const currentWeekDays = Array.from({ length: 7 }, (_, i) => {
         const day = currentWeekStart.add(i, 'day')
-        const dayDate = day.toDate()
-        
-        // calendarDays에서 해당 날짜 찾기
-        const calendarDay = calendarDays.find(calDay => 
-            calDay && dayjs(calDay.date).isSame(day, 'day')
-        )
-        
-        return calendarDay || null
+        return {
+            id: `day-${i}`,
+            day: day.date(),
+            isCurrentMonth: day.month() === initialDate.getMonth(),
+            date: day.toDate()
+        }
     })
     
     // weeks에 현재 주 데이터만 넣기
-    const weeks: (CalendarDay | null)[][] = [currentWeekDays]
+    const weeks: (CalendarDay & { date: Date } | null)[][] = [currentWeekDays]
 
     // renderRecords 함수 - MonthlyCalendar 스타일
-    const renderRecords = (week: (CalendarDay | null)[]) => {
+    const renderRecords = (week: (CalendarDay & { date: Date } | null)[]) => {
         // 현재 주의 모든 일정을 수집
         const weekRecords: Array<{
             record: Record;
@@ -84,8 +73,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
             const dayDate = dayjs(day.date)
 
+            const filtedRecords = records.filter(record => isRecordType(record.type, Record_RecordType.MULTI_DAY) || isRecordType(record.type, Record_RecordType.DAY))
+
             // 해당 날짜의 레코드 필터링 (MULTI_DAY, DAY 타입만)
-            const dayRecords = records.filter(record => {
+            const dayRecords = filtedRecords.filter(record => {
                 const recordStartDate = dayjs(parseInt(record.startedAt.toString()))
                 const recordEndDate = dayjs(parseInt(record.endedAt.toString()))
 
@@ -341,62 +332,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         })
     }
 
-    // 특별한 날 이벤트 필터링 (MULTI_DAY, DAY)
-    const getSpecialDayEvents = (records: Record[]) => {
-        const specialDayEvents: Array<{ record: Record; dayIndex: number; colSpan: number }> = []
-        
-        // 현재 주의 날짜들
-        const weekDays = getWeekDays(initialDate)
-        const firstDayDate = dayjs(weekDays[0].date)
-        const lastDayDate = dayjs(weekDays[6].date)
-        
-        // MULTI_DAY와 DAY 타입 레코드만 필터링
-        const specialRecords = records.filter(record => {
-            const isMultiDay = isRecordType(record.type, Record_RecordType.MULTI_DAY)
-            const isDay = isRecordType(record.type, Record_RecordType.DAY)
-            return isMultiDay || isDay
-        })
-        
-        specialRecords.forEach(record => {
-            const recordStartDate = dayjs(parseInt(record.startedAt.toString()))
-            const recordEndDate = dayjs(parseInt(record.endedAt.toString()))
-            
-            // 일정이 현재 주와 겹치는지 확인
-            const isInCurrentWeek = !(recordEndDate.isBefore(firstDayDate, 'day') || recordStartDate.isAfter(lastDayDate, 'day'))
-            
-            if (isInCurrentWeek) {
-                let startDayIndex = 0
-                let colSpan = 1
-                
-                // 일정이 현재 주에서 시작하는지 확인
-                if (recordStartDate.isSame(firstDayDate, 'day') || recordStartDate.isAfter(firstDayDate, 'day')) {
-                    // 현재 주에서 시작하는 경우
-                    startDayIndex = recordStartDate.diff(firstDayDate, 'day')
-                    const endDateInWeek = recordEndDate.isAfter(lastDayDate, 'day') ? lastDayDate : recordEndDate
-                    colSpan = endDateInWeek.diff(recordStartDate, 'day') + 1
-                } else if (recordEndDate.isSame(lastDayDate, 'day') || recordEndDate.isBefore(lastDayDate, 'day')) {
-                    // 현재 주에서 끝나는 경우
-                    startDayIndex = 0
-                    colSpan = recordEndDate.diff(firstDayDate, 'day') + 1
-                } else {
-                    // 현재 주를 포함하는 경우
-                    startDayIndex = 0
-                    colSpan = 7
-                }
-                
-                // colSpan이 1 이상이고 7 이하인 경우만 추가
-                if (colSpan > 0 && colSpan <= 7) {
-                    specialDayEvents.push({
-                        record,
-                        dayIndex: startDayIndex,
-                        colSpan
-                    })
-                }
-            }
-        })
-
-        return specialDayEvents
-    }
 
     // 시간 이벤트 필터링
     const getTimedEvents = (events: WeeklyEvent[]) => {
@@ -440,7 +375,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const weekDays = getWeekDays(initialDate)
     const timeSlots = getTimeSlots()
     const allEvents = convertRecordsToEvents(records)
-    const specialDayEvents = getSpecialDayEvents(records)
     const timedEvents = getTimedEvents(allEvents)
 
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
@@ -500,9 +434,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         setIsDetailModalOpen(false)
     }
 
-    const handleOpenCreateModal = () => {
-        setIsCreateModalOpen(true)
-    }
 
     const handleCloseCreateModal = () => {
         setIsCreateModalOpen(false)
