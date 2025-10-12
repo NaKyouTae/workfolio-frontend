@@ -224,7 +224,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 rows.push(
                     <tr key={`empty-row-${rowIndex}`} style={{ height: '20px' }}>
                         {Array.from({ length: 7 }, (_, j) => (
-                            <td key={`empty-${j}`} className="day"></td>
+                            <td key={`empty-${j}`} className="record"></td>
                         ))}
                     </tr>
                 )
@@ -237,22 +237,21 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                     
                     if (item) {
                         cells.push(
-                            <td key={dayIndex} colSpan={item.colSpan} className="record-cell">
-                                <div
-                                    className={`record-item ${isRecordType(item.record.type, Record_RecordType.MULTI_DAY) ? 'multi-day' : 'day'}`}
+                            <td key={dayIndex} colSpan={item.colSpan} className="record">
+                                <p
                                     style={{ backgroundColor: getRecordGroupColor(item.record.recordGroup) }}
                                     onClick={(e) => handleRecordClick(item.record, e)}
                                 >
-                                    <div className="record-title">{item.record.title}</div>
-                                </div>
+                                    {item.record.title}
+                                </p>
                             </td>
                         )
                     } else {
-                        cells.push(<td key={dayIndex} className="day"></td>)
+                        cells.push(<td key={dayIndex} className="record"></td>)
                     }
                 }
                 
-                rows.push(<tr key={`row-${rowIndex}`} className="day">{cells}</tr>)
+                rows.push(<tr key={`row-${rowIndex}`}>{cells}</tr>)
             }
         }
 
