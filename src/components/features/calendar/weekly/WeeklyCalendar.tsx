@@ -39,6 +39,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    const [clickedElement, setClickedElement] = useState<HTMLElement | null>(null)
     const [currentTime, setCurrentTime] = useState(new Date())
     
     // 현재 시간 업데이트 (1분마다)
@@ -51,6 +52,63 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         
         return () => clearInterval(interval)
     }, [])
+
+    // 스크롤 이벤트로 모달 위치 업데이트
+    useEffect(() => {
+        const handleScroll = () => {
+            if (clickedElement && isDetailModalOpen) {
+                const rect = clickedElement.getBoundingClientRect()
+                const calendarContainer = clickedElement.closest('.weekly-calendar')?.getBoundingClientRect()
+                
+                if (calendarContainer) {
+                    const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5))
+                    const detailHeight = 300
+                    const viewportHeight = window.innerHeight
+                    
+                    // 화면 하단 여백 체크
+                    const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
+                    const spaceAbove = rect.top - detailHeight
+                    
+                    let top
+                    
+                    // 하단에 공간이 부족하고 위쪽에 공간이 있으면 위에 표시
+                    if (spaceBelow < 0 && spaceAbove > 0) {
+                        top = rect.top - calendarContainer.top - detailHeight + 120
+                    } else {
+                        // 기본적으로 하단에 표시
+                        top = rect.bottom - calendarContainer.top
+                    }
+                    
+                    // 가로 위치: 화면 경계 내에서 중앙 정렬
+                    let left = rect.left - calendarContainer.left + (rect.width / 2) - (detailWidth / 2)
+                    
+                    // 화면 왼쪽 경계 체크
+                    if (left < 0) {
+                        left = 10
+                    }
+                    
+                    // 화면 오른쪽 경계 체크
+                    if (left + detailWidth > calendarContainer.width) {
+                        left = calendarContainer.width - detailWidth - 60
+                    }
+                    
+                    left = Math.max(10, left)
+                    
+                    setDetailPosition({
+                        top: Math.max(5, top),
+                        left: left,
+                        width: detailWidth
+                    })
+                }
+            }
+        }
+
+        const gridElement = weeklyGridRef.current
+        if (gridElement) {
+            gridElement.addEventListener('scroll', handleScroll)
+            return () => gridElement.removeEventListener('scroll', handleScroll)
+        }
+    }, [clickedElement, isDetailModalOpen])
     
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
@@ -276,14 +334,42 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
 
 
-    // 컴포넌트 마운트 시 07시 위치로 스크롤
+    // 컴포넌트 마운트 시 currentTime 위치로 스크롤
     useEffect(() => {
         if (weeklyGridRef.current) {
-            // 07시까지의 높이 계산: 7시간 * 4.8rem = 33.6rem
-            const scrollTop = 19.2 * 16 // rem을 px로 변환 (1rem = 16px)
-            weeklyGridRef.current.scrollTop = scrollTop
+            const now = dayjs(currentTime)
+            const hours = now.hour()
+            const minutes = now.minute()
+            const totalMinutes = hours * 60 + minutes
+            
+            // currentTime 위치 계산 (1시간 = 4.8rem, 30분 = 2.4rem)
+            const hourSlot = Math.floor(totalMinutes / 60) * 4.8
+            const minuteOffset = (totalMinutes % 60) * (2.4 / 30)
+            const currentTimePosition = hourSlot + minuteOffset
+            
+            // 화면 높이 계산 (대략 24시간 * 4.8rem = 115.2rem)
+            const totalHeight = 24 * 4.8
+            const viewportHeight = 40 // 대략적인 뷰포트 높이 (rem 단위)
+            
+            // 현재 시간을 화면 중앙에 오도록 계산
+            let scrollTop = currentTimePosition - (viewportHeight / 2)
+            
+            // 너무 이른 시간 (0-6시)일 때는 맨 위로
+            if (hours < 6) {
+                scrollTop = 0
+            }
+            // 너무 늦은 시간 (18-23시)일 때는 맨 아래로
+            else if (hours >= 18) {
+                scrollTop = totalHeight - viewportHeight
+            }
+            // 그 외에는 중앙에 배치
+            else {
+                scrollTop = Math.max(0, Math.min(scrollTop, totalHeight - viewportHeight))
+            }
+            
+            weeklyGridRef.current.scrollTop = scrollTop * 16 // rem을 px로 변환
         }
-    }, [])
+    }, [currentTime])
 
     // 주간 날짜 생성 (일요일부터 토요일까지)
     const getWeekDays = (date: Date) => {
@@ -427,55 +513,56 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         const calendarContainer = event.currentTarget.closest('.weekly-calendar')?.getBoundingClientRect()
         
         if (calendarContainer) {
-            const viewportHeight = window.innerHeight
-            const viewportWidth = window.innerWidth
-            const detailHeight = 300
             const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5))
+            const detailHeight = 300
+            const viewportHeight = window.innerHeight
             
-            // 세로 위치 계산
-            let top = rect.bottom - calendarContainer.top
+            // 화면 하단 여백 체크 (레코드 하단 + 모달 높이)
             const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
             const spaceAbove = rect.top - detailHeight
             
+            let top
+            
+            // 하단에 공간이 부족하고 위쪽에 공간이 있으면 위에 표시
             if (spaceBelow < 0 && spaceAbove > 0) {
-                top = rect.top - calendarContainer.top - detailHeight + 125
+                top = rect.top - calendarContainer.top - detailHeight + 120
+            } else {
+                // 기본적으로 하단에 표시
+                top = rect.bottom - calendarContainer.top
             }
             
-            if (top < 0) {
-                top = 5
-            }
+            // 가로 위치: 화면 경계 내에서 중앙 정렬
+            let left = rect.left - calendarContainer.left + (rect.width / 2) - (detailWidth / 2)
             
-            // 가로 위치 계산
-            let left = rect.left - calendarContainer.left + 445
-            const spaceRight = viewportWidth - rect.left
-            const spaceLeft = rect.left
-            
-            if (spaceRight < detailWidth && spaceLeft > detailWidth) {
-                left = rect.right - calendarContainer.left - detailWidth
-            }
-            
+            // 화면 왼쪽 경계 체크
             if (left < 0) {
-                left = Math.max(5, (calendarContainer.width - detailWidth) / 2)
+                left = 10 // 왼쪽 여백 10px
             }
             
+            // 화면 오른쪽 경계 체크
             if (left + detailWidth > calendarContainer.width) {
-                left = Math.max(5, calendarContainer.width - detailWidth - 5)
+                left = calendarContainer.width - detailWidth - 60 // 오른쪽 여백 60px
             }
+            
+            // 최소 위치 보장 (왼쪽 여백)
+            left = Math.max(10, left)
             
             setDetailPosition({
                 top: Math.max(5, top),
-                left: Math.max(5, left),
+                left: left,
                 width: detailWidth
             })
         }
         
         setSelectedRecord(record)
+        setClickedElement(event.currentTarget)
         setIsDetailModalOpen(true)
     }
 
     const handleCloseModal = () => {
         setSelectedRecord(null)
         setDetailPosition(null)
+        setClickedElement(null)
         setIsDetailModalOpen(false)
     }
 
@@ -492,6 +579,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const handleCloseUpdateModal = () => {
         setIsUpdateModalOpen(false)
         setSelectedRecord(null)
+        setClickedElement(null)
     }
 
     const handleDeleteRecord = async () => {
