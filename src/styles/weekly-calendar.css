@@ -66,7 +66,7 @@
 .weekly-days {
     display: flex;
     border-bottom: 2px solid #e0e0e0;
-    height: 150px;
+    height: 100px;
 }
 
 .weekly-days-container {

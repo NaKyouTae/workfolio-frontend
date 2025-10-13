@@ -222,7 +222,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             if (rowItems.length === 0) {
                 // 빈 행
                 rows.push(
-                    <tr key={`empty-row-${rowIndex}`} style={{ height: '20px' }}>
+                    <tr key={`empty-row-${rowIndex}`} style={{ height: '18px' }}>
                         {Array.from({ length: 7 }, (_, j) => (
                             <td key={`empty-${j}`} className="record"></td>
                         ))}
@@ -231,13 +231,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             } else {
                 // 일정이 있는 행
                 const cells = []
+                let currentDay = 0
                 
-                for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-                    const item = rowItems.find(item => item.startDayIndex === dayIndex)
+                while (currentDay < 7) {
+                    const item = rowItems.find(item => item.startDayIndex === currentDay)
                     
                     if (item) {
                         cells.push(
-                            <td key={dayIndex} colSpan={item.colSpan} className="record">
+                            <td key={currentDay} colSpan={item.colSpan} className="record">
                                 <p
                                     style={{ backgroundColor: getRecordGroupColor(item.record.recordGroup) }}
                                     onClick={(e) => handleRecordClick(item.record, e)}
@@ -246,8 +247,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                 </p>
                             </td>
                         )
+                        currentDay += item.colSpan // colSpan만큼 건너뛰기
                     } else {
-                        cells.push(<td key={dayIndex} className="record"></td>)
+                        cells.push(<td key={currentDay} className="record"></td>)
+                        currentDay++
                     }
                 }
                 
@@ -487,24 +490,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             <div className="weekly-days">
                 <div className="time-labels-header">하루 종일</div>
                 <div className="calendar-wrap">
-                    <table className="week">
-                        <thead>
-                            <tr>
-                                {weekDays.map((day) => (
-                                    <th
-                                        key={day.dayOfWeek} 
-                                        className={`${day.dayOfWeek === 0 ? 'holiday' : ''}`}
-                                    >
-                                        {day.displayDay}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                    </table>
                     <div className="days">
                         {weeks.map((week, weekIndex) => (
-                            <div className="weekly" key={weekIndex} style={{ height: '100%' }}>
-                                <table style={{ height: '100%' }}>
+                            <div className="weekly" key={weekIndex}>
+                                <table>
                                     <tbody>
                                         {renderRecords(week)}
                                     </tbody>
