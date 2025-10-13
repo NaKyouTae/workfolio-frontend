@@ -79,26 +79,37 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                         top = rect.bottom - calendarContainer.top
                     }
                     
-                    // 가로 위치: 화면 경계 내에서 중앙 정렬
-                    let left = rect.left - calendarContainer.left + (rect.width / 2) - (detailWidth / 2)
+                    // 가로 위치: record의 좌측 기준선과 동일하게 위치
+                    let left = rect.left - calendarContainer.left
                     
-                    // 화면 왼쪽 경계 체크
-                    if (left < 0) {
-                        left = 10
+                    // weekly-calendar 컨테이너 경계 체크
+                    const containerRight = calendarContainer.width
+                    const minLeft = 20
+                    
+                    // 컨테이너 왼쪽 경계 체크
+                    if (left < minLeft) {
+                        left = minLeft
                     }
                     
-                    // 화면 오른쪽 경계 체크
-                    if (left + detailWidth > calendarContainer.width) {
-                        left = calendarContainer.width - detailWidth - 60
+                    // 오른쪽 영역을 넘어가는지 체크
+                    const isOverflowingRight = left + detailWidth > containerRight - 150
+                    
+                    if (isOverflowingRight) {
+                        // 오른쪽 영역을 넘어가면 record의 우측 기준선과 일치
+                        const recordRight = rect.right - calendarContainer.left
+                        setDetailPosition({
+                            top: Math.max(5, top),
+                            right: containerRight - recordRight,
+                            width: detailWidth
+                        })
+                    } else {
+                        // 정상 범위면 record의 좌측 기준선과 일치
+                        setDetailPosition({
+                            top: Math.max(5, top),
+                            left: left,
+                            width: detailWidth
+                        })
                     }
-                    
-                    left = Math.max(10, left)
-                    
-                    setDetailPosition({
-                        top: Math.max(5, top),
-                        left: left,
-                        width: detailWidth
-                    })
                 }
             }
         }
@@ -500,8 +511,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 top = rect.bottom - calendarContainer.top
             }
             
-            // 가로 위치: 좌측으로 더 이동하도록 조정
-            let left = rect.left - calendarContainer.left - (detailWidth / 4)
+            // 가로 위치: record의 좌측 기준선과 동일하게 위치
+            let left = rect.left - calendarContainer.left
             
             // weekly-calendar 컨테이너 경계 체크
             const containerRight = calendarContainer.width
@@ -533,14 +544,15 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             const isOverflowingRight = left + detailWidth > containerRight - 150
             
             if (isOverflowingRight) {
-                // 오른쪽 영역을 넘어가면 right: 10 사용
+                // 오른쪽 영역을 넘어가면 record의 우측 기준선과 일치
+                const recordRight = rect.right - calendarContainer.left
                 setDetailPosition({
                     top: top,
-                    right: 10,
+                    right: containerRight - recordRight,
                     width: detailWidth
                 })
             } else {
-                // 정상 범위면 left 속성 사용
+                // 정상 범위면 record의 좌측 기준선과 일치
                 setDetailPosition({
                     top: top,
                     left: left,
