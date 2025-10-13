@@ -439,39 +439,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         return events.filter(event => !event.isAllDay)
     }
 
-    // 특정 날짜의 이벤트 필터링 (TIME 타입만)
-    const getEventsForDay = (events: WeeklyEvent[]) => {
-        return events.filter(event => isRecordType(event.record.type, Record_RecordType.TIME))
-    }
 
-    // 이벤트가 특정 30분 슬롯에 속하는지 확인 (날짜도 비교)
-    const isEventInSubSlot = (event: WeeklyEvent, slotHour: number, subSlotMinute: number, dayOfWeek: number) => {
-        // TIME 타입이 아니면 false
-        if (!isRecordType(event.record.type, Record_RecordType.TIME)) {
-            return false
-        }
-        
-        // 날짜가 맞지 않으면 false
-        if (event.dayOfWeek !== dayOfWeek) {
-            return false
-        }
-        
-        // 시간이 해당 슬롯에 속하는지 확인
-        const [eventHours, eventMinutes] = event.startTime.split(':').map(Number)
-        return eventHours === slotHour && eventMinutes >= subSlotMinute && eventMinutes < subSlotMinute + 30
-    }
 
-    // 이벤트 위치 계산 (시간 기반) - 30분에 2.4rem
-    const calculateEventPosition = (event: WeeklyEvent, slotHour: number, subSlotMinute: number) => {
-        const [hours, minutes] = event.startTime.split(':').map(Number)
-        const totalMinutes = hours * 60 + minutes
-        const slotStartMinutes = slotHour * 60 + subSlotMinute
-        const minutesFromSlotStart = totalMinutes - slotStartMinutes
-        const top = (minutesFromSlotStart / 30) * 2.4 // 30분에 2.4rem
-        const height = Math.max((event.duration / 30) * 2.4, 0.8) // 최소 0.8rem (20px)
-        
-        return { top, height }
-    }
 
     // 현재 시간 표시선 위치 계산
     const calculateCurrentTimePosition = () => {
@@ -531,24 +500,60 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 top = rect.bottom - calendarContainer.top
             }
             
-            // 가로 위치: 화면 경계 내에서 중앙 정렬
-            let left = rect.left - calendarContainer.left + (rect.width / 2) - (detailWidth / 2)
+            // 가로 위치: 좌측으로 더 이동하도록 조정
+            let left = rect.left - calendarContainer.left - (detailWidth / 4)
             
-            // 화면 왼쪽 경계 체크
-            if (left < 0) {
-                left = 10 // 왼쪽 여백 10px
+            // weekly-calendar 컨테이너 경계 체크 - 더 안전한 방법
+            const containerRight = calendarContainer.width
+            const minLeft = 20
+            const maxLeft = containerRight - detailWidth - 220
+            
+            console.log('좌우 경계 체크:', {
+                originalLeft: left,
+                containerWidth: containerRight,
+                detailWidth: detailWidth,
+                minLeft: minLeft,
+                maxLeft: maxLeft,
+                rectLeft: rect.left,
+                calendarLeft: calendarContainer.left
+            })
+            
+            // 컨테이너 왼쪽 경계 체크
+            if (left < minLeft) {
+                console.log('왼쪽 경계 초과, 조정:', left, '->', minLeft)
+                left = minLeft
             }
             
-            // 화면 오른쪽 경계 체크
-            if (left + detailWidth > calendarContainer.width) {
-                left = calendarContainer.width - detailWidth - 60 // 오른쪽 여백 60px
+            // 컨테이너 오른쪽 경계 체크 - 더 안전한 체크
+            if (left + detailWidth > containerRight - 20) {
+                console.log('오른쪽 경계 초과, 조정:', left, '->', maxLeft)
+                left = maxLeft
             }
             
-            // 최소 위치 보장 (왼쪽 여백)
-            left = Math.max(10, left)
+            // 최종 위치 보장 (컨테이너 내부) - 더 안전한 범위
+            left = Math.max(minLeft, Math.min(left, maxLeft))
+            
+            console.log('최종 left 위치:', left, 'containerRight:', containerRight, 'maxLeft:', maxLeft)
+            
+            // 세로 위치도 컨테이너 경계 체크
+            const containerTop = 0
+            const containerBottom = calendarContainer.height
+            
+            // 컨테이너 상단 경계 체크
+            if (top < containerTop) {
+                top = 10
+            }
+            
+            // 컨테이너 하단 경계 체크
+            if (top + detailHeight > containerBottom) {
+                top = containerBottom - detailHeight - 10
+            }
+            
+            // 최소 위치 보장 (컨테이너 내부)
+            top = Math.max(10, Math.min(top, containerBottom - detailHeight - 10))
             
             setDetailPosition({
-                top: Math.max(5, top),
+                top: top,
                 left: left,
                 width: detailWidth
             })
@@ -635,6 +640,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 </div>
             </div>
 
+            
+
             {/* 주간 그리드 */}
             <div className="weekly-grid" ref={weeklyGridRef}>
                 {/* 시간 라벨 */}
@@ -649,7 +656,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 {/* 주간 컬럼들 */}
                 <div className="week-columns">
                     {weekDays.map((day, dayIndex) => {
-                        const dayEvents = getEventsForDay(timedEvents)
+                        // 각 요일에 해당하는 이벤트들만 필터링
+                        const dayEvents = timedEvents.filter(event => {
+                            const eventDate = dayjs(event.record.startedAt)
+                            return eventDate.day() === day.dayOfWeek
+                        })
                         return (
                             <div key={dayIndex} className="day-column">
                                 {/* 현재 시간 표시선 - 각 컬럼에 표시 */}
@@ -669,34 +680,128 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                             {/* 30분 단위 서브 슬롯들 */}
                                             {slot.subSlots.map((subSlot, subIndex) => (
                                                 <div key={subIndex} className="sub-slot">
-                                                    {/* 이벤트 렌더링 */}
-                                                    {dayEvents.map((event, eventIndex) => {
-                                                        if (isEventInSubSlot(event, slot.hour, subSlot.minute, day.dayOfWeek)) {
-                                                            const position = calculateEventPosition(event, slot.hour, subSlot.minute)
-                                                            return (
-                                                                <div
-                                                                    key={eventIndex}
-                                                                    className="timed-event"
-                                                                    style={{
-                                                                        top: `${position.top}rem`,
-                                                                        height: `${position.height}rem`,
-                                                                        backgroundColor: event.color
-                                                                    }}
-                                                                    onClick={(e) => handleRecordClick(event.record, e)}
-                                                                >
-                                                                    <div className="event-title">{event.record.title}</div>
-                                                                    <div className="event-time">
-                                                                        {event.startTime} - {event.endTime}
-                                                                    </div>
-                                                                </div>
-                                                            )
-                                                        }
-                                                        return null
-                                                    })}
+                                                    {/* 빈 sub-slot 구조 */}
                                                 </div>
                                             ))}
                                         </div>
                                     ))}
+                                </div>
+                                
+                                {/* 이벤트들을 그룹화하여 배치 - 각 요일에 해당하는 일정만 */}
+                                <div className="events-slots">
+                                    {(() => {
+                                        // 겹치는 이벤트들을 그룹화
+                                        const eventGroups: WeeklyEvent[][] = []
+                                        const processedEvents = new Set<WeeklyEvent>()
+                                        
+                                        dayEvents.forEach(event => {
+                                            if (processedEvents.has(event)) return
+                                            
+                                            const eventStart = dayjs(event.record.startedAt)
+                                            const eventEnd = dayjs(event.record.endedAt)
+                                            
+                                            // 이 이벤트와 겹치는 모든 이벤트들 찾기
+                                            const overlappingEvents = dayEvents.filter(otherEvent => {
+                                                if (otherEvent === event || processedEvents.has(otherEvent)) return false
+                                                
+                                                const otherStart = dayjs(otherEvent.record.startedAt)
+                                                const otherEnd = dayjs(otherEvent.record.endedAt)
+                                                
+                                                // 시간이 겹치는지 확인
+                                                return eventStart.isBefore(otherEnd) && otherStart.isBefore(eventEnd)
+                                            })
+                                            
+                                            // 그룹 생성 (현재 이벤트 + 겹치는 이벤트들)
+                                            const group = [event, ...overlappingEvents]
+                                            eventGroups.push(group)
+                                            
+                                            // 처리된 이벤트들 마킹
+                                            group.forEach(e => processedEvents.add(e))
+                                        })
+                                        
+                                        return eventGroups.map((group, groupIndex) => {
+                                            
+                                            // 그룹의 시작 시간과 종료 시간 계산
+                                            const groupStart = Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf()))
+                                            const groupEnd = Math.max(...group.map(e => dayjs(e.record.endedAt).valueOf()))
+                                            
+                                            const groupStartTime = dayjs(groupStart)
+                                            const groupEndTime = dayjs(groupEnd)
+                                            
+                                            // 그룹의 위치 계산
+                                            const startHour = groupStartTime.hour()
+                                            const startMinute = groupStartTime.minute()
+                                            const duration = groupEndTime.diff(groupStartTime, 'minute')
+                                            
+                                            const top = (startHour * 4.8) + (startMinute / 30) * 2.4
+                                            const height = Math.max((duration / 30) * 2.4, 0.8)
+                                            
+                                            return (
+                                                <div
+                                                    key={groupIndex}
+                                                    className="event-group"
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: `${top}rem`,
+                                                        left: '0',
+                                                        width: '100%',
+                                                        height: `${height}rem`,
+                                                        display: 'flex',
+                                                        flexDirection: 'row'
+                                                    }}
+                                                >
+                                                    {group.map((event, eventIndex) => {
+                                                        const eventStart = dayjs(event.record.startedAt)
+                                                        const eventEnd = dayjs(event.record.endedAt)
+                                                        const eventDuration = eventEnd.diff(eventStart, 'minute')
+                                                        const eventHeight = Math.max((eventDuration / 30) * 2.4, 0.8)
+                                                        
+                                                        // 그룹 내 div 개수로 width 계산
+                                                        const eventWidth = `${100 / group.length}%`
+                                                        
+                                                        // 각 이벤트의 시작 시간에 따른 top 위치 계산
+                                                        const startHour = eventStart.hour()
+                                                        const startMinute = eventStart.minute()
+                                                        const eventTop = (startHour * 4.8) + (startMinute / 30) * 2.4
+                                                        
+                                                        // 그룹의 시작 시간과의 차이 계산
+                                                        const groupStartTime = dayjs(Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf())))
+                                                        const groupStartHour = groupStartTime.hour()
+                                                        const groupStartMinute = groupStartTime.minute()
+                                                        const groupStartTop = (groupStartHour * 4.8) + (groupStartMinute / 30) * 2.4
+                                                        
+                                                        // 이벤트의 상대적 top 위치 (그룹 내에서의 위치)
+                                                        const relativeTop = eventTop - groupStartTop
+                                                        
+                                                        return (
+                                                            <div
+                                                                key={eventIndex}
+                                                                className="timed-event"
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    top: `${relativeTop}rem`,
+                                                                    left: `${(eventIndex * 100) / group.length}%`,
+                                                                    width: eventWidth,
+                                                                    height: `${eventHeight}rem`,
+                                                                    backgroundColor: event.color,
+                                                                    margin: 0,
+                                                                    padding: '4px 8px',
+                                                                    boxSizing: 'border-box',
+                                                                    borderRight: eventIndex < group.length - 1 ? '1px solid rgba(255,255,255,0.3)' : 'none'
+                                                                }}
+                                                                onClick={(e) => handleRecordClick(event.record, e)}
+                                                            >
+                                                                <div className="event-title">{event.record.title}</div>
+                                                                <div className="event-time">
+                                                                    {event.startTime} - {event.endTime}
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            )
+                                        })
+                                    })()}
                                 </div>
                             </div>
                         )
