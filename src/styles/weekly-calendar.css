@@ -198,7 +198,7 @@
 /* 주간 그리드 */
 .weekly-grid {
     display: flex;
-    height: calc(100% - 120px);
+    height: calc(100% - 143px);
     overflow: auto;
 }
 
@@ -279,6 +279,41 @@
     height: 2.4rem; /* 30분 = 60px */
     border-bottom: 1px solid #f5f5f5;
     position: relative;
+}
+
+/* 각 컬럼의 현재 시간 표시선 */
+.current-time-line-column {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #ff0000 !important;
+    z-index: 9999 !important;
+    pointer-events: none;
+    border-radius: 3px;
+    opacity: 1 !important;
+    border-top: 3px dashed #ff0000;
+    background: transparent !important;
+}
+
+/* 연속된 선을 위한 오른쪽 확장 */
+.current-time-line-column:not(:last-child) {
+    right: -1px;
+    margin-right: 1px;
+}
+
+/* 일요일(첫 번째 컬럼)에만 원형 마커 표시 */
+.day-column:first-child .current-time-line-column::before {
+    content: '' !important;
+    position: absolute;
+    left: -8px;
+    top: -6px;
+    width: 8px;
+    height: 8px;
+    background: #ff0000 !important;
+    border-radius: 50%;
+    z-index: 10000 !important;
+    opacity: 1 !important;
 }
 
 /* 시간 이벤트 */

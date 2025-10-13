@@ -39,6 +39,18 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    const [currentTime, setCurrentTime] = useState(new Date())
+    
+    // 현재 시간 업데이트 (1분마다)
+    useEffect(() => {
+        const updateCurrentTime = () => {
+            setCurrentTime(new Date())
+        }
+        
+        const interval = setInterval(updateCurrentTime, 60000) // 1분마다 업데이트
+        
+        return () => clearInterval(interval)
+    }, [])
     
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
@@ -263,6 +275,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
 
 
+
     // 컴포넌트 마운트 시 07시 위치로 스크롤
     useEffect(() => {
         if (weeklyGridRef.current) {
@@ -374,10 +387,40 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         return { top, height }
     }
 
+    // 현재 시간 표시선 위치 계산
+    const calculateCurrentTimePosition = () => {
+        const now = dayjs(currentTime)
+        const currentWeekStart = dayjs(initialDate).startOf('week')
+        const currentWeekEnd = dayjs(initialDate).endOf('week')
+        
+        // 현재 시간이 이번 주에 속하는지 확인
+        if (now.isBefore(currentWeekStart) || now.isAfter(currentWeekEnd)) {
+            return null
+        }
+        
+        const hours = now.hour()
+        const minutes = now.minute()
+        const totalMinutes = hours * 60 + minutes
+        
+        // 시간 슬롯 구조에 맞는 정확한 계산
+        // 1시간 = 4.8rem, 30분 = 2.4rem
+        // 각 시간 슬롯의 시작점에서 현재 시간까지의 거리 계산
+        const hourSlot = Math.floor(totalMinutes / 60) * 4.8 // 시간 슬롯 시작점
+        const minuteOffset = (totalMinutes % 60) * (2.4 / 30) // 30분 단위 내에서의 분 오프셋
+        
+        const top = hourSlot + minuteOffset
+        
+        return {
+            top,
+            isVisible: true
+        }
+    }
+
     const weekDays = getWeekDays(initialDate)
     const timeSlots = getTimeSlots()
     const allEvents = convertRecordsToEvents(records)
     const timedEvents = getTimedEvents(allEvents)
+    const currentTimePosition = calculateCurrentTimePosition()
 
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
         const rect = event.currentTarget.getBoundingClientRect()
@@ -521,6 +564,16 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                         const dayEvents = getEventsForDay(timedEvents)
                         return (
                             <div key={dayIndex} className="day-column">
+                                {/* 현재 시간 표시선 - 각 컬럼에 표시 */}
+                                {currentTimePosition && (
+                                    <div 
+                                        className="current-time-line-column"
+                                        style={{
+                                            top: `${currentTimePosition.top}rem`
+                                        }}
+                                    />
+                                )}
+                                
                                 {/* 시간 슬롯들 */}
                                 <div className="time-slots">
                                     {timeSlots.map((slot, slotIndex) => (
