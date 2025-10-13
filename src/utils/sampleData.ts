@@ -703,6 +703,185 @@ export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
             recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
             createdAt: Date.now(),
             updatedAt: Date.now()
+        },
+        
+        // ===== 겹치는 시간 이벤트들 =====
+        
+        // 월요일 겹치는 이벤트들 (9:00-11:00)
+        {
+            id: 'w28',
+            title: '긴급 미팅',
+            type: 'TIME',
+            description: '긴급한 이슈 해결을 위한 미팅',
+            startedAt: currentWeek.add(1, 'day').hour(9).minute(30).valueOf(),
+            endedAt: currentWeek.add(1, 'day').hour(10).minute(30).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w29',
+            title: '클라이언트 콜',
+            type: 'TIME',
+            description: '고객사와의 긴급 통화',
+            startedAt: currentWeek.add(1, 'day').hour(10).minute(0).valueOf(),
+            endedAt: currentWeek.add(1, 'day').hour(11).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 화요일 겹치는 이벤트들 (14:00-17:00)
+        {
+            id: 'w30',
+            title: '팀 워크샵',
+            type: 'TIME',
+            description: '팀 빌딩 및 협업 워크샵',
+            startedAt: currentWeek.add(2, 'day').hour(14).minute(30).valueOf(),
+            endedAt: currentWeek.add(2, 'day').hour(16).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w31',
+            title: '기술 세미나',
+            type: 'TIME',
+            description: '최신 기술 트렌드 세미나 참석',
+            startedAt: currentWeek.add(2, 'day').hour(15).minute(0).valueOf(),
+            endedAt: currentWeek.add(2, 'day').hour(17).minute(30).valueOf(),
+            recordGroup: recordGroups[4], // 독서 토론 동호회
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 수요일 겹치는 이벤트들 (19:00-22:00)
+        {
+            id: 'w32',
+            title: '개인 스터디',
+            type: 'TIME',
+            description: 'React 18 신기능 스터디',
+            startedAt: currentWeek.add(3, 'day').hour(19).minute(0).valueOf(),
+            endedAt: currentWeek.add(3, 'day').hour(21).minute(0).valueOf(),
+            recordGroup: recordGroups[4], // 독서 토론 동호회
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w33',
+            title: '온라인 강의',
+            type: 'TIME',
+            description: 'AWS 클라우드 아키텍처 온라인 강의',
+            startedAt: currentWeek.add(3, 'day').hour(20).minute(0).valueOf(),
+            endedAt: currentWeek.add(3, 'day').hour(22).minute(0).valueOf(),
+            recordGroup: recordGroups[4], // 독서 토론 동호회
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w34',
+            title: '사이드 프로젝트 회의',
+            type: 'TIME',
+            description: '워크폴리오 프로젝트 팀 회의',
+            startedAt: currentWeek.add(3, 'day').hour(19).minute(30).valueOf(),
+            endedAt: currentWeek.add(3, 'day').hour(21).minute(30).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 목요일 겹치는 이벤트들 (16:00-19:00)
+        {
+            id: 'w35',
+            title: '고객사 미팅',
+            type: 'TIME',
+            description: '부산 고객사와의 프로젝트 미팅',
+            startedAt: currentWeek.add(4, 'day').hour(16).minute(0).valueOf(),
+            endedAt: currentWeek.add(4, 'day').hour(18).minute(0).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w36',
+            title: '내부 미팅',
+            type: 'TIME',
+            description: '팀 내부 프로젝트 진행 상황 미팅',
+            startedAt: currentWeek.add(4, 'day').hour(17).minute(0).valueOf(),
+            endedAt: currentWeek.add(4, 'day').hour(19).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 금요일 겹치는 이벤트들 (14:00-18:00)
+        {
+            id: 'w37',
+            title: '프로젝트 보고서 작성',
+            type: 'TIME',
+            description: '출장 결과 보고서 작성',
+            startedAt: currentWeek.add(5, 'day').hour(14).minute(0).valueOf(),
+            endedAt: currentWeek.add(5, 'day').hour(16).minute(30).valueOf(),
+            recordGroup: recordGroups[2], // 출장
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w38',
+            title: '코드 리뷰',
+            type: 'TIME',
+            description: '팀원들의 코드 리뷰 및 피드백',
+            startedAt: currentWeek.add(5, 'day').hour(15).minute(0).valueOf(),
+            endedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w39',
+            title: '주간 회고',
+            type: 'TIME',
+            description: '이번 주 작업 내용 회고 및 다음 주 계획',
+            startedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
+            endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
+            recordGroup: recordGroups[0], // 업무
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        
+        // 토요일 겹치는 이벤트들 (10:00-15:00)
+        {
+            id: 'w40',
+            title: '개발 작업',
+            type: 'TIME',
+            description: '새로운 기능 개발',
+            startedAt: currentWeek.add(6, 'day').hour(10).minute(0).valueOf(),
+            endedAt: currentWeek.add(6, 'day').hour(14).minute(0).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w41',
+            title: '디자인 리뷰',
+            type: 'TIME',
+            description: 'UI/UX 디자인 리뷰 및 개선사항 논의',
+            startedAt: currentWeek.add(6, 'day').hour(11).minute(0).valueOf(),
+            endedAt: currentWeek.add(6, 'day').hour(13).minute(0).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: 'w42',
+            title: '데이터베이스 최적화',
+            type: 'TIME',
+            description: '성능 개선을 위한 DB 쿼리 최적화',
+            startedAt: currentWeek.add(6, 'day').hour(12).minute(0).valueOf(),
+            endedAt: currentWeek.add(6, 'day').hour(15).minute(0).valueOf(),
+            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
+            createdAt: Date.now(),
+            updatedAt: Date.now()
         }
     ]
 }
