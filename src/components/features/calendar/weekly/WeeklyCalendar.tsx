@@ -38,7 +38,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
-    const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    const [detailPosition, setDetailPosition] = useState<{top: number, left?: number, right?: number, width: number} | null>(null)
     const [clickedElement, setClickedElement] = useState<HTMLElement | null>(null)
     const [currentTime, setCurrentTime] = useState(new Date())
     
@@ -503,37 +503,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             // 가로 위치: 좌측으로 더 이동하도록 조정
             let left = rect.left - calendarContainer.left - (detailWidth / 4)
             
-            // weekly-calendar 컨테이너 경계 체크 - 더 안전한 방법
+            // weekly-calendar 컨테이너 경계 체크
             const containerRight = calendarContainer.width
             const minLeft = 20
-            const maxLeft = containerRight - detailWidth - 220
-            
-            console.log('좌우 경계 체크:', {
-                originalLeft: left,
-                containerWidth: containerRight,
-                detailWidth: detailWidth,
-                minLeft: minLeft,
-                maxLeft: maxLeft,
-                rectLeft: rect.left,
-                calendarLeft: calendarContainer.left
-            })
             
             // 컨테이너 왼쪽 경계 체크
             if (left < minLeft) {
-                console.log('왼쪽 경계 초과, 조정:', left, '->', minLeft)
                 left = minLeft
             }
-            
-            // 컨테이너 오른쪽 경계 체크 - 더 안전한 체크
-            if (left + detailWidth > containerRight - 20) {
-                console.log('오른쪽 경계 초과, 조정:', left, '->', maxLeft)
-                left = maxLeft
-            }
-            
-            // 최종 위치 보장 (컨테이너 내부) - 더 안전한 범위
-            left = Math.max(minLeft, Math.min(left, maxLeft))
-            
-            console.log('최종 left 위치:', left, 'containerRight:', containerRight, 'maxLeft:', maxLeft)
             
             // 세로 위치도 컨테이너 경계 체크
             const containerTop = 0
@@ -552,11 +529,24 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             // 최소 위치 보장 (컨테이너 내부)
             top = Math.max(10, Math.min(top, containerBottom - detailHeight - 10))
             
-            setDetailPosition({
-                top: top,
-                left: left,
-                width: detailWidth
-            })
+            // 오른쪽 영역을 넘어가는지 체크
+            const isOverflowingRight = left + detailWidth > containerRight - 150
+            
+            if (isOverflowingRight) {
+                // 오른쪽 영역을 넘어가면 right: 10 사용
+                setDetailPosition({
+                    top: top,
+                    right: 10,
+                    width: detailWidth
+                })
+            } else {
+                // 정상 범위면 left 속성 사용
+                setDetailPosition({
+                    top: top,
+                    left: left,
+                    width: detailWidth
+                })
+            }
         }
         
         setSelectedRecord(record)
@@ -584,6 +574,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const handleCloseUpdateModal = () => {
         setIsUpdateModalOpen(false)
         setSelectedRecord(null)
+        setDetailPosition(null)
         setClickedElement(null)
     }
 

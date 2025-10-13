@@ -11,7 +11,8 @@ interface RecordDetailProps {
     onDelete?: () => void;
     position?: {
         top: number;
-        left: number;
+        left?: number;
+        right?: number;
         width: number;
     };
 }
@@ -82,7 +83,8 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
             ref={containerRef}
             style={position ? {
                 top: position.top,
-                left: position.left,
+                ...(position.left !== undefined && { left: position.left }),
+                ...(position.right !== undefined && { right: position.right }),
                 zIndex: 9999
             } : {}}
         >
