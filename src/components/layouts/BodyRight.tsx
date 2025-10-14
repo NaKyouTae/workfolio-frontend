@@ -99,7 +99,6 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                 ) : recordType === 'weekly' ? (
                     <WeeklyCalendar
                         initialDate={date}
-                        records={filteredRecords}
                     />
                 ) : (
                     <ListCalendar

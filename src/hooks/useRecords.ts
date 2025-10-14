@@ -5,7 +5,7 @@ import { createSampleRecordGroups, createSampleRecords, createSampleRecordsForMo
 import HttpMethod from '@/enums/HttpMethod';
 import { CalendarViewType } from '@/models/CalendarTypes';
 
-export const useRecords = (recordType: CalendarViewType = 'weekly', month?: number, year?: number) => {
+export const useRecords = (recordType: CalendarViewType = 'weekly', month?: number, year?: number, initialDate?: Date) => {
     const [records, setRecords] = useState<Record[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     
@@ -124,9 +124,9 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
                 
                 const currentCheckedGroupIds = getCheckedGroupIds();
                 
-                const filteredRecords = sampleRecords.filter((record: Record) => 
-                    currentCheckedGroupIds.includes(record.recordGroup?.id || '')
-                );
+                const filteredRecords = sampleRecords.filter((record: unknown) => 
+                    currentCheckedGroupIds.includes((record as { recordGroup?: { id?: string } }).recordGroup?.id || '')
+                ) as unknown as Record[];
                 
                 setRecords(filteredRecords);
                 return;
@@ -164,18 +164,18 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             
             const currentCheckedGroupIds = getCheckedGroupIds();
             
-            const filteredRecords = sampleRecords.filter((record: Record) => 
-                currentCheckedGroupIds.includes(record.recordGroup?.id || '')
-            );
+            const filteredRecords = sampleRecords.filter((record: unknown) => 
+                currentCheckedGroupIds.includes((record as { recordGroup?: { id?: string } }).recordGroup?.id || '')
+            ) as unknown as Record[];
             
             setRecords(filteredRecords);
         } else {
             // 로그인한 경우 - recordType에 따라 적절한 API 함수 호출
             if (recordType === 'weekly') {
-                // Weekly의 경우 현재 주의 시작일과 종료일 계산
-                const currentDate = new Date();
-                const startOfWeek = new Date(currentDate);
-                startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+                // Weekly의 경우 initialDate 기준으로 주의 시작일과 종료일 계산
+                const targetDate = initialDate || new Date();
+                const startOfWeek = new Date(targetDate);
+                startOfWeek.setDate(targetDate.getDate() - targetDate.getDay());
                 const endOfWeek = new Date(startOfWeek);
                 endOfWeek.setDate(startOfWeek.getDate() + 6);
                 
@@ -187,7 +187,7 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
                 loadMonthlyApiData();
             }
         }
-    }, [checkedGroupIdsString, getCheckedGroupIds, loadWeeklyApiData, loadMonthlyApiData, recordType]);
+    }, [checkedGroupIdsString, initialDate, getCheckedGroupIds, loadWeeklyApiData, loadMonthlyApiData, recordType]);
 
     // 레코드 조회 useEffect - month, year 변경 시에만 실행
     useEffect(() => {
@@ -205,18 +205,18 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             
             const currentCheckedGroupIds = getCheckedGroupIds();
             
-            const filteredRecords = sampleRecords.filter((record: Record) => 
-                currentCheckedGroupIds.includes(record.recordGroup?.id || '')
-            );
+            const filteredRecords = sampleRecords.filter((record: unknown) => 
+                currentCheckedGroupIds.includes((record as { recordGroup?: { id?: string } }).recordGroup?.id || '')
+            ) as unknown as Record[];
             
             setRecords(filteredRecords);
         } else {
             // 로그인한 경우 - recordType에 따라 적절한 API 함수 호출
             if (recordType === 'weekly') {
-                // Weekly의 경우 현재 주의 시작일과 종료일 계산
-                const currentDate = new Date();
-                const startOfWeek = new Date(currentDate);
-                startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+                // Weekly의 경우 initialDate 기준으로 주의 시작일과 종료일 계산
+                const targetDate = initialDate || new Date();
+                const startOfWeek = new Date(targetDate);
+                startOfWeek.setDate(targetDate.getDate() - targetDate.getDay());
                 const endOfWeek = new Date(startOfWeek);
                 endOfWeek.setDate(startOfWeek.getDate() + 6);
                 
@@ -228,7 +228,7 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
                 loadMonthlyApiData(month, year);
             }
         }
-    }, [month, year, getCheckedGroupIds, loadWeeklyApiData, loadMonthlyApiData, recordType]);
+    }, [month, year, initialDate, getCheckedGroupIds, loadWeeklyApiData, loadMonthlyApiData, recordType]);
 
     // recordRefreshTrigger 변경 시 새로고침
     useEffect(() => {
@@ -245,18 +245,18 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
                 
                 const currentCheckedGroupIds = getCheckedGroupIds();
                 
-                const filteredRecords = sampleRecords.filter((record: Record) => 
-                    currentCheckedGroupIds.includes(record.recordGroup?.id || '')
-                );
+                const filteredRecords = sampleRecords.filter((record: unknown) => 
+                    currentCheckedGroupIds.includes((record as { recordGroup?: { id?: string } }).recordGroup?.id || '')
+                ) as unknown as Record[];
                 
                 setRecords(filteredRecords);
             } else {
                 // 로그인한 경우 - recordType에 따라 적절한 API 함수 호출
                 if (recordType === 'weekly') {
-                    // Weekly의 경우 현재 주의 시작일과 종료일 계산
-                    const currentDate = new Date();
-                    const startOfWeek = new Date(currentDate);
-                    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+                    // Weekly의 경우 initialDate 기준으로 주의 시작일과 종료일 계산
+                    const targetDate = initialDate || new Date();
+                    const startOfWeek = new Date(targetDate);
+                    startOfWeek.setDate(targetDate.getDate() - targetDate.getDay());
                     const endOfWeek = new Date(startOfWeek);
                     endOfWeek.setDate(startOfWeek.getDate() + 6);
                     
@@ -269,7 +269,7 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
                 }
             }
         }
-    }, [recordRefreshTrigger, month, year, getCheckedGroupIds, loadWeeklyApiData, loadMonthlyApiData, recordType]);
+    }, [recordRefreshTrigger, month, year, initialDate, getCheckedGroupIds, loadWeeklyApiData, loadMonthlyApiData, recordType]);
 
     return {
         records,

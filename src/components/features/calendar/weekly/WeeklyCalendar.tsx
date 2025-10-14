@@ -8,6 +8,7 @@ import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import RecordCreateModal from '../../modal/RecordCreateModal'
 import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
+import { useRecords } from '@/hooks/useRecords'
 import { isRecordType } from '@/utils/calendarUtils'
 import { CalendarDay } from '@/models/CalendarTypes'
 
@@ -17,7 +18,6 @@ dayjs.tz.setDefault('Asia/Seoul')
 
 interface WeeklyCalendarProps {
     initialDate: Date
-    records: Record[]
 }
 
 interface WeeklyEvent {
@@ -31,9 +31,23 @@ interface WeeklyEvent {
 }
 
 const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ 
-    initialDate,
-    records
+    initialDate
 }) => {
+    // 주간 날짜 생성 (일요일부터 토요일까지)
+    const getWeekDays = (date: Date) => {
+        const startOfWeek = dayjs(date).startOf('week')
+        return Array.from({ length: 7 }, (_, i) => {
+            const day = startOfWeek.add(i, 'day')
+            return {
+                date: day.toDate(),
+                dayOfWeek: day.day(),
+                displayDate: day.format('D'),
+                displayDay: day.format('ddd'),
+                isToday: day.isSame(dayjs(), 'day')
+            }
+        })
+    }
+
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -41,6 +55,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [detailPosition, setDetailPosition] = useState<{top: number, left?: number, right?: number, width: number} | null>(null)
     const [clickedElement, setClickedElement] = useState<HTMLElement | null>(null)
     const [currentTime, setCurrentTime] = useState(new Date())
+    const [weekDays, setWeekDays] = useState(() => getWeekDays(initialDate))
+    
+    // initialDate가 변경될 때 weekDays 업데이트
+    useEffect(() => {
+        setWeekDays(getWeekDays(initialDate))
+    }, [initialDate])
     
     // 현재 시간 업데이트 (1분마다)
     useEffect(() => {
@@ -124,6 +144,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()
+    const { records } = useRecords('weekly', undefined, undefined, initialDate)
     
     // initialDate 기준으로 현재 주 데이터만 추출
     const currentWeekStart = dayjs(initialDate).startOf('week')
@@ -342,9 +363,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         return rows
     }
 
-
-
-
     // 컴포넌트 마운트 시 currentTime 위치로 스크롤
     useEffect(() => {
         if (weeklyGridRef.current) {
@@ -381,21 +399,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             weeklyGridRef.current.scrollTop = scrollTop * 16 // rem을 px로 변환
         }
     }, [currentTime])
-
-    // 주간 날짜 생성 (일요일부터 토요일까지)
-    const getWeekDays = (date: Date) => {
-        const startOfWeek = dayjs(date).startOf('week')
-        return Array.from({ length: 7 }, (_, i) => {
-            const day = startOfWeek.add(i, 'day')
-            return {
-                date: day.toDate(),
-                dayOfWeek: day.day(),
-                displayDate: day.format('D'),
-                displayDay: day.format('ddd'),
-                isToday: day.isSame(dayjs(), 'day')
-            }
-        })
-    }
 
     // 시간 슬롯 생성 (00:00부터 23:00까지)
     const getTimeSlots = () => {
@@ -444,22 +447,23 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         })
     }
 
-
-    // 시간 이벤트 필터링
+    // 시간 이벤트 필터링 (현재 주 범위 내의 이벤트만)
     const getTimedEvents = (events: WeeklyEvent[]) => {
-        return events.filter(event => !event.isAllDay)
+        const currentWeekStart = dayjs(initialDate).startOf('week')
+        const currentWeekEnd = dayjs(initialDate).endOf('week')
+        
+        return events.filter(event => {
+            const eventDate = dayjs(event.record.startedAt)
+            // 현재 주 범위 내의 이벤트만 필터링
+            return !event.isAllDay && 
+                   (eventDate.isAfter(currentWeekStart, 'day') || eventDate.isSame(currentWeekStart, 'day')) && 
+                   (eventDate.isBefore(currentWeekEnd, 'day') || eventDate.isSame(currentWeekEnd, 'day'))
+        })
     }
 
     // 현재 시간 표시선 위치 계산
     const calculateCurrentTimePosition = () => {
         const now = dayjs(currentTime)
-        const currentWeekStart = dayjs(initialDate).startOf('week')
-        const currentWeekEnd = dayjs(initialDate).endOf('week')
-        
-        // 현재 시간이 이번 주에 속하는지 확인
-        if (now.isBefore(currentWeekStart) || now.isAfter(currentWeekEnd)) {
-            return null
-        }
         
         const hours = now.hour()
         const minutes = now.minute()
@@ -479,11 +483,15 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         }
     }
 
-    const weekDays = getWeekDays(initialDate)
     const timeSlots = getTimeSlots()
     const allEvents = convertRecordsToEvents(records)
     const timedEvents = getTimedEvents(allEvents)
     const currentTimePosition = calculateCurrentTimePosition()
+    
+    // records가 변경될 때 이벤트 데이터 업데이트
+    useEffect(() => {
+        // records 변경 시 자동으로 리렌더링됨
+    }, [records])
 
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
         const rect = event.currentTarget.getBoundingClientRect()
@@ -656,22 +664,22 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 {/* 주간 컬럼들 */}
                 <div className="week-columns">
                     {weekDays.map((day, dayIndex) => {
-                        // 각 요일에 해당하는 이벤트들만 필터링
+                        // 각 요일에 해당하는 이벤트들만 필터링 (날짜 기반)
                         const dayEvents = timedEvents.filter(event => {
                             const eventDate = dayjs(event.record.startedAt)
-                            return eventDate.day() === day.dayOfWeek
+                            const dayDate = dayjs(day.date)
+                            // 정확한 날짜 비교 (년월일)
+                            return eventDate.isSame(dayDate, 'day')
                         })
                         return (
                             <div key={dayIndex} className="day-column">
                                 {/* 현재 시간 표시선 - 각 컬럼에 표시 */}
-                                {currentTimePosition && (
-                                    <div 
-                                        className="current-time-line-column"
-                                        style={{
-                                            top: `${currentTimePosition.top}rem`
-                                        }}
-                                    />
-                                )}
+                                <div 
+                                    className="current-time-line-column"
+                                    style={{
+                                        top: `${currentTimePosition.top}rem`
+                                    }}
+                                />
                                 
                                 {/* 시간 슬롯들 */}
                                 <div className="time-slots">
