@@ -427,8 +427,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     // 레코드를 주간 이벤트로 변환
     const convertRecordsToEvents = (records: Record[]): WeeklyEvent[] => {
         return records.map(record => {
-            const startTimestamp = parseInt(record.startedAt.toString())
-            const endTimestamp = parseInt(record.endedAt.toString())
+            // startedAt과 endedAt이 문자열인 경우와 숫자인 경우 모두 처리
+            const startTimestamp = typeof record.startedAt === 'string' 
+                ? parseInt(record.startedAt) 
+                : record.startedAt
+            const endTimestamp = typeof record.endedAt === 'string' 
+                ? parseInt(record.endedAt) 
+                : record.endedAt
+            
             const startDate = dayjs(startTimestamp)
             const endDate = dayjs(endTimestamp)
             
@@ -453,7 +459,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         const currentWeekEnd = dayjs(initialDate).endOf('week')
         
         return events.filter(event => {
-            const eventDate = dayjs(event.record.startedAt)
+            // startedAt이 문자열인 경우와 숫자인 경우 모두 처리
+            const startTimestamp = typeof event.record.startedAt === 'string' 
+                ? parseInt(event.record.startedAt) 
+                : event.record.startedAt
+            const eventDate = dayjs(startTimestamp)
             // 현재 주 범위 내의 이벤트만 필터링
             return !event.isAllDay && 
                    (eventDate.isAfter(currentWeekStart, 'day') || eventDate.isSame(currentWeekStart, 'day')) && 
@@ -487,6 +497,56 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const allEvents = convertRecordsToEvents(records)
     const timedEvents = getTimedEvents(allEvents)
     const currentTimePosition = calculateCurrentTimePosition()
+    
+    // 디버깅을 위한 로그
+    console.log('WeeklyCalendar Debug:', {
+        recordsCount: records.length,
+        allEventsCount: allEvents.length,
+        timedEventsCount: timedEvents.length,
+        initialDate: initialDate,
+        currentWeekStart: dayjs(initialDate).startOf('week').format('YYYY-MM-DD'),
+        currentWeekEnd: dayjs(initialDate).endOf('week').format('YYYY-MM-DD'),
+        sampleRecord: records[0] ? {
+            id: records[0].id,
+            title: records[0].title,
+            startedAt: records[0].startedAt,
+            endedAt: records[0].endedAt,
+            type: records[0].type
+        } : null,
+        sampleEvent: allEvents[0] ? {
+            id: allEvents[0].record.id,
+            title: allEvents[0].record.title,
+            startedAt: allEvents[0].record.startedAt,
+            endedAt: allEvents[0].record.endedAt,
+            type: allEvents[0].record.type,
+            isAllDay: allEvents[0].isAllDay
+        } : null,
+        eventDateCheck: allEvents[0] ? {
+            originalStartedAt: allEvents[0].record.startedAt,
+            parsedTimestamp: typeof allEvents[0].record.startedAt === 'string' 
+                ? parseInt(allEvents[0].record.startedAt) 
+                : allEvents[0].record.startedAt,
+            parsedDate: dayjs(typeof allEvents[0].record.startedAt === 'string' 
+                ? parseInt(allEvents[0].record.startedAt) 
+                : allEvents[0].record.startedAt).format('YYYY-MM-DD HH:mm:ss'),
+            isInWeekRange: (() => {
+                const startTimestamp = typeof allEvents[0].record.startedAt === 'string' 
+                    ? parseInt(allEvents[0].record.startedAt) 
+                    : allEvents[0].record.startedAt
+                const eventDate = dayjs(startTimestamp)
+                const currentWeekStart = dayjs(initialDate).startOf('week')
+                const currentWeekEnd = dayjs(initialDate).endOf('week')
+                return {
+                    eventDate: eventDate.format('YYYY-MM-DD'),
+                    weekStart: currentWeekStart.format('YYYY-MM-DD'),
+                    weekEnd: currentWeekEnd.format('YYYY-MM-DD'),
+                    isAfterStart: eventDate.isAfter(currentWeekStart, 'day') || eventDate.isSame(currentWeekStart, 'day'),
+                    isBeforeEnd: eventDate.isBefore(currentWeekEnd, 'day') || eventDate.isSame(currentWeekEnd, 'day'),
+                    isAllDay: allEvents[0].isAllDay
+                }
+            })()
+        } : null
+    })
     
     // records가 변경될 때 이벤트 데이터 업데이트
     useEffect(() => {
@@ -666,7 +726,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                     {weekDays.map((day, dayIndex) => {
                         // 각 요일에 해당하는 이벤트들만 필터링 (날짜 기반)
                         const dayEvents = timedEvents.filter(event => {
-                            const eventDate = dayjs(event.record.startedAt)
+                            // startedAt이 문자열인 경우와 숫자인 경우 모두 처리
+                            const startTimestamp = typeof event.record.startedAt === 'string' 
+                                ? parseInt(event.record.startedAt) 
+                                : event.record.startedAt
+                            const eventDate = dayjs(startTimestamp)
                             const dayDate = dayjs(day.date)
                             // 정확한 날짜 비교 (년월일)
                             return eventDate.isSame(dayDate, 'day')
@@ -717,15 +781,27 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                 visited.add(currentEvent)
                                                 const overlapping: WeeklyEvent[] = [currentEvent]
                                                 
-                                                const currentStart = dayjs(currentEvent.record.startedAt)
-                                                const currentEnd = dayjs(currentEvent.record.endedAt)
+                                                const currentStartTimestamp = typeof currentEvent.record.startedAt === 'string' 
+                                                    ? parseInt(currentEvent.record.startedAt) 
+                                                    : currentEvent.record.startedAt
+                                                const currentEndTimestamp = typeof currentEvent.record.endedAt === 'string' 
+                                                    ? parseInt(currentEvent.record.endedAt) 
+                                                    : currentEvent.record.endedAt
+                                                const currentStart = dayjs(currentStartTimestamp)
+                                                const currentEnd = dayjs(currentEndTimestamp)
                                                 
                                                 // 다른 모든 이벤트들과 겹침 확인
                                                 dayEvents.forEach(otherEvent => {
                                                     if (otherEvent === currentEvent || visited.has(otherEvent) || processedEvents.has(otherEvent)) return
                                                     
-                                                    const otherStart = dayjs(otherEvent.record.startedAt)
-                                                    const otherEnd = dayjs(otherEvent.record.endedAt)
+                                                    const otherStartTimestamp = typeof otherEvent.record.startedAt === 'string' 
+                                                        ? parseInt(otherEvent.record.startedAt) 
+                                                        : otherEvent.record.startedAt
+                                                    const otherEndTimestamp = typeof otherEvent.record.endedAt === 'string' 
+                                                        ? parseInt(otherEvent.record.endedAt) 
+                                                        : otherEvent.record.endedAt
+                                                    const otherStart = dayjs(otherStartTimestamp)
+                                                    const otherEnd = dayjs(otherEndTimestamp)
                                                     
                                                     // 정확한 겹침 감지: 두 이벤트가 실제로 시간적으로 겹치는지 확인
                                                     // A 이벤트: [startA, endA], B 이벤트: [startB, endB]
@@ -757,8 +833,18 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                             // 그룹화된 이벤트들
                                             ...eventGroups.map((group, groupIndex) => {
                                                 // 그룹의 시작 시간과 종료 시간 계산
-                                                const groupStart = Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf()))
-                                                const groupEnd = Math.max(...group.map(e => dayjs(e.record.endedAt).valueOf()))
+                                                const groupStart = Math.min(...group.map(e => {
+                                                    const startTimestamp = typeof e.record.startedAt === 'string' 
+                                                        ? parseInt(e.record.startedAt) 
+                                                        : e.record.startedAt
+                                                    return dayjs(startTimestamp).valueOf()
+                                                }))
+                                                const groupEnd = Math.max(...group.map(e => {
+                                                    const endTimestamp = typeof e.record.endedAt === 'string' 
+                                                        ? parseInt(e.record.endedAt) 
+                                                        : e.record.endedAt
+                                                    return dayjs(endTimestamp).valueOf()
+                                                }))
                                                 
                                                 const groupStartTime = dayjs(groupStart)
                                                 const groupEndTime = dayjs(groupEnd)
@@ -786,8 +872,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                         }}
                                                     >
                                                         {group.map((event, eventIndex) => {
-                                                            const eventStart = dayjs(event.record.startedAt)
-                                                            const eventEnd = dayjs(event.record.endedAt)
+                                                            const eventStartTimestamp = typeof event.record.startedAt === 'string' 
+                                                                ? parseInt(event.record.startedAt) 
+                                                                : event.record.startedAt
+                                                            const eventEndTimestamp = typeof event.record.endedAt === 'string' 
+                                                                ? parseInt(event.record.endedAt) 
+                                                                : event.record.endedAt
+                                                            const eventStart = dayjs(eventStartTimestamp)
+                                                            const eventEnd = dayjs(eventEndTimestamp)
                                                             const eventDuration = eventEnd.diff(eventStart, 'minute')
                                                             const eventHeight = Math.max((eventDuration / 30) * 2.4, 0.8)
                                                             
@@ -800,7 +892,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                             const eventTop = (startHour * 4.8) + (startMinute / 30) * 2.4
                                                             
                                                             // 그룹의 시작 시간과의 차이 계산
-                                                            const groupStartTime = dayjs(Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf())))
+                                                            const groupStartTime = dayjs(Math.min(...group.map(e => {
+                                                                const startTimestamp = typeof e.record.startedAt === 'string' 
+                                                                    ? parseInt(e.record.startedAt) 
+                                                                    : e.record.startedAt
+                                                                return dayjs(startTimestamp).valueOf()
+                                                            })))
                                                             const groupStartHour = groupStartTime.hour()
                                                             const groupStartMinute = groupStartTime.minute()
                                                             const groupStartTop = (groupStartHour * 4.8) + (groupStartMinute / 30) * 2.4
@@ -859,8 +956,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                             
                                             // 단일 이벤트들
                                             ...singleEvents.map((event, eventIndex) => {
-                                                const eventStart = dayjs(event.record.startedAt)
-                                                const eventEnd = dayjs(event.record.endedAt)
+                                                const eventStartTimestamp = typeof event.record.startedAt === 'string' 
+                                                    ? parseInt(event.record.startedAt) 
+                                                    : event.record.startedAt
+                                                const eventEndTimestamp = typeof event.record.endedAt === 'string' 
+                                                    ? parseInt(event.record.endedAt) 
+                                                    : event.record.endedAt
+                                                const eventStart = dayjs(eventStartTimestamp)
+                                                const eventEnd = dayjs(eventEndTimestamp)
                                                 const eventDuration = eventEnd.diff(eventStart, 'minute')
                                                 
                                                 const startHour = eventStart.hour()
