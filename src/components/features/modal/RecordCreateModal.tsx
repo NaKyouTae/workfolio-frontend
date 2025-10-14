@@ -12,9 +12,10 @@ import dayjs from 'dayjs'
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
+    selectedDate?: string | null;
 }
 
-const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedDate }) => {
     const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
     const [recordGroupId, setRecordGroupId] = useState<string | null>(null);
     const [title, setTitle] = useState<string | null>(null);
@@ -52,8 +53,28 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         if (isOpen) {
             setTitle(null);
             setDescription(null);
-            setStartedAt(dayjs().toISOString());
-            setEndedAt(dayjs().add(1, 'hour').toISOString());
+            
+            // selectedDate가 있으면 해당 날짜로 설정, 없으면 현재 시간으로 설정
+            if (selectedDate) {
+                const selectedDay = dayjs(selectedDate);
+                setStartedAt(selectedDay.startOf('day').toISOString());
+                setEndedAt(selectedDay.startOf('day').add(1, 'hour').toISOString());
+            } else {
+                // 현재 시간을 기준으로 1시간 차이로 설정 (같은 날 내에서)
+                const now = dayjs();
+                
+                // 현재 시간이 23시면 22시-23시로, 아니면 현재 시간-1시간 후로 설정
+                const currentHour = now.hour();
+                const startHour = currentHour >= 23 ? 22 : currentHour;
+                const endHour = startHour + 1;
+                
+                const startTime = now.hour(startHour).minute(0).second(0);
+                const endTime = now.hour(endHour).minute(0).second(0);
+                
+                setStartedAt(startTime.toISOString());
+                setEndedAt(endTime.toISOString());
+            }
+            
             setRecordGroupId(null);
             setIsAllDay(false);
             setSelectedFile(null);
@@ -90,7 +111,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             fetchRecordGroups();
             refreshCompanies();
         }
-    }, [isOpen, refreshCompanies]);
+    }, [isOpen, selectedDate, refreshCompanies]);
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

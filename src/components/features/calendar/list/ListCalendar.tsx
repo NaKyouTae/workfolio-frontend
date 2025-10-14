@@ -22,6 +22,7 @@ interface ListRecord extends Record {
     isMultiDayStart?: boolean
     isMultiDayEnd?: boolean
     isMultiDayMiddle?: boolean
+    currentDay: dayjs.Dayjs
 }
 
 interface ListCalendarProps {
@@ -38,6 +39,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
+    const [selectedDate, setSelectedDate] = useState<string | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()  
@@ -111,7 +113,8 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 date: dayInfo.date,
                 displayDate: dayInfo.displayDate,
                 dayOfWeek: dayInfo.dayOfWeek,
-                isWeekend: dayInfo.isWeekend
+                isWeekend: dayInfo.isWeekend,
+                currentDay: dayInfo.dayjs
             })
         } else {
             // 레코드가 있는 날은 각 레코드마다 행 생성
@@ -144,11 +147,12 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                     displayDate: dayInfo.displayDate,
                     displayTime,
                     dayOfWeek: startDate.format('ddd'),
-                    isWeekend: startDate.day() === 0 || startDate.day() === 6,
+                    isWeekend: currentDay.day() === 0 || currentDay.day() === 6,
                     isFirstRecordOfDay: index === 0, // 같은 날짜의 첫 번째 레코드인지 표시
                     isMultiDayStart,
                     isMultiDayEnd,
-                    isMultiDayMiddle
+                    isMultiDayMiddle,
+                    currentDay,
                 })
             })
         }
@@ -217,7 +221,8 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
     }
 
     // 레코드 생성 모달 열기 핸들러
-    const handleOpenCreateModal = () => {
+    const handleOpenCreateModal = (date?: string) => {
+        setSelectedDate(date || null)
         setIsCreateModalOpen(true)
     }
 
@@ -285,8 +290,8 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                 <tr
                                     key={`empty-${item.date}`}
                                 >
-                                    <td className={`$${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
-                                    <td><button onClick={handleOpenCreateModal}><i className="ic-add" /></button></td>
+                                    <td className={`${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
+                                    <td><button onClick={() => handleOpenCreateModal(item.date)}><i className="ic-add" /></button></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -301,7 +306,9 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                                 <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? item.displayDate : ''}</td>
                                 <td>
                                     {record.isFirstRecordOfDay ? (
-                                        <button onClick={handleOpenCreateModal}>
+                                        <button onClick={() => {
+                                            handleOpenCreateModal(record.currentDay.format('YYYY-MM-DD'));
+                                        }}>
                                             <i className="ic-add" />
                                         </button>
                                     ) : ''}
@@ -355,6 +362,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
             <RecordCreateModal
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
+                selectedDate={selectedDate}
             />
         </>
     )
