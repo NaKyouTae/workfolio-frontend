@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createDateModel, DateModel } from "@/models/DateModel"
 import { Record } from '@/generated/common'
 import dayjs from 'dayjs'
@@ -24,10 +24,16 @@ interface MonthlyCalendarProps {
  * Table 태그를 사용한 MonthlyCalendarV1 컴포넌트
  */
 export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
-    const [date] = useState<DateModel>(() => {
+    const [date, setDate] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
     })
+
+    // initialDate가 변경될 때 date 상태 업데이트
+    useEffect(() => {
+        const d = new Date(initialDate)
+        setDate(createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true))
+    }, [initialDate])
 
     // 모달 상태
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -37,7 +43,7 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
 
     // 커스텀 훅 사용
     const calendarDays = useCalendarDays(date)
-    const { records } = useRecords('monthly', initialDate.getMonth() + 1, initialDate.getFullYear())
+    const { records } = useRecords('monthly', date.month + 1, date.year)
     const { triggerRecordRefresh } = useRecordGroupStore()
 
     // 레코드 클릭 핸들러
@@ -145,10 +151,9 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
 
     // 일정을 렌더링하는 함수
     const renderRecords = (week: (CalendarDay | null)[]) => {
-        // 현재 날짜를 기준으로 년월 정보 가져오기
-        const currentDate = new Date()
-        const year = currentDate.getFullYear()
-        const month = currentDate.getMonth() + 1
+        // date 상태를 기준으로 년월 정보 가져오기
+        const year = date.year
+        const month = date.month + 1
 
         // 해당 주의 모든 일정을 수집
         const weekRecords: Array<{
@@ -159,6 +164,9 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
 
         week.forEach((day, dayIndex) => {
             if (!day) return
+
+            // 현재 월의 날짜일 때만 레코드 표시
+            if (!day.isCurrentMonth) return
 
             const dayDate = dayjs(`${year}-${String(month).padStart(2, '0')}-${String(day.day).padStart(2, '0')}`)
 
@@ -184,8 +192,8 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                     // 일정이 현재 주에서 몇 일 동안 지속되는지 계산
                     let colSpan = 1
                     
-                    // 현재 주의 마지막 날짜 (null이 아닌 마지막 날짜 찾기)
-                    const lastDayOfWeek = week.findLast(day => day !== null)
+                    // 현재 주의 마지막 날짜 (현재 월의 마지막 날짜만)
+                    const lastDayOfWeek = week.findLast(day => day !== null && day.isCurrentMonth)
                     const lastDayDate = lastDayOfWeek ? 
                         dayjs(`${year}-${String(month).padStart(2, '0')}-${String(lastDayOfWeek.day).padStart(2, '0')}`) : dayDate
                     
@@ -223,8 +231,8 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                     const recordStartDate = dayjs(parseInt(record.startedAt.toString()))
                     const recordEndDate = dayjs(parseInt(record.endedAt.toString()))
                     
-                    // 현재 주의 첫 번째 날짜
-                    const firstDayOfWeek = week.find(day => day !== null)
+                    // 현재 주의 첫 번째 날짜 (현재 월의 날짜만)
+                    const firstDayOfWeek = week.find(day => day !== null && day.isCurrentMonth)
                     const firstDayDate = firstDayOfWeek ? 
                         dayjs(`${year}-${String(month).padStart(2, '0')}-${String(firstDayOfWeek.day).padStart(2, '0')}`) : 
                         dayDate
@@ -237,8 +245,8 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                     const alreadyExists = weekRecords.some(existing => existing.record.id === record.id)
                     
                     if (startedBeforeCurrentWeek && endsInOrAfterCurrentWeek && !alreadyExists) {
-                        // 현재 주에서의 실제 종료일 계산 (null이 아닌 마지막 날짜 찾기)
-                        const lastDayOfWeek = week.findLast(day => day !== null)
+                        // 현재 주에서의 실제 종료일 계산 (현재 월의 마지막 날짜만)
+                        const lastDayOfWeek = week.findLast(day => day !== null && day.isCurrentMonth)
                         const lastDayDate = lastDayOfWeek ? 
                             dayjs(`${year}-${String(month).padStart(2, '0')}-${String(lastDayOfWeek.day).padStart(2, '0')}`) : dayDate
                         
@@ -362,9 +370,9 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                     const recordStartDate = dayjs(parseInt(item.record.startedAt.toString()))
                     const recordEndDate = dayjs(parseInt(item.record.endedAt.toString()))
                     
-                    // 현재 주의 첫 번째와 마지막 날짜
-                    const firstDayOfWeek = week.find(day => day !== null)
-                    const lastDayOfWeek = week.findLast(day => day !== null)
+                    // 현재 주의 첫 번째와 마지막 날짜 (현재 월의 날짜만)
+                    const firstDayOfWeek = week.find(day => day !== null && day.isCurrentMonth)
+                    const lastDayOfWeek = week.findLast(day => day !== null && day.isCurrentMonth)
                     const firstDayDate = firstDayOfWeek ? 
                         dayjs(`${year}-${String(month).padStart(2, '0')}-${String(firstDayOfWeek.day).padStart(2, '0')}`) : 
                         recordStartDate

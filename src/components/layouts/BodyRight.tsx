@@ -39,18 +39,30 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     const handlePreviousMonth = useCallback(() => {
         setDate(prev => {
             const newDate = new Date(prev)
-            newDate.setMonth(prev.getMonth() - 1)
+            if (recordType === 'weekly') {
+                // 주 단위로 변경 (7일 전)
+                newDate.setDate(prev.getDate() - 7)
+            } else {
+                // 월 단위로 변경
+                newDate.setMonth(prev.getMonth() - 1)
+            }
             return newDate
         })
-    }, [])
+    }, [recordType])
 
     const handleNextMonth = useCallback(() => {
         setDate(prev => {
             const newDate = new Date(prev)
-            newDate.setMonth(prev.getMonth() + 1)
+            if (recordType === 'weekly') {
+                // 주 단위로 변경 (7일 후)
+                newDate.setDate(prev.getDate() + 7)
+            } else {
+                // 월 단위로 변경
+                newDate.setMonth(prev.getMonth() + 1)
+            }
             return newDate
         })
-    }, [])
+    }, [recordType])
 
     const handleTodayMonth = useCallback(() => {
         const today = new Date()
@@ -80,13 +92,7 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
             
             {/* Calendar - 하위에 위치, 토글에 따라 변경 */}
             <div className="calendar-wrap">
-                {recordType === 'list' ? (
-                    <ListCalendar
-                        initialDate={date} 
-                        records={filteredRecords}
-                        recordGroups={checkedRecordGroups}
-                    />
-                ) : recordType === 'monthly' ? (
+                {recordType === 'monthly' ? (
                     <MonthlyCalendar
                         initialDate={date}
                     />

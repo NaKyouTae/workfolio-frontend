@@ -450,9 +450,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         return events.filter(event => !event.isAllDay)
     }
 
-
-
-
     // 현재 시간 표시선 위치 계산
     const calculateCurrentTimePosition = () => {
         const now = dayjs(currentTime)
