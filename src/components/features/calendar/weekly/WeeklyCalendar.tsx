@@ -698,117 +698,217 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                 {/* 이벤트들을 그룹화하여 배치 - 각 요일에 해당하는 일정만 */}
                                 <div className="events-slots">
                                     {(() => {
-                                        // 겹치는 이벤트들을 그룹화
+                                        // 겹치는 이벤트들을 그룹화하는 개선된 알고리즘
                                         const eventGroups: WeeklyEvent[][] = []
                                         const processedEvents = new Set<WeeklyEvent>()
                                         
-                                        dayEvents.forEach(event => {
+                                        // 이벤트들을 시작 시간 순으로 정렬
+                                        const sortedEvents = [...dayEvents].sort((a, b) => 
+                                            dayjs(a.record.startedAt).valueOf() - dayjs(b.record.startedAt).valueOf()
+                                        )
+                                        
+                                        sortedEvents.forEach(event => {
                                             if (processedEvents.has(event)) return
                                             
-                                            const eventStart = dayjs(event.record.startedAt)
-                                            const eventEnd = dayjs(event.record.endedAt)
-                                            
-                                            // 이 이벤트와 겹치는 모든 이벤트들 찾기
-                                            const overlappingEvents = dayEvents.filter(otherEvent => {
-                                                if (otherEvent === event || processedEvents.has(otherEvent)) return false
+                                            // 현재 이벤트와 겹치는 모든 이벤트들을 재귀적으로 찾기
+                                            const findOverlappingEvents = (currentEvent: WeeklyEvent, visited: Set<WeeklyEvent>): WeeklyEvent[] => {
+                                                if (visited.has(currentEvent)) return []
                                                 
-                                                const otherStart = dayjs(otherEvent.record.startedAt)
-                                                const otherEnd = dayjs(otherEvent.record.endedAt)
+                                                visited.add(currentEvent)
+                                                const overlapping: WeeklyEvent[] = [currentEvent]
                                                 
-                                                // 시간이 겹치는지 확인
-                                                return eventStart.isBefore(otherEnd) && otherStart.isBefore(eventEnd)
-                                            })
+                                                const currentStart = dayjs(currentEvent.record.startedAt)
+                                                const currentEnd = dayjs(currentEvent.record.endedAt)
+                                                
+                                                // 다른 모든 이벤트들과 겹침 확인
+                                                dayEvents.forEach(otherEvent => {
+                                                    if (otherEvent === currentEvent || visited.has(otherEvent) || processedEvents.has(otherEvent)) return
+                                                    
+                                                    const otherStart = dayjs(otherEvent.record.startedAt)
+                                                    const otherEnd = dayjs(otherEvent.record.endedAt)
+                                                    
+                                                    // 정확한 겹침 감지: 두 이벤트가 실제로 시간적으로 겹치는지 확인
+                                                    // A 이벤트: [startA, endA], B 이벤트: [startB, endB]
+                                                    // 겹치는 조건: startA < endB && startB < endA
+                                                    const isOverlapping = currentStart.isBefore(otherEnd) && otherStart.isBefore(currentEnd)
+                                                    
+                                                    if (isOverlapping) {
+                                                        const recursiveOverlapping = findOverlappingEvents(otherEvent, visited)
+                                                        overlapping.push(...recursiveOverlapping)
+                                                    }
+                                                })
+                                                
+                                                return overlapping
+                                            }
                                             
-                                            // 그룹 생성 (현재 이벤트 + 겹치는 이벤트들)
-                                            const group = [event, ...overlappingEvents]
-                                            eventGroups.push(group)
+                                            const group = findOverlappingEvents(event, new Set())
                                             
-                                            // 처리된 이벤트들 마킹
-                                            group.forEach(e => processedEvents.add(e))
+                                            // 그룹이 2개 이상의 이벤트를 포함하는 경우만 추가 (실제로 겹치는 경우)
+                                            if (group.length > 1) {
+                                                eventGroups.push(group)
+                                                group.forEach(e => processedEvents.add(e))
+                                            }
                                         })
                                         
-                                        return eventGroups.map((group, groupIndex) => {
-                                            
-                                            // 그룹의 시작 시간과 종료 시간 계산
-                                            const groupStart = Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf()))
-                                            const groupEnd = Math.max(...group.map(e => dayjs(e.record.endedAt).valueOf()))
-                                            
-                                            const groupStartTime = dayjs(groupStart)
-                                            const groupEndTime = dayjs(groupEnd)
-                                            
-                                            // 그룹의 위치 계산
-                                            const startHour = groupStartTime.hour()
-                                            const startMinute = groupStartTime.minute()
-                                            const duration = groupEndTime.diff(groupStartTime, 'minute')
-                                            
-                                            const top = (startHour * 4.8) + (startMinute / 30) * 2.4
-                                            const height = Math.max((duration / 30) * 2.4, 0.8)
-                                            
-                                            return (
-                                                <div
-                                                    key={groupIndex}
-                                                    className="event-group"
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: `${top}rem`,
-                                                        left: '0',
-                                                        width: '100%',
-                                                        height: `${height}rem`,
-                                                        display: 'flex',
-                                                        flexDirection: 'row'
-                                                    }}
-                                                >
-                                                    {group.map((event, eventIndex) => {
-                                                        const eventStart = dayjs(event.record.startedAt)
-                                                        const eventEnd = dayjs(event.record.endedAt)
-                                                        const eventDuration = eventEnd.diff(eventStart, 'minute')
-                                                        const eventHeight = Math.max((eventDuration / 30) * 2.4, 0.8)
-                                                        
-                                                        // 그룹 내 div 개수로 width 계산
-                                                        const eventWidth = `${100 / group.length}%`
-                                                        
-                                                        // 각 이벤트의 시작 시간에 따른 top 위치 계산
-                                                        const startHour = eventStart.hour()
-                                                        const startMinute = eventStart.minute()
-                                                        const eventTop = (startHour * 4.8) + (startMinute / 30) * 2.4
-                                                        
-                                                        // 그룹의 시작 시간과의 차이 계산
-                                                        const groupStartTime = dayjs(Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf())))
-                                                        const groupStartHour = groupStartTime.hour()
-                                                        const groupStartMinute = groupStartTime.minute()
-                                                        const groupStartTop = (groupStartHour * 4.8) + (groupStartMinute / 30) * 2.4
-                                                        
-                                                        // 이벤트의 상대적 top 위치 (그룹 내에서의 위치)
-                                                        const relativeTop = eventTop - groupStartTop
-                                                        
+                                        // 겹치지 않는 단일 이벤트들도 처리
+                                        const singleEvents = dayEvents.filter(event => !processedEvents.has(event))
+                                        
+                                        return [
+                                            // 그룹화된 이벤트들
+                                            ...eventGroups.map((group, groupIndex) => {
+                                                // 그룹의 시작 시간과 종료 시간 계산
+                                                const groupStart = Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf()))
+                                                const groupEnd = Math.max(...group.map(e => dayjs(e.record.endedAt).valueOf()))
+                                                
+                                                const groupStartTime = dayjs(groupStart)
+                                                const groupEndTime = dayjs(groupEnd)
+                                                
+                                                // 그룹의 위치 계산
+                                                const startHour = groupStartTime.hour()
+                                                const startMinute = groupStartTime.minute()
+                                                const duration = groupEndTime.diff(groupStartTime, 'minute')
+                                                
+                                                const top = (startHour * 4.8) + (startMinute / 30) * 2.4
+                                                const height = Math.max((duration / 30) * 2.4, 0.8)
+                                                
+                                                return (
+                                                    <div
+                                                        key={groupIndex}
+                                                        className="event-group"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: `${top}rem`,
+                                                            left: '0',
+                                                            width: '100%',
+                                                            height: `${height}rem`,
+                                                            display: 'flex',
+                                                            flexDirection: 'row'
+                                                        }}
+                                                    >
+                                                        {group.map((event, eventIndex) => {
+                                                            const eventStart = dayjs(event.record.startedAt)
+                                                            const eventEnd = dayjs(event.record.endedAt)
+                                                            const eventDuration = eventEnd.diff(eventStart, 'minute')
+                                                            const eventHeight = Math.max((eventDuration / 30) * 2.4, 0.8)
+                                                            
+                                                            // 그룹 내 이벤트 개수로 width 계산 (최소 너비 보장)
+                                                            const eventWidth = `${Math.max(100 / group.length, 20)}%`
+                                                            
+                                                            // 각 이벤트의 시작 시간에 따른 top 위치 계산
+                                                            const startHour = eventStart.hour()
+                                                            const startMinute = eventStart.minute()
+                                                            const eventTop = (startHour * 4.8) + (startMinute / 30) * 2.4
+                                                            
+                                                            // 그룹의 시작 시간과의 차이 계산
+                                                            const groupStartTime = dayjs(Math.min(...group.map(e => dayjs(e.record.startedAt).valueOf())))
+                                                            const groupStartHour = groupStartTime.hour()
+                                                            const groupStartMinute = groupStartTime.minute()
+                                                            const groupStartTop = (groupStartHour * 4.8) + (groupStartMinute / 30) * 2.4
+                                                            
+                                                            // 이벤트의 상대적 top 위치 (그룹 내에서의 위치)
+                                                            const relativeTop = eventTop - groupStartTop
+                                                            
+                                                            // 이벤트의 left 위치 계산 (가로 분배)
+                                                            const leftPosition = (eventIndex * 100) / group.length
+                                                            
                                                             return (
                                                                 <div
                                                                     key={eventIndex}
                                                                     className="timed-event"
                                                                     style={{
-                                                                    position: 'absolute',
-                                                                    top: `${relativeTop}rem`,
-                                                                    left: `${(eventIndex * 100) / group.length}%`,
-                                                                    width: eventWidth,
-                                                                    height: `${eventHeight}rem`,
-                                                                    backgroundColor: event.color,
-                                                                    margin: 0,
-                                                                    padding: '4px 8px',
-                                                                    boxSizing: 'border-box',
-                                                                    borderRight: eventIndex < group.length - 1 ? '1px solid rgba(255,255,255,0.3)' : 'none'
+                                                                        position: 'absolute',
+                                                                        top: `${relativeTop}rem`,
+                                                                        left: `${leftPosition}%`,
+                                                                        width: eventWidth,
+                                                                        height: `${eventHeight}rem`,
+                                                                        backgroundColor: event.color,
+                                                                        margin: 0,
+                                                                        padding: '4px 8px',
+                                                                        boxSizing: 'border-box',
+                                                                        borderRight: eventIndex < group.length - 1 ? '1px solid rgba(255,255,255,0.3)' : 'none',
+                                                                        borderRadius: '4px',
+                                                                        overflow: 'hidden',
+                                                                        zIndex: 10 + eventIndex
                                                                     }}
                                                                     onClick={(e) => handleRecordClick(event.record, e)}
                                                                 >
-                                                                    <div className="event-title">{event.record.title}</div>
-                                                                    <div className="event-time">
+                                                                    <div className="event-title" style={{
+                                                                        fontSize: '12px',
+                                                                        fontWeight: 'bold',
+                                                                        color: 'white',
+                                                                        textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+                                                                        whiteSpace: 'nowrap',
+                                                                        overflow: 'hidden',
+                                                                        textOverflow: 'ellipsis'
+                                                                    }}>
+                                                                        {event.record.title}
+                                                                    </div>
+                                                                    <div className="event-time" style={{
+                                                                        fontSize: '10px',
+                                                                        color: 'rgba(255,255,255,0.9)',
+                                                                        marginTop: '2px'
+                                                                    }}>
                                                                         {event.startTime} - {event.endTime}
                                                                     </div>
                                                                 </div>
                                                             )
-                                                    })}
-                                                </div>
-                                            )
-                                        })
+                                                        })}
+                                                    </div>
+                                                )
+                                            }),
+                                            
+                                            // 단일 이벤트들
+                                            ...singleEvents.map((event, eventIndex) => {
+                                                const eventStart = dayjs(event.record.startedAt)
+                                                const eventEnd = dayjs(event.record.endedAt)
+                                                const eventDuration = eventEnd.diff(eventStart, 'minute')
+                                                
+                                                const startHour = eventStart.hour()
+                                                const startMinute = eventStart.minute()
+                                                const top = (startHour * 4.8) + (startMinute / 30) * 2.4
+                                                const height = Math.max((eventDuration / 30) * 2.4, 0.8)
+                                                
+                                                return (
+                                                    <div
+                                                        key={`single-${eventIndex}`}
+                                                        className="timed-event"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: `${top}rem`,
+                                                            left: '0',
+                                                            width: '100%',
+                                                            height: `${height}rem`,
+                                                            backgroundColor: event.color,
+                                                            padding: '4px 8px',
+                                                            boxSizing: 'border-box',
+                                                            borderRadius: '4px',
+                                                            overflow: 'hidden',
+                                                            zIndex: 5
+                                                        }}
+                                                        onClick={(e) => handleRecordClick(event.record, e)}
+                                                    >
+                                                        <div className="event-title" style={{
+                                                            fontSize: '12px',
+                                                            fontWeight: 'bold',
+                                                            color: 'white',
+                                                            textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+                                                            whiteSpace: 'nowrap',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis'
+                                                        }}>
+                                                            {event.record.title}
+                                                        </div>
+                                                        <div className="event-time" style={{
+                                                            fontSize: '10px',
+                                                            color: 'rgba(255,255,255,0.9)',
+                                                            marginTop: '2px'
+                                                        }}>
+                                                            {event.startTime} - {event.endTime}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        ]
                                     })()}
                                 </div>
                             </div>

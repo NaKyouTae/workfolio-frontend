@@ -375,6 +375,123 @@ export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
     const now = dayjs()
     const currentWeek = now.startOf('week')
     
+    // 2025년 10월, 11월, 12월 고정 데이터
+    const october2025Weeks = [
+        dayjs('2025-10-06').startOf('week'), // 10월 첫째 주
+        dayjs('2025-10-13').startOf('week'), // 10월 둘째 주
+        dayjs('2025-10-20').startOf('week'), // 10월 셋째 주
+        dayjs('2025-10-27').startOf('week')  // 10월 넷째 주
+    ]
+    
+    const november2025Weeks = [
+        dayjs('2025-11-03').startOf('week'), // 11월 첫째 주
+        dayjs('2025-11-10').startOf('week'), // 11월 둘째 주
+        dayjs('2025-11-17').startOf('week'), // 11월 셋째 주
+        dayjs('2025-11-24').startOf('week')  // 11월 넷째 주
+    ]
+    
+    const december2025Weeks = [
+        dayjs('2025-12-01').startOf('week'), // 12월 첫째 주
+        dayjs('2025-12-08').startOf('week'), // 12월 둘째 주
+        dayjs('2025-12-15').startOf('week'), // 12월 셋째 주
+        dayjs('2025-12-22').startOf('week')  // 12월 넷째 주
+    ]
+    
+    // 랜덤 일정 생성 함수
+    const generateRandomWeeklyEvents = (weekStart: dayjs.Dayjs, weekIndex: number, month: string) => {
+        const events = []
+        
+        // TIME 타입 이벤트 제목들
+        const timeEventTitles = [
+            '주간 미팅', '프로젝트 리뷰', '클라이언트 미팅', '코드 리뷰', '기술 스터디',
+            '팀 빌딩', '성과 평가', '보고서 작성', '디자인 리뷰', '데이터 분석',
+            '시스템 점검', '보안 검토', '성능 최적화', '사용자 피드백', '마케팅 회의'
+        ]
+        
+        // DAY 타입 이벤트 제목들
+        const dayEventTitles = [
+            '집중 작업일', '개인 스터디 데이', '프로젝트 마일스톤', '기술 컨퍼런스',
+            '팀 워크샵', '고객사 방문', '시스템 점검일', '성과 평가일',
+            '보고서 작성일', '디자인 리뷰일', '데이터 분석일', '보안 검토일'
+        ]
+        
+        // MULTI_DAY 타입 이벤트 제목들
+        const multiDayEventTitles = [
+            '주간 프로젝트', '출장', '팀 워크샵', '시스템 점검', '고객사 방문',
+            '기술 컨퍼런스', '성과 평가', '보고서 작성', '디자인 리뷰', '데이터 분석'
+        ]
+        
+        const descriptions = [
+            '주간 업무 계획 및 진행 상황 논의',
+            '프로젝트 진행 상황 리뷰 및 다음 단계 계획',
+            '고객사와의 프로젝트 미팅',
+            '팀원들의 코드 리뷰 및 피드백',
+            '최신 기술 트렌드 스터디',
+            '팀원들과의 팀 빌딩 활동',
+            '주간 성과 평가 및 피드백',
+            '주간 보고서 작성 및 정리',
+            'UI/UX 디자인 리뷰',
+            '사용자 데이터 분석 및 인사이트 도출',
+            '시스템 안정성 점검',
+            '보안 취약점 검토',
+            '성능 개선 작업',
+            '사용자 피드백 수집 및 분석',
+            '마케팅 전략 회의'
+        ]
+        
+        // 각 주마다 5-10개의 랜덤 이벤트 생성 (TIME, DAY, MULTI_DAY 혼합)
+        const eventCount = Math.floor(Math.random() * 6) + 5 // 5-10개
+        
+        for (let i = 0; i < eventCount; i++) {
+            const eventType = Math.random() < 0.6 ? 'TIME' : (Math.random() < 0.7 ? 'DAY' : 'MULTI_DAY')
+            const dayOfWeek = Math.floor(Math.random() * 7) // 0-6 (일-토)
+            const recordGroupIndex = Math.floor(Math.random() * 6) // 0-5 (업무, 프로젝트, 출장, 개인, 독서, 워크폴리오)
+            
+            let eventTitle, eventDescription, startedAt, endedAt
+            
+            if (eventType === 'TIME') {
+                // TIME 타입: 특정 시간대의 이벤트
+                const hour = Math.floor(Math.random() * 8) + 9 // 9-16시
+                const minute = Math.random() < 0.5 ? 0 : 30
+                const duration = Math.floor(Math.random() * 3) + 1 // 1-3시간
+                
+                eventTitle = timeEventTitles[Math.floor(Math.random() * timeEventTitles.length)]
+                eventDescription = descriptions[Math.floor(Math.random() * descriptions.length)]
+                startedAt = weekStart.add(dayOfWeek, 'day').hour(hour).minute(minute).valueOf()
+                endedAt = weekStart.add(dayOfWeek, 'day').hour(hour + duration).minute(minute).valueOf()
+                
+            } else if (eventType === 'DAY') {
+                // DAY 타입: 하루 종일 이벤트
+                eventTitle = dayEventTitles[Math.floor(Math.random() * dayEventTitles.length)]
+                eventDescription = `${eventTitle} - 하루 종일 진행되는 중요한 일정`
+                startedAt = weekStart.add(dayOfWeek, 'day').valueOf()
+                endedAt = weekStart.add(dayOfWeek, 'day').valueOf()
+                
+            } else {
+                // MULTI_DAY 타입: 여러 날에 걸친 이벤트
+                const endDayOfWeek = Math.min(dayOfWeek + Math.floor(Math.random() * 3) + 1, 6) // 1-3일 지속
+                eventTitle = multiDayEventTitles[Math.floor(Math.random() * multiDayEventTitles.length)]
+                eventDescription = `${eventTitle} - ${endDayOfWeek - dayOfWeek + 1}일간 진행되는 프로젝트`
+                startedAt = weekStart.add(dayOfWeek, 'day').valueOf()
+                endedAt = weekStart.add(endDayOfWeek, 'day').valueOf()
+            }
+            
+            events.push({
+                id: `w-${month}-${weekIndex}-${i}`,
+                title: `${month} ${weekIndex + 1}주 ${eventTitle}`,
+                type: eventType,
+                description: eventDescription,
+                startedAt,
+                endedAt,
+                recordGroup: recordGroups[recordGroupIndex],
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            })
+        }
+        
+        return events
+    }
+    
     return [
         // ===== SPECIAL-DAY-EVENTS 영역 (MULTI_DAY, DAY 타입) =====
         
@@ -832,7 +949,7 @@ export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
             type: 'TIME',
             description: '팀원들의 코드 리뷰 및 피드백',
             startedAt: currentWeek.add(5, 'day').hour(15).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
+            endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
             recordGroup: recordGroups[0], // 업무
             createdAt: Date.now(),
             updatedAt: Date.now()
@@ -882,7 +999,22 @@ export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
             recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
             createdAt: Date.now(),
             updatedAt: Date.now()
-        }
+        },
+        
+        // ===== 2025년 10월 랜덤 데이터 =====
+        ...october2025Weeks.flatMap((week, weekIndex) => 
+            generateRandomWeeklyEvents(week, weekIndex, '10월')
+        ),
+        
+        // ===== 2025년 11월 랜덤 데이터 =====
+        ...november2025Weeks.flatMap((week, weekIndex) => 
+            generateRandomWeeklyEvents(week, weekIndex, '11월')
+        ),
+        
+        // ===== 2025년 12월 랜덤 데이터 =====
+        ...december2025Weeks.flatMap((week, weekIndex) => 
+            generateRandomWeeklyEvents(week, weekIndex, '12월')
+        )
     ]
 }
 
