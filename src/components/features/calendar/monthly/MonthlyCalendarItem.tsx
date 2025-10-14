@@ -1,5 +1,6 @@
 import React from 'react'
-import { Record } from '@/generated/common'
+import { Record, Record_RecordType } from '@/generated/common'
+import dayjs from 'dayjs'
 
 interface MonthlyCalendarItemProps {
     record: Record
@@ -18,6 +19,15 @@ export default function MonthlyCalendarItem({
     continuesToNextWeek,
     onRecordClick
 }: MonthlyCalendarItemProps) {
+    // TIME 타입인 경우 시간 표시
+    const getDisplayTitle = () => {
+        if (Record_RecordType[record.type] == Record_RecordType.TIME.toString()) {
+            const startTime = dayjs(parseInt(record.startedAt.toString())).format('A h:mm')
+            return `${startTime} ${record.title}`
+        }
+        return record.title
+    }
+
     return (
         <td 
             key={`event-${startDayIndex}`}
@@ -25,10 +35,10 @@ export default function MonthlyCalendarItem({
             className="record" 
             onClick={(e) => onRecordClick(record, e)}
             title={
-                isContinuation && continuesToNextWeek ? `${record.title} (이전 주에서 이어짐, 다음 주로 이어짐)` :
-                isContinuation ? `${record.title} (이전 주에서 이어짐)` :
-                continuesToNextWeek ? `${record.title} (다음 주로 이어짐)` : 
-                record.title
+                isContinuation && continuesToNextWeek ? `${getDisplayTitle()} (이전 주에서 이어짐, 다음 주로 이어짐)` :
+                isContinuation ? `${getDisplayTitle()} (이전 주에서 이어짐)` :
+                continuesToNextWeek ? `${getDisplayTitle()} (다음 주로 이어짐)` : 
+                getDisplayTitle()
             }
         >
             <p
@@ -36,7 +46,7 @@ export default function MonthlyCalendarItem({
                     backgroundColor: record.recordGroup?.color || '#e0e0e0',
                 }}
             >
-                {record.title}
+                {getDisplayTitle()}
             </p>
         </td>
     )

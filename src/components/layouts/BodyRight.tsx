@@ -12,7 +12,7 @@ export interface BodyRightRef {
 }
 
 const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
-    const [recordType, setRecordType] = useState<CalendarViewType>('weekly')
+    const [recordType, setRecordType] = useState<CalendarViewType>('monthly')
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(new Date())
     

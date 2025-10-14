@@ -553,11 +553,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 })
             } else {
                 // 정상 범위면 record의 좌측 기준선과 일치
-                setDetailPosition({
+            setDetailPosition({
                     top: top,
                     left: left,
-                    width: detailWidth
-                })
+                width: detailWidth
+            })
             }
         }
         
@@ -776,11 +776,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                         // 이벤트의 상대적 top 위치 (그룹 내에서의 위치)
                                                         const relativeTop = eventTop - groupStartTop
                                                         
-                                                        return (
-                                                            <div
-                                                                key={eventIndex}
-                                                                className="timed-event"
-                                                                style={{
+                                                            return (
+                                                                <div
+                                                                    key={eventIndex}
+                                                                    className="timed-event"
+                                                                    style={{
                                                                     position: 'absolute',
                                                                     top: `${relativeTop}rem`,
                                                                     left: `${(eventIndex * 100) / group.length}%`,
@@ -791,15 +791,15 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                     padding: '4px 8px',
                                                                     boxSizing: 'border-box',
                                                                     borderRight: eventIndex < group.length - 1 ? '1px solid rgba(255,255,255,0.3)' : 'none'
-                                                                }}
-                                                                onClick={(e) => handleRecordClick(event.record, e)}
-                                                            >
-                                                                <div className="event-title">{event.record.title}</div>
-                                                                <div className="event-time">
-                                                                    {event.startTime} - {event.endTime}
+                                                                    }}
+                                                                    onClick={(e) => handleRecordClick(event.record, e)}
+                                                                >
+                                                                    <div className="event-title">{event.record.title}</div>
+                                                                    <div className="event-time">
+                                                                        {event.startTime} - {event.endTime}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )
+                                                            )
                                                     })}
                                                 </div>
                                             )

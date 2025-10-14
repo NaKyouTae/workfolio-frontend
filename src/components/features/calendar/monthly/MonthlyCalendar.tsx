@@ -432,7 +432,8 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
             <div className="days">
                 {weeks.map((week, weekIndex) => (
                     <div className="weekly" key={weekIndex}>
-                        <table>
+                        {/* 구조만 표현하는 테이블 (today 배경색용) */}
+                        <table className="structure-table">
                             <tbody>
                                 <tr>
                                     {week.map((day, dayIndex) => (
@@ -442,7 +443,25 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                                             {day && (
                                                 <div>
                                                     <p>{day.day}</p>
-                                                    <span>a</span>
+                                                </div>
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        {/* 레코드를 렌더링하는 테이블 */}
+                        <table className="records-table">
+                            <tbody>
+                                <tr>
+                                    {week.map((day, dayIndex) => (
+                                        <td key={dayIndex}
+                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''}`}
+                                        >
+                                            {day && (
+                                                <div>
+                                                    <p>{day.day}</p>
                                                 </div>
                                             )}
                                         </td>
