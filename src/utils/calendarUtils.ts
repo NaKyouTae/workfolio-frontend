@@ -22,10 +22,21 @@ export const generateCalendarDays = (date: DateModel): (CalendarDay | null)[] =>
     
     while (current.isSame(endDate, 'day') || current.isBefore(endDate, 'day')) {
         if (current.isBefore(startOfMonth, 'day')) {
-            days.push(null)
+            // 이전 달의 날짜
+            days.push({
+                id: current.format('YYYYMMDD'),
+                day: current.date(),
+                isCurrentMonth: false
+            })
         } else if (current.isAfter(endOfMonth, 'day')) {
-            days.push(null)
+            // 다음 달의 날짜
+            days.push({
+                id: current.format('YYYYMMDD'),
+                day: current.date(),
+                isCurrentMonth: false
+            })
         } else {
+            // 현재 달의 날짜
             days.push({
                 id: current.format('YYYYMMDD'),
                 day: current.date(),

@@ -3,6 +3,12 @@
     background-color: #FFFAF0;
 }
 
+/* 이전/다음 달 날짜 스타일 */
+.day.other-month {
+    color: #ccc;
+    opacity: 0.6;
+}
+
 .structure-table {
     position: absolute;
     top: 0;

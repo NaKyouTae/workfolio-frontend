@@ -438,7 +438,7 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                                 <tr>
                                     {week.map((day, dayIndex) => (
                                         <td key={dayIndex}
-                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''}`}
+                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''} ${day && !day.isCurrentMonth ? 'other-month' : ''}`}
                                         >
                                             {day && (
                                                 <div>
@@ -457,7 +457,7 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                                 <tr>
                                     {week.map((day, dayIndex) => (
                                         <td key={dayIndex}
-                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''}`}
+                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''} ${day && !day.isCurrentMonth ? 'other-month' : ''}`}
                                         >
                                             {day && (
                                                 <div>

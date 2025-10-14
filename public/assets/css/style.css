@@ -123,6 +123,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .calendar-wrap .days .weekly:last-child {border-bottom: 0;}
 .calendar-wrap .days .weekly table {width: 100%; border-spacing: 0; border-collapse: collapse; table-layout: fixed;}
 .calendar-wrap .days .weekly table tr:nth-child(1) td + td::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); position: absolute; z-index: 1;}
+.calendar-wrap .days .weekly table td.holiday {color: var(--red);}
 
 .calendar-wrap .days .weekly table .day > div {padding: .6rem 1rem .1rem; height: 2rem; display: flex; align-items: center; justify-content: space-between; font-size: 1.2rem;}
 .calendar-wrap .days .weekly table .record {padding: .1rem 0; position: relative;}
