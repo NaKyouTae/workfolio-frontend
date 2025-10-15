@@ -13,7 +13,7 @@ export const useUser = () => {
             setError(null);
             
             // 쿠키에서 토큰 확인
-            const hasToken = document.cookie.includes('accessToken=') || document.cookie.includes('refreshToken=');
+            const hasToken = document.cookie.includes('accessToken=') && document.cookie.includes('refreshToken=');
             
             if (!hasToken) {
                 // 토큰이 없으면 사용자 정보를 클리어하고 조용히 종료

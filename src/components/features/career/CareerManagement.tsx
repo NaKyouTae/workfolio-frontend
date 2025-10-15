@@ -296,10 +296,6 @@ const CareerManagement: React.FC = () => {
             border: activeSection === 'companies' ? '2px solid #2196f3' : '2px solid transparent'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-            <span style={{ fontSize: '24px', marginRight: '12px' }}>🏢</span>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#333', margin: 0 }}>회사 이력</h2>
-          </div>
           <CompanyManagement
             initialData={careerData.companies}
             onDataChange={handleCompaniesChange}
@@ -318,10 +314,6 @@ const CareerManagement: React.FC = () => {
             border: activeSection === 'certifications' ? '2px solid #2196f3' : '2px solid transparent'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-            <span style={{ fontSize: '24px', marginRight: '12px' }}>📜</span>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#333', margin: 0 }}>자격증</h2>
-          </div>
           <CertificationManagement
             initialData={careerData.certifications}
             onDataChange={handleCertificationsChange}
@@ -340,10 +332,6 @@ const CareerManagement: React.FC = () => {
             border: activeSection === 'degrees' ? '2px solid #2196f3' : '2px solid transparent'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-            <span style={{ fontSize: '24px', marginRight: '12px' }}>🎓</span>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#333', margin: 0 }}>학위</h2>
-          </div>
           <DegreesManagement
             initialData={careerData.degrees}
             onDataChange={handleDegreesChange}
@@ -362,10 +350,6 @@ const CareerManagement: React.FC = () => {
             border: activeSection === 'educations' ? '2px solid #2196f3' : '2px solid transparent'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-            <span style={{ fontSize: '24px', marginRight: '12px' }}>📚</span>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#333', margin: 0 }}>교육</h2>
-          </div>
           <EducationManagement
             initialData={careerData.educations}
             onDataChange={handleEducationsChange}

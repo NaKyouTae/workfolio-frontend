@@ -172,7 +172,11 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{ fontSize: '24px', marginRight: '12px' }}>📜</span>
+          <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#333', margin: 0 }}>자격증</h2>
+        </div>
         {renderAddButton('추가', '#007bff', () => setShowCertificationInput(!showCertificationInput))}
       </div>
       

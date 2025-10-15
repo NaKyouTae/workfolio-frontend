@@ -473,13 +473,20 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0px' }}>
-        <div>
-          <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#333', margin: '0 0 4px 0' }}>
-            총 경력: {calculateTotalExperience()}
-          </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{ fontSize: '24px', marginRight: '12px' }}>🏢</span>
+          <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#333', margin: '0 0 4px 0' }}>
+            회사 이력
+          </h2>
         </div>
         {renderAddButton('추가', '#007bff', () => setShowCompanyInput(!showCompanyInput))}
+      </div>
+      
+      <div style={{ marginBottom: '20px' }}>
+        <h4 style={{ fontSize: '16px', fontWeight: 'bold', color: '#666', margin: '0 0 10px 0' }}>
+          총 경력: {calculateTotalExperience()}
+        </h4>
       </div>
       
       {/* 회사 추가 입력 폼 */}
