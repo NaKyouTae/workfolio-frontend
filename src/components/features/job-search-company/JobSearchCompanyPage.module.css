@@ -274,6 +274,10 @@
   background-color: #007bff;
 }
 
+.deleteButton {
+  background-color: #dc3545;
+}
+
 .expandedRow {
   border-bottom: 1px solid #e9ecef;
 }

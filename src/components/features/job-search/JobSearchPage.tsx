@@ -7,7 +7,7 @@ import { createSampleJobSearches, createSampleCompanies } from '@/utils/sampleDa
 import JobSearchCreateModal from './JobSearchCreateModal';
 import JobSearchUpdateModal from './JobSearchUpdateModal';
 import JobSearchSidebar from './JobSearchSidebar';
-import JobSearchContent from './JobSearchContent';
+import JobSearchHome from './JobSearchHome';
 import styles from './JobSearchPage.module.css';
 
 const JobSearchPage: React.FC = () => {
@@ -115,9 +115,11 @@ const JobSearchPage: React.FC = () => {
       />
 
       {/* 메인 콘텐츠 영역 */}
-      <JobSearchContent
+      <JobSearchHome
         selectedJobSearch={selectedJobSearch}
         companies={companies}
+        onBack={goHome}
+        onJobSearchDelete={fetchJobSearches}
       />
 
       {/* 이직 생성 모달 */}

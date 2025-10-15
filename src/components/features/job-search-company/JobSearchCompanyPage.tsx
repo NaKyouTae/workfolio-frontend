@@ -13,9 +13,11 @@ import InterviewPage from '../interview/InterviewPage';
 
 interface JobSearchCompanyPageProps {
   jobSearch: JobSearch;
+  onBack?: () => void;
+  onJobSearchDelete?: () => void;
 }
 
-const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }) => {
+const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, onBack, onJobSearchDelete }) => {
   const { isLoggedIn } = useUser();
   const [jobSearchCompanies, setJobSearchCompanies] = useState<JobSearchCompany[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -83,6 +85,59 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
   // 모든 회사 행 축소
   const collapseAllCompanies = () => {
     setExpandedCompanies(new Set());
+  };
+
+  const deleteJobSearchCompany = async (id: string) => {
+    if (!confirm('정말로 이 이직 회사를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/job-search-companies/${id}`, {
+        method: HttpMethod.DELETE,
+      });
+
+      if (response.ok) {
+        alert('이직 회사가 성공적으로 삭제되었습니다.');
+        fetchJobSearchCompanies();
+      } else {
+        const errorData = await response.json();
+        alert(`이직 회사 삭제에 실패했습니다: ${errorData.error || '알 수 없는 오류'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting job search company:', error);
+      alert('이직 회사 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  const deleteJobSearch = async (id: string) => {
+    if (!confirm('정말로 이 이직을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/job-searches/${id}`, {
+        method: HttpMethod.DELETE,
+      });
+
+      if (response.ok) {
+        alert('이직이 성공적으로 삭제되었습니다.');
+        // 이직 홈으로 이동
+        if (onBack) {
+          onBack();
+        }
+        // 이직 리스트 갱신
+        if (onJobSearchDelete) {
+          onJobSearchDelete();
+        }
+      } else {
+        const errorData = await response.json();
+        alert(`이직 삭제에 실패했습니다: ${errorData.error || '알 수 없는 오류'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting job search:', error);
+      alert('이직 삭제 중 오류가 발생했습니다.');
+    }
   };
 
   // 상태 색상 반환
@@ -238,7 +293,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
             )}
           </div>
         </div>
-        <div className={styles.buttonGroup}>
+        <div className={styles.buttonGroup}>          
           <button
             onClick={() => setIsJobSearchEditModalOpen(true)}
             disabled={!isLoggedIn}
@@ -256,6 +311,42 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
           >
             수정
           </button>
+          <button
+            onClick={() => deleteJobSearch(jobSearch.id)}
+            disabled={!isLoggedIn}
+            style={{ 
+              width: '70px', 
+              height: '30px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: '14px',
+              backgroundColor: !isLoggedIn ? '#6c757d' : '#dc3545',
+              cursor: !isLoggedIn ? 'not-allowed' : 'pointer'
+            }}
+          >
+            삭제
+          </button>
+        </div>
+      </div>
+
+      {/* 이직 회사 관리 섹션 */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '20px',
+        padding: '0 20px'
+      }}>
+        <h3 style={{
+          fontSize: '20px',
+          fontWeight: 'bold',
+          color: '#333',
+          margin: 0
+        }}>
+          이직 회사 관리
+        </h3>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <button
             onClick={() => setIsCreateModalOpen(true)}
             disabled={!isLoggedIn}
@@ -276,12 +367,28 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
           <button
             onClick={fetchJobSearchCompanies}
             className={`${styles.button} ${styles.refreshButton}`}
+            style={{ 
+              width: '70px', 
+              height: '30px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: '14px'
+            }}
           >
             새로고침
           </button>
           <button
             onClick={collapseAllCompanies}
             className={`${styles.button} ${styles.collapseButton}`}
+            style={{ 
+              width: '70px', 
+              height: '30px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: '14px'
+            }}
           >
             모두 축소
           </button>
@@ -380,6 +487,12 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
                           >
                             수정
                           </button>
+                          <button
+                            onClick={() => deleteJobSearchCompany(company.id || '')}
+                            className={`${styles.actionButton} ${styles.deleteButton}`}
+                          >
+                            삭제
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -429,8 +542,10 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
         editingJobSearch={jobSearch}
         companies={[]}
         onSuccess={() => {
-          // 이직 수정 후 페이지 새로고침 또는 상위 컴포넌트에 알림
-          window.location.reload();
+          // 이직 수정 후 이직 리스트 갱신
+          if (onJobSearchDelete) {
+            onJobSearchDelete();
+          }
         }}
       />
     </div>

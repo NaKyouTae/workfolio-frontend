@@ -64,13 +64,13 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
   };
 
   // 면접 삭제
-  const deleteInterview = async (interviewId: string) => {
+  const deleteInterview = async (id: string) => {
     if (!confirm('정말로 이 면접을 삭제하시겠습니까?')) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/interviews/${interviewId}`, {
+      const response = await fetch(`/api/interviews/${id}`, {
         method: HttpMethod.DELETE,
       });
 

@@ -2,14 +2,18 @@ import React from 'react';
 import { JobSearch, Company } from '@/generated/common';
 import JobSearchCompanyPage from '../job-search-company/JobSearchCompanyPage';
 
-interface JobSearchContentProps {
+interface JobSearchHomeProps {
   selectedJobSearch: JobSearch | null;
   companies: Company[];
+  onBack?: () => void;
+  onJobSearchDelete?: () => void;
 }
 
-const JobSearchContent: React.FC<JobSearchContentProps> = ({
+const JobSearchHome: React.FC<JobSearchHomeProps> = ({
   selectedJobSearch,
   companies,
+  onBack,
+  onJobSearchDelete,
 }) => {
   // 이직 상세 페이지 표시
   if (selectedJobSearch) {
@@ -25,6 +29,8 @@ const JobSearchContent: React.FC<JobSearchContentProps> = ({
       }}>
         <JobSearchCompanyPage
           jobSearch={selectedJobSearch}
+          onBack={onBack}
+          onJobSearchDelete={onJobSearchDelete}
         />
       </div>
     );
@@ -161,4 +167,4 @@ const JobSearchContent: React.FC<JobSearchContentProps> = ({
   );
 };
 
-export default JobSearchContent;
+export default JobSearchHome;
