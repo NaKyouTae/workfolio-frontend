@@ -167,9 +167,22 @@ const JobSearchSidebar: React.FC<JobSearchSidebarProps> = ({
                     color: '#666',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    {DateUtil.formatTimestamp(jobSearch.startedAt)} ~ {jobSearch.endedAt ? DateUtil.formatTimestamp(jobSearch.endedAt) : '진행중'}
+                    <span>{DateUtil.formatTimestamp(jobSearch.startedAt)} ~ {jobSearch.endedAt ? DateUtil.formatTimestamp(jobSearch.endedAt) : '진행중'}</span>
+                    <span style={{
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      fontSize: '10px',
+                      fontWeight: 'bold',
+                      backgroundColor: jobSearch.endedAt ? '#e9ecef' : '#d4edda',
+                      color: jobSearch.endedAt ? '#6c757d' : '#155724'
+                    }}>
+                      {jobSearch.endedAt ? '완료' : '진행중'}
+                    </span>
                   </div>
                 </div>
               );
