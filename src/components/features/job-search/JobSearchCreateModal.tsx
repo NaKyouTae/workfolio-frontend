@@ -3,7 +3,6 @@ import { Company } from '@/generated/common';
 import { JobSearchCreateRequest } from '@/generated/job_search';
 import JobSearchForm from './JobSearchForm';
 import HttpMethod from '@/enums/HttpMethod';
-import dayjs from 'dayjs';
 import styles from './JobSearchCreate.module.css';
 
 interface JobSearchCreateModalProps {
@@ -21,7 +20,7 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
 }) => {
   const [createForm, setCreateForm] = useState<JobSearchCreateRequest>({
     title: '',
-    startedAt: dayjs().unix(),
+    startedAt: new Date().getTime(),
     endedAt: undefined,
     prevCompanyId: undefined,
     nextCompanyId: undefined,
@@ -55,7 +54,7 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
         onClose();
         setCreateForm({
           title: '',
-          startedAt: dayjs().unix(),
+          startedAt: new Date().getTime(),
           endedAt: undefined,
           prevCompanyId: undefined,
           nextCompanyId: undefined,

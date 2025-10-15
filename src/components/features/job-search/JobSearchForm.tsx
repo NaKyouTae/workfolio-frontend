@@ -1,7 +1,7 @@
 import React from 'react';
 import { JobSearchCreateRequest, JobSearchUpdateRequest } from '@/generated/job_search';
 import { Company } from '@/generated/common';
-import DateUtil from '@/utils/DateUtil';
+import DatePicker from '@/components/ui/DatePicker';
 import styles from './JobSearchForm.module.css';
 
 interface JobSearchFormProps {
@@ -29,22 +29,26 @@ const JobSearchForm: React.FC<JobSearchFormProps> = ({ formData, onFormChange, c
 
       <div className={styles.section}>
         <div className={styles.field}>
-          <label className={styles.label}>시작일</label>
-          <input
-            type="datetime-local"
-            value={formData.startedAt ? DateUtil.formatTimestamp(formData.startedAt) : ''}
-            onChange={(e) => onFormChange('startedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
-            className={styles.dateInput}
+          <DatePicker
+            label="시작일"
+            required={true}
+            value={formData.startedAt ? new Date(formData.startedAt).toISOString() : ''}
+            onChange={(dateString) => onFormChange('startedAt', dateString ? new Date(dateString).getTime() : undefined)}
           />
         </div>
 
         <div className={styles.field}>
-          <label className={styles.label}>종료일</label>
-          <input
-            type="datetime-local"
-            value={formData.endedAt ? DateUtil.formatTimestamp(formData.endedAt) : ''}
-            onChange={(e) => onFormChange('endedAt', e.target.value ? DateUtil.parseToTimestamp(e.target.value) : undefined)}
-            className={styles.dateInput}
+          <DatePicker
+            label="종료일"
+            required={false}
+            value={formData.endedAt ? new Date(formData.endedAt).toISOString() : undefined}
+            onChange={(dateString) => {
+              if (!dateString || dateString.trim() === '') {
+                onFormChange('endedAt', undefined);
+              } else {
+                onFormChange('endedAt', new Date(dateString).getTime());
+              }
+            }}
           />
         </div>
       </div>

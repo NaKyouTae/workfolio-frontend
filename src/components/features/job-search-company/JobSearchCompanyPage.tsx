@@ -7,6 +7,7 @@ import { useUser } from '@/hooks/useUser';
 import { createSampleJobSearchCompanies } from '@/utils/sampleData';
 import JobSearchCompanyCreateModal from './JobSearchCompanyCreateModal';
 import JobSearchCompanyUpdateModal from './JobSearchCompanyUpdateModal';
+import JobSearchUpdateModal from '../job-search/JobSearchUpdateModal';
 import styles from './JobSearchCompanyPage.module.css';
 import InterviewPage from '../interview/InterviewPage';
 
@@ -22,6 +23,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<JobSearchCompany | undefined>();
   const [expandedCompanies, setExpandedCompanies] = useState<Set<string>>(new Set());
+  const [isJobSearchEditModalOpen, setIsJobSearchEditModalOpen] = useState(false);
 
   // 이직 회사 목록 조회
   const fetchJobSearchCompanies = useCallback(async () => {
@@ -148,11 +150,11 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <span style={{ fontWeight: 'bold' }}>시작일:</span>
-                <span>{jobSearch.startedAt ? new Date(jobSearch.startedAt).toLocaleDateString('ko-KR') : '-'}</span>
+                <span>{jobSearch.startedAt ? DateUtil.formatTimestamp(jobSearch.startedAt) : '-'}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <span style={{ fontWeight: 'bold' }}>종료일:</span>
-                <span>{jobSearch.endedAt ? new Date(jobSearch.endedAt).toLocaleDateString('ko-KR') : '진행중'}</span>
+                <span>{jobSearch.endedAt ? DateUtil.formatTimestamp(jobSearch.endedAt) : '진행중'}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <span style={{ fontWeight: 'bold' }}>상태:</span>
@@ -237,6 +239,23 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
           </div>
         </div>
         <div className={styles.buttonGroup}>
+          <button
+            onClick={() => setIsJobSearchEditModalOpen(true)}
+            disabled={!isLoggedIn}
+            className={`${styles.button} ${styles.editButton}`}
+            style={{ 
+              width: '70px', 
+              height: '30px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: '14px',
+              backgroundColor: !isLoggedIn ? '#6c757d' : '#28a745',
+              cursor: !isLoggedIn ? 'not-allowed' : 'pointer'
+            }}
+          >
+            수정
+          </button>
           <button
             onClick={() => setIsCreateModalOpen(true)}
             disabled={!isLoggedIn}
@@ -401,6 +420,18 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }
         editingCompany={editingCompany}
         onSuccess={fetchJobSearchCompanies}
         jobSearchId={jobSearch.id}
+      />
+
+      {/* 이직 수정 모달 */}
+      <JobSearchUpdateModal
+        isOpen={isJobSearchEditModalOpen}
+        onClose={() => setIsJobSearchEditModalOpen(false)}
+        editingJobSearch={jobSearch}
+        companies={[]}
+        onSuccess={() => {
+          // 이직 수정 후 페이지 새로고침 또는 상위 컴포넌트에 알림
+          window.location.reload();
+        }}
       />
     </div>
   );

@@ -23,7 +23,7 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
   const [createForm, setCreateForm] = useState<JobSearchUpdateRequest>({
     id: '',
     title: '',
-    startedAt: 0,
+    startedAt: new Date().getTime(),
     endedAt: undefined,
     prevCompanyId: undefined,
     nextCompanyId: undefined,
@@ -37,8 +37,8 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
       setCreateForm({
         id: editingJobSearch.id || '',
         title: editingJobSearch.title || '',
-        startedAt: editingJobSearch.startedAt,
-        endedAt: editingJobSearch.endedAt,
+        startedAt: parseInt(editingJobSearch.startedAt.toString()),
+        endedAt: editingJobSearch.endedAt ? parseInt(editingJobSearch.endedAt.toString()) : undefined,
         prevCompanyId: editingJobSearch.prevCompany?.id,
         nextCompanyId: editingJobSearch.nextCompany?.id,
         memo: editingJobSearch.memo
@@ -62,8 +62,8 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
       const updateData: JobSearchUpdateRequest = {
         id: createForm.id,
         title: createForm.title,
-        startedAt: createForm.startedAt,
-        endedAt: createForm.endedAt,
+        startedAt: parseInt(createForm.startedAt.toString()),
+        endedAt: createForm.endedAt ? parseInt(createForm.endedAt.toString()) : undefined,
         prevCompanyId: createForm.prevCompanyId,
         nextCompanyId: createForm.nextCompanyId,
         memo: createForm.memo
@@ -83,7 +83,7 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
         setCreateForm({
           id: '',
           title: '',
-          startedAt: 0,
+          startedAt: new Date().getTime(),
           endedAt: undefined,
           prevCompanyId: undefined,
           nextCompanyId: undefined,
