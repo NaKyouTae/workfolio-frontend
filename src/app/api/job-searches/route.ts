@@ -6,7 +6,7 @@ import { JobSearchListResponse, JobSearchUpdateRequest } from '@/generated/job_s
 import { JobSearchCreateRequest } from '@/generated/job_search';
 import { JobSearchResponse } from '@/generated/job_search';
 
-// GET /api/workers/job-searches - 구직 목록 조회
+// GET /api/workers/job-searches - 이직 목록 조회
 export async function GET() {
   try {
     const accessToken = await getCookie('accessToken');
@@ -29,7 +29,7 @@ export async function GET() {
   }
 }
 
-// POST /api/workers/job-searches - 구직 생성
+// POST /api/workers/job-searches - 이직 생성
 export async function POST(request: NextRequest) {
   try {
     const body: JobSearchCreateRequest = await request.json();
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/job-searches - 구직 수정
+// PUT /api/workers/job-searches - 이직 수정
 export async function PUT(request: NextRequest) {
   try {
     const body: JobSearchUpdateRequest = await request.json();

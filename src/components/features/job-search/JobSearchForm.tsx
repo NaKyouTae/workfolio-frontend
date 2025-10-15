@@ -22,7 +22,7 @@ const JobSearchForm: React.FC<JobSearchFormProps> = ({ formData, onFormChange, c
           value={formData.title}
           onChange={(e) => onFormChange('title', e.target.value)}
           className={styles.input}
-          placeholder="구직 제목을 입력하세요"
+          placeholder="이직 제목을 입력하세요"
           required
         />
       </div>
@@ -89,7 +89,7 @@ const JobSearchForm: React.FC<JobSearchFormProps> = ({ formData, onFormChange, c
           value={formData.memo || ''}
           onChange={(e) => onFormChange('memo', e.target.value)}
           className={styles.textarea}
-          placeholder="구직에 대한 메모를 입력하세요"
+          placeholder="이직에 대한 메모를 입력하세요"
           rows={4}
         />
       </div>

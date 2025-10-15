@@ -1200,7 +1200,7 @@ export const createSampleEducations = (): Education[] => {
     ];
 };
 
-// 샘플 구직 데이터
+// 샘플 이직 데이터
 export const createSampleJobSearches = (): JobSearch[] => {
     const now = Date.now();
     const worker = createSampleWorker();
@@ -1208,10 +1208,10 @@ export const createSampleJobSearches = (): JobSearch[] => {
     return [
         {
             id: 'jobsearch-1',
-            title: '2024년 상반기 구직 활동',
+            title: '2024년 상반기 이직 활동',
             startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000, // 6개월 전
             endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
-            memo: '대기업 중심으로 구직 활동을 진행했습니다. 총 15개 회사에 지원하여 3개 회사에서 최종 면접까지 진행했습니다.',
+            memo: '대기업 중심으로 이직 활동을 진행했습니다. 총 15개 회사에 지원하여 3개 회사에서 최종 면접까지 진행했습니다.',
             worker,
             prevCompany: {
                 id: 'company-1',
@@ -1238,10 +1238,10 @@ export const createSampleJobSearches = (): JobSearch[] => {
         },
         {
             id: 'jobsearch-2',
-            title: '2023년 하반기 구직 활동',
+            title: '2023년 하반기 이직 활동',
             startedAt: now - 12 * 30 * 24 * 60 * 60 * 1000, // 12개월 전
             endedAt: now - 8 * 30 * 24 * 60 * 60 * 1000, // 8개월 전
-            memo: '스타트업과 중견기업을 중심으로 구직 활동을 진행했습니다. 개발자 커뮤니티를 통해 많은 기회를 얻을 수 있었습니다.',
+            memo: '스타트업과 중견기업을 중심으로 이직 활동을 진행했습니다. 개발자 커뮤니티를 통해 많은 기회를 얻을 수 있었습니다.',
             worker,
             prevCompany: {
                 id: 'company-3',
@@ -1269,7 +1269,7 @@ export const createSampleJobSearches = (): JobSearch[] => {
     ];
 };
 
-// 샘플 구직 회사 데이터
+// 샘플 이직 회사 데이터
 export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCompany[] => {
     const now = Date.now();
     const worker = createSampleWorker();
@@ -1285,10 +1285,10 @@ export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCo
             link: 'https://careers.naver.com',
             jobSearch: {
                 id: jobSearchId,
-                title: '2024년 상반기 구직 활동',
+                title: '2024년 상반기 이직 활동',
                 startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                 worker,
                 createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
@@ -1306,10 +1306,10 @@ export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCo
             link: 'https://careers.kakao.com',
             jobSearch: {
                 id: jobSearchId,
-                title: '2024년 상반기 구직 활동',
+                title: '2024년 상반기 이직 활동',
                 startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                 worker,
                 createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
@@ -1327,10 +1327,10 @@ export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCo
             link: 'https://about.daangn.com/careers',
             jobSearch: {
                 id: jobSearchId,
-                title: '2024년 상반기 구직 활동',
+                title: '2024년 상반기 이직 활동',
                 startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                 worker,
                 createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
@@ -1348,10 +1348,10 @@ export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCo
             link: 'https://toss.im/careers',
             jobSearch: {
                 id: jobSearchId,
-                title: '2024년 상반기 구직 활동',
+                title: '2024년 상반기 이직 활동',
                 startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                 worker,
                 createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
@@ -1369,10 +1369,10 @@ export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCo
             link: 'https://www.coupang.jobs',
             jobSearch: {
                 id: jobSearchId,
-                title: '2024년 상반기 구직 활동',
+                title: '2024년 상반기 이직 활동',
                 startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                 worker,
                 createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
@@ -1406,10 +1406,10 @@ export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: 
                 link: 'https://about.daangn.com/careers',
                 jobSearch: {
                     id: jobSearchId,
-                    title: '2024년 상반기 구직 활동',
+                    title: '2024년 상반기 이직 활동',
                     startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                     endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                    memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                    memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                     worker,
                     createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                     updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
@@ -1437,10 +1437,10 @@ export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: 
                 link: 'https://about.daangn.com/careers',
                 jobSearch: {
                     id: jobSearchId,
-                    title: '2024년 상반기 구직 활동',
+                    title: '2024년 상반기 이직 활동',
                     startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                     endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                    memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                    memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                     worker,
                     createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                     updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
@@ -1468,10 +1468,10 @@ export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: 
                 link: 'https://about.daangn.com/careers',
                 jobSearch: {
                     id: jobSearchId,
-                    title: '2024년 상반기 구직 활동',
+                    title: '2024년 상반기 이직 활동',
                     startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                     endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-                    memo: '대기업 중심으로 구직 활동을 진행했습니다.',
+                    memo: '대기업 중심으로 이직 활동을 진행했습니다.',
                     worker,
                     createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
                     updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000

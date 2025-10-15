@@ -60,7 +60,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
 
   if (!isOpen) return null;
 
-  // 구직 회사 수정
+  // 이직 회사 수정
   const updateJobSearchCompany = async () => {
     try {
       // 필수 필드 검증
@@ -117,14 +117,14 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
           memo: undefined,
           jobSearchId: jobSearchId
         });
-        alert('구직 회사가 성공적으로 수정되었습니다.');
+        alert('이직 회사가 성공적으로 수정되었습니다.');
       } else {
         const errorData = await response.json();
-        alert(`구직 회사 수정 실패: ${errorData.error || '알 수 없는 오류'}`);
+        alert(`이직 회사 수정 실패: ${errorData.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
       console.error('Error updating job search company:', error);
-      alert('구직 회사 수정 중 오류가 발생했습니다.');
+      alert('이직 회사 수정 중 오류가 발생했습니다.');
     } finally {
       setIsUpdating(false);
     }
@@ -144,7 +144,7 @@ const JobSearchCompanyUpdateModal: React.FC<JobSearchCompanyUpdateModalProps> = 
         {/* 헤더 */}
         <div className={styles.header}>
           <h2 className={styles.title}>
-            구직 회사 수정
+            이직 회사 수정
           </h2>
           <button
             onClick={onClose}

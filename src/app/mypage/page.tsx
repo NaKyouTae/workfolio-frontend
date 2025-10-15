@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
-import JobSearchPage from '@/components/features/job-search/JobSearchPage';
 import Header from '@/components/layouts/Header';
 
 const Mypage: React.FC = () => {
@@ -113,24 +112,6 @@ const Mypage: React.FC = () => {
                         fontWeight: activeMenu === 'profile' ? 'bold' : 'normal'
                     }} onClick={() => setActiveMenu('profile')}>
                         프로필 관리
-                    </div>
-                    <div style={{
-                        padding: '15px 30px',
-                        cursor: 'pointer',
-                        backgroundColor: activeMenu === 'career' ? '#ffffff' : 'transparent',
-                        borderRight: activeMenu === 'career' ? '3px solid #000000' : 'none',
-                        fontWeight: activeMenu === 'career' ? 'bold' : 'normal'
-                    }} onClick={() => setActiveMenu('career')}>
-                        커리어 관리
-                    </div>
-                    <div style={{
-                        padding: '15px 30px',
-                        cursor: 'pointer',
-                        backgroundColor: activeMenu === 'jobsearch' ? '#ffffff' : 'transparent',
-                        borderRight: activeMenu === 'jobsearch' ? '3px solid #000000' : 'none',
-                        fontWeight: activeMenu === 'jobsearch' ? 'bold' : 'normal'
-                    }} onClick={() => setActiveMenu('jobsearch')}>
-                        구직 관리
                     </div>
                     <div style={{
                         padding: '15px 30px',
@@ -252,11 +233,6 @@ const Mypage: React.FC = () => {
                             </div>
                         </div>
                     )}
-
-                    {activeMenu === 'jobsearch' && (
-                        <JobSearchPage />
-                    )}
-
                     {activeMenu === 'withdraw' && (
                         <div>
                             <h2 style={{

@@ -31,7 +31,7 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
 
   if (!isOpen) return null;
 
-  // 구직 생성
+  // 이직 생성
   const createJobSearch = async () => {
     try {
       // 필수 필드 검증
@@ -63,11 +63,11 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
         });
       } else {
         const errorData = await response.json();
-        alert(`구직 생성 실패: ${errorData.error || '알 수 없는 오류'}`);
+        alert(`이직 생성 실패: ${errorData.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
       console.error('Error creating job search:', error);
-      alert('구직 생성 중 오류가 발생했습니다.');
+      alert('이직 생성 중 오류가 발생했습니다.');
     } finally {
       setIsCreating(false);
     }
@@ -87,7 +87,7 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
         {/* 헤더 */}
         <div className={styles.header}>
           <h2 className={styles.title}>
-            구직 추가
+            이직 추가
           </h2>
           <button
             onClick={onClose}

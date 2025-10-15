@@ -9,7 +9,7 @@ import {
   JobSearchCompanyUpdateRequest,
 } from '@/generated/job_search_company';
 
-// GET /api/workers/job-search-companies - 구직 회사 목록 조회
+// GET /api/workers/job-search-companies - 이직 회사 목록 조회
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const jobSearchId = searchParams.get('jobSearchId');
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/workers/job-search-companies - 구직 회사 생성
+// POST /api/workers/job-search-companies - 이직 회사 생성
 export async function POST(request: NextRequest) {
   try {
     const body: JobSearchCompanyCreateRequest = await request.json();
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/job-search-companies - 구직 회사 수정
+// PUT /api/workers/job-search-companies - 이직 회사 수정
 export async function PUT(request: NextRequest) {
   try {
     const body: JobSearchCompanyUpdateRequest = await request.json();

@@ -12,10 +12,9 @@ import InterviewPage from '../interview/InterviewPage';
 
 interface JobSearchCompanyPageProps {
   jobSearch: JobSearch;
-  onBack: () => void;
 }
 
-const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, onBack }) => {
+const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch }) => {
   const { isLoggedIn } = useUser();
   const [jobSearchCompanies, setJobSearchCompanies] = useState<JobSearchCompany[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +23,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
   const [editingCompany, setEditingCompany] = useState<JobSearchCompany | undefined>();
   const [expandedCompanies, setExpandedCompanies] = useState<Set<string>>(new Set());
 
-  // 구직 회사 목록 조회
+  // 이직 회사 목록 조회
   const fetchJobSearchCompanies = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -130,27 +129,110 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
       {/* 헤더 */}
       <div className={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <button
-            onClick={onBack}
-            className={`${styles.button} ${styles.refreshButton}`}
-          >
-            ← 뒤로
-          </button>
-          <div>
-            <h2 className={styles.title}>
-              구직 회사 관리
-            </h2>
-            <p style={{ 
-              fontSize: '14px', 
-              color: '#666', 
-              margin: '5px 0 0 0' 
-            }}>
-              구직: {jobSearch.title}
-            </p>
+          <div style={{ flex: 1 }}>
+            <h2 className={styles.title}>{jobSearch.title}</h2>
             {!isLoggedIn && (
               <p style={{ fontSize: '12px', color: '#999', margin: '3px 0 0 0' }}>
                 📋 샘플 데이터를 표시하고 있습니다.
               </p>
+            )}
+            
+            {/* 이직 상세 정보 */}
+            <div style={{ 
+              display: 'flex', 
+              flexWrap: 'wrap',
+              gap: '20px', 
+              marginTop: '10px',
+              fontSize: '14px',
+              color: '#666'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ fontWeight: 'bold' }}>시작일:</span>
+                <span>{jobSearch.startedAt ? new Date(jobSearch.startedAt).toLocaleDateString('ko-KR') : '-'}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ fontWeight: 'bold' }}>종료일:</span>
+                <span>{jobSearch.endedAt ? new Date(jobSearch.endedAt).toLocaleDateString('ko-KR') : '진행중'}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ fontWeight: 'bold' }}>상태:</span>
+                <span style={{ 
+                  padding: '2px 8px', 
+                  borderRadius: '4px', 
+                  backgroundColor: jobSearch.endedAt ? '#e9ecef' : '#d4edda',
+                  color: jobSearch.endedAt ? '#6c757d' : '#155724',
+                  fontSize: '12px'
+                }}>
+                  {jobSearch.endedAt ? '완료' : '진행중'}
+                </span>
+              </div>
+            </div>
+
+            {/* 회사 정보 */}
+            <div style={{ 
+              display: 'flex', 
+              flexWrap: 'wrap',
+              gap: '20px', 
+              marginTop: '8px',
+              fontSize: '14px',
+              color: '#666'
+            }}>
+              {jobSearch.prevCompany && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span style={{ fontWeight: 'bold' }}>이전 회사:</span>
+                  <span style={{ 
+                    padding: '2px 8px', 
+                    borderRadius: '4px', 
+                    backgroundColor: '#f8f9fa',
+                    color: '#495057',
+                    fontSize: '12px'
+                  }}>
+                    {jobSearch.prevCompany.name}
+                  </span>
+                </div>
+              )}
+              {jobSearch.nextCompany && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span style={{ fontWeight: 'bold' }}>이후 회사:</span>
+                  <span style={{ 
+                    padding: '2px 8px', 
+                    borderRadius: '4px', 
+                    backgroundColor: '#f8f9fa',
+                    color: '#495057',
+                    fontSize: '12px'
+                  }}>
+                    {jobSearch.nextCompany.name}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* 메모 */}
+            {jobSearch.memo && (
+              <div style={{ 
+                marginTop: '10px',
+                padding: '10px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '6px',
+                border: '1px solid #e9ecef'
+              }}>
+                <div style={{ 
+                  fontSize: '12px', 
+                  fontWeight: 'bold', 
+                  color: '#666', 
+                  marginBottom: '5px' 
+                }}>
+                  메모
+                </div>
+                <div style={{ 
+                  fontSize: '14px', 
+                  color: '#333',
+                  lineHeight: '1.4',
+                  whiteSpace: 'pre-wrap'
+                }}>
+                  {jobSearch.memo}
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -187,7 +269,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
         </div>
       </div>
 
-      {/* 구직 회사 테이블 */}
+      {/* 이직 회사 테이블 */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -210,7 +292,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
             {jobSearchCompanies.length === 0 ? (
               <tr className={styles.emptyRow}>
                 <td colSpan={12} className={styles.emptyCell}>
-                  등록된 구직 회사가 없습니다
+                  등록된 이직 회사가 없습니다
                 </td>
               </tr>
             ) : (
@@ -301,7 +383,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
         </table>
       </div>
 
-      {/* 구직 회사 생성 모달 */}
+      {/* 이직 회사 생성 모달 */}
       <JobSearchCompanyCreateModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -309,7 +391,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
         jobSearchId={jobSearch.id}
       />
 
-      {/* 구직 회사 수정 모달 */}
+      {/* 이직 회사 수정 모달 */}
       <JobSearchCompanyUpdateModal
         isOpen={isEditModalOpen}
         onClose={() => {

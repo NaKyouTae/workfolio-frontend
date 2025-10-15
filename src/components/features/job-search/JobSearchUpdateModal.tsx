@@ -31,7 +31,7 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
   });
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // 편집할 구직 정보로 폼 초기화
+  // 편집할 이직 정보로 폼 초기화
   useEffect(() => {
     if (editingJobSearch) {
       setCreateForm({
@@ -48,7 +48,7 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
 
   if (!isOpen) return null;
 
-  // 구직 수정
+  // 이직 수정
   const updateJobSearch = async () => {
     try {
       // 필수 필드 검증
@@ -89,14 +89,14 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
           nextCompanyId: undefined,
           memo: undefined
         });
-        alert('구직이 성공적으로 수정되었습니다.');
+        alert('이직이 성공적으로 수정되었습니다.');
       } else {
         const errorData = await response.json();
-        alert(`구직 수정 실패: ${errorData.error || '알 수 없는 오류'}`);
+        alert(`이직 수정 실패: ${errorData.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
       console.error('Error updating job search:', error);
-      alert('구직 수정 중 오류가 발생했습니다.');
+      alert('이직 수정 중 오류가 발생했습니다.');
     } finally {
       setIsUpdating(false);
     }
@@ -116,7 +116,7 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
         {/* 헤더 */}
         <div className={styles.header}>
           <h2 className={styles.title}>
-            구직 수정
+            이직 수정
           </h2>
           <button
             onClick={onClose}

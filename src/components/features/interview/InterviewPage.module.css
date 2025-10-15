@@ -2,6 +2,11 @@
 
 .container {
   padding: 20px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .loadingContainer {
@@ -57,11 +62,43 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.table thead {
+  display: block;
+}
+
+.table tbody {
+  display: block;
+  flex: 1;
+  overflow: auto;
+}
+
+.table tr {
+  display: flex;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #e9ecef;
+  text-align: left;
 }
 
 .tableHeader {
@@ -69,38 +106,30 @@
 }
 
 .tableHeaderCell {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #e9ecef;
   font-size: 14px;
   font-weight: bold;
   color: #333;
+  background-color: #f8f9fa;
 }
 
-.tableRow {
-  border-bottom: 1px solid #e9ecef;
-}
 
 .emptyCell {
-  padding: 40px;
-  text-align: center;
   color: #666;
   font-size: 16px;
+  justify-content: center;
+  flex: 1;
 }
 
 .tableCell {
-  padding: 12px;
   font-size: 14px;
 }
 
 .titleCell {
-  padding: 12px;
   font-size: 14px;
   font-weight: bold;
 }
 
 .typeCell {
-  padding: 12px;
   font-size: 14px;
 }
 
@@ -113,11 +142,6 @@
   font-weight: bold;
 }
 
-.memoCell {
-  padding: 12px;
-  font-size: 14px;
-  max-width: 200px;
-}
 
 .memoText {
   overflow: hidden;
@@ -126,14 +150,16 @@
 }
 
 .actionCell {
-  padding: 12px;
-  text-align: center;
+  flex: 0 0 120px;
+  justify-content: center;
 }
 
 .actionButtonGroup {
   display: flex;
+  flex-direction: column;
   gap: 4px;
   justify-content: center;
+  align-items: center;
 }
 
 .actionButton {
@@ -151,4 +177,59 @@
 
 .deleteButton {
   background-color: #dc3545;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  padding: 4px;
+  flex: 0 0 50px;
+  justify-content: center;
+}
+
+.expandHeaderCell {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  background-color: #f8f9fa;
+  flex: 0 0 50px;
+  justify-content: center;
+}
+
+.expandedRow {
+  background-color: #f8f9fa;
+}
+
+.expandedCell {
+  padding: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.expandedContent {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+.memoSection {
+  margin-bottom: 20px;
+}
+
+.memoTitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.memoContent {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  white-space: pre-wrap;
 }

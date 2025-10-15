@@ -36,7 +36,7 @@ const JobSearchCompanyCreateModal: React.FC<JobSearchCompanyCreateModalProps> = 
 
   if (!isOpen) return null;
 
-  // 구직 회사 생성
+  // 이직 회사 생성
   const createJobSearchCompany = async () => {
     try {
       // 필수 필드 검증
@@ -88,14 +88,14 @@ const JobSearchCompanyCreateModal: React.FC<JobSearchCompanyCreateModalProps> = 
           memo: undefined,
           jobSearchId: jobSearchId
         });
-        alert('구직 회사가 성공적으로 생성되었습니다.');
+        alert('이직 회사가 성공적으로 생성되었습니다.');
       } else {
         const errorData = await response.json();
-        alert(`구직 회사 생성 실패: ${errorData.error || '알 수 없는 오류'}`);
+        alert(`이직 회사 생성 실패: ${errorData.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
       console.error('Error creating job search company:', error);
-      alert('구직 회사 생성 중 오류가 발생했습니다.');
+      alert('이직 회사 생성 중 오류가 발생했습니다.');
     }
   };
 
@@ -113,7 +113,7 @@ const JobSearchCompanyCreateModal: React.FC<JobSearchCompanyCreateModalProps> = 
         {/* 헤더 */}
         <div className={styles.header}>
           <h2 className={styles.title}>
-            구직 회사 추가
+            이직 회사 추가
           </h2>
           <button
             onClick={onClose}

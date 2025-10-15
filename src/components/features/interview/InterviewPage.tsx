@@ -21,6 +21,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingInterview, setEditingInterview] = useState<Interview | undefined>(undefined);
+  const [expandedInterviews, setExpandedInterviews] = useState<Set<string>>(new Set());
 
   // 면접 목록 조회
   const fetchInterviews = useCallback(async () => {
@@ -86,6 +87,19 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
     }
   };
 
+  // 면접 확장/축소 토글
+  const toggleInterviewExpansion = (interviewId: string) => {
+    setExpandedInterviews(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(interviewId)) {
+        newSet.delete(interviewId);
+      } else {
+        newSet.add(interviewId);
+      }
+      return newSet;
+    });
+  };
+
   // 면접 유형 텍스트 변환
   const getTypeText = (type: Interview_Type) => {
     const typeValue = Interview_Type[type as unknown as keyof typeof Interview_Type];
@@ -113,9 +127,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
     <div className={styles.container}>
       {/* 헤더 */}
       <div className={styles.header}>
-        <h2 className={styles.title}>
-          면접 관리 - {jobSearchCompany.name}
-        </h2>
+        <h2 className={styles.title}>면접 관리 - {jobSearchCompany.name}</h2>
         <div className={styles.buttonGroup}>
           <button
             onClick={() => setIsCreateModalOpen(true)}
@@ -131,11 +143,11 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
         <table className={styles.table}>
           <thead>
             <tr className={styles.tableHeader}>
+              <th className={styles.expandHeaderCell}></th>
               <th className={styles.tableHeaderCell}>제목</th>
               <th className={styles.tableHeaderCell}>유형</th>
               <th className={styles.tableHeaderCell}>시작일</th>
               <th className={styles.tableHeaderCell}>종료일</th>
-              <th className={styles.tableHeaderCell}>메모</th>
               <th className={styles.tableHeaderCell}>작업</th>
             </tr>
           </thead>
@@ -147,46 +159,66 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ jobSearchCompany }) => {
                 </td>
               </tr>
             ) : (
-              interviews.map((interview) => (
-                <tr key={interview.id} className={styles.tableRow}>
-                  <td className={styles.titleCell}>{interview.title}</td>
-                  <td className={styles.typeCell}>
-                    <span className={styles.typeBadge}>
-                      {getTypeText(interview.type)}
-                    </span>
-                  </td>
-                  <td className={styles.tableCell}>
-                    {interview.startedAt ? DateUtil.formatTimestamp(interview.startedAt) : '-'}
-                  </td>
-                  <td className={styles.tableCell}>
-                    {interview.endedAt ? DateUtil.formatTimestamp(interview.endedAt) : '-'}
-                  </td>
-                  <td className={styles.memoCell}>
-                    <div 
-                      className={styles.memoText}
-                      title={interview.memo || ''}
-                    >
-                      {interview.memo || '-'}
-                    </div>
-                  </td>
-                  <td className={styles.actionCell}>
-                    <div className={styles.actionButtonGroup}>
-                      <button
-                        onClick={() => openEditModal(interview)}
-                        className={`${styles.actionButton} ${styles.editButton}`}
-                      >
-                        수정
-                      </button>
-                      <button
-                        onClick={() => deleteInterview(interview.id || '')}
-                        className={`${styles.actionButton} ${styles.deleteButton}`}
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+              interviews.map((interview) => {
+                const isExpanded = expandedInterviews.has(interview.id || '');
+                return (
+                  <React.Fragment key={interview.id}>
+                    <tr className={styles.tableRow}>
+                      <td className={styles.tableCell}>
+                        <button
+                          onClick={() => toggleInterviewExpansion(interview.id || '')}
+                          className={styles.expandButton}
+                          title={isExpanded ? '메모 숨기기' : '메모 보기'}
+                        >
+                          {isExpanded ? '▼' : '▶'}
+                        </button>
+                      </td>
+                      <td className={styles.titleCell}>{interview.title}</td>
+                      <td className={styles.typeCell}>
+                        <span className={styles.typeBadge}>
+                          {getTypeText(interview.type)}
+                        </span>
+                      </td>
+                      <td className={styles.tableCell}>
+                        {interview.startedAt ? DateUtil.formatTimestamp(interview.startedAt) : '-'}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {interview.endedAt ? DateUtil.formatTimestamp(interview.endedAt) : '-'}
+                      </td>
+                      <td className={styles.actionCell}>
+                        <div className={styles.actionButtonGroup}>
+                          <button
+                            onClick={() => openEditModal(interview)}
+                            className={`${styles.actionButton} ${styles.editButton}`}
+                          >
+                            수정
+                          </button>
+                          <button
+                            onClick={() => deleteInterview(interview.id || '')}
+                            className={`${styles.actionButton} ${styles.deleteButton}`}
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {isExpanded && (
+                      <tr className={styles.expandedRow}>
+                        <td colSpan={6} className={styles.expandedCell}>
+                          <div className={styles.expandedContent}>
+                            <div className={styles.memoSection}>
+                              <h4 className={styles.memoTitle}>메모</h4>
+                              <div className={styles.memoContent}>
+                                {interview.memo || '메모가 없습니다.'}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })
             )}
           </tbody>
         </table>
