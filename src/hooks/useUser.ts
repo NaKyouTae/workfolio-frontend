@@ -12,9 +12,25 @@ export const useUser = () => {
             setLoading(true);
             setError(null);
             
+            // 쿠키에서 토큰 확인
+            const hasToken = document.cookie.includes('accessToken=') || document.cookie.includes('refreshToken=');
+            
+            if (!hasToken) {
+                // 토큰이 없으면 사용자 정보를 클리어하고 조용히 종료
+                console.log('No token found, user not logged in');
+                clearUser();
+                return;
+            }
+            
             const response = await fetch('/api/workers/me', { method: HttpMethod.GET });
             
             if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    // 인증 실패 시 사용자 정보 클리어하고 조용히 종료
+                    console.log('Authentication failed, user not logged in');
+                    clearUser();
+                    return;
+                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
@@ -23,16 +39,18 @@ export const useUser = () => {
             if (data.worker) {
                 setUser(data.worker);
             } else {
-                setError('유저 정보를 찾을 수 없습니다.');
+                // 서버에서 유저 정보를 찾을 수 없으면 사용자 정보 클리어
+                console.log('No user data from server');
+                clearUser();
             }
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : '유저 정보를 가져오는 중 오류가 발생했습니다.';
-            setError(errorMessage);
-            console.error('Error fetching user info:', err);
+            console.log('Error fetching user info:', err);
+            // 에러 발생 시 사용자 정보 클리어
+            clearUser();
         } finally {
             setLoading(false);
         }
-    }, [setUser, setLoading, setError]);
+    }, [setUser, setLoading, setError, clearUser]);
     
     // 회원 탈퇴
     const deleteAccount = useCallback(async () => {

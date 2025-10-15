@@ -42,18 +42,25 @@ const Header = () => {
     
     return (
         <header>
-            <h1 style={{ cursor: 'pointer' }} onClick={() => router.push('/dashboard')}>
+            <h1 style={{ cursor: 'pointer' }} onClick={() => router.push('/records')}>
                 <Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} />
             </h1>
             {user? (
                 <ul>
                     <li>{`${user.nickName} 님 반가워요 !`}</li>
+                    <li><Link href="/records">기록 관리</Link></li>
+                    <li><Link href="/company-history">커리어 관리</Link></li>
+                    <li><Link href="/mypage">이직 관리</Link></li>
                     <li><Link href="/mypage">마이페이지</Link></li>
                     <li><a onClick={logout}>로그아웃</a></li>
                 </ul>
             ) : (
                 <ul>
                     <li>환영해요 !</li>
+                    <li><Link href="/records">기록 관리</Link></li>
+                    <li><Link href="/company-history">커리어 관리</Link></li>
+                    <li><Link href="/mypage">이직 관리</Link></li>
+                    <li><Link href="/mypage">마이페이지</Link></li>
                     <li><a href="/login">로그인</a></li>
                 </ul>
             )}

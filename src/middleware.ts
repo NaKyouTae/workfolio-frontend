@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    // 루트 경로(/)로 접근하면 dashboard로 리다이렉트
+    // 루트 경로(/)로 접근하면 records로 리다이렉트
     if (request.nextUrl.pathname === '/') {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
+        return NextResponse.redirect(new URL('/records', request.url));
     }
     
     // 로그인 페이지는 항상 허용
@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
     }
     
     // 보호된 페이지들 (토큰이 필요한 페이지) - 현재는 없음
-    // dashboard와 mypage는 샘플 데이터로 접근 가능하도록 허용
+    // records와 mypage는 샘플 데이터로 접근 가능하도록 허용
     const protectedPaths: string[] = [];
     const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path));
     
@@ -35,7 +35,8 @@ export function middleware(request: NextRequest) {
 export const config = {
     matcher: [
         '/',
-        '/dashboard/:path*',
+        '/records/:path*',
+        '/company-history/:path*',
         '/mypage/:path*',
         '/login',
         // 필요한 다른 경로들도 추가 가능

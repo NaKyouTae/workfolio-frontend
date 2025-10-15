@@ -6,6 +6,8 @@ import { CompanyCreateRequest, CompanyUpdateRequest } from '@/generated/company'
 import { SalaryCreateRequest, SalaryUpdateRequest } from '@/generated/salary';
 import { PositionCreateRequest, PositionUpdateRequest } from '@/generated/position';  
 import dayjs from 'dayjs';
+import { useUser } from '@/hooks/useUser';
+import { createSampleCompanies } from '@/utils/sampleData';
 
 interface CompanyManagementProps {
   initialData?: Company[];
@@ -16,6 +18,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   initialData = [],
   onDataChange
 }) => {
+  const { isLoggedIn, user } = useUser();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [newCompany, setNewCompany] = useState<CompanyCreateRequest>({
     name: '',
@@ -88,26 +91,35 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
   // 초기 데이터 로드
   useEffect(() => {
-    if (isInitialLoad.current && initialData && initialData.length > 0) {
-      const companiesForm: Company[] = initialData.map((company: Company) => ({
-        id: company.id,
-        createdAt: company.createdAt,
-        updatedAt: company.updatedAt,
-        name: company.name,
-        startedAt: company.startedAt,
-        endedAt: company.endedAt,
-        isWorking: company.isWorking,
-      }));
-      
-      setCompanies(companiesForm);
+    if (isInitialLoad.current) {
+      if (isLoggedIn && user && user.id !== 'sample-user-id' && initialData && initialData.length > 0) {
+        // 로그인된 경우 실제 데이터 사용
+        const companiesForm: Company[] = initialData.map((company: Company) => ({
+          id: company.id,
+          createdAt: company.createdAt,
+          updatedAt: company.updatedAt,
+          name: company.name,
+          startedAt: company.startedAt,
+          endedAt: company.endedAt,
+          isWorking: company.isWorking,
+        }));
+        
+        setCompanies(companiesForm);
+        
+        // 모든 회사의 position과 salary를 한 번에 조회
+        const companyIds = companiesForm.map(company => company.id).join(',');
+        fetchAllPositions(companyIds);
+        fetchAllSalaries(companyIds);
+      } else {
+        // 로그인되지 않은 경우 샘플 데이터 사용
+        const sampleData = createSampleCompanies();
+        setCompanies(sampleData);
+        setPositions([]);
+        setSalaries([]);
+      }
       isInitialLoad.current = false; // 초기 로드 완료 표시
-      
-      // 모든 회사의 position과 salary를 한 번에 조회
-      const companyIds = companiesForm.map(company => company.id).join(',');
-      fetchAllPositions(companyIds);
-      fetchAllSalaries(companyIds);
     }
-  }, [initialData]);
+  }, [initialData, isLoggedIn, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 데이터 변경 핸들러
   const handleDataChange = (newCompanies: Company[]) => {

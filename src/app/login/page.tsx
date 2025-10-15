@@ -26,9 +26,9 @@ export default function LoginPage() {
             const accessToken = await getCookie('accessToken');
             const refreshToken = await getCookie('refreshToken');
             
-            // 쿠키에 accessToken과 refreshToken이 있다면 대시보드로 리디렉션
+            // 쿠키에 accessToken과 refreshToken이 있다면 기록 관리 페이지로 리디렉션
             if (accessToken && refreshToken) {
-                router.push('/dashboard'); // 로그인 성공
+                router.push('/records'); // 로그인 성공
             } else {
                 setIsLoading(false); // 로그인 실패
             }

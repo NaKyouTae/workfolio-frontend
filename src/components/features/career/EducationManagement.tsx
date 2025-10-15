@@ -29,7 +29,7 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
 
   // 초기 데이터 로드
   useEffect(() => {
-    if (initialData && initialData.length > 0) {
+    if (isInitialLoad.current && initialData && initialData.length > 0) {
       const educationsForm: Education[] = initialData.map((education: Education) => ({
         id: education.id,
         name: education.name,
@@ -49,7 +49,7 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
     if (!isInitialLoad.current && educations.length >= 0 && onDataChange) {
       onDataChange(educations as Education[]);
     }
-  }, [onDataChange]);
+  }, [educations, onDataChange]);
 
 
   // 데이터 변경 핸들러

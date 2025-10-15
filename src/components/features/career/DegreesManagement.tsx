@@ -29,7 +29,7 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
 
   // 초기 데이터 로드
   useEffect(() => {
-    if (initialData && initialData.length > 0) {
+    if (isInitialLoad.current && initialData && initialData.length > 0) {
       const degreesForm: Degrees[] = initialData.map((degree: Degrees) => ({
         id: degree.id,
         name: degree.name,
@@ -49,7 +49,7 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
     if (!isInitialLoad.current && degrees.length >= 0 && onDataChange) {
       onDataChange(degrees as Degrees[]);
     }
-  }, [onDataChange]);
+  }, [degrees, onDataChange]);
 
   // 데이터 변경 핸들러
   const handleDataChange = (newDegrees: Degrees[]) => {

@@ -30,7 +30,7 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
 
   // 초기 데이터 로드
   useEffect(() => {
-    if (initialData && initialData.length > 0) {
+    if (isInitialLoad.current && initialData && initialData.length > 0) {
       const certificationsForm: Certifications[] = initialData.map((cert: Certifications) => ({
         id: cert.id,
         createdAt: cert.createdAt,
@@ -51,7 +51,7 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
     if (!isInitialLoad.current && certifications.length >= 0 && onDataChange) {
       onDataChange(certifications);
     }
-  }, [onDataChange]);
+  }, [certifications, onDataChange]);
 
   // 데이터 변경 핸들러
   const handleDataChange = (newCertifications: Certifications[]) => {
