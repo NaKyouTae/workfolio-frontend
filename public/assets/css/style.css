@@ -125,9 +125,11 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .calendar-wrap .days .weekly table tr:nth-child(1) td + td::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); position: absolute; z-index: 1;}
 .calendar-wrap .days .weekly table td.holiday {color: var(--red);}
 
-.calendar-wrap .days .weekly table .day > div {padding: .6rem 1rem .1rem; height: 2rem; display: flex; align-items: center; justify-content: space-between; font-size: 1.2rem;}
-.calendar-wrap .days .weekly table .record {padding: .1rem 0; position: relative;}
-.calendar-wrap .days .weekly table .record > p {height: 2rem; padding: 0 1rem; margin-left: 1px; font-size: 1.2rem; line-height: 2rem; color: var(--white); position: relative; z-index: 10; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.calendar-wrap .days .weekly table td.day > div {padding: .6rem 1rem .1rem; height: 2rem; display: flex; align-items: center; justify-content: space-between; font-size: 1.2rem;}
+.calendar-wrap .days .weekly table td.record {padding: .1rem 0; position: relative;}
+.calendar-wrap .days .weekly table td.record > p {height: 2rem; padding: 0 1rem; margin-left: 1px; font-size: 1.2rem; line-height: 2rem; color: var(--white); position: relative; z-index: 10; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.calendar-wrap .days .weekly table td.record > p.time {color: var(--black); border-left: 2px solid; padding: 0 1rem 0 .8rem;}
+.calendar-wrap .days .weekly table td.record:nth-child(1) > p {margin-left: 0;}
 
 /* 달력 - 월간 > 일정 상세 */
 .record-modal-wrap {position: absolute; z-index: 100; background-color: var(--white); width: 40rem; border-radius: .6rem; border: 1px solid var(--gray002); display: flex; flex-flow: column;}
@@ -155,10 +157,56 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .record-info-input > li .record-select .color {display: block; width: .8rem; height: 3.2rem; border-radius: .2rem;}
 .record-info-input > li .record-select .dropdown {flex: 1;}
 
+/* 달력 - 주간 */
+.calendar-wrap .weekly .week {position: sticky; top: 0; background-color: var(--white); z-index: 10;}
+.calendar-wrap .weekly .week th:nth-child(1) {width: 8rem;}
+.calendar-wrap .weekly .week th span {color: var(--black); font-weight: 500;}
+.calendar-wrap .weekly .week th.holiday span {color: var(--red);}
+
+.calendar-wrap .weekly .all {position: sticky; top: 2.45rem; display: grid; grid-template-columns: 8rem auto; border-bottom: 1px solid var(--gray002); background-color: var(--white); z-index: 10;}
+.calendar-wrap .weekly .all > div {padding: .6rem 0; display: flex; flex-flow: column; align-items: center; font-size: 1.2rem; color: var(--gray005);}
+.calendar-wrap .weekly .all > table {width: 100%; table-layout: fixed; position: relative;}
+.calendar-wrap .weekly .all > table::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); z-index: 1; position: absolute; left: 0;}
+.calendar-wrap .weekly .all > table tr:nth-child(1) td {padding-top: .5rem;}
+.calendar-wrap .weekly .all > table tr:nth-last-child(1) td {padding-bottom: .5rem;}
+.calendar-wrap .weekly .all > table tr:nth-last-child(1) td + td::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); position: absolute; bottom: 0; z-index: 1;}
+.calendar-wrap .weekly .all > table tr:nth-last-child(1) td.record {height: 2.2rem;}
+.calendar-wrap .weekly .all > table td.record {padding: .1rem 0;}
+.calendar-wrap .weekly .all > table td.record > p {height: 2rem; padding: 0 1rem; margin-left: 1px; font-size: 1.2rem; line-height: 2rem; color: var(--white); position: relative; z-index: 10; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.calendar-wrap .weekly .all > table td.record.record:nth-child(1) > p {margin-left: 0;}
+
+.calendar-wrap .weekly .time {display: grid; grid-template-columns: 8rem auto;}
+.calendar-wrap .weekly .time > ul {padding-top: 3.8rem; display: flex; flex-flow: column; row-gap: 3.2rem; align-items: center;}
+.calendar-wrap .weekly .time > ul > li {font-size: 1.2rem; color: var(--gray005);}
+.calendar-wrap .weekly .time > ul > li:nth-child(1) {display: none;}
+
+.calendar-wrap .weekly .time > table {width: 100%; table-layout: fixed; position: relative;}
+.calendar-wrap .weekly .time > table::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); z-index: 1; position: absolute; left: 0;}
+.calendar-wrap .weekly .time > table td {position: relative;}
+.calendar-wrap .weekly .time > table td + td::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); position: absolute; bottom: 0; z-index: 1;}
+
+.calendar-wrap .weekly .time > table td > ul > li > div {height: 2.2rem; border-bottom: 1px solid var(--gray002);}
+.calendar-wrap .weekly .time > table td > ul > li:nth-last-child(1) > div:nth-last-child(1) {border-bottom: 0;}
+
+.calendar-wrap .weekly .time .current-time {position: absolute; width: 100%; height: 1px; border-top: 1px dashed var(--red); z-index: 10;}
+.calendar-wrap .weekly .time .today .current-time {border-top: 1px solid var(--red);}
+.calendar-wrap .weekly .time .today .current-time::before {content: ''; position: absolute; top: -.45rem; left: 0; width: 0; height: 0; border-top: .4rem solid transparent; border-bottom: .4rem solid transparent; border-left: .8rem solid var(--red);}
+
+.calendar-wrap .weekly .time .record-wrap {position: absolute; top: 0; left: 0; width: 100%; height: 100%;}
+.calendar-wrap .weekly .time .record-wrap .record-group {position: absolute; width: 100%; display: flex;}
+.calendar-wrap .weekly .time .record-wrap .record-group .record:not(:nth-last-child(1)) {border-right: 1px solid transparent;}
+.calendar-wrap .weekly .time .record-wrap .record {position: absolute; width: 100%; padding-bottom: .1rem;}
+.calendar-wrap .weekly .time .record-wrap .record > div {width: 100%; height: 100%; padding: .5rem 1rem; font-size: 1.2rem; color: var(--white); display: flex; flex-flow: column; row-gap: .2rem;}
+.calendar-wrap .weekly .time .record-wrap .record > div > span {flex: 0 0 auto; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+/* .calendar-wrap .weekly .time .record-wrap .record > div > p {flex: 1 1 auto; width: 100%; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;} */
+.calendar-wrap .weekly .time .record-wrap .record > div > p {flex: 1 1 auto; width: 100%; line-height: 1.2; overflow: hidden; position: relative; word-break: break-all; white-space: initial; mask-image: linear-gradient(180deg, #000 60%, transparent); -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);}
+
+
 /* 달력 - 목록 */
 table.list {width: 100%;}
 table.list thead {position: sticky; top: 0;}
-table.list thead th {height: 2.4rem; text-align: center; font-size: 1.2rem; color: var(--gray005); vertical-align: middle; border-bottom: 1px solid var(--gray002); background-color: var(--white);}
+table.list thead::after {content: ''; width: 100%; height: 1px; background-color: var(--gray002); position: absolute; top: 2.35rem;}
+table.list thead th {height: 2.4rem; text-align: center; font-size: 1.2rem; color: var(--gray005); vertical-align: middle; background-color: var(--white);}
 table.list thead th + th {border-left: 1px solid var(--gray002);}
 table.list tbody tr:last-child td {border-bottom: 0;}
 table.list tbody td {height: 2.4rem; padding: 0 1rem; text-align: center; font-size: 1.2rem; vertical-align: middle; border-bottom: 1px solid var(--gray002); cursor: pointer;}
@@ -170,3 +218,4 @@ table.list tbody td > div {display: flex; align-items: center; column-gap: .6rem
 table.list tbody td > div > div {width: .6rem; height: 1.4rem; border-radius: .2rem;}
 table.list tbody td > div > p {flex: 1; max-width: 12.8rem; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
 table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; display: -webkit-box; line-clamp: 1; -webkit-line-clamp: 1; -webkit-box-orient: vertical;}
+

@@ -45,7 +45,10 @@ export default function MonthlyCalendarItem({
         >
             <p
                 style={{
-                    backgroundColor: record.recordGroup?.color || '#e0e0e0',
+                    backgroundColor: isTimeType
+                                        ? `${record.recordGroup?.color}1A` || '#e0e0e01A' // opacity .1 적용 (hex 1A ≈ 10%)
+                                        : record.recordGroup?.color || '#e0e0e0',
+                    borderColor: isTimeType ? record.recordGroup?.color || '#e0e0e0' : undefined,
                 }}
                 className={`${isTimeType ? 'time' : ''}`}
             >
