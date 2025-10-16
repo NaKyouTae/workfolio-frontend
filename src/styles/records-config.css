@@ -98,7 +98,7 @@
     flex: 1;
 }
 
-.dropdown {
+/* .dropdown {
     width: 200px;
     height: 36px;
     padding: 8px 12px;
@@ -120,7 +120,7 @@
     outline: none;
     border-color: #ff6b35;
     box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-}
+} */
 
 /* 입력 필드와 색상 선택기 */
 .input-with-color {
