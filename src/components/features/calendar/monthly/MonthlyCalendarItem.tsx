@@ -34,7 +34,7 @@ export default function MonthlyCalendarItem({
         <td 
             key={`event-${startDayIndex}`}
             colSpan={colSpan} 
-            className={`record ${isTimeType ? 'time' : ''}`}
+            className={'record'}
             onClick={(e) => onRecordClick(record, e)}
             title={
                 isContinuation && continuesToNextWeek ? `${getDisplayTitle()} (이전 주에서 이어짐, 다음 주로 이어짐)` :
@@ -47,6 +47,7 @@ export default function MonthlyCalendarItem({
                 style={{
                     backgroundColor: record.recordGroup?.color || '#e0e0e0',
                 }}
+                className={`${isTimeType ? 'time' : ''}`}
             >
                 {getDisplayTitle()}
             </p>
