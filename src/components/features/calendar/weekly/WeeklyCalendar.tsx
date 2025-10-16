@@ -388,23 +388,74 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             
             let scrollTop
             
-            // 시간대별 스크롤 위치 결정
-            if (hours < 6) {
-                // 이른 시간 (0-6시): 맨 위로
+            // 현재 시간을 화면 중앙에 배치하도록 스크롤 위치 계산
+            scrollTop = currentTimePositionPx - (viewportHeight / 2)
+            
+            // 스크롤 위치 제한
+            if (scrollTop < 0) {
+                // 너무 이른 시간일 때는 맨 위로
                 scrollTop = 0
-                console.log('이른 시간 (0-6시)일 때는 맨 위로', scrollTop)
-            } else if (hours >= 18) {
-                // 늦은 시간 (18시 이후): 맨 아래로
+                console.log('이른 시간일 때는 맨 위로', scrollTop)
+            } else if (scrollTop > maxScrollTop) {
+                // 너무 늦은 시간일 때는 맨 아래로
                 scrollTop = maxScrollTop
-                console.log('늦은 시간 (18시 이후)일 때는 맨 아래로', scrollTop)
+                console.log('늦은 시간일 때는 맨 아래로', scrollTop)
             } else {
-                // 정상 범위 (6-18시): 가이드라인이 화면 중앙에 오도록
-                scrollTop = currentTimePositionPx - (viewportHeight / 2)
-                scrollTop = Math.max(0, Math.min(scrollTop, maxScrollTop))
-                console.log('정상 범위면 가이드라인을 중앙에 배치', scrollTop)
+                // 정상 범위면 현재 시간을 중앙에 배치
+                console.log('현재 시간을 중앙에 배치', scrollTop)
             }
             
-            weeklyGridRef.current.scrollTop = scrollTop // px 단위로 직접 설정
+            // 디버깅을 위한 상세 로그
+            console.log('스크롤 디버깅:', {
+                hours,
+                minutes,
+                currentTimePosition,
+                currentTimePositionPx,
+                viewportHeight,
+                totalHeight,
+                maxScrollTop,
+                calculatedScrollTop: scrollTop,
+                currentScrollTop: weeklyGridRef.current.scrollTop
+            })
+            
+            // DOM이 완전히 렌더링된 후 스크롤 적용
+            const applyScroll = () => {
+                if (weeklyGridRef.current) {
+                    // 여러 방법으로 스크롤 시도
+                    const element = weeklyGridRef.current
+                    
+                    // 1. scrollTo 메서드 시도
+                    element.scrollTo({
+                        top: scrollTop,
+                        behavior: 'auto'
+                    })
+                    
+                    // 2. scrollTop 직접 할당 시도
+                    element.scrollTop = scrollTop
+                    
+                    // 3. scrollIntoView 시도 (마지막 수단)
+                    if (Math.abs(element.scrollTop - scrollTop) > 1) {
+                        const targetElement = element.querySelector(`li:nth-child(${Math.floor(scrollTop / 70) + 1})`)
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ block: 'start' })
+                        }
+                    }
+                    
+                    // 추가 확인
+                    console.log('스크롤 적용 후:', {
+                        targetScrollTop: scrollTop,
+                        actualScrollTop: element.scrollTop,
+                        success: Math.abs(element.scrollTop - scrollTop) < 1,
+                        elementHeight: element.scrollHeight,
+                        elementClientHeight: element.clientHeight
+                    })
+                }
+            }
+            
+            // 여러 시점에서 스크롤 시도
+            setTimeout(applyScroll, 50)
+            setTimeout(applyScroll, 200)
+            setTimeout(applyScroll, 500)
         }
     }, [currentTime])
 
