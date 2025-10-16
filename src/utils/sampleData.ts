@@ -397,95 +397,239 @@ export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
         dayjs('2025-12-22').startOf('week')  // 12월 넷째 주
     ]
     
-    // 랜덤 일정 생성 함수
-    const generateRandomWeeklyEvents = (weekStart: dayjs.Dayjs, weekIndex: number, month: string) => {
-        const events = []
+    // 이벤트 타입 정의
+    interface WeeklyEventData {
+        type: 'TIME' | 'DAY' | 'MULTI_DAY'
+        day: number
+        title: string
+        group: number
+        hour?: number
+        minute?: number
+        duration?: number
+        endDay?: number
+    }
+
+    // 고정 주간 일정 생성 함수 (2025년 10월~11월)
+    const generateFixedWeeklyEvents = (weekStart: dayjs.Dayjs, weekIndex: number, month: string): Record<string, any>[] => {
+        const events: Record<string, any>[] = []
         
-        // TIME 타입 이벤트 제목들
-        const timeEventTitles = [
-            '주간 미팅', '프로젝트 리뷰', '클라이언트 미팅', '코드 리뷰', '기술 스터디',
-            '팀 빌딩', '성과 평가', '보고서 작성', '디자인 리뷰', '데이터 분석',
-            '시스템 점검', '보안 검토', '성능 최적화', '사용자 피드백', '마케팅 회의'
-        ]
-        
-        // DAY 타입 이벤트 제목들
-        const dayEventTitles = [
-            '집중 작업일', '개인 스터디 데이', '프로젝트 마일스톤', '기술 컨퍼런스',
-            '팀 워크샵', '고객사 방문', '시스템 점검일', '성과 평가일',
-            '보고서 작성일', '디자인 리뷰일', '데이터 분석일', '보안 검토일'
-        ]
-        
-        // MULTI_DAY 타입 이벤트 제목들
-        const multiDayEventTitles = [
-            '주간 프로젝트', '출장', '팀 워크샵', '시스템 점검', '고객사 방문',
-            '기술 컨퍼런스', '성과 평가', '보고서 작성', '디자인 리뷰', '데이터 분석'
-        ]
-        
-        const descriptions = [
-            '주간 업무 계획 및 진행 상황 논의',
-            '프로젝트 진행 상황 리뷰 및 다음 단계 계획',
-            '고객사와의 프로젝트 미팅',
-            '팀원들의 코드 리뷰 및 피드백',
-            '최신 기술 트렌드 스터디',
-            '팀원들과의 팀 빌딩 활동',
-            '주간 성과 평가 및 피드백',
-            '주간 보고서 작성 및 정리',
-            'UI/UX 디자인 리뷰',
-            '사용자 데이터 분석 및 인사이트 도출',
-            '시스템 안정성 점검',
-            '보안 취약점 검토',
-            '성능 개선 작업',
-            '사용자 피드백 수집 및 분석',
-            '마케팅 전략 회의'
-        ]
-        
-        // 각 주마다 5-10개의 랜덤 이벤트 생성 (TIME, DAY, MULTI_DAY 혼합)
-        const eventCount = Math.floor(Math.random() * 6) + 5 // 5-10개
-        
-        for (let i = 0; i < eventCount; i++) {
-            const eventType = Math.random() < 0.6 ? 'TIME' : (Math.random() < 0.7 ? 'DAY' : 'MULTI_DAY')
-            const dayOfWeek = Math.floor(Math.random() * 7) // 0-6 (일-토)
-            const recordGroupIndex = Math.floor(Math.random() * 6) // 0-5 (업무, 프로젝트, 출장, 개인, 독서, 워크폴리오)
+        // 2025년 10월 고정 데이터
+        if (month === '10월') {
+            const octoberData: WeeklyEventData[][] = [
+                // 1주차 (10/6-10/12)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 1, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 2, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'TIME', day: 3, hour: 15, minute: 0, duration: 1, title: '코드 리뷰', group: 1 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 2주차 (10/13-10/19)
+                [
+                    { type: 'TIME', day: 0, hour: 10, minute: 0, duration: 2, title: '일요일 독서 시간', group: 4 },
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '월요일 아침 미팅', group: 0 },
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '긴급 미팅', group: 0 },
+                    { type: 'TIME', day: 1, hour: 10, minute: 0, duration: 2, title: '클라이언트 미팅', group: 0 },
+                    { type: 'TIME', day: 1, hour: 14, minute: 0, duration: 1, title: '코드 리뷰', group: 1 },
+                    { type: 'TIME', day: 1, hour: 14, minute: 0, duration: 1, title: '개발', group: 1 },
+                    { type: 'TIME', day: 2, hour: 9, minute: 0, duration: 2, title: '스프린트 플래닝', group: 1 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 1, title: '데이터베이스 최적화', group: 1 },
+                    { type: 'TIME', day: 3, hour: 8, minute: 0, duration: 3, title: '출장 준비', group: 2 },
+                    { type: 'TIME', day: 3, hour: 11, minute: 0, duration: 3, title: '출장 이동', group: 2 },
+                    { type: 'TIME', day: 4, hour: 9, minute: 0, duration: 4, title: '현장 점검', group: 2 },
+                    { type: 'TIME', day: 4, hour: 13, minute: 0, duration: 2, title: '개발 작업', group: 1 },
+                    { type: 'TIME', day: 5, hour: 13, minute: 0, duration: 2, title: '개발 작업', group: 1 },
+                    { type: 'TIME', day: 5, hour: 13, minute: 0, duration: 2, title: '디자인 리뷰', group: 1 },
+                    { type: 'TIME', day: 6, hour: 13, minute: 0, duration: 2, title: '데이터베이스 최적화', group: 1 },
+                    { type: 'DAY', day: 0, title: '주말 워크샵', group: 2 },
+                    { type: 'DAY', day: 0, title: '가족 시간', group: 3 },
+                    { type: 'DAY', day: 1, title: '주간 프로젝트 리뷰', group: 1 },
+                    { type: 'DAY', day: 2, title: '화요일 집중 작업일', group: 1 },
+                    { type: 'DAY', day: 3, title: '개인 스터디 데이', group: 4 },
+                    { type: 'MULTI_DAY', day: 4, endDay: 5, title: '출장 (2일)', group: 2 },
+                    { type: 'DAY', day: 6, title: '개인 프로젝트', group: 3 },
+                    { type: 'DAY', day: 6, title: '10월 2주 프로젝트 마일스톤', group: 1 },
+                    { type: 'DAY', day: 6, title: '10월 2주 고객사 방문', group: 0 },
+                    { type: 'MULTI_DAY', day: 0, endDay: 3, title: '10월 2주 주간 프로젝트', group: 1 },
+                    { type: 'MULTI_DAY', day: 3, endDay: 5, title: '10월 2주 성과 평가', group: 0 }
+                ],
+                // 3주차 (10/20-10/26)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 4주차 (10/27-11/2)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ]
+            ]
             
-            let eventTitle, eventDescription, startedAt, endedAt
+            const weekData = octoberData[weekIndex] || []
+            weekData.forEach((event, i) => {
+                let startedAt, endedAt
+                
+                if (event.type === 'TIME') {
+                    startedAt = weekStart.add(event.day, 'day').hour(event.hour || 0).minute(event.minute || 0).valueOf()
+                    endedAt = weekStart.add(event.day, 'day').hour((event.hour || 0) + (event.duration || 1)).minute(event.minute || 0).valueOf()
+                } else if (event.type === 'DAY') {
+                    startedAt = weekStart.add(event.day, 'day').valueOf()
+                    endedAt = weekStart.add(event.day, 'day').valueOf()
+                } else { // MULTI_DAY
+                    startedAt = weekStart.add(event.day, 'day').valueOf()
+                    endedAt = weekStart.add(event.endDay || event.day, 'day').valueOf()
+                }
+                
+                events.push({
+                    id: `w-${month}-${weekIndex}-${i}`,
+                    title: `${month} ${weekIndex + 1}주 ${event.title}`,
+                    type: event.type,
+                    description: `${event.title} - ${month} ${weekIndex + 1}주 일정`,
+                    startedAt,
+                    endedAt,
+                    recordGroup: recordGroups[event.group],
+                    createdAt: Date.now(),
+                    updatedAt: Date.now()
+                })
+            })
+        }
+        
+        // 2025년 11월 고정 데이터
+        if (month === '11월') {
+            const novemberData: WeeklyEventData[][] = [
+                // 1주차 (11/3-11/9)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 2주차 (11/10-11/16)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 3주차 (11/17-11/23)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 4주차 (11/24-11/30)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ]
+            ]
             
-            if (eventType === 'TIME') {
-                // TIME 타입: 특정 시간대의 이벤트
-                const hour = Math.floor(Math.random() * 8) + 9 // 9-16시
-                const minute = Math.random() < 0.5 ? 0 : 30
-                const duration = Math.floor(Math.random() * 3) + 1 // 1-3시간
+            const weekData = novemberData[weekIndex] || []
+            weekData.forEach((event, i) => {
+                let startedAt, endedAt
                 
-                eventTitle = timeEventTitles[Math.floor(Math.random() * timeEventTitles.length)]
-                eventDescription = descriptions[Math.floor(Math.random() * descriptions.length)]
-                startedAt = weekStart.add(dayOfWeek, 'day').hour(hour).minute(minute).valueOf()
-                endedAt = weekStart.add(dayOfWeek, 'day').hour(hour + duration).minute(minute).valueOf()
+                if (event.type === 'TIME') {
+                    startedAt = weekStart.add(event.day, 'day').hour(event.hour || 0).minute(event.minute || 0).valueOf()
+                    endedAt = weekStart.add(event.day, 'day').hour((event.hour || 0) + (event.duration || 1)).minute(event.minute || 0).valueOf()
+                } else if (event.type === 'DAY') {
+                    startedAt = weekStart.add(event.day, 'day').valueOf()
+                    endedAt = weekStart.add(event.day, 'day').valueOf()
+                } else { // MULTI_DAY
+                    startedAt = weekStart.add(event.day, 'day').valueOf()
+                    endedAt = weekStart.add(event.endDay || event.day, 'day').valueOf()
+                }
                 
-            } else if (eventType === 'DAY') {
-                // DAY 타입: 하루 종일 이벤트
-                eventTitle = dayEventTitles[Math.floor(Math.random() * dayEventTitles.length)]
-                eventDescription = `${eventTitle} - 하루 종일 진행되는 중요한 일정`
-                startedAt = weekStart.add(dayOfWeek, 'day').valueOf()
-                endedAt = weekStart.add(dayOfWeek, 'day').valueOf()
-                
-            } else {
-                // MULTI_DAY 타입: 여러 날에 걸친 이벤트
-                const endDayOfWeek = Math.min(dayOfWeek + Math.floor(Math.random() * 3) + 1, 6) // 1-3일 지속
-                eventTitle = multiDayEventTitles[Math.floor(Math.random() * multiDayEventTitles.length)]
-                eventDescription = `${eventTitle} - ${endDayOfWeek - dayOfWeek + 1}일간 진행되는 프로젝트`
-                startedAt = weekStart.add(dayOfWeek, 'day').valueOf()
-                endedAt = weekStart.add(endDayOfWeek, 'day').valueOf()
-            }
+                events.push({
+                    id: `w-${month}-${weekIndex}-${i}`,
+                    title: `${month} ${weekIndex + 1}주 ${event.title}`,
+                    type: event.type,
+                    description: `${event.title} - ${month} ${weekIndex + 1}주 일정`,
+                    startedAt,
+                    endedAt,
+                    recordGroup: recordGroups[event.group],
+                    createdAt: Date.now(),
+                    updatedAt: Date.now()
+                })
+            })
+        }
+        
+        // 2025년 12월 고정 데이터
+        if (month === '12월') {
+            const decemberData: WeeklyEventData[][] = [
+                // 1주차 (12/1-12/7)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 2주차 (12/8-12/14)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 3주차 (12/15-12/21)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ],
+                // 4주차 (12/22-12/28)
+                [
+                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
+                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
+                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
+                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
+                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
+                ]
+            ]
             
-            events.push({
-                id: `w-${month}-${weekIndex}-${i}`,
-                title: `${month} ${weekIndex + 1}주 ${eventTitle}`,
-                type: eventType,
-                description: eventDescription,
-                startedAt,
-                endedAt,
-                recordGroup: recordGroups[recordGroupIndex],
-                createdAt: Date.now(),
-                updatedAt: Date.now()
+            const weekData = decemberData[weekIndex] || []
+            weekData.forEach((event, i) => {
+                let startedAt, endedAt
+                
+                if (event.type === 'TIME') {
+                    startedAt = weekStart.add(event.day, 'day').hour(event.hour || 0).minute(event.minute || 0).valueOf()
+                    endedAt = weekStart.add(event.day, 'day').hour((event.hour || 0) + (event.duration || 1)).minute(event.minute || 0).valueOf()
+                } else if (event.type === 'DAY') {
+                    startedAt = weekStart.add(event.day, 'day').valueOf()
+                    endedAt = weekStart.add(event.day, 'day').valueOf()
+                } else { // MULTI_DAY
+                    startedAt = weekStart.add(event.day, 'day').valueOf()
+                    endedAt = weekStart.add(event.endDay || event.day, 'day').valueOf()
+                }
+                
+                events.push({
+                    id: `w-${month}-${weekIndex}-${i}`,
+                    title: `${month} ${weekIndex + 1}주 ${event.title}`,
+                    type: event.type,
+                    description: `${event.title} - ${month} ${weekIndex + 1}주 일정`,
+                    startedAt,
+                    endedAt,
+                    recordGroup: recordGroups[event.group],
+                    createdAt: Date.now(),
+                    updatedAt: Date.now()
+                })
             })
         }
         
@@ -1001,19 +1145,19 @@ export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
             updatedAt: Date.now()
         },
         
-        // ===== 2025년 10월 랜덤 데이터 =====
+        // ===== 2025년 10월 고정 데이터 =====
         ...october2025Weeks.flatMap((week, weekIndex) => 
-            generateRandomWeeklyEvents(week, weekIndex, '10월')
+            generateFixedWeeklyEvents(week, weekIndex, '10월')
         ),
         
-        // ===== 2025년 11월 랜덤 데이터 =====
+        // ===== 2025년 11월 고정 데이터 =====
         ...november2025Weeks.flatMap((week, weekIndex) => 
-            generateRandomWeeklyEvents(week, weekIndex, '11월')
+            generateFixedWeeklyEvents(week, weekIndex, '11월')
         ),
         
-        // ===== 2025년 12월 랜덤 데이터 =====
+        // ===== 2025년 12월 고정 데이터 =====
         ...december2025Weeks.flatMap((week, weekIndex) => 
-            generateRandomWeeklyEvents(week, weekIndex, '12월')
+            generateFixedWeeklyEvents(week, weekIndex, '12월')
         )
     ]
 }

@@ -73,71 +73,56 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         return () => clearInterval(interval)
     }, [])
 
-    // 스크롤 이벤트로 모달 위치 업데이트
+    // 모달 위치 업데이트 (스크롤 이벤트 + 지속적 업데이트)
     useEffect(() => {
-        const handleScroll = () => {
+        let animationId: number
+
+        const updateModalPosition = () => {
             if (clickedElement && isDetailModalOpen) {
-                const rect = clickedElement.getBoundingClientRect()
-                const calendarContainer = clickedElement.closest('.weekly-calendar')?.getBoundingClientRect()
-                
-                if (calendarContainer) {
-                    const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5))
-                    const detailHeight = 300
-                    const viewportHeight = window.innerHeight
-                    
-                    // 화면 하단 여백 체크
-                    const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
-                    const spaceAbove = rect.top - detailHeight
-                    
-                    let top
-                    
-                    // 하단에 공간이 부족하고 위쪽에 공간이 있으면 위에 표시
-                    if (spaceBelow < 0 && spaceAbove > 0) {
-                        top = rect.top - calendarContainer.top - detailHeight + 120
-                    } else {
-                        // 기본적으로 하단에 표시
-                        top = rect.bottom - calendarContainer.top
-                    }
-                    
-                    // 가로 위치: record의 좌측 기준선과 동일하게 위치
-                    let left = rect.left - calendarContainer.left
-                    
-                    // weekly-calendar 컨테이너 경계 체크
-                    const containerRight = calendarContainer.width
-                    const minLeft = 20
-                    
-                    // 컨테이너 왼쪽 경계 체크
-                    if (left < minLeft) {
-                        left = minLeft
-                    }
-                    
-                    // 오른쪽 영역을 넘어가는지 체크
-                    const isOverflowingRight = left + detailWidth > containerRight - 150
-                    
-                    if (isOverflowingRight) {
-                        // 오른쪽 영역을 넘어가면 record의 우측 기준선과 일치
-                        const recordRight = rect.right - calendarContainer.left
-                        setDetailPosition({
-                            top: Math.max(5, top),
-                            right: containerRight - recordRight,
-                            width: detailWidth
-                        })
-                    } else {
-                        // 정상 범위면 record의 좌측 기준선과 일치
-                        setDetailPosition({
-                            top: Math.max(5, top),
-                            left: left,
-                            width: detailWidth
-                        })
-                    }
+                const position = calculateModalPosition(clickedElement)
+                if (position) {
+                    setDetailPosition(position)
                 }
             }
         }
 
-        const gridElement = weeklyGridRef.current
-        if (gridElement) {
-            gridElement.addEventListener('scroll', handleScroll)
-            return () => gridElement.removeEventListener('scroll', handleScroll)
+        const handleScroll = () => {
+            updateModalPosition()
+        }
+
+        // 스크롤 이벤트 등록
+        const elements = [
+            weeklyGridRef.current,
+            document.querySelector('.time'),
+            document.querySelector('.weekly'),
+            window
+        ].filter(Boolean)
+
+        elements.forEach(element => {
+            if (element) {
+                element.addEventListener('scroll', handleScroll)
+            }
+        })
+
+        // 지속적으로 모달 위치 업데이트 (스크롤 이벤트가 안 될 경우 대비)
+        const continuousUpdate = () => {
+            updateModalPosition()
+            animationId = requestAnimationFrame(continuousUpdate)
+        }
+
+        if (clickedElement && isDetailModalOpen) {
+            animationId = requestAnimationFrame(continuousUpdate)
+        }
+
+        return () => {
+            elements.forEach(element => {
+                if (element) {
+                    element.removeEventListener('scroll', handleScroll)
+                }
+            })
+            if (animationId) {
+                cancelAnimationFrame(animationId)
+            }
         }
     }, [clickedElement, isDetailModalOpen])
     
@@ -145,6 +130,81 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
     const { triggerRecordRefresh } = useRecordGroupStore()
     const { records } = useRecords('weekly', undefined, undefined, initialDate)
+    
+    // 모달 위치 계산 공통 함수
+    const calculateModalPosition = (element: HTMLElement) => {
+        const rect = element.getBoundingClientRect()
+        const calendarContainer = element.closest('.weekly')?.getBoundingClientRect()
+        
+        if (!calendarContainer) return null
+        
+        const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5))
+        const detailHeight = 300
+        const viewportHeight = window.innerHeight
+        
+        // 화면 하단 여백 체크
+        const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
+        const spaceAbove = rect.top - detailHeight
+        
+        let top
+        
+        // 하단에 공간이 부족하고 위쪽에 공간이 있으면 위에 표시
+        if (spaceBelow < 0 && spaceAbove > 0) {
+            top = rect.top - calendarContainer.top - detailHeight + 123
+        } else {
+            // 기본적으로 하단에 표시
+            top = rect.bottom - calendarContainer.top
+        }
+        
+        // 가로 위치: record의 좌측 기준선과 동일하게 위치
+        let left = rect.left - calendarContainer.left
+        
+        // weekly 컨테이너 경계 체크
+        const containerRight = calendarContainer.width
+        const minLeft = 20
+        
+        // 컨테이너 왼쪽 경계 체크
+        if (left < minLeft) {
+            left = minLeft
+        }
+        
+        // 세로 위치도 컨테이너 경계 체크
+        const containerTop = 0
+        const containerBottom = calendarContainer.height
+        
+        // 컨테이너 상단 경계 체크
+        if (top < containerTop) {
+            top = 10
+        }
+        
+        // 컨테이너 하단 경계 체크
+        if (top + detailHeight > containerBottom) {
+            top = containerBottom - detailHeight - 10
+        }
+        
+        // 최소 위치 보장 (컨테이너 내부)
+        top = Math.max(10, Math.min(top, containerBottom - detailHeight))
+        
+        // 오른쪽 영역을 넘어가는지 체크
+        const isOverflowingRight = left + detailWidth > containerRight - 150
+        
+        if (isOverflowingRight) {
+            // 오른쪽 영역을 넘어가면 record의 우측 기준선과 일치
+            const recordRight = rect.right - calendarContainer.left
+            return {
+                top: top,
+                right: containerRight - recordRight,
+                width: detailWidth
+            }
+        } else {
+            // 정상 범위면 record의 좌측 기준선과 일치
+            return {
+                top: top,
+                left: left,
+                width: detailWidth
+            }
+        }
+    }
     
     // initialDate 기준으로 현재 주 데이터만 추출
     const currentWeekStart = dayjs(initialDate).startOf('week')
@@ -612,76 +672,9 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     }, [records])
 
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
-        const rect = event.currentTarget.getBoundingClientRect()
-        const calendarContainer = event.currentTarget.closest('.weekly-calendar')?.getBoundingClientRect()
-        
-        if (calendarContainer) {
-            const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5))
-            const detailHeight = 300
-            const viewportHeight = window.innerHeight
-            
-            // 화면 하단 여백 체크 (레코드 하단 + 모달 높이)
-            const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
-            const spaceAbove = rect.top - detailHeight
-            
-            let top
-            
-            // 하단에 공간이 부족하고 위쪽에 공간이 있으면 위에 표시
-            if (spaceBelow < 0 && spaceAbove > 0) {
-                top = rect.top - calendarContainer.top - detailHeight + 120
-            } else {
-                // 기본적으로 하단에 표시
-                top = rect.bottom - calendarContainer.top
-            }
-            
-            // 가로 위치: record의 좌측 기준선과 동일하게 위치
-            let left = rect.left - calendarContainer.left
-            
-            // weekly-calendar 컨테이너 경계 체크
-            const containerRight = calendarContainer.width
-            const minLeft = 20
-            
-            // 컨테이너 왼쪽 경계 체크
-            if (left < minLeft) {
-                left = minLeft
-            }
-            
-            // 세로 위치도 컨테이너 경계 체크
-            const containerTop = 0
-            const containerBottom = calendarContainer.height
-            
-            // 컨테이너 상단 경계 체크
-            if (top < containerTop) {
-                top = 10
-            }
-            
-            // 컨테이너 하단 경계 체크
-            if (top + detailHeight > containerBottom) {
-                top = containerBottom - detailHeight - 10
-            }
-            
-            // 최소 위치 보장 (컨테이너 내부)
-            top = Math.max(10, Math.min(top, containerBottom - detailHeight - 10))
-            
-            // 오른쪽 영역을 넘어가는지 체크
-            const isOverflowingRight = left + detailWidth > containerRight - 150
-            
-            if (isOverflowingRight) {
-                // 오른쪽 영역을 넘어가면 record의 우측 기준선과 일치
-                const recordRight = rect.right - calendarContainer.left
-                setDetailPosition({
-                    top: top,
-                    right: containerRight - recordRight,
-                    width: detailWidth
-                })
-            } else {
-                // 정상 범위면 record의 좌측 기준선과 일치
-            setDetailPosition({
-                    top: top,
-                    left: left,
-                width: detailWidth
-            })
-            }
+        const position = calculateModalPosition(event.currentTarget)
+        if (position) {
+            setDetailPosition(position)
         }
         
         setSelectedRecord(record)
@@ -898,8 +891,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                         const startMinute = groupStartTime.minute()
                                                         const duration = groupEndTime.diff(groupStartTime, 'minute')
                                                         
-                                                        const top = (startHour * 4.8) + (startMinute / 30) * 2.4
-                                                        const height = Math.max((duration / 30) * 2.4, 0.8)
+                                                        const top = (startHour * 4.4) + (startMinute / 30) * 2.2
+                                                        const height = Math.max((duration / 30) * 2.2, 0.8)
                                                         
                                                         return (
                                                             <div
@@ -920,7 +913,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                     const eventStart = dayjs(eventStartTimestamp)
                                                                     const eventEnd = dayjs(eventEndTimestamp)
                                                                     const eventDuration = eventEnd.diff(eventStart, 'minute')
-                                                                    const eventHeight = Math.max((eventDuration / 30) * 2.4, 0.8)
+                                                                    const eventHeight = Math.max((eventDuration / 30) * 2.2, 0.8)
                                                                     
                                                                     // 그룹 내 이벤트 개수로 width 계산 (최소 너비 보장)
                                                                     const eventWidth = `${Math.max(100 / group.length, 20)}%`
@@ -928,7 +921,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                     // 각 이벤트의 시작 시간에 따른 top 위치 계산
                                                                     const startHour = eventStart.hour()
                                                                     const startMinute = eventStart.minute()
-                                                                    const eventTop = (startHour * 4.8) + (startMinute / 30) * 2.4
+                                                                    const eventTop = (startHour * 4.4) + (startMinute / 30) * 2.2
                                                                     
                                                                     // 그룹의 시작 시간과의 차이 계산
                                                                     const groupStartTime = dayjs(Math.min(...group.map(e => {
@@ -939,7 +932,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                     })))
                                                                     const groupStartHour = groupStartTime.hour()
                                                                     const groupStartMinute = groupStartTime.minute()
-                                                                    const groupStartTop = (groupStartHour * 4.8) + (groupStartMinute / 30) * 2.4
+                                                                    const groupStartTop = (groupStartHour * 4.4) + (groupStartMinute / 30) * 2.2
                                                                     
                                                                     // 이벤트의 상대적 top 위치 (그룹 내에서의 위치)
                                                                     const relativeTop = eventTop - groupStartTop
@@ -988,8 +981,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                         
                                                         const startHour = eventStart.hour()
                                                         const startMinute = eventStart.minute()
-                                                        const top = (startHour * 4.8) + (startMinute / 30) * 2.4
-                                                        const height = Math.max((eventDuration / 30) * 2.4, 0.8)
+                                                        const top = (startHour * 4.4) + (startMinute / 30) * 2.2
+                                                        const height = Math.max((eventDuration / 30) * 2.2, 0.8)
                                                         
                                                         return (
                                                             <div

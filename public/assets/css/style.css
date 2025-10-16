@@ -175,7 +175,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .calendar-wrap .weekly .all > table td.record > p {height: 2rem; padding: 0 1rem; margin-left: 1px; font-size: 1.2rem; line-height: 2rem; color: var(--white); position: relative; z-index: 10; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
 .calendar-wrap .weekly .all > table td.record.record:nth-child(1) > p {margin-left: 0;}
 
-.calendar-wrap .weekly .time {display: grid; grid-template-columns: 8rem auto;}
+.calendar-wrap .weekly .time {display: grid; grid-template-columns: 8rem auto; overflow-y: auto; overflow-x: hidden;}
 .calendar-wrap .weekly .time > ul {padding-top: 3.8rem; display: flex; flex-flow: column; row-gap: 3.2rem; align-items: center;}
 .calendar-wrap .weekly .time > ul > li {font-size: 1.2rem; color: var(--gray005);}
 .calendar-wrap .weekly .time > ul > li:nth-child(1) {display: none;}
