@@ -31,13 +31,32 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     // records hook 사용
     const { records, refreshRecords } = useRecords(recordType, date.getMonth() + 1, date.getFullYear())
 
-    // URL 업데이트 함수
+    // URL 업데이트를 위한 상태
+    const [pendingURLUpdate, setPendingURLUpdate] = useState<{view: CalendarViewType, date: Date} | null>(null)
+    
+    // URL 업데이트 함수 - 상태만 설정
     const updateURL = useCallback((newView: CalendarViewType, newDate: Date) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set('view', newView)
-        params.set('date', newDate.toISOString().split('T')[0])
-        router.push(`?${params.toString()}`, { scroll: false })
-    }, [searchParams, router])
+        setPendingURLUpdate({ view: newView, date: newDate })
+    }, [])
+    
+    // useEffect로 URL 업데이트 실행
+    useEffect(() => {
+        if (pendingURLUpdate) {
+            const params = new URLSearchParams(searchParams.toString())
+            params.set('view', pendingURLUpdate.view)
+            
+            // 월간, 목록 캘린더의 경우 월만 변경하고 일자는 오늘 날짜로 설정
+            let dateToUse = pendingURLUpdate.date
+            if (pendingURLUpdate.view === 'monthly' || pendingURLUpdate.view === 'list') {
+                const today = new Date()
+                dateToUse = new Date(today.getFullYear(), pendingURLUpdate.date.getMonth(), today.getDate())
+            }
+            
+            params.set('date', dateToUse.toISOString().split('T')[0])
+            router.push(`?${params.toString()}`, { scroll: false })
+            setPendingURLUpdate(null)
+        }
+    }, [pendingURLUpdate, searchParams, router])
 
     // ref를 통해 외부에서 refreshRecords 호출 가능하도록 설정
     useImperativeHandle(ref, () => ({
