@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Record, Record_RecordType, RecordGroup } from '@/generated/common'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
@@ -53,9 +53,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left?: number, right?: number, width: number} | null>(null)
-    const [clickedElement, setClickedElement] = useState<HTMLElement | null>(null)
     const [currentTime, setCurrentTime] = useState(new Date())
     const [weekDays, setWeekDays] = useState(() => getWeekDays(initialDate))
+    
+    // 렌더링 횟수 추적
+    const renderCountRef = useRef(0)
+    renderCountRef.current += 1
     
     // initialDate가 변경될 때 weekDays 업데이트
     useEffect(() => {
@@ -72,59 +75,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         
         return () => clearInterval(interval)
     }, [])
-
-    // 모달 위치 업데이트 (스크롤 이벤트 + 지속적 업데이트)
-    useEffect(() => {
-        let animationId: number
-
-        const updateModalPosition = () => {
-            if (clickedElement && isDetailModalOpen) {
-                const position = calculateModalPosition(clickedElement)
-                if (position) {
-                    setDetailPosition(position)
-                }
-            }
-        }
-
-        const handleScroll = () => {
-            updateModalPosition()
-        }
-
-        // 스크롤 이벤트 등록
-        const elements = [
-            weeklyGridRef.current,
-            document.querySelector('.time'),
-            document.querySelector('.weekly'),
-            window
-        ].filter(Boolean)
-
-        elements.forEach(element => {
-            if (element) {
-                element.addEventListener('scroll', handleScroll)
-            }
-        })
-
-        // 지속적으로 모달 위치 업데이트 (스크롤 이벤트가 안 될 경우 대비)
-        const continuousUpdate = () => {
-            updateModalPosition()
-            animationId = requestAnimationFrame(continuousUpdate)
-        }
-
-        if (clickedElement && isDetailModalOpen) {
-            animationId = requestAnimationFrame(continuousUpdate)
-        }
-
-        return () => {
-            elements.forEach(element => {
-                if (element) {
-                    element.removeEventListener('scroll', handleScroll)
-                }
-            })
-            if (animationId) {
-                cancelAnimationFrame(animationId)
-            }
-        }
-    }, [clickedElement, isDetailModalOpen])
     
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
@@ -455,28 +405,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             if (scrollTop < 0) {
                 // 너무 이른 시간일 때는 맨 위로
                 scrollTop = 0
-                console.log('이른 시간일 때는 맨 위로', scrollTop)
             } else if (scrollTop > maxScrollTop) {
                 // 너무 늦은 시간일 때는 맨 아래로
                 scrollTop = maxScrollTop
-                console.log('늦은 시간일 때는 맨 아래로', scrollTop)
-            } else {
-                // 정상 범위면 현재 시간을 중앙에 배치
-                console.log('현재 시간을 중앙에 배치', scrollTop)
             }
-            
-            // 디버깅을 위한 상세 로그
-            console.log('스크롤 디버깅:', {
-                hours,
-                minutes,
-                currentTimePosition,
-                currentTimePositionPx,
-                viewportHeight,
-                totalHeight,
-                maxScrollTop,
-                calculatedScrollTop: scrollTop,
-                currentScrollTop: weeklyGridRef.current.scrollTop
-            })
             
             // DOM이 완전히 렌더링된 후 스크롤 적용
             const applyScroll = () => {
@@ -517,10 +449,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             setTimeout(applyScroll, 200)
             setTimeout(applyScroll, 500)
         }
-    }, [currentTime])
+    }, []) // currentTime 의존성 제거 - 마운트 시에만 실행
 
-    // 시간 슬롯 생성 (00:00부터 23:00까지)
-    const getTimeSlots = () => {
+    // 시간 슬롯 생성 (00:00부터 23:00까지) - useMemo로 최적화
+    const timeSlots = useMemo(() => {
         const slots = []
         for (let hour = 0; hour <= 23; hour++) {
             const time = dayjs().hour(hour).minute(0)
@@ -535,16 +467,16 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             })
         }
         return slots
-    }
+    }, [])
 
-    // 레코드 그룹 색상 매핑
-    const getRecordGroupColor = (recordGroup: RecordGroup | undefined) => {
+    // 레코드 그룹 색상 매핑 - useCallback으로 최적화
+    const getRecordGroupColor = useCallback((recordGroup: RecordGroup | undefined) => {
         if (!recordGroup) return '#e0e0e0'
         return recordGroup.color || '#e0e0e0'
-    }
+    }, [])
 
-    // 레코드를 주간 이벤트로 변환
-    const convertRecordsToEvents = (records: Record[]): WeeklyEvent[] => {
+    // 레코드를 주간 이벤트로 변환 - useMemo로 최적화
+    const allEvents = useMemo(() => {
         return records.map(record => {
             // startedAt과 endedAt이 문자열인 경우와 숫자인 경우 모두 처리
             const startTimestamp = typeof record.startedAt === 'string' 
@@ -570,14 +502,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 color: getRecordGroupColor(record.recordGroup)
             }
         })
-    }
+    }, [records, getRecordGroupColor])
 
-    // 시간 이벤트 필터링 (현재 주 범위 내의 이벤트만)
-    const getTimedEvents = (events: WeeklyEvent[]) => {
+    // 시간 이벤트 필터링 (현재 주 범위 내의 이벤트만) - useMemo로 최적화
+    const timedEvents = useMemo(() => {
         const currentWeekStart = dayjs(initialDate).startOf('week')
         const currentWeekEnd = dayjs(initialDate).endOf('week')
         
-        return events.filter(event => {
+        return allEvents.filter(event => {
             // startedAt이 문자열인 경우와 숫자인 경우 모두 처리
             const startTimestamp = typeof event.record.startedAt === 'string' 
                 ? parseInt(event.record.startedAt) 
@@ -588,10 +520,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                    (eventDate.isAfter(currentWeekStart, 'day') || eventDate.isSame(currentWeekStart, 'day')) && 
                    (eventDate.isBefore(currentWeekEnd, 'day') || eventDate.isSame(currentWeekEnd, 'day'))
         })
-    }
+    }, [allEvents, initialDate])
 
-    // 현재 시간 표시선 위치 계산
-    const calculateCurrentTimePosition = () => {
+    // 현재 시간 표시선 위치 계산 - useMemo로 최적화
+    const currentTimePosition = useMemo(() => {
         const now = dayjs(currentTime)
         
         const hours = now.hour()
@@ -609,67 +541,16 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             top,
             isVisible: true
         }
-    }
+    }, [currentTime])
 
-    const timeSlots = getTimeSlots()
-    const allEvents = convertRecordsToEvents(records)
-    const timedEvents = getTimedEvents(allEvents)
-    const currentTimePosition = calculateCurrentTimePosition()
+    // 모든 계산된 값들은 위의 useMemo로 최적화됨
     
-    // 디버깅을 위한 로그
-    console.log('WeeklyCalendar Debug:', {
-        recordsCount: records.length,
-        allEventsCount: allEvents.length,
-        timedEventsCount: timedEvents.length,
-        initialDate: initialDate,
-        currentWeekStart: dayjs(initialDate).startOf('week').format('YYYY-MM-DD'),
-        currentWeekEnd: dayjs(initialDate).endOf('week').format('YYYY-MM-DD'),
-        sampleRecord: records[0] ? {
-            id: records[0].id,
-            title: records[0].title,
-            startedAt: records[0].startedAt,
-            endedAt: records[0].endedAt,
-            type: records[0].type
-        } : null,
-        sampleEvent: allEvents[0] ? {
-            id: allEvents[0].record.id,
-            title: allEvents[0].record.title,
-            startedAt: allEvents[0].record.startedAt,
-            endedAt: allEvents[0].record.endedAt,
-            type: allEvents[0].record.type,
-            isAllDay: allEvents[0].isAllDay
-        } : null,
-        eventDateCheck: allEvents[0] ? {
-            originalStartedAt: allEvents[0].record.startedAt,
-            parsedTimestamp: typeof allEvents[0].record.startedAt === 'string' 
-                ? parseInt(allEvents[0].record.startedAt) 
-                : allEvents[0].record.startedAt,
-            parsedDate: dayjs(typeof allEvents[0].record.startedAt === 'string' 
-                ? parseInt(allEvents[0].record.startedAt) 
-                : allEvents[0].record.startedAt).format('YYYY-MM-DD HH:mm:ss'),
-            isInWeekRange: (() => {
-                const startTimestamp = typeof allEvents[0].record.startedAt === 'string' 
-                    ? parseInt(allEvents[0].record.startedAt) 
-                    : allEvents[0].record.startedAt
-                const eventDate = dayjs(startTimestamp)
-                const currentWeekStart = dayjs(initialDate).startOf('week')
-                const currentWeekEnd = dayjs(initialDate).endOf('week')
-                return {
-                    eventDate: eventDate.format('YYYY-MM-DD'),
-                    weekStart: currentWeekStart.format('YYYY-MM-DD'),
-                    weekEnd: currentWeekEnd.format('YYYY-MM-DD'),
-                    isAfterStart: eventDate.isAfter(currentWeekStart, 'day') || eventDate.isSame(currentWeekStart, 'day'),
-                    isBeforeEnd: eventDate.isBefore(currentWeekEnd, 'day') || eventDate.isSame(currentWeekEnd, 'day'),
-                    isAllDay: allEvents[0].isAllDay
-                }
-            })()
-        } : null
-    })
+    // 렌더링 횟수만 로그 (개발 중에만)
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`🔄 WeeklyCalendar 렌더링 #${renderCountRef.current}`)
+    }
     
-    // records가 변경될 때 이벤트 데이터 업데이트
-    useEffect(() => {
-        // records 변경 시 자동으로 리렌더링됨
-    }, [records])
+    // records 변경 시 useMemo가 자동으로 재계산됨
 
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
         const position = calculateModalPosition(event.currentTarget)
@@ -678,14 +559,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         }
         
         setSelectedRecord(record)
-        setClickedElement(event.currentTarget)
         setIsDetailModalOpen(true)
     }
 
     const handleCloseModal = () => {
         setSelectedRecord(null)
         setDetailPosition(null)
-        setClickedElement(null)
         setIsDetailModalOpen(false)
     }
 
@@ -703,7 +582,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         setIsUpdateModalOpen(false)
         setSelectedRecord(null)
         setDetailPosition(null)
-        setClickedElement(null)
     }
 
     const handleDeleteRecord = async () => {

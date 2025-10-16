@@ -158,16 +158,15 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .record-info-input > li .record-select .dropdown {flex: 1;}
 
 /* 달력 - 주간 */
-.calendar-wrap .weekly .week {position: sticky; top: 0; background-color: var(--white); z-index: 10;}
+.calendar-wrap .weekly .week {position: sticky; top: 0; background-color: var(--white); z-index: 20;}
 .calendar-wrap .weekly .week th:nth-child(1) {width: 8rem;}
 .calendar-wrap .weekly .week th span {color: var(--black); font-weight: 500;}
 .calendar-wrap .weekly .week th.holiday span {color: var(--red);}
 
-.calendar-wrap .weekly .all {position: sticky; top: 2.45rem; display: grid; grid-template-columns: 8rem auto; border-bottom: 1px solid var(--gray002); background-color: var(--white); z-index: 10;}
+.calendar-wrap .weekly .all {position: sticky; top: 2.40rem; display: grid; grid-template-columns: 8rem auto; border-bottom: 1px solid var(--gray002); background-color: var(--white); z-index: 20;}
 .calendar-wrap .weekly .all > div {padding: .6rem 0; display: flex; flex-flow: column; align-items: center; font-size: 1.2rem; color: var(--gray005);}
 .calendar-wrap .weekly .all > table {width: 100%; table-layout: fixed; position: relative;}
 .calendar-wrap .weekly .all > table::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); z-index: 1; position: absolute; left: 0;}
-.calendar-wrap .weekly .all > table tr:nth-child(1) td {padding-top: .5rem;}
 .calendar-wrap .weekly .all > table tr:nth-last-child(1) td {padding-bottom: .5rem;}
 .calendar-wrap .weekly .all > table tr:nth-last-child(1) td + td::before {content: ''; width: 1px; height: 100%; background-color: var(--gray002); position: absolute; bottom: 0; z-index: 1;}
 .calendar-wrap .weekly .all > table tr:nth-last-child(1) td.record {height: 2.2rem;}
@@ -175,7 +174,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .calendar-wrap .weekly .all > table td.record > p {height: 2rem; padding: 0 1rem; margin-left: 1px; font-size: 1.2rem; line-height: 2rem; color: var(--white); position: relative; z-index: 10; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
 .calendar-wrap .weekly .all > table td.record.record:nth-child(1) > p {margin-left: 0;}
 
-.calendar-wrap .weekly .time {display: grid; grid-template-columns: 8rem auto; overflow-y: auto; overflow-x: hidden;}
+.calendar-wrap .weekly .time {display: grid; grid-template-columns: 8rem auto;}
 .calendar-wrap .weekly .time > ul {padding-top: 3.8rem; display: flex; flex-flow: column; row-gap: 3.2rem; align-items: center;}
 .calendar-wrap .weekly .time > ul > li {font-size: 1.2rem; color: var(--gray005);}
 .calendar-wrap .weekly .time > ul > li:nth-child(1) {display: none;}
