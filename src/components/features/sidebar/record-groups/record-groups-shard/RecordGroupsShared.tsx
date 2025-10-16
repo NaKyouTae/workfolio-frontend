@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import RecordGroupsSharedHeader from './RecordGroupsSharedHeader';
 import RecordGroups from '../RecordGroups';
-import { JoinRecordGroupRequest } from '@/generated/record_group';
+import { CreateRecordGroupRequest, JoinRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
 import { useUser } from '@/hooks/useUser';
 import NewRecordGroupItem from '../NewRecordGroupItem';
+import { RecordGroup_RecordGroupType } from '@/generated/common';
 
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;
@@ -19,8 +20,6 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
         refreshRecordGroups 
     } = useRecordGroups();
     
-    const { user } = useUser();
-    
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
@@ -28,47 +27,38 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
         setIsGroupsExpanded(!isGroupsExpanded);
     };
 
-    // 그룹 참여 함수
-    const createRecordGroup = async (publicId: string) => {
+    const createRecordGroup = async (title: string, color: string) => {
         try {
-            // 현재 사용자 ID 가져오기
-            if (!user?.id) {
-                console.error('User not found');
-                return;
-            }
-            
-            const targetWorkerId = user.id;
-            
-            const message = JoinRecordGroupRequest.create({
-                publicId: publicId,
-                targetWorkerId: targetWorkerId,
+            const message = CreateRecordGroupRequest.create({
+                title: title,
+                color: color,
+                type: RecordGroup_RecordGroupType.SHARED,
+                priority: 1,
             });
             
-            const response = await fetch('/api/record-groups/join', {
+            const response = await fetch('/api/record-groups', {
                 method: HttpMethod.POST,
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    publicId: message.publicId,
-                    targetWorkerId: message.targetWorkerId,
+                    title: message.title,
+                    color: message.color,
+                    type: message.type,
+                    priority: message.priority.toString(),
                 })
             });
 
             if (response.ok) {
-                const result = await response.json();
-                if (result.isSuccess) {
-                    // 성공 시 레코드 그룹 다시 조회
-                    refreshRecordGroups();
-                    setIsCreatingGroup(false);
-                } else {
-                    console.error('Failed to join group');
-                }
+                setIsCreatingGroup(false);
+                
+                // 레코드 그룹 생성 성공 시 레코드 그룹 다시 조회
+                refreshRecordGroups();
             } else {
-                console.error('Failed to join group');
+                console.error('Failed to create group');
             }
         } catch (error) {
-            console.error('Error joining group:', error);
+            console.error('Error creating group:', error);
         }
     };
 
@@ -88,7 +78,7 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                 <ul className="record-group-list">
                     {isCreatingGroup && (
                         <NewRecordGroupItem
-                            placeholder="기록장 Public ID"
+                            placeholder="새 공유 기록장 이름"
                             onSave={createRecordGroup}
                             onCancel={() => setIsCreatingGroup(false)}
                         />

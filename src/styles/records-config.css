@@ -1,0 +1,346 @@
+/* RecordsConfig 컴포넌트 스타일 */
+.records-config {
+    background: white;
+    min-height: 100vh;
+    padding: 24px;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.config-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.config-content {
+    max-width: 800px;
+}
+
+.config-section {
+    margin-bottom: 40px;
+}
+
+.config-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 24px 0;
+}
+
+.config-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    min-height: 32px;
+}
+
+.config-row label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    min-width: 160px;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.radio-group {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+.radio-option input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #ff6b35;
+}
+
+.radio-option span {
+    user-select: none;
+}
+
+/* 드롭다운 스타일 */
+.dropdown-container {
+    flex: 1;
+}
+
+.dropdown {
+    width: 200px;
+    height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 32px;
+}
+
+.dropdown:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+/* 입력 필드와 색상 선택기 */
+.input-with-color {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.text-input {
+    height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background: white;
+    flex: 1;
+    max-width: 200px;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.clear-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-btn:hover {
+    color: #333;
+}
+
+.color-picker {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+}
+
+.color-picker.red {
+    background-color: #ef4444;
+}
+
+/* 공유 컨테이너 */
+.share-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.share-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.share-btn {
+    height: 36px;
+    padding: 8px 16px;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.share-btn:hover {
+    background: #4b5563;
+}
+
+/* 공유 멤버 리스트 */
+.shared-members {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.shared-member {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #f9fafb;
+    border-radius: 6px;
+}
+
+.member-name {
+    font-size: 14px;
+    color: #333;
+    flex: 1;
+}
+
+.permission-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #e5e7eb;
+    color: #374151;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.remove-btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-btn:hover {
+    color: #ef4444;
+}
+
+/* 정보 텍스트 */
+.info-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 8px 0 0 0;
+    line-height: 1.4;
+}
+
+/* 삭제 섹션 */
+.delete-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.delete-btn {
+    height: 36px;
+    padding: 8px 16px;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.delete-btn:disabled {
+    background: #d1d5db;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* 탈퇴 섹션 */
+.leave-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.leave-btn {
+    height: 36px;
+    padding: 8px 16px;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.leave-btn:hover {
+    background: #4b5563;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .config-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .config-row label {
+        min-width: auto;
+        margin-right: 0;
+    }
+    
+    .radio-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .share-input-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .input-with-color {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

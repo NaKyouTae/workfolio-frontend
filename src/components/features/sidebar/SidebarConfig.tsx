@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 
-interface SidebarConfigProps { }
+interface SidebarConfigProps {
+    onConfigToggle: () => void;
+}
 
-const SidebarConfig: React.FC<SidebarConfigProps> = () => {
+const SidebarConfig: React.FC<SidebarConfigProps> = ({ onConfigToggle }) => {
     const [isChecked, setIsChecked] = useState(true);
     const { 
         toggleAllGroups,
@@ -36,7 +38,7 @@ const SidebarConfig: React.FC<SidebarConfigProps> = () => {
                 />
                 <label htmlFor="all"><p>내 기록 전체보기</p></label>
             </div>
-            <button className="trans"><i className="ic-set" /></button>
+            <button className="trans" onClick={onConfigToggle}><i className="ic-set" /></button>
         </div>
     );
 };

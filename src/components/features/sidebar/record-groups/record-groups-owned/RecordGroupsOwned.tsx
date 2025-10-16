@@ -5,6 +5,7 @@ import { CreateRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
 import NewRecordGroupItem from '../NewRecordGroupItem';
+import { RecordGroup_RecordGroupType } from '@/generated/common';
 
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;
@@ -31,6 +32,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
             const message = CreateRecordGroupRequest.create({
                 title: title,
                 color: color,
+                type: RecordGroup_RecordGroupType.PRIVATE,
                 priority: 1,
             });
             
@@ -42,6 +44,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                 body: JSON.stringify({
                     title: message.title,
                     color: message.color,
+                    type: message.type,
                     priority: message.priority.toString(),
                 })
             });

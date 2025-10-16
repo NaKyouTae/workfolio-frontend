@@ -4,14 +4,18 @@ import RecordGroupsShared from '@/components/features/sidebar/record-groups/reco
 import SidebarButton from '@/components/features/sidebar/SidebarButton';
 import SidebarConfig from '@/components/features/sidebar/SidebarConfig';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+    onConfigToggle: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onConfigToggle }) => {
     const defaultExpanded = true;
 
     return (
         <aside>
             <SidebarButton />
             <div className="aside-cont">
-                <SidebarConfig />
+                <SidebarConfig onConfigToggle={onConfigToggle} />
                 <RecordGroupsOwned 
                     defaultExpanded={defaultExpanded} 
                 />
