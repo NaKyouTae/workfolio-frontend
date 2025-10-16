@@ -376,27 +376,35 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             const minuteOffset = (totalMinutes % 60) * (2.2 / 30)
             const currentTimePosition = hourSlot + minuteOffset
             
-            // 화면 높이 계산 (대략 24시간 * 4.4rem = 105.6rem)
-            const totalHeight = 24 * 4.4
-            const viewportHeight = 40 // 대략적인 뷰포트 높이 (rem 단위)
+            // rem을 px로 변환 (1rem = 16px)
+            const currentTimePositionPx = currentTimePosition * 16
             
-            // 현재 시간을 화면 중앙에 오도록 계산
-            let scrollTop = currentTimePosition - (viewportHeight / 2)
+            // 실제 뷰포트 높이와 전체 높이 계산 (px 단위)
+            const viewportHeight = weeklyGridRef.current.clientHeight // px 단위
+            const totalHeight = 24 * 4.4 * 16 // 24시간 * 4.4rem * 16px = 1689.6px
             
-            // 너무 이른 시간 (0-6시)일 때는 맨 위로
+            // 스크롤 가능한 최대 위치
+            const maxScrollTop = totalHeight - viewportHeight
+            
+            let scrollTop
+            
+            // 시간대별 스크롤 위치 결정
             if (hours < 6) {
+                // 이른 시간 (0-6시): 맨 위로
                 scrollTop = 0
-            }
-            // 너무 늦은 시간 (18-23시)일 때는 맨 아래로
-            else if (hours >= 18) {
-                scrollTop = totalHeight - viewportHeight
-            }
-            // 그 외에는 중앙에 배치
-            else {
-                scrollTop = Math.max(0, Math.min(scrollTop, totalHeight - viewportHeight))
+                console.log('이른 시간 (0-6시)일 때는 맨 위로', scrollTop)
+            } else if (hours >= 18) {
+                // 늦은 시간 (18시 이후): 맨 아래로
+                scrollTop = maxScrollTop
+                console.log('늦은 시간 (18시 이후)일 때는 맨 아래로', scrollTop)
+            } else {
+                // 정상 범위 (6-18시): 가이드라인이 화면 중앙에 오도록
+                scrollTop = currentTimePositionPx - (viewportHeight / 2)
+                scrollTop = Math.max(0, Math.min(scrollTop, maxScrollTop))
+                console.log('정상 범위면 가이드라인을 중앙에 배치', scrollTop)
             }
             
-            weeklyGridRef.current.scrollTop = scrollTop * 16 // rem을 px로 변환
+            weeklyGridRef.current.scrollTop = scrollTop // px 단위로 직접 설정
         }
     }, [currentTime])
 
@@ -479,11 +487,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         const minutes = now.minute()
         const totalMinutes = hours * 60 + minutes
         
-        // 시간 슬롯 구조에 맞는 정확한 계산
-        // 1시간 = 4.8rem, 30분 = 2.4rem
+        // 시간 슬롯 구조에 맞는 정확한 계산 (1시간 = 4.4rem, 30분 = 2.2rem)
         // 각 시간 슬롯의 시작점에서 현재 시간까지의 거리 계산
-        const hourSlot = Math.floor(totalMinutes / 60) * 4.8 // 시간 슬롯 시작점
-        const minuteOffset = (totalMinutes % 60) * (2.4 / 30) // 30분 단위 내에서의 분 오프셋
+        const hourSlot = Math.floor(totalMinutes / 60) * 4.4 // 시간 슬롯 시작점
+        const minuteOffset = (totalMinutes % 60) * (2.2 / 30) // 30분 단위 내에서의 분 오프셋
         
         const top = hourSlot + minuteOffset
         

@@ -164,18 +164,17 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
         
         if (tableContainer) {
             const viewportHeight = window.innerHeight
-            const viewportWidth = window.innerWidth
             const detailHeight = 300 // CSS에서 설정한 max-height
             const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5)) // 최소 200px, 최대 400px
             
             // 세로 위치 계산
-            let top = rect.bottom - tableContainer.top
+            let top = rect.bottom - tableContainer.top + 10
             const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
             const spaceAbove = rect.top - detailHeight
             
             // 아래쪽 공간이 부족하고 위쪽에 공간이 있으면 위쪽에 표시
             if (spaceBelow < 0 && spaceAbove > 0) {
-                top = rect.top - tableContainer.top - detailHeight + 125
+                top = rect.top - tableContainer.top - detailHeight + 115
             }
             
             // 여전히 위쪽도 공간이 부족하면 가능한 공간에 맞춰 조정
@@ -184,24 +183,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
             }
             
             // 가로 위치 계산
-            let left = rect.left - tableContainer.left
-            const spaceRight = viewportWidth - rect.left
-            const spaceLeft = rect.left
-            
-            // 오른쪽 공간이 부족하면 왼쪽으로 이동
-            if (spaceRight < detailWidth && spaceLeft > detailWidth) {
-                left = rect.right - tableContainer.left - detailWidth
-            }
-            
-            // 여전히 화면을 벗어나면 중앙 정렬
-            if (left < 0) {
-                left = Math.max(5, (tableContainer.width - detailWidth) / 2)
-            }
-            
-            // 오른쪽 경계도 확인
-            if (left + detailWidth > tableContainer.width) {
-                left = Math.max(5, tableContainer.width - detailWidth - 5)
-            }
+            const left = rect.left - tableContainer.left - 5
             
             setDetailPosition({
                 top: Math.max(5, top),
