@@ -28,11 +28,13 @@ export default function MonthlyCalendarItem({
         return record.title
     }
 
+    const isTimeType = Record_RecordType[record.type] == Record_RecordType.TIME.toString()
+
     return (
         <td 
             key={`event-${startDayIndex}`}
             colSpan={colSpan} 
-            className="record" 
+            className={`record ${isTimeType ? 'time' : ''}`}
             onClick={(e) => onRecordClick(record, e)}
             title={
                 isContinuation && continuesToNextWeek ? `${getDisplayTitle()} (이전 주에서 이어짐, 다음 주로 이어짐)` :
