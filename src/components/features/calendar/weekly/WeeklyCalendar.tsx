@@ -120,7 +120,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         
         // 세로 위치도 컨테이너 경계 체크
         const containerTop = 0
-        const containerBottom = calendarContainer.height
+        const containerBottom = calendarContainer.height + 15
         
         // 컨테이너 상단 경계 체크
         if (top < containerTop) {
@@ -129,7 +129,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         
         // 컨테이너 하단 경계 체크
         if (top + detailHeight > containerBottom) {
-            top = containerBottom - detailHeight - 10
+            top = containerBottom - detailHeight
         }
         
         // 최소 위치 보장 (컨테이너 내부)
