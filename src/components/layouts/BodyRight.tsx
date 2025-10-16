@@ -1,4 +1,5 @@
-import React, {useState, useCallback, forwardRef, useImperativeHandle} from 'react'
+import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect} from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import ListCalendar from '@/components/features/calendar/list/ListCalendar'
 import CalendarHeader from '@/components/features/calendar/CalendarHeader'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
@@ -12,9 +13,16 @@ export interface BodyRightRef {
 }
 
 const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
-    const [recordType, setRecordType] = useState<CalendarViewType>('monthly')
+    const searchParams = useSearchParams()
+    const router = useRouter()
+    
+    // URL에서 초기 상태 읽기
+    const urlView = searchParams.get('view') as CalendarViewType || 'monthly'
+    const urlDate = searchParams.get('date') ? new Date(searchParams.get('date')!) : new Date()
+    
+    const [recordType, setRecordType] = useState<CalendarViewType>(urlView)
     const [searchTerm, setSearchTerm] = useState('')
-    const [date, setDate] = useState<Date>(new Date())
+    const [date, setDate] = useState<Date>(urlDate)
     
     // store에서 체크된 RecordGroup 정보 가져오기
     const { getCheckedRecordGroups } = useRecordGroupStore()
@@ -22,6 +30,14 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     
     // records hook 사용
     const { records, refreshRecords } = useRecords(recordType, date.getMonth() + 1, date.getFullYear())
+
+    // URL 업데이트 함수
+    const updateURL = useCallback((newView: CalendarViewType, newDate: Date) => {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set('view', newView)
+        params.set('date', newDate.toISOString().split('T')[0])
+        router.push(`?${params.toString()}`, { scroll: false })
+    }, [searchParams, router])
 
     // ref를 통해 외부에서 refreshRecords 호출 가능하도록 설정
     useImperativeHandle(ref, () => ({
@@ -34,7 +50,8 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     // 이벤트 핸들러들
     const handleTypeChange = useCallback((type: CalendarViewType) => {
         setRecordType(type)
-    }, [])
+        updateURL(type, date)
+    }, [date, updateURL])
 
     const handlePreviousMonth = useCallback(() => {
         setDate(prev => {
@@ -46,9 +63,10 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                 // 월 단위로 변경
                 newDate.setMonth(prev.getMonth() - 1)
             }
+            updateURL(recordType, newDate)
             return newDate
         })
-    }, [recordType])
+    }, [recordType, updateURL])
 
     const handleNextMonth = useCallback(() => {
         setDate(prev => {
@@ -60,18 +78,37 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                 // 월 단위로 변경
                 newDate.setMonth(prev.getMonth() + 1)
             }
+            updateURL(recordType, newDate)
             return newDate
         })
-    }, [recordType])
+    }, [recordType, updateURL])
 
     const handleTodayMonth = useCallback(() => {
         const today = new Date()
         setDate(today)
-    }, [])
+        updateURL(recordType, today)
+    }, [recordType, updateURL])
 
     const handleSearchChange = useCallback((term: string) => {
         setSearchTerm(term)
     }, [])
+
+    // URL 파라미터 변경 시 상태 업데이트
+    useEffect(() => {
+        const urlView = searchParams.get('view') as CalendarViewType
+        const urlDate = searchParams.get('date')
+        
+        if (urlView && urlView !== recordType) {
+            setRecordType(urlView)
+        }
+        
+        if (urlDate) {
+            const newDate = new Date(urlDate)
+            if (newDate.getTime() !== date.getTime()) {
+                setDate(newDate)
+            }
+        }
+    }, [searchParams, recordType, date])
 
     // 검색 필터링된 레코드
     const filteredRecords = Array.isArray(records) ? records : []
