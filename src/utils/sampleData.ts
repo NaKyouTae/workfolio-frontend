@@ -66,1104 +66,1375 @@ export const createSampleRecordGroups = () => {
     ]
 }
 
-// Monthly용 샘플 레코드
-export const createSampleRecordsForMonthly = (recordGroups: object[]) => {
-    const now = dayjs()
-    const currentMonth = now.month()
-    const currentYear = now.year()
-    
-    return [
-        {
-            id: '1',
-            title: '대전 출장',
-            type: 'DAY',
-            description: '대전 고객사 방문 및 미팅',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-01`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-01`).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '2',
-            title: '뉴스레터 발송 확인',
-            type: 'TIME',
-            description: '월간 뉴스레터 발송 및 수신자 반응 확인',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).hour(10).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).hour(11).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '3',
-            title: '제안 요청서 검토',
-            type: 'TIME',
-            description: '신규 프로젝트 제안서 검토 및 피드백',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-05`).hour(7).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-05`).hour(9).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '4',
-            title: '리브랜딩 프로젝트 시작',
-            type: 'DAY',
-            description: '회사 리브랜딩 프로젝트 킥오프',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).valueOf(),
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '5',
-            title: '리브랜딩 킥오프 미팅',
-            type: 'TIME',
-            description: '리브랜딩 프로젝트 팀 킥오프 미팅',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).hour(14).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).hour(16).minute(0).valueOf(),
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '6',
-            title: '현장 사전 점검',
-            type: 'TIME',
-            description: '신규 사무실 이전을 위한 현장 점검',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(9).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(12).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '7',
-            title: '독서 토론 동호회 참석',
-            type: 'TIME',
-            description: '장소 : 종로 스타벅스\n참석자 : 홍길동, 김철수, 김영희\n첨부파일 : 독서감상문_250308.hwp',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(20).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(22).minute(30).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '7-2',
-            title: '독서 토론 동호회 사전 준비',
-            type: 'TIME',
-            description: '독서 토론 자료 준비 및 발표 자료 정리',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(18).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-12`).hour(19).minute(30).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '8',
-            title: '주간 팀 미팅',
-            type: 'TIME',
-            description: '주간 진행 상황 공유 및 다음 주 계획 수립',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`).hour(10).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`).hour(11).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '9',
-            title: '개인 일정',
-            type: 'DAY',
-            description: '가족과의 시간',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-16`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-16`).valueOf(),
-            recordGroup: recordGroups[3], // 개인 일정
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '10',
-            title: '워크폴리오 사이드 프로젝트 회의',
-            type: 'TIME',
-            description: '사이드 프로젝트 진행 상황 점검 및 다음 단계 계획',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-20`).hour(19).minute(0).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-20`).hour(21).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 3일 기간 데이터
-        {
-            id: '11',
-            title: '부산 출장 (3일)',
-            type: 'DAY',
-            description: '부산 고객사 방문 및 현장 점검 (3일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-22`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-24`).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 5일 기간 데이터
-        {
-            id: '12',
-            title: '리브랜딩 프로젝트 집중 작업 (5일)',
-            type: 'DAY',
-            description: '리브랜딩 프로젝트 핵심 작업 기간 (5일간 집중)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-25`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-29`).valueOf(),
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 7일 기간 데이터
-        {
-            id: '13',
-            title: '연수 및 교육 (7일)',
-            type: 'DAY',
-            description: '신기술 연수 및 교육 과정 참여 (7일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-01`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-07`).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 10일 기간 데이터
-        {
-            id: '14',
-            title: '해외 출장 (10일)',
-            type: 'DAY',
-            description: '싱가포르 지사 방문 및 글로벌 미팅 (10일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-10`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-19`).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 추가 3일 기간 데이터
-        {
-            id: '15',
-            title: '개인 휴가 (3일)',
-            type: 'DAY',
-            description: '가족과 함께하는 개인 휴가 (3일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-25`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-27`).valueOf(),
-            recordGroup: recordGroups[3], // 개인 일정
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 추가 5일 기간 데이터
-        {
-            id: '16',
-            title: '워크폴리오 개발 스프린트 (5일)',
-            type: 'DAY',
-            description: '워크폴리오 사이드 프로젝트 집중 개발 기간 (5일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 3).toString().padStart(2, '0')}-01`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 3).toString().padStart(2, '0')}-05`).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 겹치는 멀티 일정 5개 추가
-        {
-            id: '17',
-            title: '긴급 프로젝트 (3일 겹침)',
-            type: 'DAY',
-            description: '리브랜딩 프로젝트와 겹치는 긴급 프로젝트 (3일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-07`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-09`).valueOf(),
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '18',
-            title: '추가 출장 (2일 겹침)',
-            type: 'DAY',
-            description: '부산 출장과 겹치는 추가 출장 (2일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-23`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-24`).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '19',
-            title: '개인 프로젝트 (4일 겹침)',
-            type: 'DAY',
-            description: '리브랜딩 프로젝트 집중 작업과 겹치는 개인 프로젝트 (4일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-26`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-29`).valueOf(),
-            recordGroup: recordGroups[3], // 개인 일정
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '20',
-            title: '워크샵 (3일 겹침)',
-            type: 'DAY',
-            description: '연수 및 교육과 겹치는 워크샵 (3일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-03`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-05`).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '21',
-            title: '해외 컨퍼런스 (5일 겹침)',
-            type: 'DAY',
-            description: '해외 출장과 겹치는 컨퍼런스 참석 (5일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-15`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 2).toString().padStart(2, '0')}-19`).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        // 월 초반 구간 일정 4개 추가
-        {
-            id: '22',
-            title: '월간 계획 수립 (3일)',
-            type: 'DAY',
-            description: '새로운 월의 계획 수립 및 목표 설정 (3일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-01`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '23',
-            title: '팀 빌딩 워크샵 (2일)',
-            type: 'DAY',
-            description: '팀원들과의 빌딩 활동 및 소통 시간 (2일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-02`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-03`).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '24',
-            title: '신규 프로젝트 킥오프 (4일)',
-            type: 'DAY',
-            description: '새로운 프로젝트의 킥오프 미팅 및 계획 수립 (4일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-04`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-07`).valueOf(),
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: '25',
-            title: '개인 스터디 캠프 (3일)',
-            type: 'DAY',
-            description: '개인 성장을 위한 스터디 그룹 집중 캠프 (3일간)',
-            startedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-06`).valueOf(),
-            endedAt: dayjs(`${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-08`).valueOf(),
-            recordGroup: recordGroups[3], // 개인 일정
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        }
-    ]
-}
-
-// Weekly용 샘플 레코드
-export const createSampleRecordsForWeekly = (recordGroups: object[]) => {
-    const now = dayjs()
-    const currentWeek = now.startOf('week')
-    
-    // 2025년 10월, 11월, 12월 고정 데이터
-    const october2025Weeks = [
-        dayjs('2025-10-06').startOf('week'), // 10월 첫째 주
-        dayjs('2025-10-13').startOf('week'), // 10월 둘째 주
-        dayjs('2025-10-20').startOf('week'), // 10월 셋째 주
-        dayjs('2025-10-27').startOf('week')  // 10월 넷째 주
-    ]
-    
-    const november2025Weeks = [
-        dayjs('2025-11-03').startOf('week'), // 11월 첫째 주
-        dayjs('2025-11-10').startOf('week'), // 11월 둘째 주
-        dayjs('2025-11-17').startOf('week'), // 11월 셋째 주
-        dayjs('2025-11-24').startOf('week')  // 11월 넷째 주
-    ]
-    
-    const december2025Weeks = [
-        dayjs('2025-12-01').startOf('week'), // 12월 첫째 주
-        dayjs('2025-12-08').startOf('week'), // 12월 둘째 주
-        dayjs('2025-12-15').startOf('week'), // 12월 셋째 주
-        dayjs('2025-12-22').startOf('week')  // 12월 넷째 주
-    ]
-    
-    // 이벤트 타입 정의
-    interface WeeklyEventData {
-        type: 'TIME' | 'DAY' | 'MULTI_DAY'
-        day: number
-        title: string
-        group: number
-        hour?: number
-        minute?: number
-        duration?: number
-        endDay?: number
-    }
-
-    // 고정 주간 일정 생성 함수 (2025년 10월~11월)
-    const generateFixedWeeklyEvents = (weekStart: dayjs.Dayjs, weekIndex: number, month: string): Record<string, any>[] => {
-        const events: Record<string, any>[] = []
-        
-        // 2025년 10월 고정 데이터
-        if (month === '10월') {
-            const octoberData: WeeklyEventData[][] = [
-                // 1주차 (10/6-10/12)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 1, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 2, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'TIME', day: 3, hour: 15, minute: 0, duration: 1, title: '코드 리뷰', group: 1 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 2주차 (10/13-10/19)
-                [
-                    { type: 'TIME', day: 0, hour: 10, minute: 0, duration: 2, title: '일요일 독서 시간', group: 4 },
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '월요일 아침 미팅', group: 0 },
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '긴급 미팅', group: 0 },
-                    { type: 'TIME', day: 1, hour: 10, minute: 0, duration: 2, title: '클라이언트 미팅', group: 0 },
-                    { type: 'TIME', day: 1, hour: 14, minute: 0, duration: 1, title: '코드 리뷰', group: 1 },
-                    { type: 'TIME', day: 1, hour: 14, minute: 0, duration: 1, title: '개발', group: 1 },
-                    { type: 'TIME', day: 2, hour: 9, minute: 0, duration: 2, title: '스프린트 플래닝', group: 1 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 1, title: '데이터베이스 최적화', group: 1 },
-                    { type: 'TIME', day: 3, hour: 8, minute: 0, duration: 3, title: '출장 준비', group: 2 },
-                    { type: 'TIME', day: 3, hour: 11, minute: 0, duration: 3, title: '출장 이동', group: 2 },
-                    { type: 'TIME', day: 4, hour: 9, minute: 0, duration: 4, title: '현장 점검', group: 2 },
-                    { type: 'TIME', day: 4, hour: 13, minute: 0, duration: 2, title: '개발 작업', group: 1 },
-                    { type: 'TIME', day: 5, hour: 13, minute: 0, duration: 2, title: '개발 작업', group: 1 },
-                    { type: 'TIME', day: 5, hour: 13, minute: 0, duration: 2, title: '디자인 리뷰', group: 1 },
-                    { type: 'TIME', day: 6, hour: 13, minute: 0, duration: 2, title: '데이터베이스 최적화', group: 1 },
-                    { type: 'DAY', day: 0, title: '주말 워크샵', group: 2 },
-                    { type: 'DAY', day: 0, title: '가족 시간', group: 3 },
-                    { type: 'DAY', day: 1, title: '주간 프로젝트 리뷰', group: 1 },
-                    { type: 'DAY', day: 2, title: '화요일 집중 작업일', group: 1 },
-                    { type: 'DAY', day: 3, title: '개인 스터디 데이', group: 4 },
-                    { type: 'MULTI_DAY', day: 4, endDay: 5, title: '출장 (2일)', group: 2 },
-                    { type: 'DAY', day: 6, title: '개인 프로젝트', group: 3 },
-                    { type: 'DAY', day: 6, title: '10월 2주 프로젝트 마일스톤', group: 1 },
-                    { type: 'DAY', day: 6, title: '10월 2주 고객사 방문', group: 0 },
-                    { type: 'MULTI_DAY', day: 0, endDay: 3, title: '10월 2주 주간 프로젝트', group: 1 },
-                    { type: 'MULTI_DAY', day: 3, endDay: 5, title: '10월 2주 성과 평가', group: 0 }
-                ],
-                // 3주차 (10/20-10/26)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 4주차 (10/27-11/2)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ]
-            ]
-            
-            const weekData = octoberData[weekIndex] || []
-            weekData.forEach((event, i) => {
-                let startedAt, endedAt
-                
-                if (event.type === 'TIME') {
-                    startedAt = weekStart.add(event.day, 'day').hour(event.hour || 0).minute(event.minute || 0).valueOf()
-                    endedAt = weekStart.add(event.day, 'day').hour((event.hour || 0) + (event.duration || 1)).minute(event.minute || 0).valueOf()
-                } else if (event.type === 'DAY') {
-                    startedAt = weekStart.add(event.day, 'day').valueOf()
-                    endedAt = weekStart.add(event.day, 'day').valueOf()
-                } else { // MULTI_DAY
-                    startedAt = weekStart.add(event.day, 'day').valueOf()
-                    endedAt = weekStart.add(event.endDay || event.day, 'day').valueOf()
-                }
-                
-                events.push({
-                    id: `w-${month}-${weekIndex}-${i}`,
-                    title: `${month} ${weekIndex + 1}주 ${event.title}`,
-                    type: event.type,
-                    description: `${event.title} - ${month} ${weekIndex + 1}주 일정`,
-                    startedAt,
-                    endedAt,
-                    recordGroup: recordGroups[event.group],
-                    createdAt: Date.now(),
-                    updatedAt: Date.now()
-                })
-            })
-        }
-        
-        // 2025년 11월 고정 데이터
-        if (month === '11월') {
-            const novemberData: WeeklyEventData[][] = [
-                // 1주차 (11/3-11/9)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 2주차 (11/10-11/16)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 3주차 (11/17-11/23)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 4주차 (11/24-11/30)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ]
-            ]
-            
-            const weekData = novemberData[weekIndex] || []
-            weekData.forEach((event, i) => {
-                let startedAt, endedAt
-                
-                if (event.type === 'TIME') {
-                    startedAt = weekStart.add(event.day, 'day').hour(event.hour || 0).minute(event.minute || 0).valueOf()
-                    endedAt = weekStart.add(event.day, 'day').hour((event.hour || 0) + (event.duration || 1)).minute(event.minute || 0).valueOf()
-                } else if (event.type === 'DAY') {
-                    startedAt = weekStart.add(event.day, 'day').valueOf()
-                    endedAt = weekStart.add(event.day, 'day').valueOf()
-                } else { // MULTI_DAY
-                    startedAt = weekStart.add(event.day, 'day').valueOf()
-                    endedAt = weekStart.add(event.endDay || event.day, 'day').valueOf()
-                }
-                
-                events.push({
-                    id: `w-${month}-${weekIndex}-${i}`,
-                    title: `${month} ${weekIndex + 1}주 ${event.title}`,
-                    type: event.type,
-                    description: `${event.title} - ${month} ${weekIndex + 1}주 일정`,
-                    startedAt,
-                    endedAt,
-                    recordGroup: recordGroups[event.group],
-                    createdAt: Date.now(),
-                    updatedAt: Date.now()
-                })
-            })
-        }
-        
-        // 2025년 12월 고정 데이터
-        if (month === '12월') {
-            const decemberData: WeeklyEventData[][] = [
-                // 1주차 (12/1-12/7)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 2주차 (12/8-12/14)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 3주차 (12/15-12/21)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ],
-                // 4주차 (12/22-12/28)
-                [
-                    { type: 'TIME', day: 1, hour: 9, minute: 0, duration: 1, title: '주간 미팅', group: 0 },
-                    { type: 'TIME', day: 2, hour: 14, minute: 0, duration: 2, title: '프로젝트 리뷰', group: 1 },
-                    { type: 'TIME', day: 3, hour: 10, minute: 30, duration: 1, title: '클라이언트 미팅', group: 0 },
-                    { type: 'DAY', day: 4, title: '집중 작업일', group: 1 },
-                    { type: 'MULTI_DAY', day: 5, endDay: 6, title: '주말 워크샵', group: 2 }
-                ]
-            ]
-            
-            const weekData = decemberData[weekIndex] || []
-            weekData.forEach((event, i) => {
-                let startedAt, endedAt
-                
-                if (event.type === 'TIME') {
-                    startedAt = weekStart.add(event.day, 'day').hour(event.hour || 0).minute(event.minute || 0).valueOf()
-                    endedAt = weekStart.add(event.day, 'day').hour((event.hour || 0) + (event.duration || 1)).minute(event.minute || 0).valueOf()
-                } else if (event.type === 'DAY') {
-                    startedAt = weekStart.add(event.day, 'day').valueOf()
-                    endedAt = weekStart.add(event.day, 'day').valueOf()
-                } else { // MULTI_DAY
-                    startedAt = weekStart.add(event.day, 'day').valueOf()
-                    endedAt = weekStart.add(event.endDay || event.day, 'day').valueOf()
-                }
-                
-                events.push({
-                    id: `w-${month}-${weekIndex}-${i}`,
-                    title: `${month} ${weekIndex + 1}주 ${event.title}`,
-                    type: event.type,
-                    description: `${event.title} - ${month} ${weekIndex + 1}주 일정`,
-                    startedAt,
-                    endedAt,
-                    recordGroup: recordGroups[event.group],
-                    createdAt: Date.now(),
-                    updatedAt: Date.now()
-                })
-            })
-        }
-        
-        return events
-    }
-    
-    return [
-        // ===== SPECIAL-DAY-EVENTS 영역 (MULTI_DAY, DAY 타입) =====
-        
-        // 일요일~월요일 (MULTI_DAY) - special-day-events에 표시
-        {
-            id: 'w1',
-            title: '주말 워크샵',
-            type: 'MULTI_DAY',
-            description: '주말 동안 진행되는 팀 워크샵',
-            startedAt: currentWeek.add(0, 'day').valueOf(), // 일요일
-            endedAt: currentWeek.add(1, 'day').valueOf(), // 월요일
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 월요일~수요일 (MULTI_DAY) - special-day-events에 표시
-        {
-            id: 'w2',
-            title: '주간 프로젝트 리뷰',
-            type: 'MULTI_DAY',
-            description: '주간 프로젝트 진행 상황 리뷰 및 다음 주 계획 수립',
-            startedAt: currentWeek.add(1, 'day').valueOf(), // 월요일
-            endedAt: currentWeek.add(3, 'day').valueOf(), // 수요일
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 화요일 (DAY) - special-day-events에 표시
-        {
-            id: 'w3',
-            title: '화요일 집중 작업일',
-            type: 'DAY',
-            description: '개발 작업에 집중하는 하루',
-            startedAt: currentWeek.add(2, 'day').valueOf(),
-            endedAt: currentWeek.add(2, 'day').valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 수요일 (DAY) - special-day-events에 표시
-        {
-            id: 'w4',
-            title: '개인 스터디 데이',
-            type: 'DAY',
-            description: '개인 성장을 위한 스터디 시간',
-            startedAt: currentWeek.add(3, 'day').valueOf(),
-            endedAt: currentWeek.add(3, 'day').valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 목요일~금요일 (MULTI_DAY) - special-day-events에 표시
-        {
-            id: 'w5',
-            title: '출장 (2일)',
-            type: 'MULTI_DAY',
-            description: '부산 고객사 방문 및 현장 점검',
-            startedAt: currentWeek.add(4, 'day').valueOf(), // 목요일
-            endedAt: currentWeek.add(5, 'day').valueOf(), // 금요일
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 토요일 (DAY) - special-day-events에 표시
-        {
-            id: 'w6',
-            title: '개인 프로젝트',
-            type: 'DAY',
-            description: '워크폴리오 사이드 프로젝트 작업',
-            startedAt: currentWeek.add(6, 'day').valueOf(),
-            endedAt: currentWeek.add(6, 'day').valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 일요일 (DAY) - special-day-events에 표시
-        {
-            id: 'w7',
-            title: '가족 시간',
-            type: 'DAY',
-            description: '가족과 함께하는 시간',
-            startedAt: currentWeek.add(0, 'day').valueOf(), // 일요일
-            endedAt: currentWeek.add(0, 'day').valueOf(),
-            recordGroup: recordGroups[3], // 개인 일정
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // ===== TIME 그리드 영역 (TIME 타입) =====
-        
-        // 일요일 TIME 이벤트들
-        {
-            id: 'w8',
-            title: '일요일 독서 시간',
-            type: 'TIME',
-            description: '개인 성장을 위한 독서',
-            startedAt: currentWeek.add(0, 'day').hour(10).minute(0).valueOf(),
-            endedAt: currentWeek.add(0, 'day').hour(12).minute(0).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w9',
-            title: '가족 식사',
-            type: 'TIME',
-            description: '가족과 함께하는 식사 시간',
-            startedAt: currentWeek.add(0, 'day').hour(18).minute(0).valueOf(),
-            endedAt: currentWeek.add(0, 'day').hour(20).minute(0).valueOf(),
-            recordGroup: recordGroups[3], // 개인 일정
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 월요일 TIME 이벤트들
-        {
-            id: 'w10',
-            title: '월요일 아침 미팅',
-            type: 'TIME',
-            description: '주간 시작 미팅 및 우선순위 논의',
-            startedAt: currentWeek.add(1, 'day').hour(9).minute(0).valueOf(),
-            endedAt: currentWeek.add(1, 'day').hour(10).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w11',
-            title: '코드 리뷰',
-            type: 'TIME',
-            description: '팀원들의 코드 리뷰 및 피드백',
-            startedAt: currentWeek.add(1, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(1, 'day').hour(16).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w12',
-            title: '팀 미팅',
-            type: 'TIME',
-            description: '주간 업무 계획 및 이슈 논의',
-            startedAt: currentWeek.add(1, 'day').hour(17).minute(0).valueOf(),
-            endedAt: currentWeek.add(1, 'day').hour(18).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 화요일 TIME 이벤트들
-        {
-            id: 'w13',
-            title: '클라이언트 미팅',
-            type: 'TIME',
-            description: '고객사와의 프로젝트 진행 상황 미팅',
-            startedAt: currentWeek.add(2, 'day').hour(10).minute(0).valueOf(),
-            endedAt: currentWeek.add(2, 'day').hour(11).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w14',
-            title: '개발 작업',
-            type: 'TIME',
-            description: '새로운 기능 개발 작업',
-            startedAt: currentWeek.add(2, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(2, 'day').hour(17).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w15',
-            title: '기술 스터디',
-            type: 'TIME',
-            description: 'React 18 신기능 스터디',
-            startedAt: currentWeek.add(2, 'day').hour(19).minute(0).valueOf(),
-            endedAt: currentWeek.add(2, 'day').hour(21).minute(0).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 수요일 TIME 이벤트들
-        {
-            id: 'w16',
-            title: '스프린트 플래닝',
-            type: 'TIME',
-            description: '다음 스프린트 계획 수립',
-            startedAt: currentWeek.add(3, 'day').hour(9).minute(0).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(11).minute(0).valueOf(),
-            recordGroup: recordGroups[1], // 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w17',
-            title: '데이터베이스 최적화',
-            type: 'TIME',
-            description: '성능 개선을 위한 DB 쿼리 최적화',
-            startedAt: currentWeek.add(3, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(17).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w18',
-            title: '코드 리팩토링',
-            type: 'TIME',
-            description: '기존 코드 개선 및 최적화',
-            startedAt: currentWeek.add(3, 'day').hour(19).minute(0).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(21).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 목요일 TIME 이벤트들
-        {
-            id: 'w19',
-            title: '출장 준비',
-            type: 'TIME',
-            description: '부산 출장을 위한 준비 작업',
-            startedAt: currentWeek.add(4, 'day').hour(8).minute(0).valueOf(),
-            endedAt: currentWeek.add(4, 'day').hour(10).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w20',
-            title: '출장 이동',
-            type: 'TIME',
-            description: '부산으로 이동',
-            startedAt: currentWeek.add(4, 'day').hour(11).minute(0).valueOf(),
-            endedAt: currentWeek.add(4, 'day').hour(15).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w21',
-            title: '고객사 미팅',
-            type: 'TIME',
-            description: '부산 고객사와의 프로젝트 미팅',
-            startedAt: currentWeek.add(4, 'day').hour(16).minute(0).valueOf(),
-            endedAt: currentWeek.add(4, 'day').hour(18).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 금요일 TIME 이벤트들
-        {
-            id: 'w22',
-            title: '현장 점검',
-            type: 'TIME',
-            description: '고객사 시스템 현장 점검',
-            startedAt: currentWeek.add(5, 'day').hour(9).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(12).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w23',
-            title: '프로젝트 보고서 작성',
-            type: 'TIME',
-            description: '출장 결과 보고서 작성',
-            startedAt: currentWeek.add(5, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(16).minute(30).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w24',
-            title: '주간 회고',
-            type: 'TIME',
-            description: '이번 주 작업 내용 회고 및 다음 주 계획',
-            startedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 토요일 TIME 이벤트들
-        {
-            id: 'w25',
-            title: '개발 작업',
-            type: 'TIME',
-            description: '새로운 기능 개발',
-            startedAt: currentWeek.add(6, 'day').hour(10).minute(0).valueOf(),
-            endedAt: currentWeek.add(6, 'day').hour(14).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w26',
-            title: '코드 리팩토링',
-            type: 'TIME',
-            description: '기존 코드 개선 및 최적화',
-            startedAt: currentWeek.add(6, 'day').hour(15).minute(0).valueOf(),
-            endedAt: currentWeek.add(6, 'day').hour(17).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w27',
-            title: '테스트 작성',
-            type: 'TIME',
-            description: '단위 테스트 및 통합 테스트 작성',
-            startedAt: currentWeek.add(6, 'day').hour(19).minute(0).valueOf(),
-            endedAt: currentWeek.add(6, 'day').hour(21).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // ===== 겹치는 시간 이벤트들 =====
-        
-        // 월요일 겹치는 이벤트들 (9:00-11:00)
-        {
-            id: 'w28',
-            title: '긴급 미팅',
-            type: 'TIME',
-            description: '긴급한 이슈 해결을 위한 미팅',
-            startedAt: currentWeek.add(1, 'day').hour(9).minute(30).valueOf(),
-            endedAt: currentWeek.add(1, 'day').hour(10).minute(30).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w29',
-            title: '클라이언트 콜',
-            type: 'TIME',
-            description: '고객사와의 긴급 통화',
-            startedAt: currentWeek.add(1, 'day').hour(10).minute(0).valueOf(),
-            endedAt: currentWeek.add(1, 'day').hour(11).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 화요일 겹치는 이벤트들 (14:00-17:00)
-        {
-            id: 'w30',
-            title: '팀 워크샵',
-            type: 'TIME',
-            description: '팀 빌딩 및 협업 워크샵',
-            startedAt: currentWeek.add(2, 'day').hour(14).minute(30).valueOf(),
-            endedAt: currentWeek.add(2, 'day').hour(16).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w31',
-            title: '기술 세미나',
-            type: 'TIME',
-            description: '최신 기술 트렌드 세미나 참석',
-            startedAt: currentWeek.add(2, 'day').hour(15).minute(0).valueOf(),
-            endedAt: currentWeek.add(2, 'day').hour(17).minute(30).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 수요일 겹치는 이벤트들 (19:00-22:00)
-        {
-            id: 'w32',
-            title: '개인 스터디',
-            type: 'TIME',
-            description: 'React 18 신기능 스터디',
-            startedAt: currentWeek.add(3, 'day').hour(19).minute(0).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(21).minute(0).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w33',
-            title: '온라인 강의',
-            type: 'TIME',
-            description: 'AWS 클라우드 아키텍처 온라인 강의',
-            startedAt: currentWeek.add(3, 'day').hour(20).minute(0).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(22).minute(0).valueOf(),
-            recordGroup: recordGroups[4], // 독서 토론 동호회
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w34',
-            title: '사이드 프로젝트 회의',
-            type: 'TIME',
-            description: '워크폴리오 프로젝트 팀 회의',
-            startedAt: currentWeek.add(3, 'day').hour(19).minute(30).valueOf(),
-            endedAt: currentWeek.add(3, 'day').hour(21).minute(30).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 목요일 겹치는 이벤트들 (16:00-19:00)
-        {
-            id: 'w35',
-            title: '고객사 미팅',
-            type: 'TIME',
-            description: '부산 고객사와의 프로젝트 미팅',
-            startedAt: currentWeek.add(4, 'day').hour(16).minute(0).valueOf(),
-            endedAt: currentWeek.add(4, 'day').hour(18).minute(0).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w36',
-            title: '내부 미팅',
-            type: 'TIME',
-            description: '팀 내부 프로젝트 진행 상황 미팅',
-            startedAt: currentWeek.add(4, 'day').hour(17).minute(0).valueOf(),
-            endedAt: currentWeek.add(4, 'day').hour(19).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 금요일 겹치는 이벤트들 (14:00-18:00)
-        {
-            id: 'w37',
-            title: '프로젝트 보고서 작성',
-            type: 'TIME',
-            description: '출장 결과 보고서 작성',
-            startedAt: currentWeek.add(5, 'day').hour(14).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(16).minute(30).valueOf(),
-            recordGroup: recordGroups[2], // 출장
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w38',
-            title: '코드 리뷰',
-            type: 'TIME',
-            description: '팀원들의 코드 리뷰 및 피드백',
-            startedAt: currentWeek.add(5, 'day').hour(15).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w39',
-            title: '주간 회고',
-            type: 'TIME',
-            description: '이번 주 작업 내용 회고 및 다음 주 계획',
-            startedAt: currentWeek.add(5, 'day').hour(17).minute(0).valueOf(),
-            endedAt: currentWeek.add(5, 'day').hour(18).minute(0).valueOf(),
-            recordGroup: recordGroups[0], // 업무
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // 토요일 겹치는 이벤트들 (10:00-15:00)
-        {
-            id: 'w40',
-            title: '개발 작업',
-            type: 'TIME',
-            description: '새로운 기능 개발',
-            startedAt: currentWeek.add(6, 'day').hour(10).minute(0).valueOf(),
-            endedAt: currentWeek.add(6, 'day').hour(14).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w41',
-            title: '디자인 리뷰',
-            type: 'TIME',
-            description: 'UI/UX 디자인 리뷰 및 개선사항 논의',
-            startedAt: currentWeek.add(6, 'day').hour(11).minute(0).valueOf(),
-            endedAt: currentWeek.add(6, 'day').hour(13).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        {
-            id: 'w42',
-            title: '데이터베이스 최적화',
-            type: 'TIME',
-            description: '성능 개선을 위한 DB 쿼리 최적화',
-            startedAt: currentWeek.add(6, 'day').hour(12).minute(0).valueOf(),
-            endedAt: currentWeek.add(6, 'day').hour(15).minute(0).valueOf(),
-            recordGroup: recordGroups[5], // 워크폴리오 사이드 프로젝트
-            createdAt: Date.now(),
-            updatedAt: Date.now()
-        },
-        
-        // ===== 2025년 10월 고정 데이터 =====
-        ...october2025Weeks.flatMap((week, weekIndex) => 
-            generateFixedWeeklyEvents(week, weekIndex, '10월')
-        ),
-        
-        // ===== 2025년 11월 고정 데이터 =====
-        ...november2025Weeks.flatMap((week, weekIndex) => 
-            generateFixedWeeklyEvents(week, weekIndex, '11월')
-        ),
-        
-        // ===== 2025년 12월 고정 데이터 =====
-        ...december2025Weeks.flatMap((week, weekIndex) => 
-            generateFixedWeeklyEvents(week, weekIndex, '12월')
-        )
-    ]
-}
 
 // 기존 함수는 monthly용으로 유지 (하위 호환성)
-export const createSampleRecords = createSampleRecordsForMonthly
+export const createSampleRecords = (recordGroups: object[]) => {
+    // 2025년 10월-11월 고정 샘플 데이터
+    return [
+        // 2025년 10월 첫째 주 (10/6-10/12)
+        {
+            id: '2025100101',
+            title: '주간 미팅',
+            type: 'TIME',
+            description: '주간 진행 상황 공유 및 다음 주 계획 수립',
+            startedAt: dayjs('2025-10-07').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-07').hour(10).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100102',
+            title: '프로젝트 리뷰',
+            type: 'TIME',
+            description: '프로젝트 진행 상황 점검 및 이슈 해결',
+            startedAt: dayjs('2025-10-07').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-07').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100103',
+            title: '클라이언트 미팅',
+            type: 'DAY',
+            description: '고객 요구사항 확인 및 제안서 검토',
+            startedAt: dayjs('2025-10-08').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-08').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100104',
+            title: '팀 빌딩',
+            type: 'TIME',
+            description: '팀원 간 소통 및 협업 강화',
+            startedAt: dayjs('2025-10-09').hour(10).minute(30).second(0).valueOf(),
+            endedAt: dayjs('2025-10-09').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100105',
+            title: '코드 리뷰',
+            type: 'MULTI_DAY',
+            description: '코드 품질 향상을 위한 리뷰 세션',
+            startedAt: dayjs('2025-10-10').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-12').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100106',
+            title: '데이터베이스 최적화',
+            type: 'TIME',
+            description: '데이터베이스 성능 최적화 및 인덱스 튜닝',
+            startedAt: dayjs('2025-10-08').hour(15).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-08').hour(17).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100107',
+            title: 'API 문서화',
+            type: 'TIME',
+            description: 'REST API 문서 작성 및 스웨거 설정',
+            startedAt: dayjs('2025-10-09').hour(13).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-09').hour(15).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100108',
+            title: '사용자 피드백 분석',
+            type: 'DAY',
+            description: '사용자 피드백 수집 및 분석',
+            startedAt: dayjs('2025-10-11').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-11').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 10월 둘째 주 (10/13-10/19)
+        {
+            id: '2025100201',
+            title: '기획 회의',
+            type: 'TIME',
+            description: '신규 기능 기획 및 요구사항 정의',
+            startedAt: dayjs('2025-10-14').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-14').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100202',
+            title: '디자인 리뷰',
+            type: 'TIME',
+            description: 'UI/UX 디자인 검토 및 개선사항 논의',
+            startedAt: dayjs('2025-10-15').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-15').hour(15).minute(30).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100203',
+            title: '테스트',
+            type: 'DAY',
+            description: '기능 테스트 및 버그 수정',
+            startedAt: dayjs('2025-10-16').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-16').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100204',
+            title: '배포',
+            type: 'TIME',
+            description: '프로덕션 환경 배포 및 모니터링',
+            startedAt: dayjs('2025-10-17').hour(16).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-17').hour(18).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100205',
+            title: '모니터링 설정',
+            type: 'TIME',
+            description: '시스템 모니터링 도구 설정 및 알림 구성',
+            startedAt: dayjs('2025-10-13').hour(11).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-13').hour(12).minute(30).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100206',
+            title: '사용자 교육',
+            type: 'DAY',
+            description: '신규 사용자 교육 및 온보딩',
+            startedAt: dayjs('2025-10-15').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-15').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100207',
+            title: '로깅 시스템 구축',
+            type: 'TIME',
+            description: '중앙화된 로깅 시스템 구축 및 설정',
+            startedAt: dayjs('2025-10-16').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-16').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100208',
+            title: '성능 벤치마크',
+            type: 'MULTI_DAY',
+            description: '시스템 성능 벤치마크 및 비교 분석',
+            startedAt: dayjs('2025-10-18').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-19').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 10월 셋째 주 (10/20-10/26)
+        {
+            id: '2025100301',
+            title: '문서화',
+            type: 'TIME',
+            description: '프로젝트 문서 정리 및 가이드 작성',
+            startedAt: dayjs('2025-10-21').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-21').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100302',
+            title: '사용자 인터뷰',
+            type: 'MULTI_DAY',
+            description: '사용자 피드백 수집 및 분석',
+            startedAt: dayjs('2025-10-22').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-24').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100303',
+            title: '데이터 분석',
+            type: 'TIME',
+            description: '비즈니스 데이터 분석 및 인사이트 도출',
+            startedAt: dayjs('2025-10-25').hour(9).minute(30).second(0).valueOf(),
+            endedAt: dayjs('2025-10-25').hour(11).minute(30).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100304',
+            title: '마이크로서비스 설계',
+            type: 'DAY',
+            description: '마이크로서비스 아키텍처 설계 및 분할 전략',
+            startedAt: dayjs('2025-10-21').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-21').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100305',
+            title: '컨테이너화',
+            type: 'TIME',
+            description: '애플리케이션 컨테이너화 및 Docker 설정',
+            startedAt: dayjs('2025-10-22').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-22').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100306',
+            title: 'A/B 테스트',
+            type: 'MULTI_DAY',
+            description: '사용자 경험 개선을 위한 A/B 테스트',
+            startedAt: dayjs('2025-10-23').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-24').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100307',
+            title: '캐싱 전략',
+            type: 'TIME',
+            description: '캐싱 전략 수립 및 Redis 도입',
+            startedAt: dayjs('2025-10-26').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-26').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 10월 넷째 주 (10/27-11/2)
+        {
+            id: '2025100401',
+            title: '성능 최적화',
+            type: 'DAY',
+            description: '시스템 성능 개선 및 최적화',
+            startedAt: dayjs('2025-10-28').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-28').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100402',
+            title: '보안 점검',
+            type: 'TIME',
+            description: '보안 취약점 점검 및 대응',
+            startedAt: dayjs('2025-10-29').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-29').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100403',
+            title: '인프라 구축',
+            type: 'MULTI_DAY',
+            description: '서버 인프라 구축 및 설정',
+            startedAt: dayjs('2025-10-30').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-01').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100404',
+            title: 'CI/CD 파이프라인',
+            type: 'TIME',
+            description: '지속적 통합/배포 파이프라인 구축',
+            startedAt: dayjs('2025-10-28').hour(15).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-28').hour(17).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100405',
+            title: '로드 밸런싱',
+            type: 'DAY',
+            description: '로드 밸런서 설정 및 트래픽 분산',
+            startedAt: dayjs('2025-10-29').startOf('day').valueOf(),
+            endedAt: dayjs('2025-10-29').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100406',
+            title: '모니터링 대시보드',
+            type: 'TIME',
+            description: '실시간 모니터링 대시보드 구축',
+            startedAt: dayjs('2025-10-31').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-10-31').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025100407',
+            title: '재해 복구',
+            type: 'MULTI_DAY',
+            description: '재해 복구 계획 수립 및 테스트',
+            startedAt: dayjs('2025-11-01').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-02').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 11월 첫째 주 (11/3-11/9)
+        {
+            id: '2025110101',
+            title: '주간 미팅',
+            type: 'TIME',
+            description: '주간 진행 상황 공유 및 다음 주 계획 수립',
+            startedAt: dayjs('2025-11-04').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-04').hour(10).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110102',
+            title: '프로젝트 리뷰',
+            type: 'TIME',
+            description: '프로젝트 진행 상황 점검 및 이슈 해결',
+            startedAt: dayjs('2025-11-05').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-05').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110103',
+            title: '클라이언트 미팅',
+            type: 'DAY',
+            description: '고객 요구사항 확인 및 제안서 검토',
+            startedAt: dayjs('2025-11-06').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-06').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110104',
+            title: '팀 빌딩',
+            type: 'TIME',
+            description: '팀원 간 소통 및 협업 강화',
+            startedAt: dayjs('2025-11-07').hour(10).minute(30).second(0).valueOf(),
+            endedAt: dayjs('2025-11-07').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110105',
+            title: '마이그레이션 계획',
+            type: 'DAY',
+            description: '레거시 시스템 마이그레이션 계획 수립',
+            startedAt: dayjs('2025-11-04').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-04').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110106',
+            title: 'API 게이트웨이',
+            type: 'TIME',
+            description: 'API 게이트웨이 설정 및 라우팅 구성',
+            startedAt: dayjs('2025-11-05').hour(16).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-05').hour(18).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110107',
+            title: '사용자 권한 관리',
+            type: 'TIME',
+            description: '사용자 권한 및 인증 시스템 구축',
+            startedAt: dayjs('2025-11-06').hour(13).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-06').hour(15).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110108',
+            title: '데이터 마이그레이션',
+            type: 'MULTI_DAY',
+            description: '기존 데이터 마이그레이션 및 검증',
+            startedAt: dayjs('2025-11-08').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-09').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 11월 둘째 주 (11/10-11/16)
+        {
+            id: '2025110201',
+            title: '코드 리뷰',
+            type: 'TIME',
+            description: '코드 품질 향상을 위한 리뷰 세션',
+            startedAt: dayjs('2025-11-11').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-11').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110202',
+            title: '기획 회의',
+            type: 'MULTI_DAY',
+            description: '신규 기능 기획 및 요구사항 정의',
+            startedAt: dayjs('2025-11-12').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-13').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110203',
+            title: '디자인 리뷰',
+            type: 'TIME',
+            description: 'UI/UX 디자인 검토 및 개선사항 논의',
+            startedAt: dayjs('2025-11-14').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-14').hour(15).minute(30).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110204',
+            title: '서비스 메시',
+            type: 'DAY',
+            description: '서비스 메시 아키텍처 도입 및 설정',
+            startedAt: dayjs('2025-11-11').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-11').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110205',
+            title: '이벤트 소싱',
+            type: 'TIME',
+            description: '이벤트 소싱 패턴 도입 및 구현',
+            startedAt: dayjs('2025-11-12').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-12').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110206',
+            title: 'CQRS 패턴',
+            type: 'TIME',
+            description: 'CQRS 패턴 구현 및 이벤트 스토어 구축',
+            startedAt: dayjs('2025-11-13').hour(15).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-13').hour(17).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110207',
+            title: '사가 패턴',
+            type: 'MULTI_DAY',
+            description: '분산 트랜잭션을 위한 사가 패턴 구현',
+            startedAt: dayjs('2025-11-15').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-16').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 11월 셋째 주 (11/17-11/23)
+        {
+            id: '2025110301',
+            title: '테스트',
+            type: 'DAY',
+            description: '기능 테스트 및 버그 수정',
+            startedAt: dayjs('2025-11-18').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-18').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110302',
+            title: '배포',
+            type: 'TIME',
+            description: '프로덕션 환경 배포 및 모니터링',
+            startedAt: dayjs('2025-11-19').hour(16).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-19').hour(18).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110303',
+            title: '문서화',
+            type: 'TIME',
+            description: '프로젝트 문서 정리 및 가이드 작성',
+            startedAt: dayjs('2025-11-20').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-20').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110304',
+            title: '사용자 인터뷰',
+            type: 'MULTI_DAY',
+            description: '사용자 피드백 수집 및 분석',
+            startedAt: dayjs('2025-11-21').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-22').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110305',
+            title: '도메인 모델링',
+            type: 'DAY',
+            description: '도메인 주도 설계 및 모델링',
+            startedAt: dayjs('2025-11-18').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-18').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110306',
+            title: '헥사고날 아키텍처',
+            type: 'TIME',
+            description: '헥사고날 아키텍처 패턴 도입',
+            startedAt: dayjs('2025-11-19').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-19').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110307',
+            title: '이벤트 스토밍',
+            type: 'TIME',
+            description: '이벤트 스토밍 워크샵 및 도메인 분석',
+            startedAt: dayjs('2025-11-20').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-20').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110308',
+            title: '바운디드 컨텍스트',
+            type: 'MULTI_DAY',
+            description: '바운디드 컨텍스트 정의 및 경계 설정',
+            startedAt: dayjs('2025-11-23').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-24').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 11월 넷째 주 (11/24-11/30)
+        {
+            id: '2025110401',
+            title: '데이터 분석',
+            type: 'TIME',
+            description: '비즈니스 데이터 분석 및 인사이트 도출',
+            startedAt: dayjs('2025-11-25').hour(9).minute(30).second(0).valueOf(),
+            endedAt: dayjs('2025-11-25').hour(11).minute(30).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110402',
+            title: '성능 최적화',
+            type: 'DAY',
+            description: '시스템 성능 개선 및 최적화',
+            startedAt: dayjs('2025-11-26').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-26').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110403',
+            title: '보안 점검',
+            type: 'TIME',
+            description: '보안 취약점 점검 및 대응',
+            startedAt: dayjs('2025-11-27').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-27').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110404',
+            title: '인프라 구축',
+            type: 'MULTI_DAY',
+            description: '서버 인프라 구축 및 설정',
+            startedAt: dayjs('2025-11-28').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-30').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110405',
+            title: '폴리글랏 프로그래밍',
+            type: 'TIME',
+            description: '다양한 언어와 기술 스택 도입',
+            startedAt: dayjs('2025-11-25').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-25').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110406',
+            title: 'API 버전 관리',
+            type: 'DAY',
+            description: 'API 버전 관리 전략 수립 및 구현',
+            startedAt: dayjs('2025-11-26').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-26').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110407',
+            title: '서킷 브레이커',
+            type: 'TIME',
+            description: '서킷 브레이커 패턴 구현 및 장애 격리',
+            startedAt: dayjs('2025-11-27').hour(15).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-11-27').hour(17).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025110408',
+            title: '분산 추적',
+            type: 'MULTI_DAY',
+            description: '분산 시스템 추적 및 모니터링 구축',
+            startedAt: dayjs('2025-11-29').startOf('day').valueOf(),
+            endedAt: dayjs('2025-11-30').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 12월 첫째 주 (12/1-12/7)
+        {
+            id: '2025120101',
+            title: '연말 정리',
+            type: 'TIME',
+            description: '연말 업무 정리 및 다음 해 계획 수립',
+            startedAt: dayjs('2025-12-02').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-02').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120102',
+            title: '성과 평가',
+            type: 'DAY',
+            description: '연간 성과 평가 및 피드백',
+            startedAt: dayjs('2025-12-03').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-03').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120103',
+            title: '회고 미팅',
+            type: 'TIME',
+            description: '팀 회고 및 개선사항 논의',
+            startedAt: dayjs('2025-12-04').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-04').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120104',
+            title: '기술 세미나',
+            type: 'MULTI_DAY',
+            description: '신기술 트렌드 세미나 참석',
+            startedAt: dayjs('2025-12-05').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-06').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120105',
+            title: '연말 보너스',
+            type: 'TIME',
+            description: '연말 보너스 지급 및 성과 평가',
+            startedAt: dayjs('2025-12-02').hour(16).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-02').hour(17).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120106',
+            title: '연말 파티 기획',
+            type: 'DAY',
+            description: '연말 파티 기획 및 준비',
+            startedAt: dayjs('2025-12-03').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-03').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120107',
+            title: '연말 정산',
+            type: 'TIME',
+            description: '연말 정산 및 세무 처리',
+            startedAt: dayjs('2025-12-04').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-04').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120108',
+            title: '연말 휴가 신청',
+            type: 'MULTI_DAY',
+            description: '연말 휴가 신청 및 승인',
+            startedAt: dayjs('2025-12-07').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-08').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 12월 둘째 주 (12/8-12/14)
+        {
+            id: '2025120201',
+            title: '신규 프로젝트 기획',
+            type: 'TIME',
+            description: '2026년 신규 프로젝트 기획 및 요구사항 정의',
+            startedAt: dayjs('2025-12-09').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-09').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120202',
+            title: '아키텍처 설계',
+            type: 'DAY',
+            description: '시스템 아키텍처 설계 및 검토',
+            startedAt: dayjs('2025-12-10').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-10').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120203',
+            title: '코드 품질 개선',
+            type: 'TIME',
+            description: '기존 코드 리팩토링 및 품질 개선',
+            startedAt: dayjs('2025-12-11').hour(9).minute(30).second(0).valueOf(),
+            endedAt: dayjs('2025-12-11').hour(11).minute(30).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120204',
+            title: '사용자 테스트',
+            type: 'MULTI_DAY',
+            description: '베타 사용자 테스트 및 피드백 수집',
+            startedAt: dayjs('2025-12-12').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-13').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120205',
+            title: '연말 정산',
+            type: 'TIME',
+            description: '연말 정산 및 세무 처리',
+            startedAt: dayjs('2025-12-09').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-09').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120206',
+            title: '연말 선물',
+            type: 'DAY',
+            description: '연말 선물 준비 및 배송',
+            startedAt: dayjs('2025-12-10').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-10').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120207',
+            title: '연말 감사',
+            type: 'TIME',
+            description: '고객사 연말 감사 인사',
+            startedAt: dayjs('2025-12-11').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-11').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120208',
+            title: '연말 파티',
+            type: 'MULTI_DAY',
+            description: '연말 파티 및 팀 빌딩',
+            startedAt: dayjs('2025-12-14').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-15').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 12월 셋째 주 (12/15-12/21)
+        {
+            id: '2025120301',
+            title: '연말 파티 준비',
+            type: 'TIME',
+            description: '연말 파티 기획 및 준비',
+            startedAt: dayjs('2025-12-16').hour(15).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-16').hour(17).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120302',
+            title: '보안 강화',
+            type: 'DAY',
+            description: '시스템 보안 강화 및 취약점 점검',
+            startedAt: dayjs('2025-12-17').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-17').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120303',
+            title: '데이터 백업',
+            type: 'TIME',
+            description: '연말 데이터 백업 및 복구 테스트',
+            startedAt: dayjs('2025-12-18').hour(20).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-18').hour(22).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120304',
+            title: '연말 정리',
+            type: 'DAY',
+            description: '사무실 정리 및 문서 정리',
+            startedAt: dayjs('2025-12-16').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-16').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120305',
+            title: '연말 감사',
+            type: 'TIME',
+            description: '고객사 연말 감사 인사',
+            startedAt: dayjs('2025-12-17').hour(11).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-17').hour(13).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120306',
+            title: '연말 선물',
+            type: 'TIME',
+            description: '연말 선물 준비 및 배송',
+            startedAt: dayjs('2025-12-19').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-19').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120307',
+            title: '연말 휴가',
+            type: 'MULTI_DAY',
+            description: '연말 휴가 및 휴식',
+            startedAt: dayjs('2025-12-20').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-21').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2025년 12월 넷째 주 (12/22-12/28)
+        {
+            id: '2025120401',
+            title: '연말 휴가',
+            type: 'MULTI_DAY',
+            description: '연말 휴가 및 휴식',
+            startedAt: dayjs('2025-12-23').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-27').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120402',
+            title: '연말 정리',
+            type: 'TIME',
+            description: '연말 업무 정리 및 문서 정리',
+            startedAt: dayjs('2025-12-22').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-22').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120403',
+            title: '연말 감사',
+            type: 'TIME',
+            description: '고객사 연말 감사 인사',
+            startedAt: dayjs('2025-12-22').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2025-12-22').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120404',
+            title: '연말 선물',
+            type: 'DAY',
+            description: '연말 선물 준비 및 배송',
+            startedAt: dayjs('2025-12-28').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-28').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2025120405',
+            title: '연말 파티',
+            type: 'MULTI_DAY',
+            description: '연말 파티 및 팀 빌딩',
+            startedAt: dayjs('2025-12-29').startOf('day').valueOf(),
+            endedAt: dayjs('2025-12-30').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2026년 1월 첫째 주 (1/5-1/11)
+        {
+            id: '2026010101',
+            title: '신년 계획 수립',
+            type: 'TIME',
+            description: '2026년 신년 계획 수립 및 목표 설정',
+            startedAt: dayjs('2026-01-06').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-06').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010102',
+            title: '신기술 도입',
+            type: 'DAY',
+            description: '새로운 기술 스택 도입 및 학습',
+            startedAt: dayjs('2026-01-07').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-07').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010103',
+            title: '팀 워크샵',
+            type: 'MULTI_DAY',
+            description: '팀 워크샵 및 협업 강화',
+            startedAt: dayjs('2026-01-08').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-09').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010104',
+            title: '시스템 점검',
+            type: 'TIME',
+            description: '신년 시스템 점검 및 최적화',
+            startedAt: dayjs('2026-01-10').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-10').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010105',
+            title: '신년 목표',
+            type: 'DAY',
+            description: '2026년 신년 목표 설정 및 계획',
+            startedAt: dayjs('2026-01-06').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-06').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010106',
+            title: '신기술 학습',
+            type: 'TIME',
+            description: '새로운 기술 스택 학습 및 실습',
+            startedAt: dayjs('2026-01-07').hour(15).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-07').hour(17).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010107',
+            title: '팀 워크샵',
+            type: 'MULTI_DAY',
+            description: '팀 워크샵 및 협업 강화',
+            startedAt: dayjs('2026-01-08').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-09').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010108',
+            title: '신년 인사',
+            type: 'TIME',
+            description: '고객사 신년 인사 및 계획 공유',
+            startedAt: dayjs('2026-01-10').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-10').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2026년 1월 둘째 주 (1/12-1/18)
+        {
+            id: '2026010201',
+            title: '신규 프로젝트 시작',
+            type: 'TIME',
+            description: '2026년 첫 번째 프로젝트 킥오프',
+            startedAt: dayjs('2026-01-13').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-13').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010202',
+            title: '개발 환경 구축',
+            type: 'DAY',
+            description: '새로운 개발 환경 구축 및 설정',
+            startedAt: dayjs('2026-01-14').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-14').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010203',
+            title: '코딩 스탠다드',
+            type: 'TIME',
+            description: '팀 코딩 스탠다드 수립 및 가이드 작성',
+            startedAt: dayjs('2026-01-15').hour(9).minute(30).second(0).valueOf(),
+            endedAt: dayjs('2026-01-15').hour(11).minute(30).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010204',
+            title: '사용자 리서치',
+            type: 'MULTI_DAY',
+            description: '사용자 니즈 조사 및 리서치',
+            startedAt: dayjs('2026-01-16').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-17').endOf('day').valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010205',
+            title: '신규 프로젝트 기획',
+            type: 'DAY',
+            description: '2026년 첫 번째 프로젝트 기획 및 설계',
+            startedAt: dayjs('2026-01-13').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-13').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010206',
+            title: '개발 환경 구축',
+            type: 'TIME',
+            description: '새로운 개발 환경 구축 및 설정',
+            startedAt: dayjs('2026-01-14').hour(16).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-14').hour(18).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010207',
+            title: '코딩 스탠다드',
+            type: 'MULTI_DAY',
+            description: '팀 코딩 스탠다드 수립 및 가이드 작성',
+            startedAt: dayjs('2026-01-15').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-16').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010208',
+            title: '사용자 인터뷰',
+            type: 'TIME',
+            description: '사용자 인터뷰 및 피드백 수집',
+            startedAt: dayjs('2026-01-18').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-18').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[2],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2026년 1월 셋째 주 (1/19-1/25)
+        {
+            id: '2026010301',
+            title: '프로토타입 개발',
+            type: 'DAY',
+            description: 'MVP 프로토타입 개발',
+            startedAt: dayjs('2026-01-20').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-20').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010302',
+            title: '디자인 시스템',
+            type: 'TIME',
+            description: '디자인 시스템 구축 및 컴포넌트 개발',
+            startedAt: dayjs('2026-01-21').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-21').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010303',
+            title: '성능 테스트',
+            type: 'TIME',
+            description: '시스템 성능 테스트 및 최적화',
+            startedAt: dayjs('2026-01-22').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-22').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010304',
+            title: '고객 미팅',
+            type: 'MULTI_DAY',
+            description: '주요 고객사 미팅 및 요구사항 확인',
+            startedAt: dayjs('2026-01-23').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-24').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010305',
+            title: '프로토타입 검토',
+            type: 'DAY',
+            description: 'MVP 프로토타입 검토 및 개선',
+            startedAt: dayjs('2026-01-20').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-20').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010306',
+            title: '디자인 시스템',
+            type: 'TIME',
+            description: '디자인 시스템 구축 및 컴포넌트 개발',
+            startedAt: dayjs('2026-01-21').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-21').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010307',
+            title: '성능 테스트',
+            type: 'MULTI_DAY',
+            description: '시스템 성능 테스트 및 최적화',
+            startedAt: dayjs('2026-01-22').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-23').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010308',
+            title: '고객 피드백',
+            type: 'TIME',
+            description: '고객 피드백 수집 및 분석',
+            startedAt: dayjs('2026-01-25').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-25').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+
+        // 2026년 1월 넷째 주 (1/26-2/1)
+        {
+            id: '2026010401',
+            title: '배포 준비',
+            type: 'TIME',
+            description: '프로덕션 배포 준비 및 체크리스트 검토',
+            startedAt: dayjs('2026-01-27').hour(9).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-27').hour(11).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010402',
+            title: '문서화',
+            type: 'DAY',
+            description: '프로젝트 문서화 및 사용자 가이드 작성',
+            startedAt: dayjs('2026-01-28').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-28').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010403',
+            title: '최종 테스트',
+            type: 'TIME',
+            description: '최종 통합 테스트 및 버그 수정',
+            startedAt: dayjs('2026-01-29').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-29').hour(18).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010404',
+            title: '런칭 준비',
+            type: 'MULTI_DAY',
+            description: '서비스 런칭 준비 및 마케팅',
+            startedAt: dayjs('2026-01-30').startOf('day').valueOf(),
+            endedAt: dayjs('2026-02-01').endOf('day').valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010405',
+            title: '배포 테스트',
+            type: 'DAY',
+            description: '프로덕션 배포 테스트 및 검증',
+            startedAt: dayjs('2026-01-27').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-27').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010406',
+            title: '문서화',
+            type: 'TIME',
+            description: '프로젝트 문서화 및 사용자 가이드 작성',
+            startedAt: dayjs('2026-01-28').hour(10).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-01-28').hour(12).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010407',
+            title: '최종 테스트',
+            type: 'MULTI_DAY',
+            description: '최종 통합 테스트 및 버그 수정',
+            startedAt: dayjs('2026-01-29').startOf('day').valueOf(),
+            endedAt: dayjs('2026-01-30').endOf('day').valueOf(),
+            recordGroup: recordGroups[1],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        },
+        {
+            id: '2026010408',
+            title: '런칭 이벤트',
+            type: 'TIME',
+            description: '서비스 런칭 이벤트 및 발표',
+            startedAt: dayjs('2026-02-01').hour(14).minute(0).second(0).valueOf(),
+            endedAt: dayjs('2026-02-01').hour(16).minute(0).second(0).valueOf(),
+            recordGroup: recordGroups[0],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        }
+    ]
+}
 
 // 샘플 Worker 데이터
 const createSampleWorker = (): Worker => ({
