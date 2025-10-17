@@ -165,7 +165,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedDate
         <div className="modal">
             <div className="modal-wrap">
                 <div className="modal-tit">
-                    <h2>기록 수정</h2>
+                    <h2>기록 생성</h2>
                     <button onClick={onClose}><i className="ic-close" /></button>
                 </div>
                 <form onSubmit={handleSubmit}>

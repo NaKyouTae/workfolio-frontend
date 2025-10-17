@@ -35,7 +35,10 @@ export default function MonthlyCalendarItem({
             key={`event-${startDayIndex}`}
             colSpan={colSpan} 
             className={'record'}
-            onClick={(e) => onRecordClick(record, e)}
+            onClick={(e) => {
+                e.stopPropagation()
+                onRecordClick(record, e)
+            }}
             title={
                 isContinuation && continuesToNextWeek ? `${getDisplayTitle()} (이전 주에서 이어짐, 다음 주로 이어짐)` :
                 isContinuation ? `${getDisplayTitle()} (이전 주에서 이어짐)` :

@@ -7,6 +7,7 @@ import { useCalendarDays } from '@/hooks/useCalendar'
 import { CalendarDay } from '@/models/CalendarTypes'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import RecordDetail from '../../modal/RecordDetail'
+import RecordCreateModal from '../../modal/RecordCreateModal'
 import MonthlyCalendarItem from './MonthlyCalendarItem'
 import { useRecords } from '@/hooks/useRecords'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
@@ -38,13 +39,33 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
     // 모달 상태
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
 
     // 커스텀 훅 사용
     const calendarDays = useCalendarDays(date)
     const { records } = useRecords('monthly', date.month + 1, date.year)
     const { triggerRecordRefresh } = useRecordGroupStore()
+
+    // 빈 record 영역 클릭 핸들러
+    const handleEmptyRecordClick = (day: CalendarDay) => {
+        // 클릭한 날짜와 현재 시간으로 selectedDateForCreate 설정
+        const clickedDate = dayjs(day.id, 'YYYYMMDD')
+        const currentTime = dayjs()
+        
+        // 클릭한 날짜의 현재 시간으로 설정
+        const selectedDateTime = clickedDate
+            .hour(currentTime.hour())
+            .minute(currentTime.minute())
+            .second(0)
+            .millisecond(0)
+            .toISOString()
+        
+        setSelectedDateForCreate(selectedDateTime)
+        setIsCreateModalOpen(true)
+    }
 
     // 레코드 클릭 핸들러
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLTableCellElement>) => {
@@ -108,6 +129,12 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
         setIsDetailModalOpen(false)
         setSelectedRecord(null)
         setDetailPosition(null)
+    }
+
+    // 생성 모달 닫기 핸들러
+    const handleCloseCreateModal = () => {
+        setIsCreateModalOpen(false)
+        setSelectedDateForCreate(null)
     }
 
     // 수정 모달 열기 핸들러
@@ -344,9 +371,16 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                 // 빈 행
                 rows.push(
                     <tr key={`empty-row-${rowIndex}`}>
-                        {Array.from({ length: 7 }, (_, j) => (
-                            <td key={`empty-${j}`}></td>
-                        ))}
+                        {Array.from({ length: 7 }, (_, j) => {
+                            const day = week[j]
+                            return (
+                                <td 
+                                    key={`empty-${j}`}
+                                    onClick={() => day && handleEmptyRecordClick(day)}
+                                    style={{ cursor: 'pointer' }}
+                                ></td>
+                            )
+                        })}
                     </tr>
                 )
             } else {
@@ -360,8 +394,14 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                 for (const item of rowItems) {
                     // 시작일 이전의 빈 td들
                     while (currentDay < item.startDayIndex) {
+                        const day = week[currentDay]
                         tds.push(
-                            <td className="record" key={`empty-${currentDay}`}></td>
+                            <td 
+                                className="record" 
+                                key={`empty-${currentDay}`}
+                                onClick={() => day && handleEmptyRecordClick(day)}
+                                style={{ cursor: 'pointer' }}
+                            ></td>
                         )
                         currentDay++
                     }
@@ -401,8 +441,14 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                 
                 // 마지막 일정 이후의 빈 td들
                 while (currentDay < 7) {
+                    const day = week[currentDay]
                     tds.push(
-                        <td className="record" key={`empty-after-${currentDay}`}></td>
+                        <td 
+                            className="record" 
+                            key={`empty-after-${currentDay}`}
+                            onClick={() => day && handleEmptyRecordClick(day)}
+                            style={{ cursor: 'pointer' }}
+                        ></td>
                     )
                     currentDay++
                 }
@@ -447,6 +493,8 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                                     {week.map((day, dayIndex) => (
                                         <td key={dayIndex}
                                         className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''} ${day && !day.isCurrentMonth ? 'other-month' : ''}`}
+                                        onClick={() => day && handleEmptyRecordClick(day)}
+                                        style={{ cursor: 'pointer' }}
                                         >
                                             {day && (
                                                 <div>
@@ -498,6 +546,13 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                 onClose={handleCloseUpdateModal}
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
+            />
+
+            {/* RecordCreateModal */}
+            <RecordCreateModal
+                isOpen={isCreateModalOpen}
+                onClose={handleCloseCreateModal}
+                selectedDate={selectedDateForCreate}
             />
         </>
     )
