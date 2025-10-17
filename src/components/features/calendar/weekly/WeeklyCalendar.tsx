@@ -277,10 +277,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         // 일정들을 시작일 순으로 정렬
         weekRecords.sort((a, b) => a.startDayIndex - b.startDayIndex)
 
-        // 최대 5개의 행을 생성
-        const maxRows = 5
-        const rows = []
-
         // 일정들을 행별로 그룹화
         const rowGroups: Array<Array<{ record: Record; startDayIndex: number; colSpan: number }>> = []
         
@@ -289,7 +285,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             let placed = false
             
             // 기존 행들 중에 배치할 수 있는 곳 찾기
-            for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+            for (let rowIndex = 0; rowIndex < rowGroups.length; rowIndex++) {
                 if (!rowGroups[rowIndex]) {
                     rowGroups[rowIndex] = []
                 }
@@ -313,19 +309,15 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 }
             }
             
-            // 배치할 수 없으면 첫 번째 빈 행에 추가
+            // 배치할 수 없으면 새로운 행에 추가
             if (!placed) {
-                for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
-                    if (!rowGroups[rowIndex]) {
-                        rowGroups[rowIndex] = []
-                    }
-                    if (rowGroups[rowIndex].length === 0) {
-                        rowGroups[rowIndex].push(item)
-                        break
-                    }
-                }
+                rowGroups.push([item])
             }
         }
+
+        // 완성된 행의 개수 + 1만큼만 행을 생성
+        const maxRows = Math.max(1, rowGroups.length + 1)
+        const rows = []
 
         // 행 그룹들을 렌더링
         for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
