@@ -150,14 +150,17 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
             <div className="calendar-wrap">
                 {recordType === 'monthly' ? (
                     <MonthlyCalendar
+                        key={`monthly-${date.getTime()}`}
                         initialDate={date}
                     />
                 ) : recordType === 'weekly' ? (
                     <WeeklyCalendar
+                        key={`weekly-${date.getTime()}`}
                         initialDate={date}
                     />
                 ) : (
                     <ListCalendar
+                        key={`list-${date.getTime()}`}
                         initialDate={date} 
                         records={filteredRecords}
                         recordGroups={checkedRecordGroups}

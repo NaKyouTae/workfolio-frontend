@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { createDateModel, DateModel } from "@/models/DateModel"
 import { Record } from '@/generated/common'
 import dayjs from 'dayjs'
@@ -24,7 +24,7 @@ interface MonthlyCalendarProps {
 /**
  * Table 태그를 사용한 MonthlyCalendarV1 컴포넌트
  */
-export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
+const MonthlyCalendar = React.memo(function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
     const [date, setDate] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
@@ -49,8 +49,14 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
     const { records } = useRecords('monthly', date.month + 1, date.year)
     const { triggerRecordRefresh } = useRecordGroupStore()
 
-    // 빈 record 영역 클릭 핸들러
-    const handleEmptyRecordClick = (day: CalendarDay) => {
+    // 빈 record 영역 클릭 핸들러 - useCallback으로 최적화
+    const handleEmptyRecordClick = useCallback((day: CalendarDay) => {
+        // 이전 모달 상태 초기화
+        setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(false)
+        setSelectedRecord(null)
+        setDetailPosition(null)
+        
         // RecordDetail이 열려있으면 RecordCreateModal을 열지 않음
         if (isDetailModalOpen || isUpdateModalOpen) {
             return
@@ -70,10 +76,15 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
         
         setSelectedDateForCreate(selectedDateTime)
         setIsCreateModalOpen(true)
-    }
+    }, [isDetailModalOpen, isUpdateModalOpen])
 
-    // 레코드 클릭 핸들러
-    const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLTableCellElement>) => {
+    // 레코드 클릭 핸들러 - useCallback으로 최적화
+    const handleRecordClick = useCallback((record: Record, event: React.MouseEvent<HTMLTableCellElement>) => {
+        // 이전 모달 상태 초기화
+        setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
+        setSelectedDateForCreate(null)
+        
         const rect = event.currentTarget.getBoundingClientRect()
         const calendarContainer = event.currentTarget.closest('.days')?.getBoundingClientRect()
         
@@ -127,32 +138,45 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
         
         setSelectedRecord(record)
         setIsDetailModalOpen(true)
-    }
+    }, [])
 
-    // 상세 모달 닫기 핸들러
-    const handleCloseDetailModal = () => {
+    // 상세 모달 닫기 핸들러 - useCallback으로 최적화
+    const handleCloseDetailModal = useCallback(() => {
         setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
         setSelectedRecord(null)
+        setSelectedDateForCreate(null)
         setDetailPosition(null)
-    }
+    }, [])
 
-    // 생성 모달 닫기 핸들러
-    const handleCloseCreateModal = () => {
+    // 생성 모달 닫기 핸들러 - useCallback으로 최적화
+    const handleCloseCreateModal = useCallback(() => {
+        setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
+        setSelectedRecord(null)
+        setSelectedDateForCreate(null)
+        setDetailPosition(null)
+    }, [])
+
+    // 수정 모달 열기 핸들러 - useCallback으로 최적화
+    const handleOpenUpdateModal = useCallback(() => {
+        setIsDetailModalOpen(false)
         setIsCreateModalOpen(false)
         setSelectedDateForCreate(null)
-    }
-
-    // 수정 모달 열기 핸들러
-    const handleOpenUpdateModal = () => {
-        setIsDetailModalOpen(false)
         setIsUpdateModalOpen(true)
-    }
+    }, [])
 
-    // 수정 모달 닫기 핸들러
-    const handleCloseUpdateModal = () => {
+    // 수정 모달 닫기 핸들러 - useCallback으로 최적화
+    const handleCloseUpdateModal = useCallback(() => {
+        setIsDetailModalOpen(false)
         setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
         setSelectedRecord(null)
-    }
+        setSelectedDateForCreate(null)
+        setDetailPosition(null)
+    }, [])
 
     // 삭제 핸들러
     const handleDeleteRecord = async () => {
@@ -182,7 +206,8 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
     }
 
     // 일정을 렌더링하는 함수
-    const renderRecords = (week: (CalendarDay | null)[]) => {
+    const renderRecords = useMemo(() => {
+        return (week: (CalendarDay | null)[]) => {
         // date 상태를 기준으로 년월 정보 가져오기
         const year = date.year
         const month = date.month + 1
@@ -476,7 +501,8 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
         }
 
         return rows
-    }
+        }
+    }, [records, date.year, date.month, handleEmptyRecordClick, handleRecordClick, isDetailModalOpen, isUpdateModalOpen])
 
     const today = dayjs().format('YYYYMMDD')
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -573,4 +599,6 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
             />
         </>
     )
-}
+})
+
+export default MonthlyCalendar

@@ -30,9 +30,32 @@ interface WeeklyEvent {
     color: string
 }
 
-const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ 
+const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({ 
     initialDate
 }) => {
+    // 렌더링 횟수 체크를 위한 ref
+    const renderCountRef = useRef(0)
+    const navigationCountRef = useRef(0)
+    const lastNavigationTimeRef = useRef<number>(0)
+    
+    // 렌더링 횟수 증가
+    renderCountRef.current += 1
+    
+    // 렌더링 로그 출력 (디버깅용 - 프로덕션에서는 제거)
+    useEffect(() => {
+        // 개발 환경에서만 로그 출력
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`🔄 WeeklyCalendar 렌더링 #${renderCountRef.current}`)
+            console.log(`📅 현재 주간: ${dayjs(initialDate).format('YYYY-MM-DD')} ~ ${dayjs(initialDate).endOf('week').format('YYYY-MM-DD')}`)
+            console.log(`📊 Records 개수: ${records.length}`)
+            
+            // 네비게이션 후 렌더링 체크
+            if (navigationCountRef.current > 0) {
+                const timeSinceNavigation = Date.now() - lastNavigationTimeRef.current
+                console.log(`📊 네비게이션 후 렌더링: ${renderCountRef.current}회 (${timeSinceNavigation}ms 후)`)
+            }
+        }
+    })
     // 주간 날짜 생성 (일요일부터 토요일까지)
     const getWeekDays = (date: Date) => {
         const startOfWeek = dayjs(date).startOf('week')
@@ -57,14 +80,34 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [weekDays, setWeekDays] = useState(() => getWeekDays(initialDate))
     const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
     
-    // 렌더링 횟수 추적
-    const renderCountRef = useRef(0)
-    renderCountRef.current += 1
+    // 렌더링 횟수 추적 (이미 위에서 정의됨)
     
     // initialDate가 변경될 때 weekDays 업데이트
     useEffect(() => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`📅 initialDate 변경 감지: ${dayjs(initialDate).format('YYYY-MM-DD')}`)
+        }
         setWeekDays(getWeekDays(initialDate))
     }, [initialDate])
+    
+    // 네비게이션 함수들 (렌더링 체크용) - 주석 처리
+    // const handlePreviousWeek = useCallback(() => {
+    //     console.log(`⬅️ 이전 주 클릭 - 렌더링 #${renderCountRef.current}`)
+    //     navigationCountRef.current += 1
+    //     lastNavigationTimeRef.current = Date.now()
+    // }, [])
+    
+    // const handleNextWeek = useCallback(() => {
+    //     console.log(`➡️ 다음 주 클릭 - 렌더링 #${renderCountRef.current}`)
+    //     navigationCountRef.current += 1
+    //     lastNavigationTimeRef.current = Date.now()
+    // }, [])
+    
+    // const handleToday = useCallback(() => {
+    //     console.log(`📅 오늘 클릭 - 렌더링 #${renderCountRef.current}`)
+    //     navigationCountRef.current += 1
+    //     lastNavigationTimeRef.current = Date.now()
+    // }, [])
     
     // 현재 시간 업데이트 (1분마다)
     useEffect(() => {
@@ -80,6 +123,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
     const { triggerRecordRefresh } = useRecordGroupStore()
+    
+    // useRecords 훅 사용 (렌더링 체크 포함)
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`🔍 useRecords 호출 - initialDate: ${dayjs(initialDate).format('YYYY-MM-DD')}`)
+    }
     const { records } = useRecords('weekly', undefined, undefined, initialDate)
     
     // 모달 위치 계산 공통 함수
@@ -446,8 +494,19 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             setTimeout(applyScroll, 200)
             setTimeout(applyScroll, 500)
         }
-    }, []) // currentTime 의존성 제거 - 마운트 시에만 실행
+    }, [currentTime]) // currentTime 의존성 추가
 
+    // 렌더링 분석을 위한 추가 로그 (변수 선언 후로 이동)
+    // useEffect(() => {
+    //     console.log(`🔍 WeeklyCalendar 상세 분석:`)
+    //     console.log(`  - 렌더링 횟수: ${renderCountRef.current}`)
+    //     console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
+    //     console.log(`  - Records 개수: ${records.length}`)
+    //     console.log(`  - WeekDays 개수: ${weekDays.length}`)
+    //     console.log(`  - TimeSlots 개수: ${timeSlots?.length || 0}`)
+    //     console.log(`  - AllEvents 개수: ${allEvents?.length || 0}`)
+    // }, [records, weekDays, timeSlots, allEvents])
+    
     // 시간 슬롯 생성 (00:00부터 23:00까지) - useMemo로 최적화
     const timeSlots = useMemo(() => {
         const slots = []
@@ -540,7 +599,27 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         }
     }, [currentTime])
 
+    // 렌더링 분석을 위한 추가 로그 (변수 선언 후)
+    useEffect(() => {
+        // 개발 환경에서만 로그 출력
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`🔍 WeeklyCalendar 상세 분석:`)
+            console.log(`  - 렌더링 횟수: ${renderCountRef.current}`)
+            console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
+            console.log(`  - Records 개수: ${records.length}`)
+            console.log(`  - WeekDays 개수: ${weekDays.length}`)
+            console.log(`  - TimeSlots 개수: ${timeSlots?.length || 0}`)
+            console.log(`  - AllEvents 개수: ${allEvents?.length || 0}`)
+            console.log(`  - TimedEvents 개수: ${timedEvents?.length || 0}`)
+        }
+    }, [records, weekDays, timeSlots, allEvents, timedEvents])
+
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
+        // 이전 모달 상태 초기화
+        setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
+        setSelectedDateForCreate(null)
+        
         const position = calculateModalPosition(event.currentTarget)
         if (position) {
             setDetailPosition(position)
@@ -551,18 +630,31 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     }
 
     const handleCloseModal = () => {
-        setSelectedRecord(null)
-        setDetailPosition(null)
         setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
+        setSelectedRecord(null)
+        setSelectedDateForCreate(null)
+        setDetailPosition(null)
     }
 
 
     const handleCloseCreateModal = () => {
+        setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(false)
         setIsCreateModalOpen(false)
+        setSelectedRecord(null)
         setSelectedDateForCreate(null)
+        setDetailPosition(null)
     }
 
     const handleSubSlotClick = (dayIndex: number, slotIndex: number, subIndex: number) => {
+        // 이전 모달 상태 초기화
+        setIsDetailModalOpen(false)
+        setIsUpdateModalOpen(false)
+        setSelectedRecord(null)
+        setDetailPosition(null)
+        
         const day = weekDays[dayIndex]
         const slot = timeSlots[slotIndex]
         const subSlot = slot.subSlots[subIndex]
@@ -585,12 +677,17 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
     const handleOpenUpdateModal = () => {
         setIsDetailModalOpen(false)
+        setIsCreateModalOpen(false)
+        setSelectedDateForCreate(null)
         setIsUpdateModalOpen(true)
     }
 
     const handleCloseUpdateModal = () => {
+        setIsDetailModalOpen(false)
         setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
         setSelectedRecord(null)
+        setSelectedDateForCreate(null)
         setDetailPosition(null)
     }
 
@@ -612,6 +709,28 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             console.error('Error deleting record:', error);
         }
     }
+
+    // 렌더링 성능 분석 (사용하지 않음 - 주석 처리)
+    // const renderPerformance = useMemo(() => {
+    //     const startTime = performance.now()
+    //     return {
+    //         startTime,
+    //         endTime: performance.now(),
+    //         duration: performance.now() - startTime
+    //     }
+    // }, [])
+    
+    // 렌더링 완료 후 성능 로그
+    useEffect(() => {
+        // 개발 환경에서만 로그 출력
+        if (process.env.NODE_ENV === 'development') {
+            const endTime = performance.now()
+            console.log(`⚡ WeeklyCalendar 렌더링 성능:`)
+            console.log(`  - 렌더링 시간: ${endTime.toFixed(2)}ms`)
+            console.log(`  - 총 렌더링 횟수: ${renderCountRef.current}`)
+            console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
+        }
+    })
 
     return (
         <div className="weekly">
@@ -967,6 +1086,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             />
         </div>
     )
-}
+})
+
+WeeklyCalendar.displayName = 'WeeklyCalendar'
 
 export default WeeklyCalendar
