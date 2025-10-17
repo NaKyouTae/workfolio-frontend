@@ -2,11 +2,12 @@ import React, { useEffect } from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 
 const Header = () => {
     const router = useRouter();
+    const pathname = usePathname();
     const { user, fetchUser, logout: userLogout } = useUser();
     
     // 로그인 상태 확인 및 유저 정보 가져오기
@@ -47,9 +48,9 @@ const Header = () => {
             </h1>
             <div>
                 <ul className="menu">
-                    <li className="active"><Link href="/records">기록 관리</Link></li>
-                    <li><Link href="/company-history">커리어 관리</Link></li>
-                    <li><Link href="/job-search">이직 관리</Link></li>
+                    <li className={pathname === '/records' ? 'active' : ''}><Link href="/records">기록 관리</Link></li>
+                    <li className={pathname === '/company-history' ? 'active' : ''}><Link href="/company-history">커리어 관리</Link></li>
+                    <li className={pathname === '/job-search' ? 'active' : ''}><Link href="/job-search">이직 관리</Link></li>
                 </ul>
                 {user? (
                     <ul className="user">
