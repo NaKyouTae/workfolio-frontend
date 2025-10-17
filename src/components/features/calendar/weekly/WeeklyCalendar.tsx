@@ -327,9 +327,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 // 빈 행
                 rows.push(
                     <tr key={`empty-row-${rowIndex}`}>
-                        {Array.from({ length: 7 }, (_, j) => (
-                            <td key={`empty-${j}`} className="record"></td>
-                        ))}
+                        {Array.from({ length: 7 }, (_, j) => {
+                            const dayInfo = weekDays[j]
+                            const isToday = dayInfo?.isToday || false
+                            const className = `record${isToday ? ' today' : ''}`
+                            return (
+                                <td key={`empty-${j}`} className={className}></td>
+                            )
+                        })}
                     </tr>
                 )
             } else {
@@ -341,8 +346,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                     const item = rowItems.find(item => item.startDayIndex === currentDay)
                     
                     if (item) {
+                        const dayInfo = weekDays[currentDay]
+                        const isToday = dayInfo?.isToday || false
+                        const className = `record${isToday ? ' today' : ''}`
+                        
                         cells.push(
-                            <td key={currentDay} colSpan={item.colSpan} className="record">
+                            <td key={currentDay} colSpan={item.colSpan} className={className}>
                                 <p
                                     style={{ backgroundColor: getRecordGroupColor(item.record.recordGroup) }}
                                     onClick={(e) => handleRecordClick(item.record, e)}
@@ -353,7 +362,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                         )
                         currentDay += item.colSpan // colSpan만큼 건너뛰기
                     } else {
-                        cells.push(<td key={currentDay} className="record"></td>)
+                        const dayInfo = weekDays[currentDay]
+                        const isToday = dayInfo?.isToday || false
+                        const className = `record${isToday ? ' today' : ''}`
+                        
+                        cells.push(<td key={currentDay} className={className}></td>)
                         currentDay++
                     }
                 }
