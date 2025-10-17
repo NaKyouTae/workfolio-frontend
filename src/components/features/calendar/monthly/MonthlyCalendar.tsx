@@ -51,6 +51,11 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
 
     // 빈 record 영역 클릭 핸들러
     const handleEmptyRecordClick = (day: CalendarDay) => {
+        // RecordDetail이 열려있으면 RecordCreateModal을 열지 않음
+        if (isDetailModalOpen || isUpdateModalOpen) {
+            return
+        }
+        
         // 클릭한 날짜와 현재 시간으로 selectedDateForCreate 설정
         const clickedDate = dayjs(day.id, 'YYYYMMDD')
         const currentTime = dayjs()
@@ -377,7 +382,10 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                                 <td 
                                     key={`empty-${j}`}
                                     onClick={() => day && handleEmptyRecordClick(day)}
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ 
+                                        cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
+                                        pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                                    }}
                                 ></td>
                             )
                         })}
@@ -400,7 +408,10 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                                 className="record" 
                                 key={`empty-${currentDay}`}
                                 onClick={() => day && handleEmptyRecordClick(day)}
-                                style={{ cursor: 'pointer' }}
+                                style={{ 
+                                    cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
+                                    pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                                }}
                             ></td>
                         )
                         currentDay++
@@ -447,7 +458,10 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                             className="record" 
                             key={`empty-after-${currentDay}`}
                             onClick={() => day && handleEmptyRecordClick(day)}
-                            style={{ cursor: 'pointer' }}
+                            style={{ 
+                                cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
+                                pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                            }}
                         ></td>
                     )
                     currentDay++
@@ -494,7 +508,10 @@ export default function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
                                         <td key={dayIndex}
                                         className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''} ${day && !day.isCurrentMonth ? 'other-month' : ''}`}
                                         onClick={() => day && handleEmptyRecordClick(day)}
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ 
+                                            cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
+                                            pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                                        }}
                                         >
                                             {day && (
                                                 <div>
