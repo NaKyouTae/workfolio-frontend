@@ -455,11 +455,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             const time = dayjs().hour(hour).minute(0)
             slots.push({
                 hour,
-                displayTime: time.format('A HH:mm'),
+                displayTime: time.format('HH:mm'),
                 isAM: hour < 12,
                 subSlots: [
-                    { minute: 0, displayTime: time.format('A HH:mm') },
-                    { minute: 30, displayTime: time.add(30, 'minute').format('A HH:mm') }
+                    { minute: 0, displayTime: time.format('HH:mm') },
+                    { minute: 30, displayTime: time.add(30, 'minute').format('HH:mm') }
                 ]
             })
         }
@@ -491,8 +491,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             
             return {
                 record,
-                startTime: startDate.format('A HH:mm'),
-                endTime: endDate.format('AHH:mm'),
+                startTime: startDate.format('HH:mm'),
+                endTime: endDate.format('HH:mm'),
                 duration: endDate.diff(startDate, 'minute'),
                 dayOfWeek: startDate.day(),
                 isAllDay,
