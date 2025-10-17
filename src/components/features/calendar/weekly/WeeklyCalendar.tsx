@@ -55,6 +55,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     const [detailPosition, setDetailPosition] = useState<{top: number, left?: number, right?: number, width: number} | null>(null)
     const [currentTime, setCurrentTime] = useState(new Date())
     const [weekDays, setWeekDays] = useState(() => getWeekDays(initialDate))
+    const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
     
     // 렌더링 횟수 추적
     const renderCountRef = useRef(0)
@@ -437,15 +438,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                             targetElement.scrollIntoView({ block: 'start' })
                         }
                     }
-                    
-                    // 추가 확인
-                    console.log('스크롤 적용 후:', {
-                        targetScrollTop: scrollTop,
-                        actualScrollTop: element.scrollTop,
-                        success: Math.abs(element.scrollTop - scrollTop) < 1,
-                        elementHeight: element.scrollHeight,
-                        elementClientHeight: element.clientHeight
-                    })
                 }
             }
             
@@ -548,15 +540,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         }
     }, [currentTime])
 
-    // 모든 계산된 값들은 위의 useMemo로 최적화됨
-    
-    // 렌더링 횟수만 로그 (개발 중에만)
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`🔄 WeeklyCalendar 렌더링 #${renderCountRef.current}`)
-    }
-    
-    // records 변경 시 useMemo가 자동으로 재계산됨
-
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
         const position = calculateModalPosition(event.currentTarget)
         if (position) {
@@ -576,7 +559,29 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
     const handleCloseCreateModal = () => {
         setIsCreateModalOpen(false)
+        setSelectedDateForCreate(null)
     }
+
+    const handleSubSlotClick = (dayIndex: number, slotIndex: number, subIndex: number) => {
+        const day = weekDays[dayIndex]
+        const slot = timeSlots[slotIndex]
+        const subSlot = slot.subSlots[subIndex]
+        
+        // 클릭한 날짜와 시간 계산
+        const clickedDate = dayjs(day.date)
+        const clickedHour = slot.hour
+        const clickedMinute = subSlot.minute
+        
+        // 시작 시간 설정 (30분 간격)
+        const startTime = clickedDate.hour(clickedHour).minute(clickedMinute).second(0).millisecond(0)
+        
+        // ISO 문자열로 변환하여 전달
+        const selectedDateTime = startTime.toISOString()
+        
+        setSelectedDateForCreate(selectedDateTime)
+        setIsCreateModalOpen(true)
+    }
+
 
     const handleOpenUpdateModal = () => {
         setIsDetailModalOpen(false)
@@ -680,7 +685,33 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                         </ul>
                                         
                                         {/* 이벤트들을 그룹화하여 배치 - 각 요일에 해당하는 일정만 */}
-                                        <div className="record-wrap">
+                                        <div 
+                                            className="record-wrap"
+                                            onClick={(e) => {
+                                                // 이벤트가 아닌 영역을 클릭한 경우에만 subSlot 클릭 처리
+                                                if (e.target === e.currentTarget) {
+                                                    // 클릭한 위치에 해당하는 시간 슬롯 계산
+                                                    const rect = e.currentTarget.getBoundingClientRect()
+                                                    const clickY = e.clientY - rect.top
+                                                    
+                                                    // 실제 DOM에서 시간 슬롯 요소들을 찾아서 높이 계산
+                                                    const timeSlotElements = e.currentTarget.parentElement?.querySelectorAll('ul li')
+                                                    if (timeSlotElements && timeSlotElements.length > 0) {
+                                                        const firstSlot = timeSlotElements[0] as HTMLElement
+                                                        const slotHeight = firstSlot.offsetHeight
+                                                        const subSlotHeight = slotHeight / 2
+                                                        
+                                                        const slotIndex = Math.floor(clickY / slotHeight)
+                                                        const subIndex = Math.floor((clickY % slotHeight) / subSlotHeight)
+                                                        
+                                                        // 유효한 범위인지 확인
+                                                        if (slotIndex >= 0 && slotIndex < timeSlots.length && subIndex >= 0 && subIndex < 2) {
+                                                            handleSubSlotClick(dayIndex, slotIndex, subIndex)
+                                                        }
+                                                    }
+                                                }
+                                            }}
+                                        >
                                             {(() => {
                                                 // 겹치는 이벤트들을 그룹화하는 개선된 알고리즘
                                                 const eventGroups: WeeklyEvent[][] = []
@@ -784,6 +815,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                 style={{
                                                                     top: `${top}rem`,
                                                                     height: `${height}rem`,
+                                                                    pointerEvents: 'none'
                                                                 }}
                                                             >
                                                                 {group.map((event, eventIndex) => {
@@ -832,8 +864,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                                 left: `${leftPosition}%`,
                                                                                 width: eventWidth,
                                                                                 height: `${eventHeight}rem`,
+                                                                                pointerEvents: 'auto'
                                                                             }}
-                                                                            onClick={(e) => handleRecordClick(event.record, e)}
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation()
+                                                                                handleRecordClick(event.record, e)
+                                                                            }}
                                                                         >
                                                                             <div
                                                                                 style={{
@@ -874,8 +910,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                 style={{
                                                                     top: `${top}rem`,
                                                                     height: `${height}rem`,
+                                                                    pointerEvents: 'auto'
                                                                 }}
-                                                                onClick={(e) => handleRecordClick(event.record, e)}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation()
+                                                                    handleRecordClick(event.record, e)
+                                                                }}
                                                             >
                                                                 <div
                                                                     style={{
@@ -921,6 +961,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             <RecordCreateModal
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
+                selectedDate={selectedDateForCreate}
             />
         </div>
     )

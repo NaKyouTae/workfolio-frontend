@@ -49,16 +49,25 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedDate
         }
     }, [isAllDay, startedAt, endedAt]);
     
+    // selectedDate가 변경될 때 startedAt과 endedAt 업데이트
+    useEffect(() => {
+        if (selectedDate && isOpen) {
+            const selectedDateTime = dayjs(selectedDate);
+            setStartedAt(selectedDateTime.toISOString());
+            setEndedAt(selectedDateTime.add(30, 'minute').toISOString());
+        }
+    }, [selectedDate, isOpen]);
+    
     useEffect(() => {
         if (isOpen) {
             setTitle(null);
             setDescription(null);
             
-            // selectedDate가 있으면 해당 날짜로 설정, 없으면 현재 시간으로 설정
+            // selectedDate가 있으면 해당 날짜와 시간으로 설정, 없으면 현재 시간으로 설정
             if (selectedDate) {
-                const selectedDay = dayjs(selectedDate);
-                setStartedAt(selectedDay.startOf('day').toISOString());
-                setEndedAt(selectedDay.startOf('day').add(1, 'hour').toISOString());
+                const selectedDateTime = dayjs(selectedDate);
+                setStartedAt(selectedDateTime.toISOString());
+                setEndedAt(selectedDateTime.add(30, 'minute').toISOString());
             } else {
                 // 현재 시간을 기준으로 1시간 차이로 설정 (같은 날 내에서)
                 const now = dayjs();
