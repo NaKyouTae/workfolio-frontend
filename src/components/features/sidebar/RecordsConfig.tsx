@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '@/styles/records-config.css';
 import { JoinRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
+import Dropdown, { IDropdown } from '@/components/ui/Dropdown';
 
 interface RecordsConfigProps {
     onClose: () => void;
 }
 
 const RecordsConfig: React.FC<RecordsConfigProps> = ({ onClose }) => {
+    const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
     const [recordGroupDefaultScreen, setRecordGroupDefaultScreen] = useState('monthly');
     const [selectedRecordGroup, setSelectedRecordGroup] = useState('[기본] 업무');
     const [recordGroupName, setRecordGroupName] = useState('업무');
@@ -20,7 +22,15 @@ const RecordsConfig: React.FC<RecordsConfigProps> = ({ onClose }) => {
         { name: '나뚜루 초코', permission: '전체 권한' }
     ];
 
-    const { refreshRecordGroups } = useRecordGroups();
+    const { allRecordGroups, refreshRecordGroups } = useRecordGroups();
+    
+    useEffect(() => {
+        setDropdownOptions(allRecordGroups.map(group => ({
+            value: group.id,
+            label: group.title,
+            color: group.color
+        })));
+    }, [allRecordGroups]);
 
     // 그룹 참여 함수
     const handleJoinRecordGroup = async (recordGroupId: string, targetWorkerId: string) => {
@@ -113,13 +123,16 @@ const RecordsConfig: React.FC<RecordsConfigProps> = ({ onClose }) => {
                     <div className="config-row">
                         <label>기록장 선택</label>
                         <div className="dropdown-container">
-                            <select 
-                                value={selectedRecordGroup}
-                                onChange={(e) => setSelectedRecordGroup(e.target.value)}
-                                className="dropdown"
-                            >
-                                <option value="[기본] 업무">[기본] 업무</option>
-                            </select>
+                            <div className="color" style={{
+                                backgroundColor: dropdownOptions.find(
+                                    option => option.value === selectedRecordGroup
+                                )?.color || '#ddd'
+                            }}></div>
+                            <Dropdown
+                                options={dropdownOptions}
+                                selectedOption={selectedRecordGroup || ''}
+                                setValue={setSelectedRecordGroup}
+                            />
                         </div>
                     </div>
                     <div className="config-row">
@@ -145,8 +158,9 @@ const RecordsConfig: React.FC<RecordsConfigProps> = ({ onClose }) => {
                                     value={shareNickname}
                                     onChange={(e) => setShareNickname(e.target.value)}
                                     className="text-input"
+                                    style={{ width: '800px' }}
                                 />
-                                <button className="share-btn" onClick={() => handleJoinRecordGroup(recordGroupId, targetWorkerId)}>공유하기</button>
+                                <button className="share-btn" onClick={() => handleJoinRecordGroup(selectedRecordGroup, targetWorkerId)}>공유하기</button>
                             </div>
                             <div className="shared-members">
                                 {sharedMembers.map((member, index) => (
