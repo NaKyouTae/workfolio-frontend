@@ -830,8 +830,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                                                                     const eventDuration = eventEnd.diff(eventStart, 'minute')
                                                                     const eventHeight = Math.max((eventDuration / 30) * 2.2, 0.8)
                                                                     
-                                                                    // 그룹 내 이벤트 개수로 width 계산 (최소 너비 보장)
-                                                                    const eventWidth = `${Math.max(100 / group.length, 20)}%`
+                                                                    // 그룹 내 이벤트 개수로 width 계산 (5개 초과시 정확히 나누기, 5개 이하시 최소 20% 보장)
+                                                                    const eventWidth = group.length > 5 
+                                                                        ? `${100 / group.length}%`  // 5개 초과시 정확히 나누기
+                                                                        : `${Math.max(100 / group.length, 20)}%`  // 5개 이하시 최소 20% 보장
                                                                     
                                                                     // 각 이벤트의 시작 시간에 따른 top 위치 계산
                                                                     const startHour = eventStart.hour()
