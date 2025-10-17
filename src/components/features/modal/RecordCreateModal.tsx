@@ -57,6 +57,23 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedDate
             setEndedAt(selectedDateTime.add(30, 'minute').toISOString());
         }
     }, [selectedDate, isOpen]);
+
+    // ESC 키 이벤트 처리
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, onClose]);
     
     useEffect(() => {
         if (isOpen) {

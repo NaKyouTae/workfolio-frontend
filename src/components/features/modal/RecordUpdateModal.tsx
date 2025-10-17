@@ -80,6 +80,23 @@ const RecordUpdateModal: React.FC<ModalProps> = ({ isOpen, onClose, onDelete, re
         }
     }, [isOpen, record, refreshCompanies]);
 
+    // ESC 키 이벤트 처리
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, onClose]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
