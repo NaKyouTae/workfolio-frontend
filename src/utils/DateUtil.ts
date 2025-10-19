@@ -25,9 +25,7 @@ export class DateUtil {
   static formatTimestamp(timestamp: number, format: string = DateUtil.defaultFormat): string {
     if (timestamp === 0 || timestamp === undefined) return '';
 
-    const timestampString = timestamp.toString();
-    const date = new Date(parseInt(timestampString));
-    return dayjs(date).format(format);
+    return dayjs(timestamp).format(format);
   }
 
   /**
@@ -37,8 +35,7 @@ export class DateUtil {
    */
   static parseToTimestamp(dateString: string): number {
     if (!dateString) return 0;
-    const date = new Date(dateString);
-    return dayjs(date).valueOf();
+    return dayjs(dateString).valueOf();
   }
 
 
@@ -59,6 +56,42 @@ export class DateUtil {
     const startDate = this.formatTimestamp(startTimestamp, format);
     const endDate = endTimestamp === 0 ? '현재' : this.formatTimestamp(endTimestamp, format);
     return `${startDate} ~ ${endDate}`;
+  }
+
+  /**
+   * 오늘 날짜를 Date 객체로 반환 (로컬 시간)
+   * @returns Date 객체
+   */
+  static today(): Date {
+    return dayjs().toDate();
+  }
+
+  /**
+   * 오늘 날짜를 문자열로 반환
+   * @param format - 날짜 형식 (기본값: 'YYYY-MM-DD')
+   * @returns 포맷된 오늘 날짜 문자열
+   */
+  static todayString(format: string = DateUtil.defaultFormat): string {
+    return dayjs().format(format);
+  }
+
+  /**
+   * 날짜 문자열을 Date 객체로 변환
+   * @param dateString - 날짜 문자열
+   * @returns Date 객체
+   */
+  static toDate(dateString: string): Date {
+    return dayjs(dateString).toDate();
+  }
+
+  /**
+   * Date 객체를 문자열로 변환
+   * @param date - Date 객체
+   * @param format - 날짜 형식 (기본값: 'YYYY-MM-DD')
+   * @returns 포맷된 날짜 문자열
+   */
+  static format(date: Date, format: string = DateUtil.defaultFormat): string {
+    return dayjs(date).format(format);
   }
 }
 

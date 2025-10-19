@@ -10,6 +10,7 @@ import { CalendarViewType } from '@/models/CalendarTypes'
 import { useSystemConfigStore } from '@/store/systemConfigStore'
 import { SystemConfig_SystemConfigType } from '@/generated/common'
 import { parseCalendarViewType } from '@/utils/commonUtils'
+import dayjs from 'dayjs'
 
 export interface BodyRightRef {
     refreshRecords: () => void;
@@ -25,7 +26,8 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     
     // URL에서 초기 상태 읽기
     const urlView = searchParams.get('view') as CalendarViewType | null
-    const urlDate = searchParams.get('date') ? new Date(searchParams.get('date')!) : new Date()
+    const urlDateString = searchParams.get('date')
+    const urlDate = urlDateString ? dayjs(urlDateString).toDate() : dayjs().toDate()
     
     // urlView가 있으면 사용, 없으면 systemConfig 사용, 그것도 없으면 'monthly'
     const initialRecordType: CalendarViewType = urlView || parseCalendarViewType(systemConfig?.value, 'monthly')
@@ -59,13 +61,16 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
             params.set('view', pendingURLUpdate.view)
             
             // 월간, 목록 캘린더의 경우 월만 변경하고 일자는 오늘 날짜로 설정
-            let dateToUse = pendingURLUpdate.date
+            let dateToUse = dayjs(pendingURLUpdate.date)
             if (pendingURLUpdate.view === 'monthly' || pendingURLUpdate.view === 'list') {
-                const today = new Date()
-                dateToUse = new Date(today.getFullYear(), pendingURLUpdate.date.getMonth(), today.getDate())
+                const today = dayjs()
+                dateToUse = dayjs(pendingURLUpdate.date)
+                    .year(today.year())
+                    .month(today.month())
+                    .date(today.date())
             }
             
-            params.set('date', dateToUse.toISOString().split('T')[0])
+            params.set('date', dateToUse.format('YYYY-MM-DD'))
             router.push(`?${params.toString()}`, { scroll: false })
             setPendingURLUpdate(null)
         }
@@ -87,13 +92,13 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
 
     const handlePreviousMonth = useCallback(() => {
         setDate(prev => {
-            const newDate = new Date(prev)
+            let newDate
             if (recordType === 'weekly') {
                 // 주 단위로 변경 (7일 전)
-                newDate.setDate(prev.getDate() - 7)
+                newDate = dayjs(prev).subtract(7, 'day').toDate()
             } else {
                 // 월 단위로 변경
-                newDate.setMonth(prev.getMonth() - 1)
+                newDate = dayjs(prev).subtract(1, 'month').toDate()
             }
             updateURL(recordType, newDate)
             return newDate
@@ -102,13 +107,13 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
 
     const handleNextMonth = useCallback(() => {
         setDate(prev => {
-            const newDate = new Date(prev)
+            let newDate
             if (recordType === 'weekly') {
                 // 주 단위로 변경 (7일 후)
-                newDate.setDate(prev.getDate() + 7)
+                newDate = dayjs(prev).add(7, 'day').toDate()
             } else {
                 // 월 단위로 변경
-                newDate.setMonth(prev.getMonth() + 1)
+                newDate = dayjs(prev).add(1, 'month').toDate()
             }
             updateURL(recordType, newDate)
             return newDate
@@ -116,7 +121,7 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     }, [recordType, updateURL])
 
     const handleTodayMonth = useCallback(() => {
-        const today = new Date()
+        const today = dayjs().toDate()
         setDate(today)
         updateURL(recordType, today)
     }, [recordType, updateURL])
@@ -128,14 +133,14 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     // URL 파라미터 변경 시 상태 업데이트
     useEffect(() => {
         const urlView = searchParams.get('view') as CalendarViewType
-        const urlDate = searchParams.get('date')
+        const urlDateString = searchParams.get('date')
         
         if (urlView && urlView !== recordType) {
             setRecordType(urlView)
         }
         
-        if (urlDate) {
-            const newDate = new Date(urlDate)
+        if (urlDateString) {
+            const newDate = dayjs(urlDateString).toDate()
             if (newDate.getTime() !== date.getTime()) {
                 setDate(newDate)
             }

@@ -76,7 +76,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left?: number, right?: number, width: number} | null>(null)
-    const [currentTime, setCurrentTime] = useState(new Date())
+    const [currentTime, setCurrentTime] = useState(dayjs().toDate())
     const [weekDays, setWeekDays] = useState(() => getWeekDays(initialDate))
     const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
     
@@ -112,7 +112,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     // 현재 시간 업데이트 (1분마다)
     useEffect(() => {
         const updateCurrentTime = () => {
-            setCurrentTime(new Date())
+            setCurrentTime(dayjs().toDate())
         }
         
         const interval = setInterval(updateCurrentTime, 60000) // 1분마다 업데이트

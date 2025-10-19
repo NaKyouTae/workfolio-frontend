@@ -4,6 +4,7 @@ import { JobSearchCreateRequest } from '@/generated/job_search';
 import JobSearchForm from './JobSearchForm';
 import HttpMethod from '@/enums/HttpMethod';
 import styles from './JobSearchCreate.module.css';
+import dayjs from 'dayjs';
 
 interface JobSearchCreateModalProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
 }) => {
   const [createForm, setCreateForm] = useState<JobSearchCreateRequest>({
     title: '',
-    startedAt: new Date().getTime(),
+    startedAt: dayjs().valueOf(),
     endedAt: undefined,
     prevCompanyId: undefined,
     nextCompanyId: undefined,
@@ -54,7 +55,7 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
         onClose();
         setCreateForm({
           title: '',
-          startedAt: new Date().getTime(),
+          startedAt: dayjs().valueOf(),
           endedAt: undefined,
           prevCompanyId: undefined,
           nextCompanyId: undefined,
