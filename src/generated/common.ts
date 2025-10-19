@@ -194,7 +194,7 @@ export interface RecordGroup {
   id: string;
   type: RecordGroup_RecordGroupType;
   title: string;
-  isPublic: boolean;
+  isDefault: boolean;
   publicId: string;
   color: string;
   priority: number;
@@ -2026,7 +2026,7 @@ function createBaseRecordGroup(): RecordGroup {
     id: "",
     type: 0,
     title: "",
-    isPublic: false,
+    isDefault: false,
     publicId: "",
     color: "",
     priority: 0,
@@ -2047,8 +2047,8 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     if (message.title !== "") {
       writer.uint32(26).string(message.title);
     }
-    if (message.isPublic !== false) {
-      writer.uint32(32).bool(message.isPublic);
+    if (message.isDefault !== false) {
+      writer.uint32(32).bool(message.isDefault);
     }
     if (message.publicId !== "") {
       writer.uint32(42).string(message.publicId);
@@ -2107,7 +2107,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
             break;
           }
 
-          message.isPublic = reader.bool();
+          message.isDefault = reader.bool();
           continue;
         }
         case 5: {
@@ -2172,7 +2172,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       type: isSet(object.type) ? recordGroup_RecordGroupTypeFromJSON(object.type) : 0,
       title: isSet(object.title) ? globalThis.String(object.title) : "",
-      isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : false,
+      isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : false,
       publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       color: isSet(object.color) ? globalThis.String(object.color) : "",
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
@@ -2193,8 +2193,8 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     if (message.title !== "") {
       obj.title = message.title;
     }
-    if (message.isPublic !== false) {
-      obj.isPublic = message.isPublic;
+    if (message.isDefault !== false) {
+      obj.isDefault = message.isDefault;
     }
     if (message.publicId !== "") {
       obj.publicId = message.publicId;
@@ -2225,7 +2225,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     message.id = object.id ?? "";
     message.type = object.type ?? 0;
     message.title = object.title ?? "";
-    message.isPublic = object.isPublic ?? false;
+    message.isDefault = object.isDefault ?? false;
     message.publicId = object.publicId ?? "";
     message.color = object.color ?? "";
     message.priority = object.priority ?? 0;

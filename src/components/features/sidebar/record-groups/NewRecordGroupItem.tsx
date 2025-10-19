@@ -12,6 +12,7 @@ const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupIte
     const [title, setTitle] = useState<string | null>(null);
     const [showColorModal, setShowColorModal] = useState(false);
     const [color, setColor] = useState<string>(RecordGroupColor.RED);
+    const [isComposing, setIsComposing] = useState(false);
 
     const modalRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLLIElement>(null);
@@ -39,10 +40,19 @@ const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupIte
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
+        // 한글 조합 중에는 Enter 키 이벤트 무시
+        if (e.key === 'Enter' && !isComposing) {
             console.log('Enter', color);
             handleSave();
         }
+    };
+
+    const handleCompositionStart = () => {
+        setIsComposing(true);
+    };
+
+    const handleCompositionEnd = () => {
+        setIsComposing(false);
     };
 
     const handleColorSelect = (color: string) => {
@@ -70,6 +80,8 @@ const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupIte
                         value={title || ''}
                         onChange={(e) => setTitle(e.target.value)}
                         onKeyDown={handleKeyPress}
+                        onCompositionStart={handleCompositionStart}
+                        onCompositionEnd={handleCompositionEnd}
                         autoFocus
                     />
                 </label>

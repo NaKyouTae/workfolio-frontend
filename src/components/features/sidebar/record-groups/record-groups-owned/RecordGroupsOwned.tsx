@@ -33,7 +33,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                 title: title,
                 color: color,
                 type: RecordGroup_RecordGroupType.PRIVATE,
-                priority: 1,
+                priority: ownedRecordGroups.length + 1,
             });
             
             const response = await fetch('/api/record-groups', {

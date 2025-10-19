@@ -15,6 +15,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(group.title);
     const [showColorModal, setShowColorModal] = useState(false);
+    const [isComposing, setIsComposing] = useState(false);
     const modalRef = useRef<HTMLDivElement>(null);
 
     // 외부 클릭 감지
@@ -42,9 +43,18 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
+        // 한글 조합 중에는 Enter 키 이벤트 무시
+        if (e.key === 'Enter' && !isComposing) {
             handleSave();
         }
+    };
+
+    const handleCompositionStart = () => {
+        setIsComposing(true);
+    };
+
+    const handleCompositionEnd = () => {
+        setIsComposing(false);
     };
 
     const handleColorSelect = (color: string) => {
@@ -73,11 +83,13 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
                             onKeyDown={handleKeyPress}
+                            onCompositionStart={handleCompositionStart}
+                            onCompositionEnd={handleCompositionEnd}
                             onBlur={handleSave}
                             autoFocus
                         />
                     ) : (
-                        <p>{group.title}</p>
+                        <p>{group.isDefault ? '[기본] ' : ''}{group.title}</p>
                     )}
                 </label>
             </div>
@@ -85,7 +97,9 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                 <button className="trans active" onClick={() => setShowColorModal(true)}><i className="ic-more" /></button>
                 {showColorModal && (
                     <div className="record-edit-modal-wrap" ref={modalRef}>
-                        <button onClick={() => onDelete?.(group.id)}>기록장 삭제</button>
+                        {!group.isDefault && (
+                            <button onClick={() => onDelete?.(group.id)}>기록장 삭제</button>
+                        )}
                         <button onClick={() => setIsEditing(true)}>기록장 이름 변경</button>
                         <RecordGroupColorModal
                             isOpen={showColorModal}

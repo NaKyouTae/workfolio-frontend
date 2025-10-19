@@ -144,7 +144,7 @@ message RecordGroup {
   string id = 1;
   RecordGroupType type = 2;
   string title = 3;
-  bool is_public = 4;
+  bool is_default = 4;
   string public_id = 5;
   string color = 6;
 

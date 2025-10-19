@@ -38,10 +38,26 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     
     // 액션들
     setOwnedRecordGroups: (groups: RecordGroup[]) => 
-        set({ ownedRecordGroups: groups }),
+        set((state) => {
+            // 새로운 owned 그룹들을 자동으로 체크
+            const newCheckedGroups = new Set(state.checkedGroups);
+            groups.forEach(group => newCheckedGroups.add(group.id));
+            return { 
+                ownedRecordGroups: groups,
+                checkedGroups: newCheckedGroups
+            };
+        }),
     
     setSharedRecordGroups: (groups: RecordGroup[]) => 
-        set({ sharedRecordGroups: groups }),
+        set((state) => {
+            // 새로운 shared 그룹들을 자동으로 체크
+            const newCheckedGroups = new Set(state.checkedGroups);
+            groups.forEach(group => newCheckedGroups.add(group.id));
+            return { 
+                sharedRecordGroups: groups,
+                checkedGroups: newCheckedGroups
+            };
+        }),
     
     toggleGroup: (id: string) => 
         set((state) => {

@@ -6,7 +6,7 @@ import { CalendarViewType } from '@/models/CalendarTypes';
 import { parseCalendarViewType, calendarViewTypeToString } from '@/utils/commonUtils';
 
 const RecordManagement = () => {
-    const { getSystemConfig, updateSystemConfig, isLoading } = useSystemConfigStore();
+    const { getSystemConfig, updateSystemConfig } = useSystemConfigStore();
     const systemConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
 
     // systemConfig.value를 CalendarViewType으로 변환 (대소문자 구분 없음)
@@ -22,10 +22,6 @@ const RecordManagement = () => {
             // 필요시 사용자에게 에러 메시지 표시 가능
         }
     };
-
-    if (isLoading) {
-        return <div>로딩 중...</div>;
-    }
 
     return (
         <div>

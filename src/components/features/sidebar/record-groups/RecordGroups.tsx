@@ -2,7 +2,7 @@ import React from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { UpdateRecordGroupRequest } from '@/generated/record_group';
+import { RecordGroupUpdateRequest } from '@/generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
 import RecordGroupItem from './RecordGroupItem';
@@ -40,9 +40,8 @@ const RecordGroups = ({
             }
 
             // UpdateRecordGroupRequest 생성
-            const updateRequest = UpdateRecordGroupRequest.create({
+            const updateRequest = RecordGroupUpdateRequest.create({
                 title: title,
-                isPublic: existingGroup.isPublic || false,
                 color: existingGroup.color || RecordGroupColor.RED,
                 priority: existingGroup.priority || 1
             });
@@ -54,7 +53,6 @@ const RecordGroups = ({
                 },
                 body: JSON.stringify({
                     title: updateRequest.title,
-                    isPublic: updateRequest.isPublic,
                     color: updateRequest.color,
                     priority: updateRequest.priority.toString()
                 })
@@ -99,9 +97,8 @@ const RecordGroups = ({
             }
 
             // UpdateRecordGroupRequest 생성
-            const updateRequest = UpdateRecordGroupRequest.create({
+            const updateRequest = RecordGroupUpdateRequest.create({
                 title: existingGroup.title,
-                isPublic: existingGroup.isPublic || false,
                 color: color,
                 priority: existingGroup.priority || 1
             });
@@ -113,7 +110,6 @@ const RecordGroups = ({
                 },
                 body: JSON.stringify({
                     title: updateRequest.title,
-                    isPublic: updateRequest.isPublic,
                     color: updateRequest.color,
                     priority: updateRequest.priority.toString()
                 })

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import RecordGroupsSharedHeader from './RecordGroupsSharedHeader';
 import RecordGroups from '../RecordGroups';
-import { CreateRecordGroupRequest, JoinRecordGroupRequest } from '@/generated/record_group';
+import { CreateRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
-import { useUser } from '@/hooks/useUser';
 import NewRecordGroupItem from '../NewRecordGroupItem';
 import { RecordGroup_RecordGroupType } from '@/generated/common';
 
@@ -33,7 +32,7 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                 title: title,
                 color: color,
                 type: RecordGroup_RecordGroupType.SHARED,
-                priority: 1,
+                priority: sharedRecordGroups.length + 1,
             });
             
             const response = await fetch('/api/record-groups', {

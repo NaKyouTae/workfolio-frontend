@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import '@/styles/records-config.css';
-import { JoinRecordGroupRequest, RecordGroupDetailResponse } from '@/generated/record_group';
+import { RecordGroupJoinRequest, RecordGroupDetailResponse } from '@/generated/record_group';
 import { WorkerListResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
@@ -14,6 +14,7 @@ const RecordGroupManagement = () => {
     const [searchedWorkers, setSearchedWorkers] = useState<Worker[]>([]);
     const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
     const [recordGroupDetails, setRecordGroupDetails] = useState<RecordGroupDetailResponse | null>(null);
+    const [isComposing, setIsComposing] = useState(false);
 
     const { allRecordGroups, refreshRecordGroups, fetchRecordGroupDetails } = useRecordGroups();
     
@@ -102,16 +103,27 @@ const RecordGroupManagement = () => {
 
     // 엔터 키 이벤트 핸들러
     const handleNicknameKeyDown = useCallback(async (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
+        // 한글 조합 중에는 Enter 키 이벤트 무시
+        if (e.key === 'Enter' && !isComposing) {
             e.preventDefault();
             await searchWorkerByNickname(shareNickname);
         }
-    }, [shareNickname, searchWorkerByNickname]);
+    }, [shareNickname, searchWorkerByNickname, isComposing]);
+
+    // 한글 조합 시작 핸들러
+    const handleCompositionStart = useCallback(() => {
+        setIsComposing(true);
+    }, []);
+
+    // 한글 조합 종료 핸들러
+    const handleCompositionEnd = useCallback(() => {
+        setIsComposing(false);
+    }, []);
 
     // 그룹 참여 함수
     const handleJoinRecordGroup = useCallback(async (recordGroupId: string, workerId: string) => {
         try {
-            const message = JoinRecordGroupRequest.create({
+            const message = RecordGroupJoinRequest.create({
                 recordGroupId: recordGroupId,
                 workerId: workerId,
             });
@@ -243,6 +255,8 @@ const RecordGroupManagement = () => {
                             value={shareNickname}
                             onChange={(e) => setShareNickname(e.target.value)}
                             onKeyDown={handleNicknameKeyDown}
+                            onCompositionStart={handleCompositionStart}
+                            onCompositionEnd={handleCompositionEnd}
                             className="text-input"
                             style={{ width: '800px' }}
                         />
