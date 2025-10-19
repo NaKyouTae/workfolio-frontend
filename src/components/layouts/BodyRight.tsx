@@ -1,5 +1,5 @@
 import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect, useRef, useMemo} from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import ListCalendar from '@/components/features/calendar/list/ListCalendar'
 import CalendarHeader from '@/components/features/calendar/CalendarHeader'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
@@ -30,7 +30,6 @@ interface BodyRightProps {
 
 const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGroupsData }, ref) => {
     const searchParams = useSearchParams()
-    const router = useRouter()
     
     // 시스템 설정 store에서 가져오기 (이미 Contents에서 로드됨)
     const { getSystemConfig } = useSystemConfigStore();
@@ -50,6 +49,8 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     
     // 초기 URL 설정 여부 추적
     const isInitialURLSet = useRef(false)
+    // 네비게이션 버튼으로 변경 중인지 추적 (URL 동기화 스킵용)
+    const isNavigating = useRef(false)
     
     // store에서 체크된 RecordGroup 정보 가져오기
     const { getCheckedRecordGroups } = useRecordGroupStore()
@@ -80,7 +81,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
         setPendingURLUpdate({ view: newView, date: newDate })
     }, [])
     
-    // useEffect로 URL 업데이트 실행
+    // useEffect로 URL 업데이트 실행 (RSC fetch 없이 URL만 업데이트)
     useEffect(() => {
         if (pendingURLUpdate) {
             const params = new URLSearchParams(searchParams.toString())
@@ -97,10 +98,15 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
             }
             
             params.set('date', dateToUse.format('YYYY-MM-DD'))
-            router.push(`?${params.toString()}`, { scroll: false })
+            
+            // 🔥 router.push 대신 window.history.replaceState 사용
+            // Next.js RSC fetch를 트리거하지 않고 URL만 업데이트
+            const newUrl = `${window.location.pathname}?${params.toString()}`
+            window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl)
+            
             setPendingURLUpdate(null)
         }
-    }, [pendingURLUpdate, searchParams, router])
+    }, [pendingURLUpdate, searchParams])
 
     // ref를 통해 외부에서 refreshRecords 호출 가능하도록 설정
     useImperativeHandle(ref, () => ({
@@ -112,11 +118,13 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
 
     // 이벤트 핸들러들
     const handleTypeChange = useCallback((type: CalendarViewType) => {
+        isNavigating.current = true
         setRecordType(type)
         updateURL(type, date)
     }, [date, updateURL])
 
     const handlePreviousMonth = useCallback(() => {
+        isNavigating.current = true
         setDate(prev => {
             let newDate
             if (recordType === 'weekly') {
@@ -132,6 +140,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     }, [recordType, updateURL])
 
     const handleNextMonth = useCallback(() => {
+        isNavigating.current = true
         setDate(prev => {
             let newDate
             if (recordType === 'weekly') {
@@ -147,6 +156,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     }, [recordType, updateURL])
 
     const handleTodayMonth = useCallback(() => {
+        isNavigating.current = true
         const today = dayjs().toDate()
         setDate(today)
         updateURL(recordType, today)
@@ -156,8 +166,14 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
         setSearchTerm(term)
     }, [])
 
-    // URL 파라미터 변경 시 상태 업데이트
+    // URL 파라미터 변경 시 상태 업데이트 (외부에서 URL이 변경된 경우만)
     useEffect(() => {
+        // 네비게이션 버튼으로 변경 중이면 스킵 (중복 상태 업데이트 방지)
+        if (isNavigating.current) {
+            isNavigating.current = false
+            return
+        }
+        
         const urlView = searchParams.get('view') as CalendarViewType
         const urlDateString = searchParams.get('date')
         
@@ -167,11 +183,16 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
         
         if (urlDateString) {
             const newDate = dayjs(urlDateString).toDate()
-            if (newDate.getTime() !== date.getTime()) {
+            // 날짜를 일 단위로 비교 (밀리초 차이 무시)
+            const isSameDate = dayjs(newDate).isSame(dayjs(date), 'day')
+            if (!isSameDate) {
                 setDate(newDate)
             }
         }
-    }, [searchParams, recordType, date])
+    // recordType과 date는 의도적으로 의존성에서 제외 (무한 루프 방지)
+    // searchParams 변경 시에만 동기화
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams])
 
     // 초기 로딩 시 URL 파라미터 설정
     useEffect(() => {
