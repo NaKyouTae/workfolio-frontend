@@ -1,12 +1,13 @@
-import { Company, Certifications, Degrees, Education, Worker, JobSearch, JobSearchCompany, Interview, JobSearchCompany_Status, Interview_Type } from '@/generated/common'
+import { Company, Certifications, Degrees, Education, Worker, JobSearch, JobSearchCompany, Interview, JobSearchCompany_Status, Interview_Type, RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common'
 import dayjs from 'dayjs'
 
-export const createSampleRecordGroups = () => {
+export const createSampleRecordGroups = (): RecordGroup[] => {
     return [
         {
             id: '1',
             title: '업무',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'work',
             color: '#ffc107',
             priority: 1,
@@ -16,7 +17,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '2',
             title: '프로젝트',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'project',
             color: '#fd7e14',
             priority: 2,
@@ -26,7 +28,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '3',
             title: '출장',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'business-trip',
             color: '#ffc107',
             priority: 3,
@@ -36,7 +39,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '4',
             title: '개인 일정',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'personal',
             color: '#28a745',
             priority: 4,
@@ -46,7 +50,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '5',
             title: '독서 토론 동호회',
-            isPublic: true,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'book-club',
             color: '#007bff',
             priority: 5,
@@ -56,7 +61,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '6',
             title: '워크폴리오 사이드 프로젝트',
-            isPublic: true,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'workfolio-side',
             color: '#17a2b8',
             priority: 6,
