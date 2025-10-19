@@ -8,9 +8,7 @@ import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import RecordCreateModal from '../../modal/RecordCreateModal'
 import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
-import { useRecords } from '@/hooks/useRecords'
 import { isRecordType } from '@/utils/calendarUtils'
-import { CalendarDay } from '@/models/CalendarTypes'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -18,8 +16,17 @@ dayjs.tz.setDefault('Asia/Seoul')
 
 interface WeeklyCalendarProps {
     initialDate: Date
+    records: Record[]
     allRecordGroups: RecordGroup[]
     editableRecordGroups: RecordGroup[]
+}
+
+interface WeeklyCalendarDay {
+    date: Date
+    dayOfWeek: number
+    displayDate: string
+    displayDay: string
+    isToday: boolean
 }
 
 interface WeeklyEvent {
@@ -34,34 +41,12 @@ interface WeeklyEvent {
 
 const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({ 
     initialDate,
+    records,
     allRecordGroups,
     editableRecordGroups
 }) => {
-    // 렌더링 횟수 체크를 위한 ref
-    const renderCountRef = useRef(0)
-    const navigationCountRef = useRef(0)
-    const lastNavigationTimeRef = useRef<number>(0)
-    
-    // 렌더링 횟수 증가
-    renderCountRef.current += 1
-    
-    // 렌더링 로그 출력 (디버깅용 - 프로덕션에서는 제거)
-    // useEffect(() => {
-    //     // 개발 환경에서만 로그 출력
-    //     if (process.env.NODE_ENV === 'development') {
-    //         console.log(`🔄 WeeklyCalendar 렌더링 #${renderCountRef.current}`)
-    //         console.log(`📅 현재 주간: ${dayjs(initialDate).format('YYYY-MM-DD')} ~ ${dayjs(initialDate).endOf('week').format('YYYY-MM-DD')}`)
-    //         console.log(`📊 Records 개수: ${records.length}`)
-            
-    //         // 네비게이션 후 렌더링 체크
-    //         if (navigationCountRef.current > 0) {
-    //             const timeSinceNavigation = Date.now() - lastNavigationTimeRef.current
-    //             console.log(`📊 네비게이션 후 렌더링: ${renderCountRef.current}회 (${timeSinceNavigation}ms 후)`)
-    //         }
-    //     }
-    // })
-    // 주간 날짜 생성 (일요일부터 토요일까지)
-    const getWeekDays = (date: Date) => {
+    // 주간 날짜 생성 (일요일부터 토요일까지) - useCallback으로 메모이제이션
+    const getWeekDays = useCallback((date: Date): WeeklyCalendarDay[] => {
         const startOfWeek = dayjs(date).startOf('week')
         return Array.from({ length: 7 }, (_, i) => {
             const day = startOfWeek.add(i, 'day')
@@ -73,7 +58,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                 isToday: day.isSame(dayjs(), 'day')
             }
         })
-    }
+    }, [])
 
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -81,37 +66,14 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left?: number, right?: number, width: number} | null>(null)
     const [currentTime, setCurrentTime] = useState(dayjs().toDate())
-    const [weekDays, setWeekDays] = useState(() => getWeekDays(initialDate))
     const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
     
-    // 렌더링 횟수 추적 (이미 위에서 정의됨)
+    const weeklyGridRef = useRef<HTMLDivElement>(null)
+
+    const { triggerRecordRefresh } = useRecordGroupStore()
     
-    // initialDate가 변경될 때 weekDays 업데이트
-    useEffect(() => {
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`📅 initialDate 변경 감지: ${dayjs(initialDate).format('YYYY-MM-DD')}`)
-        }
-        setWeekDays(getWeekDays(initialDate))
-    }, [initialDate])
-    
-    // 네비게이션 함수들 (렌더링 체크용) - 주석 처리
-    // const handlePreviousWeek = useCallback(() => {
-    //     console.log(`⬅️ 이전 주 클릭 - 렌더링 #${renderCountRef.current}`)
-    //     navigationCountRef.current += 1
-    //     lastNavigationTimeRef.current = Date.now()
-    // }, [])
-    
-    // const handleNextWeek = useCallback(() => {
-    //     console.log(`➡️ 다음 주 클릭 - 렌더링 #${renderCountRef.current}`)
-    //     navigationCountRef.current += 1
-    //     lastNavigationTimeRef.current = Date.now()
-    // }, [])
-    
-    // const handleToday = useCallback(() => {
-    //     console.log(`📅 오늘 클릭 - 렌더링 #${renderCountRef.current}`)
-    //     navigationCountRef.current += 1
-    //     lastNavigationTimeRef.current = Date.now()
-    // }, [])
+    // weekDays를 useMemo로 메모이제이션
+    const weekDays = useMemo(() => getWeekDays(initialDate), [initialDate, getWeekDays])
     
     // 현재 시간 업데이트 (1분마다)
     useEffect(() => {
@@ -123,16 +85,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
         
         return () => clearInterval(interval)
     }, [])
-    
-    const weeklyGridRef = useRef<HTMLDivElement>(null)
-
-    const { triggerRecordRefresh } = useRecordGroupStore()
-    
-    // useRecords 훅 사용 (렌더링 체크 포함)
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`🔍 useRecords 호출 - initialDate: ${dayjs(initialDate).format('YYYY-MM-DD')}`)
-    }
-    const { records } = useRecords('weekly', undefined, undefined, initialDate)
     
     // 모달 위치 계산 공통 함수
     const calculateModalPosition = (element: HTMLElement) => {
@@ -209,23 +161,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
         }
     }
     
-    // initialDate 기준으로 현재 주 데이터만 추출
-    const currentWeekStart = dayjs(initialDate).startOf('week')
-    const currentWeekDays = Array.from({ length: 7 }, (_, i) => {
-        const day = currentWeekStart.add(i, 'day')
-        return {
-            id: `day-${i}`,
-            day: day.date(),
-            isCurrentMonth: day.month() === initialDate.getMonth(),
-            date: day.toDate()
-        }
-    })
-    
-    // weeks에 현재 주 데이터만 넣기
-    const weeks: (CalendarDay & { date: Date } | null)[][] = [currentWeekDays]
+    // weeks에 현재 주 데이터만 넣기 (useMemo로 메모이제이션된 weekDays 사용)
+    const weeks: (WeeklyCalendarDay | null)[][] = [weekDays]
 
     // renderRecords 함수 - MonthlyCalendar 스타일
-    const renderRecords = (week: (CalendarDay & { date: Date } | null)[]) => {
+    const renderRecords = (week: (WeeklyCalendarDay | null)[]) => {
         // 현재 주의 모든 일정을 수집
         const weekRecords: Array<{
             record: Record;

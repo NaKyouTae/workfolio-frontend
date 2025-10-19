@@ -33,7 +33,7 @@ interface ListCalendarProps {
     editableRecordGroups: RecordGroup[]
 }
 
-const ListCalendar: React.FC<ListCalendarProps> = ({ 
+const ListCalendar: React.FC<ListCalendarProps> = React.memo(({ 
     initialDate,
     records,
     allRecordGroups,
@@ -354,6 +354,8 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
             />
         </>
     )
-}
+});
+
+ListCalendar.displayName = 'ListCalendar';
 
 export default ListCalendar

@@ -64,8 +64,13 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
         return ownedRecordGroups
     }, [ownedRecordGroups])
     
-    // records hook 사용
-    const { records, refreshRecords } = useRecords(recordType, date.getMonth() + 1, date.getFullYear())
+    // records hook 사용 - recordType에 따라 적절한 파라미터 전달
+    const { records, refreshRecords } = useRecords(
+        recordType, 
+        recordType === 'monthly' || recordType === 'list' ? date.getMonth() + 1 : undefined,
+        recordType === 'monthly' || recordType === 'list' ? date.getFullYear() : undefined,
+        recordType === 'weekly' ? date : undefined
+    )
 
     // URL 업데이트를 위한 상태
     const [pendingURLUpdate, setPendingURLUpdate] = useState<{view: CalendarViewType, date: Date} | null>(null)
@@ -208,6 +213,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                     <MonthlyCalendar
                         key={`monthly-${date.getTime()}`}
                         initialDate={date}
+                        records={filteredRecords}
                         allRecordGroups={allRecordGroups}
                         editableRecordGroups={editableRecordGroups}
                     />
@@ -215,6 +221,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                     <WeeklyCalendar
                         key={`weekly-${date.getTime()}`}
                         initialDate={date}
+                        records={filteredRecords}
                         allRecordGroups={allRecordGroups}
                         editableRecordGroups={editableRecordGroups}
                     />

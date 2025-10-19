@@ -9,7 +9,6 @@ import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import RecordDetail from '../../modal/RecordDetail'
 import RecordCreateModal from '../../modal/RecordCreateModal'
 import MonthlyCalendarItem from './MonthlyCalendarItem'
-import { useRecords } from '@/hooks/useRecords'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import HttpMethod from '@/enums/HttpMethod'
 
@@ -19,6 +18,7 @@ dayjs.tz.setDefault('Asia/Seoul')
 
 interface MonthlyCalendarProps {
     initialDate: Date
+    records: Record[]
     allRecordGroups: RecordGroup[]
     editableRecordGroups: RecordGroup[]
 }
@@ -28,6 +28,7 @@ interface MonthlyCalendarProps {
  */
 const MonthlyCalendar = React.memo(function MonthlyCalendar({ 
     initialDate, 
+    records,
     allRecordGroups, 
     editableRecordGroups 
 }: MonthlyCalendarProps) {
@@ -52,7 +53,6 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
 
     // 커스텀 훅 사용
     const calendarDays = useCalendarDays(date)
-    const { records } = useRecords('monthly', date.month + 1, date.year)
     const { triggerRecordRefresh } = useRecordGroupStore()
 
     // 빈 record 영역 클릭 핸들러 - useCallback으로 최적화

@@ -46,25 +46,30 @@ export const useRecordGroups = () => {
                 return;
             }
 
-            // 소유한 레코드 그룹 조회
-            const ownedRes = await fetch('/api/record-groups/owned', { 
-                method: HttpMethod.GET 
-            });
+            // 🔥 모든 데이터를 가져올 때까지 병렬로 fetch
+            const [ownedRes, sharedRes] = await Promise.all([
+                fetch('/api/record-groups/owned', { method: HttpMethod.GET }),
+                fetch('/api/record-groups/shared', { method: HttpMethod.GET })
+            ]);
+            
             const ownedData = await ownedRes.json();
-            const ownedGroups = ownedData.groups || [];
-            setOwnedRecordGroups(ownedGroups);
-
-            // 공유받은 레코드 그룹 조회
-            const sharedRes = await fetch('/api/record-groups/shared', { 
-                method: HttpMethod.GET 
-            });
             const sharedData = await sharedRes.json();
+            
+            const ownedGroups = ownedData.groups || [];
             const sharedGroups = sharedData.groups || [];
-            setSharedRecordGroups(sharedGroups);
 
-            // 소유한 그룹들을 기본적으로 체크된 상태로 초기화
-            const groupIds = ownedGroups.map((group: RecordGroup) => group.id);
-            initializeGroups(groupIds);
+            // 소유한 그룹 + 공유받은 그룹 모두 기본적으로 체크된 상태로 초기화
+            const allGroupIds = [
+                ...ownedGroups.map((group: RecordGroup) => group.id),
+                ...sharedGroups.map((group: RecordGroup) => group.id)
+            ];
+            
+            // 🔥 체크 상태를 먼저 설정한 후 데이터 설정
+            // 이렇게 하면 setOwnedRecordGroups/setSharedRecordGroups에서
+            // 자동으로 체크에 추가되지 않음 (이미 체크되어 있으므로)
+            initializeGroups(allGroupIds);
+            setOwnedRecordGroups(ownedGroups);
+            setSharedRecordGroups(sharedGroups);
         } catch (error) {
             console.error('Error fetching record groups:', error);
         } finally {
