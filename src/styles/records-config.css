@@ -20,15 +20,7 @@
     font-weight: 700;
     color: #333;
     margin: 0;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+    width: 300px;
 }
 
 .close-btn:hover {

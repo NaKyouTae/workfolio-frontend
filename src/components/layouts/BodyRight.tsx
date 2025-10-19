@@ -1,4 +1,4 @@
-import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect} from 'react'
+import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect, useRef} from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import ListCalendar from '@/components/features/calendar/list/ListCalendar'
 import CalendarHeader from '@/components/features/calendar/CalendarHeader'
@@ -7,6 +7,9 @@ import { useRecords } from '@/hooks/useRecords'
 import MonthlyCalendar from '@/components/features/calendar/monthly/MonthlyCalendar'
 import WeeklyCalendar from '@/components/features/calendar/weekly/WeeklyCalendar'
 import { CalendarViewType } from '@/models/CalendarTypes'
+import { useSystemConfigStore } from '@/store/systemConfigStore'
+import { SystemConfig_SystemConfigType } from '@/generated/common'
+import { parseCalendarViewType } from '@/utils/commonUtils'
 
 export interface BodyRightRef {
     refreshRecords: () => void;
@@ -16,13 +19,23 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     const searchParams = useSearchParams()
     const router = useRouter()
     
+    // 시스템 설정 store에서 가져오기 (이미 Contents에서 로드됨)
+    const { getSystemConfig } = useSystemConfigStore();
+    const systemConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
+    
     // URL에서 초기 상태 읽기
-    const urlView = searchParams.get('view') as CalendarViewType || 'monthly'
+    const urlView = searchParams.get('view') as CalendarViewType | null
     const urlDate = searchParams.get('date') ? new Date(searchParams.get('date')!) : new Date()
     
-    const [recordType, setRecordType] = useState<CalendarViewType>(urlView)
+    // urlView가 있으면 사용, 없으면 systemConfig 사용, 그것도 없으면 'monthly'
+    const initialRecordType: CalendarViewType = urlView || parseCalendarViewType(systemConfig?.value, 'monthly')
+
+    const [recordType, setRecordType] = useState<CalendarViewType>(initialRecordType)
     const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(urlDate)
+    
+    // 초기 URL 설정 여부 추적
+    const isInitialURLSet = useRef(false)
     
     // store에서 체크된 RecordGroup 정보 가져오기
     const { getCheckedRecordGroups } = useRecordGroupStore()
@@ -128,6 +141,23 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
             }
         }
     }, [searchParams, recordType, date])
+
+    // 초기 로딩 시 URL 파라미터 설정
+    useEffect(() => {
+        // 이미 초기 URL을 설정했으면 스킵
+        if (isInitialURLSet.current) return
+        
+        const urlView = searchParams.get('view')
+        const urlDate = searchParams.get('date')
+        
+        // URL에 view나 date가 없으면 초기값으로 설정
+        if (!urlView || !urlDate) {
+            updateURL(recordType, date)
+            isInitialURLSet.current = true
+        } else {
+            isInitialURLSet.current = true
+        }
+    }, [searchParams, recordType, date, updateURL])
 
     // 검색 필터링된 레코드
     const filteredRecords = Array.isArray(records) ? records : []

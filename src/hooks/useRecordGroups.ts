@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { createSampleRecordGroups } from '@/utils/sampleData';
 import HttpMethod from '@/enums/HttpMethod';
+import { RecordGroupDetailResponse } from '@/generated/record_group';
 
 export const useRecordGroups = () => {
     const { 
@@ -27,9 +28,9 @@ export const useRecordGroups = () => {
             
             if (!accessToken) {
                 const sampleRecordGroups = createSampleRecordGroups();
-                setOwnedRecordGroups(sampleRecordGroups);
+                setOwnedRecordGroups(sampleRecordGroups as RecordGroup[]);
                 setSharedRecordGroups([]);
-                initializeGroups(sampleRecordGroups.map((group: RecordGroup) => group.id));
+                initializeGroups(sampleRecordGroups.map((group: { id: string; title: string; isPublic: boolean; publicId: string; color: string; priority: number; createdAt: number; updatedAt: number; }) => group.id));
                 return;
             }
 
@@ -59,19 +60,43 @@ export const useRecordGroups = () => {
         }
     }, [setOwnedRecordGroups, setSharedRecordGroups, initializeGroups]);
 
+    // 레코드 그룹 상세 정보 조회 함수 (공유된 워커 목록 포함)
+    const fetchRecordGroupDetails = useCallback(async (recordGroupId: string) => {
+        try {
+            const response = await fetch(`/api/record-groups/details/${recordGroupId}`, {
+                method: HttpMethod.GET
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data as RecordGroupDetailResponse;
+            } else {
+                console.error('Failed to fetch record group details');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching record group details:', error);
+            return null;
+        }
+    }, []);
+
     // 초기 로드
     useEffect(() => {
         fetchRecordGroups();
     }, [fetchRecordGroups]);
 
-    // ownedRecordGroups와 sharedRecordGroups를 통합
-    const allRecordGroups = [...ownedRecordGroups, ...sharedRecordGroups];
+    // ownedRecordGroups와 sharedRecordGroups를 통합 (메모이제이션)
+    const allRecordGroups = useMemo(
+        () => [...ownedRecordGroups, ...sharedRecordGroups],
+        [ownedRecordGroups, sharedRecordGroups]
+    );
 
     return {
         ownedRecordGroups,
         sharedRecordGroups,
         allRecordGroups,
         isLoading,
-        refreshRecordGroups: fetchRecordGroups
+        refreshRecordGroups: fetchRecordGroups,
+        fetchRecordGroupDetails
     };
 };

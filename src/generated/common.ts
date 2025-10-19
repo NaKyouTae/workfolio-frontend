@@ -412,6 +412,48 @@ export function interview_TypeToJSON(object: Interview_Type): string {
   }
 }
 
+export interface SystemConfig {
+  id: string;
+  type: SystemConfig_SystemConfigType;
+  value: string;
+  worker?: Worker | undefined;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export enum SystemConfig_SystemConfigType {
+  UNKNOWN = 0,
+  DEFAULT_RECORD_TYPE = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function systemConfig_SystemConfigTypeFromJSON(object: any): SystemConfig_SystemConfigType {
+  switch (object) {
+    case 0:
+    case "UNKNOWN":
+      return SystemConfig_SystemConfigType.UNKNOWN;
+    case 1:
+    case "DEFAULT_RECORD_TYPE":
+      return SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SystemConfig_SystemConfigType.UNRECOGNIZED;
+  }
+}
+
+export function systemConfig_SystemConfigTypeToJSON(object: SystemConfig_SystemConfigType): string {
+  switch (object) {
+    case SystemConfig_SystemConfigType.UNKNOWN:
+      return "UNKNOWN";
+    case SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE:
+      return "DEFAULT_RECORD_TYPE";
+    case SystemConfig_SystemConfigType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 function createBaseWorker(): Worker {
   return { id: "", name: "", nickName: "", createdAt: 0, updatedAt: 0 };
 }
@@ -3114,6 +3156,148 @@ export const Interview: MessageFns<Interview> = {
     message.memo = object.memo ?? undefined;
     message.jobSearchCompany = (object.jobSearchCompany !== undefined && object.jobSearchCompany !== null)
       ? JobSearchCompany.fromPartial(object.jobSearchCompany)
+      : undefined;
+    message.createdAt = object.createdAt ?? 0;
+    message.updatedAt = object.updatedAt ?? 0;
+    return message;
+  },
+};
+
+function createBaseSystemConfig(): SystemConfig {
+  return { id: "", type: 0, value: "", worker: undefined, createdAt: 0, updatedAt: 0 };
+}
+
+export const SystemConfig: MessageFns<SystemConfig> = {
+  encode(message: SystemConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.type !== 0) {
+      writer.uint32(16).int32(message.type);
+    }
+    if (message.value !== "") {
+      writer.uint32(26).string(message.value);
+    }
+    if (message.worker !== undefined) {
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(784).uint64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(792).uint64(message.updatedAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SystemConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSystemConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = reader.int32() as any;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.worker = Worker.decode(reader, reader.uint32());
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
+            break;
+          }
+
+          message.createdAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
+            break;
+          }
+
+          message.updatedAt = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SystemConfig {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      type: isSet(object.type) ? systemConfig_SystemConfigTypeFromJSON(object.type) : 0,
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+      worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
+    };
+  },
+
+  toJSON(message: SystemConfig): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.type !== 0) {
+      obj.type = systemConfig_SystemConfigTypeToJSON(message.type);
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    if (message.worker !== undefined) {
+      obj.worker = Worker.toJSON(message.worker);
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SystemConfig>, I>>(base?: I): SystemConfig {
+    return SystemConfig.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SystemConfig>, I>>(object: I): SystemConfig {
+    const message = createBaseSystemConfig();
+    message.id = object.id ?? "";
+    message.type = object.type ?? 0;
+    message.value = object.value ?? "";
+    message.worker = (object.worker !== undefined && object.worker !== null)
+      ? Worker.fromPartial(object.worker)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
