@@ -8,7 +8,7 @@ import MonthlyCalendar from '@/components/features/calendar/monthly/MonthlyCalen
 import WeeklyCalendar from '@/components/features/calendar/weekly/WeeklyCalendar'
 import { CalendarViewType } from '@/models/CalendarTypes'
 import { useSystemConfigStore } from '@/store/systemConfigStore'
-import { RecordGroup, SystemConfig_SystemConfigType } from '@/generated/common'
+import { RecordGroup, SystemConfig_SystemConfigType, Company } from '@/generated/common'
 import { parseCalendarViewType } from '@/utils/commonUtils'
 import { RecordGroupDetailResponse } from '@/generated/record_group'
 import dayjs from 'dayjs'
@@ -26,9 +26,14 @@ interface BodyRightProps {
         refreshRecordGroups: () => void;
         fetchRecordGroupDetails: (recordGroupId: string) => Promise<RecordGroupDetailResponse | null>;
     };
+    companiesData: {
+        companies: Company[];
+        isLoading: boolean;
+        refreshCompanies: () => void;
+    };
 }
 
-const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGroupsData }, ref) => {
+const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGroupsData, companiesData }, ref) => {
     const searchParams = useSearchParams()
     
     // 시스템 설정 store에서 가져오기 (이미 Contents에서 로드됨)
@@ -237,6 +242,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                         records={filteredRecords}
                         allRecordGroups={allRecordGroups}
                         editableRecordGroups={editableRecordGroups}
+                        companiesData={companiesData}
                     />
                 ) : recordType === 'weekly' ? (
                     <WeeklyCalendar
@@ -245,6 +251,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                         records={filteredRecords}
                         allRecordGroups={allRecordGroups}
                         editableRecordGroups={editableRecordGroups}
+                        companiesData={companiesData}
                     />
                 ) : (
                     <ListCalendar
@@ -254,6 +261,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                         recordGroups={checkedRecordGroups}
                         allRecordGroups={allRecordGroups}
                         editableRecordGroups={editableRecordGroups}
+                        companiesData={companiesData}
                     />
                 )}
             </div>

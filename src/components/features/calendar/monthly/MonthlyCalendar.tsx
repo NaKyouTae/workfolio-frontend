@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { createDateModel, DateModel } from "@/models/DateModel"
-import { Record, RecordGroup } from '@/generated/common'
+import { Record, RecordGroup, Company } from '@/generated/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import { useCalendarDays } from '@/hooks/useCalendar'
@@ -21,6 +21,11 @@ interface MonthlyCalendarProps {
     records: Record[]
     allRecordGroups: RecordGroup[]
     editableRecordGroups: RecordGroup[]
+    companiesData: {
+        companies: Company[]
+        isLoading: boolean
+        refreshCompanies: () => void
+    }
 }
 
 /**
@@ -30,7 +35,8 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
     initialDate, 
     records,
     allRecordGroups, 
-    editableRecordGroups 
+    editableRecordGroups,
+    companiesData
 }: MonthlyCalendarProps) {
     const [date, setDate] = useState<DateModel>(() => {
         const d = new Date(initialDate)
@@ -596,6 +602,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
                 allRecordGroups={allRecordGroups}
+                companiesData={companiesData}
             />
 
             {/* RecordCreateModal */}
@@ -604,6 +611,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDateForCreate}
                 editableRecordGroups={editableRecordGroups}
+                companiesData={companiesData}
             />
         </>
     )

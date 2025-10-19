@@ -3,10 +3,9 @@ import HttpMethod from "@/enums/HttpMethod"
 import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
-import {RecordGroup} from "@/generated/common"
+import {RecordGroup, Company} from "@/generated/common"
 import { RecordCreateRequest } from '@/generated/record'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
-import { useCompanies } from '@/hooks/useCompanies'
 import dayjs from 'dayjs'
 
 interface ModalProps {
@@ -14,13 +13,19 @@ interface ModalProps {
     onClose: () => void;
     selectedDate?: string | null;
     editableRecordGroups: RecordGroup[];
+    companiesData: {
+        companies: Company[];
+        isLoading: boolean;
+        refreshCompanies: () => void;
+    };
 }
 
 const RecordCreateModal: React.FC<ModalProps> = ({ 
     isOpen, 
     onClose, 
     selectedDate, 
-    editableRecordGroups 
+    editableRecordGroups,
+    companiesData
 }) => {
     const [recordGroupId, setRecordGroupId] = useState<string | null>(null);
     const [title, setTitle] = useState<string | null>(null);
@@ -34,8 +39,8 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
     
-    // companies hook 사용
-    const { companies, refreshCompanies } = useCompanies();
+    // props로 받은 companiesData 사용
+    const { companies, refreshCompanies } = companiesData;
     
     // record groups를 dropdown options로 변환
     const dropdownOptions: IDropdown[] = useMemo(() => 
