@@ -1,17 +1,21 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Company } from '@/generated/common'
-import { useUser } from './useUser'
 import { createSampleCompanies } from '@/utils/sampleData'
 
 export function useCompanies() {
     const [companies, setCompanies] = useState<Company[]>([])
     const [isLoading, setIsLoading] = useState(false)
-    const { user } = useUser()
 
     const fetchCompanies = useCallback(async () => {
         setIsLoading(true)
         try {
-            if (!user) {
+            // 토큰 확인 (useUser 대신 직접 확인하여 불필요한 의존성 제거)
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
                 // 로그인하지 않은 경우 샘플 데이터 사용
                 const sampleCompanies = createSampleCompanies()
                 setCompanies(sampleCompanies)
@@ -42,19 +46,22 @@ export function useCompanies() {
         } finally {
             setIsLoading(false)
         }
-    }, [user])
+    }, [])
 
+    // 초기 로드 (한 번만 실행)
     useEffect(() => {
         fetchCompanies()
-    }, [fetchCompanies])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []) // 의도적으로 빈 배열 - 마운트 시 한 번만 실행
 
     const refreshCompanies = useCallback(() => {
         fetchCompanies()
     }, [fetchCompanies])
 
-    return {
+    // 반환 객체를 메모이제이션하여 불필요한 리렌더링 방지
+    return useMemo(() => ({
         companies,
         isLoading,
         refreshCompanies
-    }
+    }), [companies, isLoading, refreshCompanies])
 }

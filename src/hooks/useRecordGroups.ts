@@ -110,7 +110,7 @@ export const useRecordGroups = () => {
     }, [ownedRecordGroups, sharedRecordGroups]);
 
     // 🔥 반환 객체를 메모이제이션하여 불필요한 리렌더링 방지
-    // 함수들은 useCallback으로 안정적이므로 포함
+    // 함수들은 useCallback으로 안정적이므로 의존성에 포함
     return useMemo(() => ({
         ownedRecordGroups,
         sharedRecordGroups,
@@ -118,6 +118,5 @@ export const useRecordGroups = () => {
         isLoading,
         refreshRecordGroups: fetchRecordGroups,
         fetchRecordGroupDetails
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [ownedRecordGroups, sharedRecordGroups, allRecordGroups, isLoading]);
+    }), [ownedRecordGroups, sharedRecordGroups, allRecordGroups, isLoading, fetchRecordGroups, fetchRecordGroupDetails]);
 };
