@@ -88,7 +88,6 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
                     <RecordGroups 
                         key="owned-record-groups"
                         recordGroups={recordGroups} 
-                        onUpdateRecordGroups={onRefresh}
                         onRefresh={onRefresh}
                     />
                 </ul>

@@ -1,36 +1,31 @@
-import React, { useRef } from 'react';
+import React, { useCallback } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { RecordGroupUpdateRequest } from '@/generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import RecordGroupItem from './RecordGroupItem';
+import { useShallow } from 'zustand/react/shallow';
 
 interface RecordGroupsProps {
     recordGroups: RecordGroup[];
-    onUpdateRecordGroups: (updatedGroups: RecordGroup[]) => void;
     onRefresh: () => void;
 }
 
-const RecordGroups = ({ 
+const RecordGroups = React.memo(({ 
     recordGroups, 
-    onUpdateRecordGroups,
     onRefresh,
 }: RecordGroupsProps) => {
-    const { checkedGroups, toggleGroup, triggerRecordRefresh } = useRecordGroupStore();
+    // Zustand 한 번에 구독
+    const { checkedGroups, toggleGroup, triggerRecordRefresh } = useRecordGroupStore(
+        useShallow((state) => ({
+            checkedGroups: state.checkedGroups,
+            toggleGroup: state.toggleGroup,
+            triggerRecordRefresh: state.triggerRecordRefresh,
+        }))
+    );
 
-    // 🔍 디버깅: RecordGroups 렌더링 횟수 추적
-    const renderCount = useRef(0);
-    renderCount.current += 1;
-
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`🟡 RecordGroups 렌더링 #${renderCount.current}`, {
-            recordGroupsCount: recordGroups.length,
-            timestamp: new Date().toISOString()
-        });
-    }
-
-    const updateRecordGroup = async (id: string, title: string) => {
+    const updateRecordGroup = useCallback(async (id: string, title: string) => {
         try {
             // 토큰이 없으면 로그인 페이지로 리다이렉트
             const accessToken = document.cookie
@@ -75,10 +70,8 @@ const RecordGroups = ({
             }
 
             if (response.ok) {
-                const updatedGroups = recordGroups.map(group => 
-                    group.id === id ? { ...group, title } : group
-                );
-                onUpdateRecordGroups(updatedGroups);
+                // 서버 업데이트 성공 시 전체 데이터 새로고침
+                onRefresh();
                 // record 재조회 트리거
                 triggerRecordRefresh();
             } else {
@@ -87,9 +80,9 @@ const RecordGroups = ({
         } catch (error) {
             console.error('Error updating group:', error);
         }
-    };
+    }, [recordGroups, onRefresh, triggerRecordRefresh]);
 
-    const updateRecordGroupColor = async (id: string, color: string) => {
+    const updateRecordGroupColor = useCallback(async (id: string, color: string) => {
         try {
             // 토큰이 없으면 로그인 페이지로 리다이렉트
             const accessToken = document.cookie
@@ -134,10 +127,8 @@ const RecordGroups = ({
             }
 
             if (response.ok) {
-                const updatedGroups = recordGroups.map(group => 
-                    group.id === id ? { ...group, color } : group
-                );
-                onUpdateRecordGroups(updatedGroups);
+                // 서버 업데이트 성공 시 전체 데이터 새로고침
+                onRefresh();
                 // record 재조회 트리거 (color 변경 시 record에도 반영)
                 triggerRecordRefresh();
             } else {
@@ -146,9 +137,9 @@ const RecordGroups = ({
         } catch (error) {
             console.error('Error updating group color:', error);
         }
-    };
+    }, [recordGroups, onRefresh, triggerRecordRefresh]);
 
-    const deleteRecordGroup = async (id: string) => {
+    const deleteRecordGroup = useCallback(async (id: string) => {
         try {
             // 토큰이 없으면 로그인 페이지로 리다이렉트
             const accessToken = document.cookie
@@ -179,7 +170,7 @@ const RecordGroups = ({
         } catch (error) {
             console.error('Error deleting group:', error);
         }
-    };
+    }, [onRefresh]);
 
     return (
         <>
@@ -196,6 +187,8 @@ const RecordGroups = ({
             ))}
         </>
     );
-};
+});
+
+RecordGroups.displayName = 'RecordGroups';
 
 export default RecordGroups;

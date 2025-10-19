@@ -86,7 +86,6 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = React.memo(({
                     )}
                     <RecordGroups 
                         recordGroups={recordGroups} 
-                        onUpdateRecordGroups={onRefresh}
                         onRefresh={onRefresh}
                     />
                 </ul>
