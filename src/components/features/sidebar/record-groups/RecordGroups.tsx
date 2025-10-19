@@ -16,7 +16,7 @@ const RecordGroups = ({
     recordGroups, 
     onUpdateRecordGroups,
 }: RecordGroupsProps) => {
-    const { checkedGroups, toggleGroup } = useRecordGroupStore();
+    const { checkedGroups, toggleGroup, triggerRecordRefresh } = useRecordGroupStore();
     const { refreshRecordGroups } = useRecordGroups();
 
     const updateRecordGroup = async (id: string, title: string) => {
@@ -68,6 +68,8 @@ const RecordGroups = ({
                     group.id === id ? { ...group, title } : group
                 );
                 onUpdateRecordGroups(updatedGroups);
+                // record 재조회 트리거
+                triggerRecordRefresh();
             } else {
                 console.error('Failed to update group');
             }
@@ -125,6 +127,8 @@ const RecordGroups = ({
                     group.id === id ? { ...group, color } : group
                 );
                 onUpdateRecordGroups(updatedGroups);
+                // record 재조회 트리거 (color 변경 시 record에도 반영)
+                triggerRecordRefresh();
             } else {
                 console.error('Failed to update group color');
             }

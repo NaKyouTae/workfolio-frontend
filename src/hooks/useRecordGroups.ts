@@ -28,7 +28,7 @@ export const useRecordGroups = () => {
             
             if (!accessToken) {
                 const sampleRecordGroups = createSampleRecordGroups();
-                setOwnedRecordGroups(sampleRecordGroups as RecordGroup[]);
+                setOwnedRecordGroups(sampleRecordGroups);
                 setSharedRecordGroups([]);
                 initializeGroups(sampleRecordGroups.map((group: { id: string; title: string; isPublic: boolean; publicId: string; color: string; priority: number; createdAt: number; updatedAt: number; }) => group.id));
                 return;
