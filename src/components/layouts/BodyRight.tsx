@@ -1,4 +1,4 @@
-import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect, useRef} from 'react'
+import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect, useRef, useMemo} from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import ListCalendar from '@/components/features/calendar/list/ListCalendar'
 import CalendarHeader from '@/components/features/calendar/CalendarHeader'
@@ -8,15 +8,27 @@ import MonthlyCalendar from '@/components/features/calendar/monthly/MonthlyCalen
 import WeeklyCalendar from '@/components/features/calendar/weekly/WeeklyCalendar'
 import { CalendarViewType } from '@/models/CalendarTypes'
 import { useSystemConfigStore } from '@/store/systemConfigStore'
-import { SystemConfig_SystemConfigType } from '@/generated/common'
+import { RecordGroup, SystemConfig_SystemConfigType } from '@/generated/common'
 import { parseCalendarViewType } from '@/utils/commonUtils'
+import { RecordGroupDetailResponse } from '@/generated/record_group'
 import dayjs from 'dayjs'
 
 export interface BodyRightRef {
     refreshRecords: () => void;
 }
 
-const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
+interface BodyRightProps {
+    recordGroupsData: {
+        ownedRecordGroups: RecordGroup[];
+        sharedRecordGroups: RecordGroup[];
+        allRecordGroups: RecordGroup[];
+        isLoading: boolean;
+        refreshRecordGroups: () => void;
+        fetchRecordGroupDetails: (recordGroupId: string) => Promise<RecordGroupDetailResponse | null>;
+    };
+}
+
+const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGroupsData }, ref) => {
     const searchParams = useSearchParams()
     const router = useRouter()
     
@@ -42,6 +54,15 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     // store에서 체크된 RecordGroup 정보 가져오기
     const { getCheckedRecordGroups } = useRecordGroupStore()
     const checkedRecordGroups = getCheckedRecordGroups()
+    
+    // props로 받은 recordGroupsData 사용
+    const { allRecordGroups, ownedRecordGroups } = recordGroupsData
+    
+    // 편집 가능한 record groups (owned + 일부 shared)
+    const editableRecordGroups = useMemo(() => {
+        // 현재는 owned만 편집 가능
+        return ownedRecordGroups
+    }, [ownedRecordGroups])
     
     // records hook 사용
     const { records, refreshRecords } = useRecords(recordType, date.getMonth() + 1, date.getFullYear())
@@ -187,11 +208,15 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                     <MonthlyCalendar
                         key={`monthly-${date.getTime()}`}
                         initialDate={date}
+                        allRecordGroups={allRecordGroups}
+                        editableRecordGroups={editableRecordGroups}
                     />
                 ) : recordType === 'weekly' ? (
                     <WeeklyCalendar
                         key={`weekly-${date.getTime()}`}
                         initialDate={date}
+                        allRecordGroups={allRecordGroups}
+                        editableRecordGroups={editableRecordGroups}
                     />
                 ) : (
                     <ListCalendar
@@ -199,6 +224,8 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
                         initialDate={date} 
                         records={filteredRecords}
                         recordGroups={checkedRecordGroups}
+                        allRecordGroups={allRecordGroups}
+                        editableRecordGroups={editableRecordGroups}
                     />
                 )}
             </div>
@@ -206,6 +233,6 @@ const BodyRight = forwardRef<BodyRightRef>((props, ref) => {
     );
 });
 
-BodyRight.displayName = 'BodyRight';
+BodyRightComponent.displayName = 'BodyRightComponent';
 
-export default BodyRight;
+export default React.memo(BodyRightComponent);

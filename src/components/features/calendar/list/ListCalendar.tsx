@@ -29,11 +29,15 @@ interface ListCalendarProps {
     initialDate: Date
     records: Record[]
     recordGroups: RecordGroup[]
+    allRecordGroups: RecordGroup[]
+    editableRecordGroups: RecordGroup[]
 }
 
 const ListCalendar: React.FC<ListCalendarProps> = ({ 
     initialDate,
     records,
+    allRecordGroups,
+    editableRecordGroups,
 }) => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -338,6 +342,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 onClose={handleCloseUpdateModal}
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
+                allRecordGroups={allRecordGroups}
             />
 
             {/* RecordCreateModal */}
@@ -345,6 +350,7 @@ const ListCalendar: React.FC<ListCalendarProps> = ({
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDate}
+                editableRecordGroups={editableRecordGroups}
             />
         </>
     )

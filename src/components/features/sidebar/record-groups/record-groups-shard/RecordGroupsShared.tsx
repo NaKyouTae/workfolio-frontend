@@ -1,26 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import RecordGroupsSharedHeader from './RecordGroupsSharedHeader';
 import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
-import { useRecordGroups } from '@/hooks/useRecordGroups';
 import NewRecordGroupItem from '../NewRecordGroupItem';
-import { RecordGroup_RecordGroupType } from '@/generated/common';
+import { RecordGroup_RecordGroupType, RecordGroup } from '@/generated/common';
 
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;
+    recordGroups: RecordGroup[];
+    onRefresh: () => void;
 }
 
 const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
     defaultExpanded = true,
+    recordGroups,
+    onRefresh,
 }) => {
-    const { 
-        sharedRecordGroups, 
-        refreshRecordGroups 
-    } = useRecordGroups();
     
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+
+    // 🔍 디버깅: RecordGroupsShared 렌더링 횟수 추적
+    const renderCount = useRef(0);
+    renderCount.current += 1;
+
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`🟣 RecordGroupsShared 렌더링 #${renderCount.current}`, {
+            recordGroupsCount: recordGroups.length,
+            isGroupsExpanded,
+            isCreatingGroup,
+            timestamp: new Date().toISOString()
+        });
+    }
 
     const handleToggleGroups = () => {
         setIsGroupsExpanded(!isGroupsExpanded);
@@ -32,7 +44,7 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                 title: title,
                 color: color,
                 type: RecordGroup_RecordGroupType.SHARED,
-                priority: sharedRecordGroups.length + 1,
+                priority: recordGroups.length + 1,
             });
             
             const response = await fetch('/api/record-groups', {
@@ -52,7 +64,7 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                 setIsCreatingGroup(false);
                 
                 // 레코드 그룹 생성 성공 시 레코드 그룹 다시 조회
-                refreshRecordGroups();
+                onRefresh();
             } else {
                 console.error('Failed to create group');
             }
@@ -83,8 +95,9 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                         />
                     )}
                     <RecordGroups 
-                        recordGroups={sharedRecordGroups} 
-                        onUpdateRecordGroups={() => refreshRecordGroups()}
+                        recordGroups={recordGroups} 
+                        onUpdateRecordGroups={() => onRefresh()}
+                        onRefresh={onRefresh}
                     />
                 </ul>
             )}

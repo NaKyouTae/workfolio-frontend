@@ -12,6 +12,9 @@ interface RecordGroupState {
     // 레코드 새로고침을 위한 상태
     recordRefreshTrigger: number;
     
+    // 로딩 상태
+    isLoading: boolean;
+    
     // 액션들
     setOwnedRecordGroups: (groups: RecordGroup[]) => void;
     setSharedRecordGroups: (groups: RecordGroup[]) => void;
@@ -19,6 +22,7 @@ interface RecordGroupState {
     initializeGroups: (groupIds: string[]) => void;
     clearAllGroups: () => void;
     toggleAllGroups: () => void;
+    setIsLoading: (loading: boolean) => void;
     
     // 레코드 새로고침 액션
     triggerRecordRefresh: () => void;
@@ -35,13 +39,29 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     sharedRecordGroups: [],
     checkedGroups: new Set<string>(),
     recordRefreshTrigger: 0,
+    isLoading: false,
     
     // 액션들
     setOwnedRecordGroups: (groups: RecordGroup[]) => 
         set((state) => {
-            // 새로운 owned 그룹들을 자동으로 체크
+            // 데이터가 동일하면 업데이트하지 않음
+            if (state.ownedRecordGroups.length === groups.length &&
+                state.ownedRecordGroups.every((g, i) => g.id === groups[i]?.id)) {
+                return state;
+            }
+
+            // 새로운 그룹(기존에 없던 그룹)만 체크에 추가
+            const existingIds = new Set(state.ownedRecordGroups.map(g => g.id));
+            const newGroups = groups.filter(g => !existingIds.has(g.id));
+            
+            if (newGroups.length === 0) {
+                // 새로운 그룹이 없으면 checkedGroups는 변경하지 않음
+                return { ownedRecordGroups: groups };
+            }
+
             const newCheckedGroups = new Set(state.checkedGroups);
-            groups.forEach(group => newCheckedGroups.add(group.id));
+            newGroups.forEach(group => newCheckedGroups.add(group.id));
+            
             return { 
                 ownedRecordGroups: groups,
                 checkedGroups: newCheckedGroups
@@ -50,9 +70,24 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     
     setSharedRecordGroups: (groups: RecordGroup[]) => 
         set((state) => {
-            // 새로운 shared 그룹들을 자동으로 체크
+            // 데이터가 동일하면 업데이트하지 않음
+            if (state.sharedRecordGroups.length === groups.length &&
+                state.sharedRecordGroups.every((g, i) => g.id === groups[i]?.id)) {
+                return state;
+            }
+
+            // 새로운 그룹(기존에 없던 그룹)만 체크에 추가
+            const existingIds = new Set(state.sharedRecordGroups.map(g => g.id));
+            const newGroups = groups.filter(g => !existingIds.has(g.id));
+            
+            if (newGroups.length === 0) {
+                // 새로운 그룹이 없으면 checkedGroups는 변경하지 않음
+                return { sharedRecordGroups: groups };
+            }
+
             const newCheckedGroups = new Set(state.checkedGroups);
-            groups.forEach(group => newCheckedGroups.add(group.id));
+            newGroups.forEach(group => newCheckedGroups.add(group.id));
+            
             return { 
                 sharedRecordGroups: groups,
                 checkedGroups: newCheckedGroups
@@ -98,6 +133,10 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     // 레코드 새로고침 액션
     triggerRecordRefresh: () => 
         set((state) => ({ recordRefreshTrigger: state.recordRefreshTrigger + 1 })),
+    
+    // 로딩 상태 설정
+    setIsLoading: (loading: boolean) => 
+        set({ isLoading: loading }),
     
     // 계산된 값들
     getAllRecordGroups: () => {

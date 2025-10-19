@@ -1,23 +1,34 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { RecordGroupUpdateRequest } from '@/generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
-import { useRecordGroups } from '@/hooks/useRecordGroups';
 import RecordGroupItem from './RecordGroupItem';
 
 interface RecordGroupsProps {
     recordGroups: RecordGroup[];
     onUpdateRecordGroups: (updatedGroups: RecordGroup[]) => void;
+    onRefresh: () => void;
 }
 
 const RecordGroups = ({ 
     recordGroups, 
     onUpdateRecordGroups,
+    onRefresh,
 }: RecordGroupsProps) => {
     const { checkedGroups, toggleGroup, triggerRecordRefresh } = useRecordGroupStore();
-    const { refreshRecordGroups } = useRecordGroups();
+
+    // 🔍 디버깅: RecordGroups 렌더링 횟수 추적
+    const renderCount = useRef(0);
+    renderCount.current += 1;
+
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`🟡 RecordGroups 렌더링 #${renderCount.current}`, {
+            recordGroupsCount: recordGroups.length,
+            timestamp: new Date().toISOString()
+        });
+    }
 
     const updateRecordGroup = async (id: string, title: string) => {
         try {
@@ -161,7 +172,7 @@ const RecordGroups = ({
 
             if (response.ok) {
                 // 레코드 그룹 삭제 성공 시 레코드 그룹 다시 조회
-                refreshRecordGroups();
+                onRefresh();
             } else {
                 console.error('Failed to delete group');
             }

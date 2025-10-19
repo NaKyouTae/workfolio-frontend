@@ -1,20 +1,32 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { createSampleRecordGroups } from '@/utils/sampleData';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroupDetailResponse } from '@/generated/record_group';
+import { useShallow } from 'zustand/react/shallow';
 
 export const useRecordGroups = () => {
+    // Zustand의 선택적 구독 - useShallow로 한 번에 구독
     const { 
         ownedRecordGroups, 
         sharedRecordGroups, 
-        setOwnedRecordGroups, 
+        isLoading,
+        setOwnedRecordGroups,
         setSharedRecordGroups,
-        initializeGroups 
-    } = useRecordGroupStore();
-    
-    const [isLoading, setIsLoading] = useState(false);
+        setIsLoading,
+        initializeGroups
+    } = useRecordGroupStore(
+        useShallow((state) => ({
+            ownedRecordGroups: state.ownedRecordGroups,
+            sharedRecordGroups: state.sharedRecordGroups,
+            isLoading: state.isLoading,
+            setOwnedRecordGroups: state.setOwnedRecordGroups,
+            setSharedRecordGroups: state.setSharedRecordGroups,
+            setIsLoading: state.setIsLoading,
+            initializeGroups: state.initializeGroups,
+        }))
+    );
 
     // 레코드 그룹 조회 함수
     const fetchRecordGroups = useCallback(async () => {
@@ -58,7 +70,8 @@ export const useRecordGroups = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [setOwnedRecordGroups, setSharedRecordGroups, initializeGroups]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // 마운트 시 한 번만 실행 - Zustand store 함수들은 안정적
 
     // 레코드 그룹 상세 정보 조회 함수 (공유된 워커 목록 포함)
     const fetchRecordGroupDetails = useCallback(async (recordGroupId: string) => {
@@ -80,23 +93,26 @@ export const useRecordGroups = () => {
         }
     }, []);
 
-    // 초기 로드
+    // 초기 로드 (한 번만 실행)
     useEffect(() => {
         fetchRecordGroups();
-    }, [fetchRecordGroups]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // 의도적으로 빈 배열 - 마운트 시 한 번만 실행
 
     // ownedRecordGroups와 sharedRecordGroups를 통합 (메모이제이션)
-    const allRecordGroups = useMemo(
-        () => [...ownedRecordGroups, ...sharedRecordGroups],
-        [ownedRecordGroups, sharedRecordGroups]
-    );
+    const allRecordGroups = useMemo(() => {
+        return [...ownedRecordGroups, ...sharedRecordGroups];
+    }, [ownedRecordGroups, sharedRecordGroups]);
 
-    return {
+    // 🔥 반환 객체를 메모이제이션하여 불필요한 리렌더링 방지
+    // 함수들은 useCallback으로 안정적이므로 포함
+    return useMemo(() => ({
         ownedRecordGroups,
         sharedRecordGroups,
         allRecordGroups,
         isLoading,
         refreshRecordGroups: fetchRecordGroups,
         fetchRecordGroupDetails
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }), [ownedRecordGroups, sharedRecordGroups, allRecordGroups, isLoading]);
 };

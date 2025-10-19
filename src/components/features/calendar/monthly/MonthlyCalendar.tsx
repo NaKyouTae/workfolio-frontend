@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { createDateModel, DateModel } from "@/models/DateModel"
-import { Record } from '@/generated/common'
+import { Record, RecordGroup } from '@/generated/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import { useCalendarDays } from '@/hooks/useCalendar'
@@ -19,12 +19,18 @@ dayjs.tz.setDefault('Asia/Seoul')
 
 interface MonthlyCalendarProps {
     initialDate: Date
+    allRecordGroups: RecordGroup[]
+    editableRecordGroups: RecordGroup[]
 }
 
 /**
  * Table 태그를 사용한 MonthlyCalendarV1 컴포넌트
  */
-const MonthlyCalendar = React.memo(function MonthlyCalendar({ initialDate }: MonthlyCalendarProps) {
+const MonthlyCalendar = React.memo(function MonthlyCalendar({ 
+    initialDate, 
+    allRecordGroups, 
+    editableRecordGroups 
+}: MonthlyCalendarProps) {
     const [date, setDate] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
@@ -589,6 +595,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({ initialDate }: Mon
                 onClose={handleCloseUpdateModal}
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
+                allRecordGroups={allRecordGroups}
             />
 
             {/* RecordCreateModal */}
@@ -596,6 +603,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({ initialDate }: Mon
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDateForCreate}
+                editableRecordGroups={editableRecordGroups}
             />
         </>
     )

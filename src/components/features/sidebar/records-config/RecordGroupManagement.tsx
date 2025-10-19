@@ -3,12 +3,22 @@ import '@/styles/records-config.css';
 import { RecordGroupJoinRequest, RecordGroupDetailResponse } from '@/generated/record_group';
 import { WorkerListResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
-import { useRecordGroups } from '@/hooks/useRecordGroups';
 import Dropdown from '@/components/ui/Dropdown';
 import { RecordGroup, RecordGroup_RecordGroupType, Worker } from '@/generated/common';
 import { getRecordGroupTypeLabel } from '@/utils/commonUtils';
 
-const RecordGroupManagement = () => {
+interface RecordGroupManagementProps {
+    recordGroupsData: {
+        ownedRecordGroups: RecordGroup[];
+        sharedRecordGroups: RecordGroup[];
+        allRecordGroups: RecordGroup[];
+        isLoading: boolean;
+        refreshRecordGroups: () => void;
+        fetchRecordGroupDetails: (recordGroupId: string) => Promise<RecordGroupDetailResponse | null>;
+    };
+}
+
+const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGroupsData }) => {
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
     const [shareNickname, setShareNickname] = useState('');
     const [searchedWorkers, setSearchedWorkers] = useState<Worker[]>([]);
@@ -16,7 +26,8 @@ const RecordGroupManagement = () => {
     const [recordGroupDetails, setRecordGroupDetails] = useState<RecordGroupDetailResponse | null>(null);
     const [isComposing, setIsComposing] = useState(false);
 
-    const { allRecordGroups, refreshRecordGroups, fetchRecordGroupDetails } = useRecordGroups();
+    // props로 받은 recordGroupsData 사용
+    const { allRecordGroups, refreshRecordGroups, fetchRecordGroupDetails } = recordGroupsData;
     
     // dropdownOptions를 useMemo로 메모이제이션
     const dropdownOptions = React.useMemo(() => 

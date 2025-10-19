@@ -1,26 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import RecordGroupsOwnedHeader from './RecordGroupsOwnedHeader';
 import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
-import { useRecordGroups } from '@/hooks/useRecordGroups';
 import NewRecordGroupItem from '../NewRecordGroupItem';
-import { RecordGroup_RecordGroupType } from '@/generated/common';
+import { RecordGroup_RecordGroupType, RecordGroup } from '@/generated/common';
 
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;
+    recordGroups: RecordGroup[];
+    onRefresh: () => void;
 }
 
 const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
     defaultExpanded = true,
+    recordGroups,
+    onRefresh,
 }) => {
-    const { 
-        ownedRecordGroups, 
-        refreshRecordGroups 
-    } = useRecordGroups();
     
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+
+    // 🔍 디버깅: RecordGroupsOwned 렌더링 횟수 추적
+    const renderCount = useRef(0);
+    renderCount.current += 1;
+
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`🟢 RecordGroupsOwned 렌더링 #${renderCount.current}`, {
+            recordGroupsCount: recordGroups.length,
+            isGroupsExpanded,
+            isCreatingGroup,
+            timestamp: new Date().toISOString()
+        });
+    }
 
     const handleToggleGroups = () => {
         setIsGroupsExpanded(!isGroupsExpanded);
@@ -33,7 +45,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                 title: title,
                 color: color,
                 type: RecordGroup_RecordGroupType.PRIVATE,
-                priority: ownedRecordGroups.length + 1,
+                priority: recordGroups.length + 1,
             });
             
             const response = await fetch('/api/record-groups', {
@@ -53,7 +65,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                 setIsCreatingGroup(false);
                 
                 // 레코드 그룹 생성 성공 시 레코드 그룹 다시 조회
-                refreshRecordGroups();
+                onRefresh();
             } else {
                 console.error('Failed to create group');
             }
@@ -66,6 +78,8 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
     const handleCreateGroupRequest = () => {
         setIsCreatingGroup(true);
     };
+
+    
 
     return (
         <div className="record-group">
@@ -85,8 +99,9 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                     )}
                     <RecordGroups 
                         key="owned-record-groups"
-                        recordGroups={ownedRecordGroups} 
-                        onUpdateRecordGroups={() => refreshRecordGroups()}
+                        recordGroups={recordGroups} 
+                        onUpdateRecordGroups={() => onRefresh()}
+                        onRefresh={onRefresh}
                     />
                 </ul>
             )}

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useMemo} from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
@@ -13,10 +13,15 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     selectedDate?: string | null;
+    editableRecordGroups: RecordGroup[];
 }
 
-const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedDate }) => {
-    const [dropdownOptions, setDropdownOptions] = useState<IDropdown[]>([]);
+const RecordCreateModal: React.FC<ModalProps> = ({ 
+    isOpen, 
+    onClose, 
+    selectedDate, 
+    editableRecordGroups 
+}) => {
     const [recordGroupId, setRecordGroupId] = useState<string | null>(null);
     const [title, setTitle] = useState<string | null>(null);
     const [description, setDescription] = useState<string | null>(null);
@@ -32,11 +37,22 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedDate
     // companies hook 사용
     const { companies, refreshCompanies } = useCompanies();
     
+    // record groups를 dropdown options로 변환
+    const dropdownOptions: IDropdown[] = useMemo(() => 
+        editableRecordGroups.map(group => ({
+            value: group.id || '',
+            label: group.title || '',
+            color: group.color
+        })), [editableRecordGroups]
+    );
+    
     // companies를 dropdown options로 변환
-    const companyOptions: IDropdown[] = companies.map(company => ({
-        value: company.id || '',
-        label: company.name || ''
-    }));
+    const companyOptions: IDropdown[] = useMemo(() => 
+        companies.map(company => ({
+            value: company.id || '',
+            label: company.name || ''
+        })), [companies]
+    );
 
     // isAllDay 변경 시 시간 고정 로직
     useEffect(() => {
@@ -101,43 +117,15 @@ const RecordCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedDate
                 setEndedAt(endTime.toISOString());
             }
             
-            setRecordGroupId(null);
+            // 첫 번째 editableRecordGroup을 기본값으로 설정
+            setRecordGroupId(dropdownOptions[0]?.value || null);
             setIsAllDay(false);
             setSelectedFile(null);
             setCompanyId(null);
-
-            const fetchRecordGroups = async () => {
-                try {
-                    const res = await fetch('/api/record-groups/editable', { method: HttpMethod.GET });
-                    const data = await res.json();
-
-                    if (data != null) {
-                        // 중복된 ID를 제거하고 고유한 옵션만 생성
-                        const uniqueGroups = data.groups.reduce((acc: RecordGroup[], current: RecordGroup) => {
-                            const existingGroup = acc.find(group => group.id === current.id);
-                            if (!existingGroup) {
-                                acc.push(current);
-                            }
-                            return acc;
-                        }, []);
-                        
-                        const options = uniqueGroups.map((res: RecordGroup) => ({
-                            value: res.id,
-                            label: res.title,
-                            color: res.color
-                        }));
-                        setDropdownOptions(options);
-                        setRecordGroupId(options[0]?.value);
-                    }
-                } catch (error) {
-                    console.error('Error fetching record groups:', error);
-                }
-            };
             
-            fetchRecordGroups();
             refreshCompanies();
         }
-    }, [isOpen, selectedDate, refreshCompanies]);
+    }, [isOpen, selectedDate, refreshCompanies, dropdownOptions]);
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

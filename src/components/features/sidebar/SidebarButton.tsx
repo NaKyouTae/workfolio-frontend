@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
+import { RecordGroup } from '@/generated/common';
 import RecordCreateModal from '../modal/RecordCreateModal';
 
-const SidebarButton: React.FC = () => {
+interface SidebarButtonProps {
+    editableRecordGroups: RecordGroup[];
+}
+
+const SidebarButton: React.FC<SidebarButtonProps> = ({ editableRecordGroups }) => {
     const [isRecordCreateModalOpen, setIsRecordCreateModalOpen] = useState(false);
 
     const closeRecordCreateModal = () => {
@@ -18,6 +23,7 @@ const SidebarButton: React.FC = () => {
             <RecordCreateModal 
                 isOpen={isRecordCreateModalOpen} 
                 onClose={closeRecordCreateModal}
+                editableRecordGroups={editableRecordGroups}
             />
         </div>
     );

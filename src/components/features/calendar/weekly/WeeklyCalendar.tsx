@@ -18,6 +18,8 @@ dayjs.tz.setDefault('Asia/Seoul')
 
 interface WeeklyCalendarProps {
     initialDate: Date
+    allRecordGroups: RecordGroup[]
+    editableRecordGroups: RecordGroup[]
 }
 
 interface WeeklyEvent {
@@ -31,7 +33,9 @@ interface WeeklyEvent {
 }
 
 const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({ 
-    initialDate
+    initialDate,
+    allRecordGroups,
+    editableRecordGroups
 }) => {
     // 렌더링 횟수 체크를 위한 ref
     const renderCountRef = useRef(0)
@@ -42,20 +46,20 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     renderCountRef.current += 1
     
     // 렌더링 로그 출력 (디버깅용 - 프로덕션에서는 제거)
-    useEffect(() => {
-        // 개발 환경에서만 로그 출력
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`🔄 WeeklyCalendar 렌더링 #${renderCountRef.current}`)
-            console.log(`📅 현재 주간: ${dayjs(initialDate).format('YYYY-MM-DD')} ~ ${dayjs(initialDate).endOf('week').format('YYYY-MM-DD')}`)
-            console.log(`📊 Records 개수: ${records.length}`)
+    // useEffect(() => {
+    //     // 개발 환경에서만 로그 출력
+    //     if (process.env.NODE_ENV === 'development') {
+    //         console.log(`🔄 WeeklyCalendar 렌더링 #${renderCountRef.current}`)
+    //         console.log(`📅 현재 주간: ${dayjs(initialDate).format('YYYY-MM-DD')} ~ ${dayjs(initialDate).endOf('week').format('YYYY-MM-DD')}`)
+    //         console.log(`📊 Records 개수: ${records.length}`)
             
-            // 네비게이션 후 렌더링 체크
-            if (navigationCountRef.current > 0) {
-                const timeSinceNavigation = Date.now() - lastNavigationTimeRef.current
-                console.log(`📊 네비게이션 후 렌더링: ${renderCountRef.current}회 (${timeSinceNavigation}ms 후)`)
-            }
-        }
-    })
+    //         // 네비게이션 후 렌더링 체크
+    //         if (navigationCountRef.current > 0) {
+    //             const timeSinceNavigation = Date.now() - lastNavigationTimeRef.current
+    //             console.log(`📊 네비게이션 후 렌더링: ${renderCountRef.current}회 (${timeSinceNavigation}ms 후)`)
+    //         }
+    //     }
+    // })
     // 주간 날짜 생성 (일요일부터 토요일까지)
     const getWeekDays = (date: Date) => {
         const startOfWeek = dayjs(date).startOf('week')
@@ -599,20 +603,20 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
         }
     }, [currentTime])
 
-    // 렌더링 분석을 위한 추가 로그 (변수 선언 후)
-    useEffect(() => {
-        // 개발 환경에서만 로그 출력
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`🔍 WeeklyCalendar 상세 분석:`)
-            console.log(`  - 렌더링 횟수: ${renderCountRef.current}`)
-            console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
-            console.log(`  - Records 개수: ${records.length}`)
-            console.log(`  - WeekDays 개수: ${weekDays.length}`)
-            console.log(`  - TimeSlots 개수: ${timeSlots?.length || 0}`)
-            console.log(`  - AllEvents 개수: ${allEvents?.length || 0}`)
-            console.log(`  - TimedEvents 개수: ${timedEvents?.length || 0}`)
-        }
-    }, [records, weekDays, timeSlots, allEvents, timedEvents])
+    // // 렌더링 분석을 위한 추가 로그 (변수 선언 후)
+    // useEffect(() => {
+    //     // 개발 환경에서만 로그 출력
+    //     if (process.env.NODE_ENV === 'development') {
+    //         console.log(`🔍 WeeklyCalendar 상세 분석:`)
+    //         console.log(`  - 렌더링 횟수: ${renderCountRef.current}`)
+    //         console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
+    //         console.log(`  - Records 개수: ${records.length}`)
+    //         console.log(`  - WeekDays 개수: ${weekDays.length}`)
+    //         console.log(`  - TimeSlots 개수: ${timeSlots?.length || 0}`)
+    //         console.log(`  - AllEvents 개수: ${allEvents?.length || 0}`)
+    //         console.log(`  - TimedEvents 개수: ${timedEvents?.length || 0}`)
+    //     }
+    // }, [records, weekDays, timeSlots, allEvents, timedEvents])
 
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
         // 이전 모달 상태 초기화
@@ -721,16 +725,16 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     // }, [])
     
     // 렌더링 완료 후 성능 로그
-    useEffect(() => {
-        // 개발 환경에서만 로그 출력
-        if (process.env.NODE_ENV === 'development') {
-            const endTime = performance.now()
-            console.log(`⚡ WeeklyCalendar 렌더링 성능:`)
-            console.log(`  - 렌더링 시간: ${endTime.toFixed(2)}ms`)
-            console.log(`  - 총 렌더링 횟수: ${renderCountRef.current}`)
-            console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
-        }
-    })
+    // useEffect(() => {
+    //     // 개발 환경에서만 로그 출력
+    //     if (process.env.NODE_ENV === 'development') {
+    //         const endTime = performance.now()
+    //         console.log(`⚡ WeeklyCalendar 렌더링 성능:`)
+    //         console.log(`  - 렌더링 시간: ${endTime.toFixed(2)}ms`)
+    //         console.log(`  - 총 렌더링 횟수: ${renderCountRef.current}`)
+    //         console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
+    //     }
+    // })
 
     return (
         <div className="weekly">
@@ -1076,6 +1080,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                 onClose={handleCloseUpdateModal}
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
+                allRecordGroups={allRecordGroups}
             />
 
             {/* RecordCreateModal */}
@@ -1083,6 +1088,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDateForCreate}
+                editableRecordGroups={editableRecordGroups}
             />
         </div>
     )

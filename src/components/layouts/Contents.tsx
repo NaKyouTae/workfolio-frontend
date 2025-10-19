@@ -1,16 +1,20 @@
 // src/components/layouts/Contents.tsx
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Sidebar from "@/components/layouts/Sidebar"
 import BodyRight, { BodyRightRef } from "@/components/layouts/BodyRight"
 import RecordConfig from "@/components/features/sidebar/records-config/RecordConfig"
 import Footer from "@/components/layouts/Footer"
 import { useSystemConfigStore } from '@/store/systemConfigStore';
 import { SystemConfig_SystemConfigType } from '@/generated/common';
+import { useRecordGroups } from '@/hooks/useRecordGroups';
 
-const Contents = () => {
+const Contents = React.memo(() => {
     const bodyRightRef = useRef<BodyRightRef>(null);
     const [isConfigMode, setIsConfigMode] = useState(false);
     const [isConfigLoaded, setIsConfigLoaded] = useState(false);
+    
+    // 🔥 최상위에서 useRecordGroups 한 번만 호출
+    const recordGroupsData = useRecordGroups();
     
     // 최초 접근 시 systemConfig 로드
     const { fetchSystemConfig, getSystemConfig } = useSystemConfigStore();
@@ -29,21 +33,25 @@ const Contents = () => {
         } else {
             loadConfig();
         }
-    }, [fetchSystemConfig, getSystemConfig]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // 마운트 시 한 번만 실행 - Zustand store 함수들은 안정적
 
-    const handleConfigToggle = () => {
-        setIsConfigMode(!isConfigMode);
-    };
+    const handleConfigToggle = useCallback(() => {
+        setIsConfigMode(prev => !prev);
+    }, []);
 
-    const handleConfigClose = () => {
+    const handleConfigClose = useCallback(() => {
         setIsConfigMode(false);
-    };
+    }, []);
 
     // systemConfig 로드 중에는 로딩 표시
     if (!isConfigLoaded) {
         return (
             <main>
-                <Sidebar onConfigToggle={handleConfigToggle} />
+                <Sidebar 
+                    onConfigToggle={handleConfigToggle}
+                    recordGroupsData={recordGroupsData}
+                />
                 <section>
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}></div>
                     <Footer/>
@@ -54,17 +62,28 @@ const Contents = () => {
 
     return (
         <main>
-            <Sidebar onConfigToggle={handleConfigToggle} />
+            <Sidebar 
+                onConfigToggle={handleConfigToggle}
+                recordGroupsData={recordGroupsData}
+            />
             <section>
                 {isConfigMode ? (
-                    <RecordConfig onClose={handleConfigClose} />
+                    <RecordConfig 
+                        onClose={handleConfigClose}
+                        recordGroupsData={recordGroupsData}
+                    />
                 ) : (
-                    <BodyRight ref={bodyRightRef} />
+                    <BodyRight 
+                        ref={bodyRightRef}
+                        recordGroupsData={recordGroupsData}
+                    />
                 )}
                 <Footer/>
             </section>
         </main>
     );
-};
+});
+
+Contents.displayName = 'Contents';
 
 export default Contents;
