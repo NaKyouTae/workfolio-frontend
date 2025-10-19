@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import RecordGroupsSharedHeader from './RecordGroupsSharedHeader';
 import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@/generated/record_group';
@@ -12,7 +12,7 @@ interface RecordGroupSectionProps {
     onRefresh: () => void;
 }
 
-const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
+const RecordGroupsShared: React.FC<RecordGroupSectionProps> = React.memo(({
     defaultExpanded = true,
     recordGroups,
     onRefresh,
@@ -21,24 +21,19 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
-    // 🔍 디버깅: RecordGroupsShared 렌더링 횟수 추적
-    const renderCount = useRef(0);
-    renderCount.current += 1;
+    const handleToggleGroups = useCallback(() => {
+        setIsGroupsExpanded(prev => !prev);
+    }, []);
 
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`🟣 RecordGroupsShared 렌더링 #${renderCount.current}`, {
-            recordGroupsCount: recordGroups.length,
-            isGroupsExpanded,
-            isCreatingGroup,
-            timestamp: new Date().toISOString()
-        });
-    }
+    const handleCreateGroupRequest = useCallback(() => {
+        setIsCreatingGroup(true);
+    }, []);
 
-    const handleToggleGroups = () => {
-        setIsGroupsExpanded(!isGroupsExpanded);
-    };
+    const handleCancelCreate = useCallback(() => {
+        setIsCreatingGroup(false);
+    }, []);
 
-    const createRecordGroup = async (title: string, color: string) => {
+    const createRecordGroup = useCallback(async (title: string, color: string) => {
         try {
             const message = CreateRecordGroupRequest.create({
                 title: title,
@@ -71,12 +66,7 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
         } catch (error) {
             console.error('Error creating group:', error);
         }
-    };
-
-    // 그룹 생성 요청 핸들러
-    const handleCreateGroupRequest = () => {
-        setIsCreatingGroup(true);
-    };
+    }, [recordGroups.length, onRefresh]);
 
     return (
         <div className="record-group">
@@ -91,18 +81,20 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = ({
                         <NewRecordGroupItem
                             placeholder="새 공유 기록장 이름"
                             onSave={createRecordGroup}
-                            onCancel={() => setIsCreatingGroup(false)}
+                            onCancel={handleCancelCreate}
                         />
                     )}
                     <RecordGroups 
                         recordGroups={recordGroups} 
-                        onUpdateRecordGroups={() => onRefresh()}
+                        onUpdateRecordGroups={onRefresh}
                         onRefresh={onRefresh}
                     />
                 </ul>
             )}
         </div>
     );
-};
+});
+
+RecordGroupsShared.displayName = 'RecordGroupsShared';
 
 export default RecordGroupsShared; 

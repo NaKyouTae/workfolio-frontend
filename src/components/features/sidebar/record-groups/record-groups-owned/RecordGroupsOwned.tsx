@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import RecordGroupsOwnedHeader from './RecordGroupsOwnedHeader';
 import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@/generated/record_group';
@@ -12,7 +12,7 @@ interface RecordGroupSectionProps {
     onRefresh: () => void;
 }
 
-const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
+const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
     defaultExpanded = true,
     recordGroups,
     onRefresh,
@@ -21,25 +21,20 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
-    // 🔍 디버깅: RecordGroupsOwned 렌더링 횟수 추적
-    const renderCount = useRef(0);
-    renderCount.current += 1;
+    const handleToggleGroups = useCallback(() => {
+        setIsGroupsExpanded(prev => !prev);
+    }, []);
 
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`🟢 RecordGroupsOwned 렌더링 #${renderCount.current}`, {
-            recordGroupsCount: recordGroups.length,
-            isGroupsExpanded,
-            isCreatingGroup,
-            timestamp: new Date().toISOString()
-        });
-    }
+    const handleCreateGroupRequest = useCallback(() => {
+        setIsCreatingGroup(true);
+    }, []);
 
-    const handleToggleGroups = () => {
-        setIsGroupsExpanded(!isGroupsExpanded);
-    };
+    const handleCancelCreate = useCallback(() => {
+        setIsCreatingGroup(false);
+    }, []);
 
     // 새 그룹 생성 함수
-    const createRecordGroup = async (title: string, color: string) => {
+    const createRecordGroup = useCallback(async (title: string, color: string) => {
         try {
             const message = CreateRecordGroupRequest.create({
                 title: title,
@@ -72,14 +67,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
         } catch (error) {
             console.error('Error creating group:', error);
         }
-    };
-
-    // 그룹 생성 요청 핸들러
-    const handleCreateGroupRequest = () => {
-        setIsCreatingGroup(true);
-    };
-
-    
+    }, [recordGroups.length, onRefresh]);
 
     return (
         <div className="record-group">
@@ -94,19 +82,21 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                         <NewRecordGroupItem
                             placeholder="새 기록장 이름"
                             onSave={createRecordGroup}
-                            onCancel={() => setIsCreatingGroup(false)}
+                            onCancel={handleCancelCreate}
                         />
                     )}
                     <RecordGroups 
                         key="owned-record-groups"
                         recordGroups={recordGroups} 
-                        onUpdateRecordGroups={() => onRefresh()}
+                        onUpdateRecordGroups={onRefresh}
                         onRefresh={onRefresh}
                     />
                 </ul>
             )}
         </div>
     );
-};
+});
+
+RecordGroupsOwned.displayName = 'RecordGroupsOwned';
 
 export default RecordGroupsOwned; 
