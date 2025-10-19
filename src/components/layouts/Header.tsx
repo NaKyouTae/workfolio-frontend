@@ -82,7 +82,7 @@ const Header = () => {
                             prefetch={false}
                             onClick={(e) => handleMenuClick(e, '/company-history')}
                         >
-                            커리어 관리
+                            이력 관리
                         </Link>
                     </li>
                     <li className={pathname === '/job-search' ? 'active' : ''}>
