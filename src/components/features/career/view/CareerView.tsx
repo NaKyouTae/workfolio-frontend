@@ -1,45 +1,45 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Company, Position, Salary } from '@/generated/common';
-import { DateUtil } from '../../../utils/DateUtil';
+import { Career, Position, Salary } from '@/generated/common';
+import { DateUtil } from '@/utils/DateUtil';
 import HttpMethod from '@/enums/HttpMethod';
-import { CompanyCreateRequest, CompanyUpdateRequest } from '@/generated/company';
+import { CareerUpdateRequest } from '@/generated/career';
 import { SalaryCreateRequest, SalaryUpdateRequest } from '@/generated/salary';
 import { PositionCreateRequest, PositionUpdateRequest } from '@/generated/position';  
 import dayjs from 'dayjs';
 import { useUser } from '@/hooks/useUser';
-import { createSampleCompanies } from '@/utils/sampleData';
+import { createSampleCareers } from '@/utils/sampleData';
+import { CareerCreateRequest } from '@/generated/career';
 
-interface CompanyManagementProps {
-  initialData?: Company[];
-  onDataChange?: (data: Company[]) => void;
+interface CareerViewProps {
+  initialData?: Career[];
+  onDataChange?: (data: Career[]) => void;
 }
 
-const CompanyManagement: React.FC<CompanyManagementProps> = ({ 
+const CareerView: React.FC<CareerViewProps> = ({ 
   initialData = [],
   onDataChange
 }) => {
   const { isLoggedIn, user } = useUser();
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [newCompany, setNewCompany] = useState<CompanyCreateRequest>({
+  const [careers, setCareers] = useState<Career[]>([]);
+  const [newCareer, setNewCareer] = useState<CareerCreateRequest>({
     name: '',
     startedAt: 0,
     endedAt: 0,
     isWorking: false,
+    resumeId: '',
   });
 
-  // Position 상태 (companyId를 포함한 확장 타입)
   const [positions, setPositions] = useState<Position[]>([]);
   const [newPosition, setNewPosition] = useState<PositionCreateRequest>({
-    companyId: '',
+    careerId: '',
     name: '',
     startedAt: 0,
     endedAt: 0,
   });
 
-  // Salary 상태 (companyId를 포함한 확장 타입)
   const [salaries, setSalaries] = useState<Salary[]>([]);
   const [newSalary, setNewSalary] = useState<SalaryCreateRequest>({
-    companyId: '',
+    careerId: '',
     amount: 0,
     startedAt: 0,
     endedAt: 0,
@@ -94,7 +94,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
     if (isInitialLoad.current) {
       if (isLoggedIn && user && user.id !== 'sample-user-id' && initialData && initialData.length > 0) {
         // 로그인된 경우 실제 데이터 사용
-        const companiesForm: Company[] = initialData.map((company: Company) => ({
+        const companiesForm: Career[] = initialData.map((company: Career) => ({
           id: company.id,
           createdAt: company.createdAt,
           updatedAt: company.updatedAt,
@@ -104,7 +104,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
           isWorking: company.isWorking,
         }));
         
-        setCompanies(companiesForm);
+        setCareers(companiesForm);
         
         // 모든 회사의 position과 salary를 한 번에 조회
         const companyIds = companiesForm.map(company => company.id).join(',');
@@ -112,8 +112,8 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         fetchAllSalaries(companyIds);
       } else {
         // 로그인되지 않은 경우 샘플 데이터 사용
-        const sampleData = createSampleCompanies();
-        setCompanies(sampleData);
+        const sampleData = createSampleCareers();
+        setCareers(sampleData);
         setPositions([]);
         setSalaries([]);
       }
@@ -122,8 +122,8 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   }, [initialData, isLoggedIn, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 데이터 변경 핸들러
-  const handleDataChange = (newCompanies: Company[]) => {
-    setCompanies(newCompanies);
+  const handleDataChange = (newCompanies: Career[]) => {
+    setCareers(newCompanies);
     if (onDataChange) {
       onDataChange(newCompanies);
     }
@@ -131,14 +131,14 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
   // 회사 추가
   const addCompany = async () => {
-    if (newCompany.name && newCompany.startedAt) {
+    if (newCareer.name && newCareer.startedAt) {
       try {
         const response = await fetch('/api/workers/companies', {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(newCompany),
+          body: JSON.stringify(newCareer),
         });
 
         if (response.ok) {
@@ -147,8 +147,8 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
             console.log("result", result);
 
-            const newCompanyData = result.company;
-            const updatedCompanies = [...companies, newCompanyData];
+            const newCompanyData = result.career;
+            const updatedCompanies = [...careers, newCompanyData];
             handleDataChange(updatedCompanies);
 
             console.log("updatedCompanies", updatedCompanies);
@@ -158,11 +158,12 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
             fetchAllPositions(companyIds);
             fetchAllSalaries(companyIds);
             
-            setNewCompany({
+            setNewCareer({
               name: '',
               startedAt: 0,
               endedAt: 0,
               isWorking: false,
+              resumeId: '',
             });
           } else {
             console.error('Failed to add company');
@@ -179,8 +180,8 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   // 회사 수정
   const updateCompany = async (index: number) => {
     try {
-      const selectedCompany = companies[index];
-      const updatedCompanyRequest: CompanyUpdateRequest = {
+      const selectedCompany = careers[index];
+      const updatedCompanyRequest: CareerUpdateRequest = {
         id: selectedCompany.id,
         name: selectedCompany.name,
         startedAt: selectedCompany.startedAt,
@@ -198,7 +199,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
       if (response.ok) {
         const result = await response.json();
         if (result) {
-          const updatedData = [...companies];
+          const updatedData = [...careers];
           updatedData[index] = result.company;
           handleDataChange(updatedData);
         } else {
@@ -223,7 +224,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
       });
 
       if (response.ok) {
-        handleDataChange(companies.filter((_, i) => i !== index));
+        handleDataChange(careers.filter((_, i) => i !== index));
       } else {
         console.error('Failed to delete company');
       }
@@ -238,10 +239,10 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
       try {
         const positionData = {
           ...newPosition,
-          companyId: companyId
+          careerId: companyId
         };
         
-        const response = await fetch(`/api/workers/positions/${companyId}`, {
+        const response = await fetch(`/api/workers/positions`, {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
@@ -253,10 +254,10 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
           const result = await response.json();
           if (result) {
             // 성공 시 모든 회사의 position 데이터 다시 조회
-            const companyIds = companies.map(company => company.id).join(',');
+            const companyIds = careers.map(company => company.id).join(',');
             fetchAllPositions(companyIds);
             setNewPosition({
-              companyId: companyId,
+              careerId: companyId,
               name: '',
               startedAt: 0,
               endedAt: 0,
@@ -296,7 +297,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         const result = await response.json();
         if (result) {
           // 성공 시 모든 회사의 position 데이터 다시 조회
-          const companyIds = companies.map(company => company.id).join(',');
+          const companyIds = careers.map(company => company.id).join(',');
           fetchAllPositions(companyIds);
         } else {
           console.error('Failed to update position');
@@ -321,7 +322,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
       if (response.ok) {
         // 성공 시 모든 회사의 position 데이터 다시 조회
-        const companyIds = companies.map(company => company.id).join(',');
+        const companyIds = careers.map(company => company.id).join(',');
         fetchAllPositions(companyIds);
       } else {
         console.error('Failed to delete position');
@@ -337,10 +338,10 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
       try {
         const salaryData = {
           ...newSalary,
-          companyId: companyId
+          careerId: companyId
         };
         
-        const response = await fetch(`/api/workers/salaries/${companyId}`, {
+        const response = await fetch(`/api/workers/salaries`, {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
@@ -352,10 +353,10 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
           const result = await response.json();
           if (result) {
             // 성공 시 모든 회사의 salary 데이터 다시 조회
-            const companyIds = companies.map(company => company.id).join(',');
+            const companyIds = careers.map(company => company.id).join(',');
             fetchAllSalaries(companyIds);
             setNewSalary({
-              companyId: companyId,
+              careerId: companyId,
               amount: 0,
               startedAt: 0,
               endedAt: 0,
@@ -383,7 +384,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         startedAt: selectedSalary.startedAt,
         endedAt: selectedSalary.endedAt,
       };
-      const response = await fetch(`/api/workers/salaries/${selectedSalary.company?.id}`, {
+      const response = await fetch(`/api/workers/salaries/${selectedSalary.career?.id}`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -395,7 +396,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
         const result = await response.json();
         if (result) {
           // 성공 시 모든 회사의 salary 데이터 다시 조회
-          const companyIds = companies.map(company => company.id).join(',');
+          const companyIds = careers.map(company => company.id).join(',');
           fetchAllSalaries(companyIds);
         } else {
           console.error('Failed to update salary');
@@ -411,7 +412,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   const removeSalary = async (index: number) => {
     try {
       const selectedSalary = salaries[index];
-      const response = await fetch(`/api/workers/salaries/${selectedSalary.company?.id}`, {
+      const response = await fetch(`/api/workers/salaries/${selectedSalary.career?.id}`, {
         method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',
@@ -420,7 +421,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
       if (response.ok) {
         // 성공 시 모든 회사의 salary 데이터 다시 조회
-        const companyIds = companies.map(company => company.id).join(',');
+        const companyIds = careers.map(company => company.id).join(',');
         fetchAllSalaries(companyIds);
       } else {
         console.error('Failed to delete salary');
@@ -433,12 +434,12 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   // 공통 추가 버튼 렌더링 함수
   // 총 경력 계산 함수
   const calculateTotalExperience = () => {
-    if (companies.length === 0) {
+    if (careers.length === 0) {
       return '0년 0개월';
     }
 
     // 입사일 기준으로 정렬 (가장 오래된 것부터)
-    const sortedCompanies = [...companies].sort((a, b) => a.startedAt - b.startedAt);
+    const sortedCompanies = [...careers].sort((a, b) => a.startedAt - b.startedAt);
     const firstCompany = sortedCompanies[0];
     const firstStartDate = dayjs(new Date(DateUtil.formatTimestamp(firstCompany.startedAt)));
     const now = dayjs();
@@ -503,29 +504,29 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
             <input
               type="text"
               placeholder="회사명"
-              value={newCompany.name}
-              onChange={(e) => setNewCompany({ ...newCompany, name: e.target.value })}
+              value={newCareer.name}
+              onChange={(e) => setNewCareer({ ...newCareer, name: e.target.value })}
               style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', flex: 1, minWidth: '150px' }}
             />
             <input
               type="date"
               placeholder="시작일"
-              value={newCompany.startedAt ? DateUtil.formatTimestamp(newCompany.startedAt) : ''}
-              onChange={(e) => setNewCompany({ ...newCompany, startedAt: DateUtil.parseToTimestamp(e.target.value) })}
+              value={newCareer.startedAt ? DateUtil.formatTimestamp(newCareer.startedAt) : ''}
+              onChange={(e) => setNewCareer({ ...newCareer, startedAt: DateUtil.parseToTimestamp(e.target.value) })}
               style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', flex: 1, minWidth: '150px' }}
             />
             <input
               type="date"
               placeholder="종료일"
-              value={newCompany.endedAt ? DateUtil.formatTimestamp(newCompany.endedAt) : ''}
-              onChange={(e) => setNewCompany({ ...newCompany, endedAt: DateUtil.parseToTimestamp(e.target.value) })}
+              value={newCareer.endedAt ? DateUtil.formatTimestamp(newCareer.endedAt) : ''}
+              onChange={(e) => setNewCareer({ ...newCareer, endedAt: DateUtil.parseToTimestamp(e.target.value) })}
               style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', flex: 1, minWidth: '150px' }}
             />
             <label style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: '100px' }}>
               <input
                 type="checkbox"
-                checked={newCompany.isWorking}
-                onChange={(e) => setNewCompany({ ...newCompany, isWorking: e.target.checked })}
+                checked={newCareer.isWorking}
+                onChange={(e) => setNewCareer({ ...newCareer, isWorking: e.target.checked })}
               />
               재직중
             </label>
@@ -564,7 +565,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
 
       {/* 회사 목록 */}
       <div>
-        {companies?.map((company, index) => (
+        {careers?.map((company, index) => (
           <div 
             key={index} 
             style={{ 
@@ -667,7 +668,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
                   </div>
                 )}
                 <div>
-                  {positions?.filter(pos => pos.company?.id === company.id).map((position, posIndex) => (
+                  {positions?.filter(pos => pos.career?.id === company.id).map((position, posIndex) => (
                     <div 
                       key={posIndex} 
                       style={{ 
@@ -781,7 +782,7 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
                   </div>
                 )}
                 <div>
-                  {salaries?.filter(sal => sal.company?.id === company.id).map((salary, salIndex) => (
+                  {salaries?.filter(sal => sal.career?.id === company.id).map((salary, salIndex) => (
                     <div 
                       key={salIndex} 
                       style={{ 
@@ -830,4 +831,4 @@ const CompanyManagement: React.FC<CompanyManagementProps> = ({
   );
 };
 
-export default CompanyManagement;
+export default CareerView;

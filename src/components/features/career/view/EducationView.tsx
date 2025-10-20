@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Education } from '@/generated/common';
-import { DateUtil } from '../../../utils/DateUtil';
+import { DateUtil } from '@/utils/DateUtil';
 import { EducationCreateRequest, EducationUpdateRequest } from '@/generated/education';
 import HttpMethod from '@/enums/HttpMethod';
 
-interface EducationManagementProps {
+interface EducationViewProps {
   initialData?: Education[];
   onDataChange?: (data: Education[]) => void;
 }
 
-const EducationManagement: React.FC<EducationManagementProps> = ({ 
+const EducationView: React.FC<EducationViewProps> = ({ 
   initialData = [], 
   onDataChange
 }) => {
@@ -18,7 +18,8 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
     name: '',
     agency: '',
     startedAt: 0,
-    endedAt: 0
+    endedAt: 0,
+    resumeId: ''
   });
 
   // Input 표시 상태
@@ -80,7 +81,8 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
               name: '',
               agency: '',
               startedAt: 0,
-              endedAt: 0
+              endedAt: 0,
+              resumeId: ''
             });
           } else {
             console.error('Failed to add education');
@@ -297,4 +299,4 @@ const EducationManagement: React.FC<EducationManagementProps> = ({
   );
 };
 
-export default EducationManagement;
+export default EducationView;

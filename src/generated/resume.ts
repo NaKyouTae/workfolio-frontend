@@ -12,13 +12,6 @@ export const protobufPackage = "com.spectrum.workfolio.proto";
 
 export interface ResumeCreateRequest {
   title: string;
-  description: string;
-  phone: string;
-  email: string;
-  birthDate: number;
-  gender: Resume_Gender;
-  isPublic: boolean;
-  isDefault: boolean;
 }
 
 export interface ResumeUpdateRequest {
@@ -42,43 +35,13 @@ export interface ResumeResponse {
 }
 
 function createBaseResumeCreateRequest(): ResumeCreateRequest {
-  return {
-    title: "",
-    description: "",
-    phone: "",
-    email: "",
-    birthDate: 0,
-    gender: 0,
-    isPublic: false,
-    isDefault: false,
-  };
+  return { title: "" };
 }
 
 export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
   encode(message: ResumeCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.title !== "") {
       writer.uint32(10).string(message.title);
-    }
-    if (message.description !== "") {
-      writer.uint32(18).string(message.description);
-    }
-    if (message.phone !== "") {
-      writer.uint32(26).string(message.phone);
-    }
-    if (message.email !== "") {
-      writer.uint32(34).string(message.email);
-    }
-    if (message.birthDate !== 0) {
-      writer.uint32(40).uint64(message.birthDate);
-    }
-    if (message.gender !== 0) {
-      writer.uint32(48).int32(message.gender);
-    }
-    if (message.isPublic !== false) {
-      writer.uint32(56).bool(message.isPublic);
-    }
-    if (message.isDefault !== false) {
-      writer.uint32(64).bool(message.isDefault);
     }
     return writer;
   },
@@ -98,62 +61,6 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
           message.title = reader.string();
           continue;
         }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.description = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.phone = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.email = reader.string();
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.birthDate = longToNumber(reader.uint64());
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
-          message.gender = reader.int32() as any;
-          continue;
-        }
-        case 7: {
-          if (tag !== 56) {
-            break;
-          }
-
-          message.isPublic = reader.bool();
-          continue;
-        }
-        case 8: {
-          if (tag !== 64) {
-            break;
-          }
-
-          message.isDefault = reader.bool();
-          continue;
-        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -164,43 +71,13 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
   },
 
   fromJSON(object: any): ResumeCreateRequest {
-    return {
-      title: isSet(object.title) ? globalThis.String(object.title) : "",
-      description: isSet(object.description) ? globalThis.String(object.description) : "",
-      phone: isSet(object.phone) ? globalThis.String(object.phone) : "",
-      email: isSet(object.email) ? globalThis.String(object.email) : "",
-      birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : 0,
-      gender: isSet(object.gender) ? resume_GenderFromJSON(object.gender) : 0,
-      isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : false,
-      isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : false,
-    };
+    return { title: isSet(object.title) ? globalThis.String(object.title) : "" };
   },
 
   toJSON(message: ResumeCreateRequest): unknown {
     const obj: any = {};
     if (message.title !== "") {
       obj.title = message.title;
-    }
-    if (message.description !== "") {
-      obj.description = message.description;
-    }
-    if (message.phone !== "") {
-      obj.phone = message.phone;
-    }
-    if (message.email !== "") {
-      obj.email = message.email;
-    }
-    if (message.birthDate !== 0) {
-      obj.birthDate = Math.round(message.birthDate);
-    }
-    if (message.gender !== 0) {
-      obj.gender = resume_GenderToJSON(message.gender);
-    }
-    if (message.isPublic !== false) {
-      obj.isPublic = message.isPublic;
-    }
-    if (message.isDefault !== false) {
-      obj.isDefault = message.isDefault;
     }
     return obj;
   },
@@ -211,13 +88,6 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
   fromPartial<I extends Exact<DeepPartial<ResumeCreateRequest>, I>>(object: I): ResumeCreateRequest {
     const message = createBaseResumeCreateRequest();
     message.title = object.title ?? "";
-    message.description = object.description ?? "";
-    message.phone = object.phone ?? "";
-    message.email = object.email ?? "";
-    message.birthDate = object.birthDate ?? 0;
-    message.gender = object.gender ?? 0;
-    message.isPublic = object.isPublic ?? false;
-    message.isDefault = object.isDefault ?? false;
     return message;
   },
 };

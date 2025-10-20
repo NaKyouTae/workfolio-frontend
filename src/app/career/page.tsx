@@ -2,15 +2,15 @@
 
 import React from 'react';
 import Header from "@/components/layouts/Header";
-import CareerManagement from '@/components/features/career/CareerManagement';
+import CareerPage from '@/components/features/career/CareerPage';
 
-const CareerPage = () => {
+const Career = () => {
   return (
     <>
       <Header />
-      <CareerManagement />
+      <CareerPage />
     </>
   );
 };
 
-export default CareerPage;
+export default Career;

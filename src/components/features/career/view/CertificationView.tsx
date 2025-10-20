@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Certifications } from '@/generated/common';
-import { DateUtil } from '../../../utils/DateUtil';
+import { DateUtil } from '@/utils/DateUtil';
 import HttpMethod from '@/enums/HttpMethod';
 import { CertificationsCreateRequest } from '@/generated/certifications';
 
-interface CertificationManagementProps {
+interface CertificationViewProps {
   initialData?: Certifications[];
   onDataChange?: (data: Certifications[]) => void;
 }
 
-const CertificationManagement: React.FC<CertificationManagementProps> = ({ 
+const CertificationView: React.FC<CertificationViewProps> = ({ 
   initialData = [], 
   onDataChange
 }) => {
@@ -19,7 +19,8 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
     issuer: '',
     issuedAt: 0,
     number: '',
-    expirationPeriod: 0
+    expirationPeriod: 0,
+    resumeId: ''
   });
 
   // Input 표시 상태
@@ -82,7 +83,8 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
               issuer: '',
               issuedAt: 0,
               number: '',
-              expirationPeriod: 0
+              expirationPeriod: 0,
+              resumeId: ''
             });
           } else {
             console.error('Failed to add certification');
@@ -306,4 +308,4 @@ const CertificationManagement: React.FC<CertificationManagementProps> = ({
   );
 };
 
-export default CertificationManagement;
+export default CertificationView;

@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DegreesCreateRequest, DegreesUpdateRequest } from '../../../generated/degrees';
+import { DegreesCreateRequest, DegreesUpdateRequest } from '@/generated/degrees';
 import { Degrees } from '@/generated/common';
-import { DateUtil } from '../../../utils/DateUtil';
+import { DateUtil } from '@/utils/DateUtil';
 import HttpMethod from '@/enums/HttpMethod';
 
-interface DegreesManagementProps {
+interface DegreesViewProps {
   initialData?: Degrees[];
   onDataChange?: (data: Degrees[]) => void;
 }
 
-const DegreesManagement: React.FC<DegreesManagementProps> = ({ 
+const DegreesView: React.FC<DegreesViewProps> = ({ 
   initialData = [], 
   onDataChange
 }) => {
@@ -19,6 +19,7 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
     major: '',
     startedAt: 0,
     endedAt: 0,
+    resumeId: ''
   });
 
   // Input 표시 상태
@@ -79,7 +80,8 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
               name: '',
               major: '',
               startedAt: 0,
-              endedAt: 0
+              endedAt: 0,
+              resumeId: ''
             });
           } else {
             console.error('Failed to add degree');
@@ -296,4 +298,4 @@ const DegreesManagement: React.FC<DegreesManagementProps> = ({
   );
 };
 
-export default DegreesManagement;
+export default DegreesView;

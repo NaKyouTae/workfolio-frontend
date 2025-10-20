@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
-import { CompanyListResponse, CompanyResponse } from '@/generated/company';
+import { ResumeCreateRequest, ResumeListResponse, ResumeResponse, ResumeUpdateRequest } from '@/generated/resume';
 
 // GET /api/workers/companies - 회사 목록 조회
 export async function GET() {
@@ -14,8 +14,8 @@ export async function GET() {
         return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
     }
     
-    const res = await apiFetchHandler<CompanyListResponse>(
-      'http://localhost:8080/api/workers/companies', 
+    const res = await apiFetchHandler<ResumeListResponse>(
+      'http://localhost:8080/api/resumes', 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -25,15 +25,15 @@ export async function GET() {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching companies:', error);
-    return NextResponse.json({ error: 'Failed to fetch companies' }, { status: 500 });
+    console.error('Error fetching resumes:', error);
+    return NextResponse.json({ error: 'Failed to fetch resumes' }, { status: 500 });
   }
 }
 
 // POST /api/workers/companies - 회사 생성
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body: ResumeCreateRequest = await request.json();
     
     const accessToken = await getCookie('accessToken');
       
@@ -42,8 +42,8 @@ export async function POST(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<CompanyResponse>(
-      'http://localhost:8080/api/workers/companies', 
+    const res = await apiFetchHandler<ResumeResponse>(
+      'http://localhost:8080/api/resumes', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -53,15 +53,15 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error creating company:', error);
-    return NextResponse.json({ error: 'Failed to create company' }, { status: 500 });
+    console.error('Error creating resume:', error);
+    return NextResponse.json({ error: 'Failed to create resume' }, { status: 500 });
   }
 }
 
 // PUT /api/workers/companies - 회사 수정
 export async function PUT(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body: ResumeUpdateRequest = await request.json();
     
     const accessToken = await getCookie('accessToken');
       
@@ -70,8 +70,8 @@ export async function PUT(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
-    const res = await apiFetchHandler<CompanyResponse>(
-      'http://localhost:8080/api/workers/companies', 
+    const res = await apiFetchHandler<ResumeResponse>(
+      'http://localhost:8080/api/resumes', 
       HttpMethod.PUT, 
       body, 
       accessToken,
@@ -80,7 +80,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error updating company:', error);
-    return NextResponse.json({ error: 'Failed to update company' }, { status: 500 });
+    console.error('Error updating resumes:', error);
+    return NextResponse.json({ error: 'Failed to update resumes' }, { status: 500 });
   }
 }
