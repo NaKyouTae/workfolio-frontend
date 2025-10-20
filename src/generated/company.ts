@@ -15,6 +15,7 @@ export interface CompanyCreateRequest {
   startedAt: number;
   endedAt: number;
   isWorking: boolean;
+  resumeId: string;
 }
 
 export interface CompanyUpdateRequest {
@@ -34,7 +35,7 @@ export interface CompanyResponse {
 }
 
 function createBaseCompanyCreateRequest(): CompanyCreateRequest {
-  return { name: "", startedAt: 0, endedAt: 0, isWorking: false };
+  return { name: "", startedAt: 0, endedAt: 0, isWorking: false, resumeId: "" };
 }
 
 export const CompanyCreateRequest: MessageFns<CompanyCreateRequest> = {
@@ -50,6 +51,9 @@ export const CompanyCreateRequest: MessageFns<CompanyCreateRequest> = {
     }
     if (message.isWorking !== false) {
       writer.uint32(32).bool(message.isWorking);
+    }
+    if (message.resumeId !== "") {
+      writer.uint32(794).string(message.resumeId);
     }
     return writer;
   },
@@ -93,6 +97,14 @@ export const CompanyCreateRequest: MessageFns<CompanyCreateRequest> = {
           message.isWorking = reader.bool();
           continue;
         }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.resumeId = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -108,6 +120,7 @@ export const CompanyCreateRequest: MessageFns<CompanyCreateRequest> = {
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
       isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : false,
+      resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
@@ -125,6 +138,9 @@ export const CompanyCreateRequest: MessageFns<CompanyCreateRequest> = {
     if (message.isWorking !== false) {
       obj.isWorking = message.isWorking;
     }
+    if (message.resumeId !== "") {
+      obj.resumeId = message.resumeId;
+    }
     return obj;
   },
 
@@ -137,6 +153,7 @@ export const CompanyCreateRequest: MessageFns<CompanyCreateRequest> = {
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
     message.isWorking = object.isWorking ?? false;
+    message.resumeId = object.resumeId ?? "";
     return message;
   },
 };

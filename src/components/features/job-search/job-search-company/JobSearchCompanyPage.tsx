@@ -7,7 +7,7 @@ import { useUser } from '@/hooks/useUser';
 import { createSampleJobSearchCompanies } from '@/utils/sampleData';
 import JobSearchCompanyCreateModal from './JobSearchCompanyCreateModal';
 import JobSearchCompanyUpdateModal from './JobSearchCompanyUpdateModal';
-import JobSearchUpdateModal from '../job-search/JobSearchUpdateModal';
+import JobSearchUpdateModal from '../JobSearchUpdateModal';
 import styles from './JobSearchCompanyPage.module.css';
 import InterviewPage from '../interview/InterviewPage';
 

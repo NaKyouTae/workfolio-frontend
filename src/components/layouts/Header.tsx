@@ -76,11 +76,11 @@ const Header = () => {
                             기록 관리
                         </Link>
                     </li>
-                    <li className={pathname === '/company-history' ? 'active' : ''}>
+                    <li className={pathname === '/career' ? 'active' : ''}>
                         <Link 
-                            href="/company-history" 
+                            href="/career" 
                             prefetch={false}
-                            onClick={(e) => handleMenuClick(e, '/company-history')}
+                            onClick={(e) => handleMenuClick(e, '/career')}
                         >
                             이력 관리
                         </Link>

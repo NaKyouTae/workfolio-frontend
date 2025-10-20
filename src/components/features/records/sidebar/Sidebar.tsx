@@ -1,10 +1,10 @@
 import React from 'react'
-import RecordGroupsOwned from '@/components/features/sidebar/record-groups/record-groups-owned/RecordGroupsOwned';
-import RecordGroupsShared from '@/components/features/sidebar/record-groups/record-groups-shard/RecordGroupsShared';
-import SidebarButton from '@/components/features/sidebar/SidebarButton';
-import SidebarConfig from '@/components/features/sidebar/SidebarConfig';
 import { RecordGroup, Company } from '@/generated/common';
 import { RecordGroupDetailResponse } from '@/generated/record_group';
+import RecordGroupsOwned from './record-groups/record-groups-owned/RecordGroupsOwned';
+import RecordGroupsShared from './record-groups/record-groups-shard/RecordGroupsShared';
+import SidebarButton from './SidebarButton';
+import SidebarConfig from './SidebarConfig';
 
 interface SidebarProps {
     onConfigToggle: () => void;

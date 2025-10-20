@@ -20,6 +20,7 @@ export interface CertificationsCreateRequest {
   issuer: string;
   issuedAt: number;
   expirationPeriod?: number | undefined;
+  resumeId: string;
 }
 
 export interface CertificationsUpdateRequest {
@@ -98,7 +99,7 @@ export const CertificationsListResponse: MessageFns<CertificationsListResponse> 
 };
 
 function createBaseCertificationsCreateRequest(): CertificationsCreateRequest {
-  return { name: "", number: "", issuer: "", issuedAt: 0, expirationPeriod: undefined };
+  return { name: "", number: "", issuer: "", issuedAt: 0, expirationPeriod: undefined, resumeId: "" };
 }
 
 export const CertificationsCreateRequest: MessageFns<CertificationsCreateRequest> = {
@@ -117,6 +118,9 @@ export const CertificationsCreateRequest: MessageFns<CertificationsCreateRequest
     }
     if (message.expirationPeriod !== undefined) {
       writer.uint32(40).uint64(message.expirationPeriod);
+    }
+    if (message.resumeId !== "") {
+      writer.uint32(794).string(message.resumeId);
     }
     return writer;
   },
@@ -168,6 +172,14 @@ export const CertificationsCreateRequest: MessageFns<CertificationsCreateRequest
           message.expirationPeriod = longToNumber(reader.uint64());
           continue;
         }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.resumeId = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -184,6 +196,7 @@ export const CertificationsCreateRequest: MessageFns<CertificationsCreateRequest
       issuer: isSet(object.issuer) ? globalThis.String(object.issuer) : "",
       issuedAt: isSet(object.issuedAt) ? globalThis.Number(object.issuedAt) : 0,
       expirationPeriod: isSet(object.expirationPeriod) ? globalThis.Number(object.expirationPeriod) : undefined,
+      resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
@@ -204,6 +217,9 @@ export const CertificationsCreateRequest: MessageFns<CertificationsCreateRequest
     if (message.expirationPeriod !== undefined) {
       obj.expirationPeriod = Math.round(message.expirationPeriod);
     }
+    if (message.resumeId !== "") {
+      obj.resumeId = message.resumeId;
+    }
     return obj;
   },
 
@@ -217,6 +233,7 @@ export const CertificationsCreateRequest: MessageFns<CertificationsCreateRequest
     message.issuer = object.issuer ?? "";
     message.issuedAt = object.issuedAt ?? 0;
     message.expirationPeriod = object.expirationPeriod ?? undefined;
+    message.resumeId = object.resumeId ?? "";
     return message;
   },
 };

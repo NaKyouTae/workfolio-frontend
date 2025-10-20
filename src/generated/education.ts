@@ -19,6 +19,7 @@ export interface EducationCreateRequest {
   startedAt: number;
   endedAt?: number | undefined;
   agency: string;
+  resumeId: string;
 }
 
 export interface EducationUpdateRequest {
@@ -96,7 +97,7 @@ export const EducationListResponse: MessageFns<EducationListResponse> = {
 };
 
 function createBaseEducationCreateRequest(): EducationCreateRequest {
-  return { name: "", startedAt: 0, endedAt: undefined, agency: "" };
+  return { name: "", startedAt: 0, endedAt: undefined, agency: "", resumeId: "" };
 }
 
 export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
@@ -112,6 +113,9 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
     }
     if (message.agency !== "") {
       writer.uint32(34).string(message.agency);
+    }
+    if (message.resumeId !== "") {
+      writer.uint32(794).string(message.resumeId);
     }
     return writer;
   },
@@ -155,6 +159,14 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
           message.agency = reader.string();
           continue;
         }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.resumeId = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -170,6 +182,7 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       agency: isSet(object.agency) ? globalThis.String(object.agency) : "",
+      resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
@@ -187,6 +200,9 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
     if (message.agency !== "") {
       obj.agency = message.agency;
     }
+    if (message.resumeId !== "") {
+      obj.resumeId = message.resumeId;
+    }
     return obj;
   },
 
@@ -199,6 +215,7 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
     message.agency = object.agency ?? "";
+    message.resumeId = object.resumeId ?? "";
     return message;
   },
 };

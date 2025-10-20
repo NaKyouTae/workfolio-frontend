@@ -3,11 +3,11 @@ import { Record, Record_RecordType, RecordGroup, Company } from '@/generated/com
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import timezone from 'dayjs/plugin/timezone'
-import RecordDetail from '../../modal/RecordDetail'
-import RecordUpdateModal from '../../modal/RecordUpdateModal'
-import RecordCreateModal from '../../modal/RecordCreateModal'
 import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
+import RecordCreateModal from '../../modal/RecordCreateModal'
+import RecordDetail from '../../modal/RecordDetail'
+import RecordUpdateModal from '../../modal/RecordUpdateModal'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)

@@ -19,6 +19,7 @@ export interface DegreesCreateRequest {
   major: string;
   startedAt: number;
   endedAt?: number | undefined;
+  resumeId: string;
 }
 
 export interface DegreesUpdateRequest {
@@ -94,7 +95,7 @@ export const DegreesListResponse: MessageFns<DegreesListResponse> = {
 };
 
 function createBaseDegreesCreateRequest(): DegreesCreateRequest {
-  return { name: "", major: "", startedAt: 0, endedAt: undefined };
+  return { name: "", major: "", startedAt: 0, endedAt: undefined, resumeId: "" };
 }
 
 export const DegreesCreateRequest: MessageFns<DegreesCreateRequest> = {
@@ -110,6 +111,9 @@ export const DegreesCreateRequest: MessageFns<DegreesCreateRequest> = {
     }
     if (message.endedAt !== undefined) {
       writer.uint32(32).uint64(message.endedAt);
+    }
+    if (message.resumeId !== "") {
+      writer.uint32(794).string(message.resumeId);
     }
     return writer;
   },
@@ -153,6 +157,14 @@ export const DegreesCreateRequest: MessageFns<DegreesCreateRequest> = {
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.resumeId = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -168,6 +180,7 @@ export const DegreesCreateRequest: MessageFns<DegreesCreateRequest> = {
       major: isSet(object.major) ? globalThis.String(object.major) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
@@ -185,6 +198,9 @@ export const DegreesCreateRequest: MessageFns<DegreesCreateRequest> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
+    if (message.resumeId !== "") {
+      obj.resumeId = message.resumeId;
+    }
     return obj;
   },
 
@@ -197,6 +213,7 @@ export const DegreesCreateRequest: MessageFns<DegreesCreateRequest> = {
     message.major = object.major ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
+    message.resumeId = object.resumeId ?? "";
     return message;
   },
 };

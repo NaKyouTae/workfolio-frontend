@@ -1,13 +1,14 @@
 // src/components/layouts/Contents.tsx
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import Sidebar from "@/components/layouts/Sidebar"
-import BodyRight, { BodyRightRef } from "@/components/layouts/BodyRight"
-import RecordConfig from "@/components/features/sidebar/records-config/RecordConfig"
+import Sidebar from "@/components/features/records/sidebar/Sidebar"
+import BodyRight, { BodyRightRef } from "@/components/features/records/sidebar/BodyRight"
+
 import Footer from "@/components/layouts/Footer"
 import { useSystemConfigStore } from '@/store/systemConfigStore';
 import { SystemConfig_SystemConfigType } from '@/generated/common';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
 import { useCompanies } from '@/hooks/useCompanies';
+import RecordConfig from './records-config/RecordConfig';
 
 const Contents = React.memo(() => {
     const bodyRightRef = useRef<BodyRightRef>(null);

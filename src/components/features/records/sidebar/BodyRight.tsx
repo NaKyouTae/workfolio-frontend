@@ -1,17 +1,17 @@
 import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect, useRef, useMemo} from 'react'
 import { useSearchParams } from 'next/navigation'
-import ListCalendar from '@/components/features/calendar/list/ListCalendar'
-import CalendarHeader from '@/components/features/calendar/CalendarHeader'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { useRecords } from '@/hooks/useRecords'
-import MonthlyCalendar from '@/components/features/calendar/monthly/MonthlyCalendar'
-import WeeklyCalendar from '@/components/features/calendar/weekly/WeeklyCalendar'
 import { CalendarViewType } from '@/models/CalendarTypes'
 import { useSystemConfigStore } from '@/store/systemConfigStore'
 import { RecordGroup, SystemConfig_SystemConfigType, Company } from '@/generated/common'
 import { parseCalendarViewType } from '@/utils/commonUtils'
 import { RecordGroupDetailResponse } from '@/generated/record_group'
 import dayjs from 'dayjs'
+import CalendarHeader from '../calendar/CalendarHeader'
+import ListCalendar from '../calendar/list/ListCalendar'
+import MonthlyCalendar from '../calendar/monthly/MonthlyCalendar'
+import WeeklyCalendar from '../calendar/weekly/WeeklyCalendar'
 
 export interface BodyRightRef {
     refreshRecords: () => void;

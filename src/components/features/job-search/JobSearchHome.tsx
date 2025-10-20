@@ -1,6 +1,6 @@
 import React from 'react';
 import { JobSearch, Company } from '@/generated/common';
-import JobSearchCompanyPage from '../job-search-company/JobSearchCompanyPage';
+import JobSearchCompanyPage from './job-search-company/JobSearchCompanyPage';
 
 interface JobSearchHomeProps {
   selectedJobSearch: JobSearch | null;
