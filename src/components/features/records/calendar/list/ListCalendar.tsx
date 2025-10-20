@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Record, Record_RecordType, RecordGroup, Company } from '@/generated/common'
+import { Record, Record_RecordType, RecordGroup } from '@/generated/common'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import timezone from 'dayjs/plugin/timezone'
@@ -31,11 +31,6 @@ interface ListCalendarProps {
     recordGroups: RecordGroup[]
     allRecordGroups: RecordGroup[]
     editableRecordGroups: RecordGroup[]
-    companiesData: {
-        companies: Company[]
-        isLoading: boolean
-        refreshCompanies: () => void
-    }
 }
 
 const ListCalendar: React.FC<ListCalendarProps> = React.memo(({ 
@@ -43,7 +38,6 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
     records,
     allRecordGroups,
     editableRecordGroups,
-    companiesData
 }) => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -349,7 +343,6 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
                 allRecordGroups={allRecordGroups}
-                companiesData={companiesData}
             />
 
             {/* RecordCreateModal */}
@@ -358,7 +351,6 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDate}
                 editableRecordGroups={editableRecordGroups}
-                companiesData={companiesData}
             />
         </>
     )

@@ -3,7 +3,7 @@ import HttpMethod from "@/enums/HttpMethod"
 import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
-import {Record, RecordGroup, Company} from "@/generated/common"
+import {Record, RecordGroup} from "@/generated/common"
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import dayjs from 'dayjs'
 import { RecordUpdateRequest } from '@/generated/record'
@@ -14,11 +14,6 @@ interface ModalProps {
     onDelete?: () => void;
     record: Record | null;
     allRecordGroups: RecordGroup[];
-    companiesData: {
-        companies: Company[];
-        isLoading: boolean;
-        refreshCompanies: () => void;
-    };
 }
 
 const RecordUpdateModal: React.FC<ModalProps> = ({ 
@@ -27,7 +22,6 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     onDelete, 
     record, 
     allRecordGroups,
-    companiesData
 }) => {
     const [recordGroupId, setRecordGroupId] = useState<string>('');
     const [title, setTitle] = useState<string>('');
@@ -36,13 +30,9 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [companyId, setCompanyId] = useState<string | null>(null);
 
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
-    
-    // props로 받은 companiesData 사용
-    const { companies, refreshCompanies } = companiesData;
     
     // record groups를 dropdown options로 변환
     const dropdownOptions: IDropdown[] = useMemo(() => 
@@ -53,14 +43,6 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
         })), [allRecordGroups]
     );
     
-    // companies를 dropdown options로 변환
-    const companyOptions: IDropdown[] = useMemo(() => 
-        companies.map(company => ({
-            value: company.id || '',
-            label: company.name || ''
-        })), [companies]
-    );
-
     // isAllDay 변경 시 시간 고정 로직
     useEffect(() => {
         if (isAllDay) {
@@ -84,13 +66,6 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
             setSelectedFile(null);
         }
     }, [isOpen, record]);
-
-    useEffect(() => {
-        if (isOpen) {
-            setCompanyId(record?.company?.id || '');
-            refreshCompanies();
-        }
-    }, [isOpen, record, refreshCompanies]);
 
     // ESC 키 이벤트 처리
     useEffect(() => {
@@ -119,7 +94,6 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                 id: record.id,
                 title: title,
                 description: description,
-                companyId: companyId || undefined,
                 startedAt: DateUtil.parseToTimestamp(startedAt),
                 endedAt: DateUtil.parseToTimestamp(endedAt),
             };
@@ -169,16 +143,6 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                                         options={dropdownOptions}
                                         selectedOption={recordGroupId}
                                         setValue={setRecordGroupId}
-                                    />
-                                </div>
-                            </li>
-                            <li>
-                                <p>기록 할 회사</p>
-                                <div className="record-select">
-                                    <Dropdown
-                                        options={companyOptions}
-                                        selectedOption={companyId || ''}
-                                        setValue={setCompanyId}
                                     />
                                 </div>
                             </li>

@@ -11,7 +11,7 @@ import { Salary } from "./common";
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
 export interface SalaryCreateRequest {
-  companyId: string;
+  careerId: string;
   amount: number;
   startedAt: number;
   endedAt?: number | undefined;
@@ -33,13 +33,13 @@ export interface SalaryResponse {
 }
 
 function createBaseSalaryCreateRequest(): SalaryCreateRequest {
-  return { companyId: "", amount: 0, startedAt: 0, endedAt: undefined };
+  return { careerId: "", amount: 0, startedAt: 0, endedAt: undefined };
 }
 
 export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
   encode(message: SalaryCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.companyId !== "") {
-      writer.uint32(10).string(message.companyId);
+    if (message.careerId !== "") {
+      writer.uint32(10).string(message.careerId);
     }
     if (message.amount !== 0) {
       writer.uint32(16).uint64(message.amount);
@@ -65,7 +65,7 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
             break;
           }
 
-          message.companyId = reader.string();
+          message.careerId = reader.string();
           continue;
         }
         case 2: {
@@ -103,7 +103,7 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
 
   fromJSON(object: any): SalaryCreateRequest {
     return {
-      companyId: isSet(object.companyId) ? globalThis.String(object.companyId) : "",
+      careerId: isSet(object.careerId) ? globalThis.String(object.careerId) : "",
       amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
@@ -112,8 +112,8 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
 
   toJSON(message: SalaryCreateRequest): unknown {
     const obj: any = {};
-    if (message.companyId !== "") {
-      obj.companyId = message.companyId;
+    if (message.careerId !== "") {
+      obj.careerId = message.careerId;
     }
     if (message.amount !== 0) {
       obj.amount = Math.round(message.amount);
@@ -132,7 +132,7 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
   },
   fromPartial<I extends Exact<DeepPartial<SalaryCreateRequest>, I>>(object: I): SalaryCreateRequest {
     const message = createBaseSalaryCreateRequest();
-    message.companyId = object.companyId ?? "";
+    message.careerId = object.careerId ?? "";
     message.amount = object.amount ?? 0;
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
-import { Record, Record_RecordType, RecordGroup, Company } from '@/generated/common'
+import { Record, Record_RecordType, RecordGroup } from '@/generated/common'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import timezone from 'dayjs/plugin/timezone'
@@ -19,11 +19,6 @@ interface WeeklyCalendarProps {
     records: Record[]
     allRecordGroups: RecordGroup[]
     editableRecordGroups: RecordGroup[]
-    companiesData: {
-        companies: Company[]
-        isLoading: boolean
-        refreshCompanies: () => void
-    }
 }
 
 interface WeeklyCalendarDay {
@@ -49,7 +44,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     records,
     allRecordGroups,
     editableRecordGroups,
-    companiesData
 }) => {
     // 주간 날짜 생성 (일요일부터 토요일까지) - useCallback으로 메모이제이션
     const getWeekDays = useCallback((date: Date): WeeklyCalendarDay[] => {
@@ -1027,7 +1021,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                 onDelete={handleDeleteRecord}
                 record={selectedRecord}
                 allRecordGroups={allRecordGroups}
-                companiesData={companiesData}
             />
 
             {/* RecordCreateModal */}
@@ -1036,7 +1029,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDateForCreate}
                 editableRecordGroups={editableRecordGroups}
-                companiesData={companiesData}
             />
         </div>
     )

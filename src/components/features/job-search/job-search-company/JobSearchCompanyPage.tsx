@@ -234,7 +234,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
               fontSize: '14px',
               color: '#666'
             }}>
-              {jobSearch.prevCompany && (
+              {jobSearch.prevCareer && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <span style={{ fontWeight: 'bold' }}>이전 회사:</span>
                   <span style={{ 
@@ -244,11 +244,11 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
                     color: '#495057',
                     fontSize: '12px'
                   }}>
-                    {jobSearch.prevCompany.name}
+                    {jobSearch.prevCareer.name}
                   </span>
                 </div>
               )}
-              {jobSearch.nextCompany && (
+              {jobSearch.nextCareer && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <span style={{ fontWeight: 'bold' }}>이후 회사:</span>
                   <span style={{ 
@@ -258,7 +258,7 @@ const JobSearchCompanyPage: React.FC<JobSearchCompanyPageProps> = ({ jobSearch, 
                     color: '#495057',
                     fontSize: '12px'
                   }}>
-                    {jobSearch.nextCompany.name}
+                    {jobSearch.nextCareer.name}
                   </span>
                 </div>
               )}

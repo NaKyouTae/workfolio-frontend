@@ -1,17 +1,17 @@
 import React from 'react';
-import { JobSearch, Company } from '@/generated/common';
+import { JobSearch, Career } from '@/generated/common';
 import JobSearchCompanyPage from './job-search-company/JobSearchCompanyPage';
 
 interface JobSearchHomeProps {
   selectedJobSearch: JobSearch | null;
-  companies: Company[];
+  careers: Career[];
   onBack?: () => void;
   onJobSearchDelete?: () => void;
 }
 
 const JobSearchHome: React.FC<JobSearchHomeProps> = ({
   selectedJobSearch,
-  companies,
+  careers,
   onBack,
   onJobSearchDelete,
 }) => {
@@ -96,7 +96,7 @@ const JobSearchHome: React.FC<JobSearchHomeProps> = ({
               color: '#007bff',
               margin: 0
             }}>
-              {companies.length}
+              {careers.length}
             </p>
           </div>
           
@@ -120,7 +120,7 @@ const JobSearchHome: React.FC<JobSearchHomeProps> = ({
               color: '#28a745',
               margin: 0
             }}>
-              {companies.filter(company => !company.endedAt).length}
+              {careers.filter(career => !career.endedAt).length}
             </p>
           </div>
         </div>

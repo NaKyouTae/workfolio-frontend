@@ -2,61 +2,66 @@
 // versions:
 //   protoc-gen-ts_proto  v2.7.0
 //   protoc               v6.32.0
-// source: position.proto
+// source: career.proto
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { Position } from "./common";
+import { Career } from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
-export interface PositionCreateRequest {
-  careerId: string;
+export interface CareerCreateRequest {
   name: string;
   startedAt: number;
-  endedAt?: number | undefined;
+  endedAt: number;
+  isWorking: boolean;
+  resumeId: string;
 }
 
-export interface PositionUpdateRequest {
+export interface CareerUpdateRequest {
   id: string;
   name: string;
   startedAt: number;
   endedAt?: number | undefined;
+  isWorking: boolean;
 }
 
-export interface PositionListResponse {
-  positions: Position[];
+export interface CareerListResponse {
+  careers: Career[];
 }
 
-export interface PositionResponse {
-  position?: Position | undefined;
+export interface CareerResponse {
+  career?: Career | undefined;
 }
 
-function createBasePositionCreateRequest(): PositionCreateRequest {
-  return { careerId: "", name: "", startedAt: 0, endedAt: undefined };
+function createBaseCareerCreateRequest(): CareerCreateRequest {
+  return { name: "", startedAt: 0, endedAt: 0, isWorking: false, resumeId: "" };
 }
 
-export const PositionCreateRequest: MessageFns<PositionCreateRequest> = {
-  encode(message: PositionCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.careerId !== "") {
-      writer.uint32(10).string(message.careerId);
-    }
+export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
+  encode(message: CareerCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+      writer.uint32(10).string(message.name);
     }
     if (message.startedAt !== 0) {
-      writer.uint32(24).uint64(message.startedAt);
+      writer.uint32(16).uint64(message.startedAt);
     }
-    if (message.endedAt !== undefined) {
-      writer.uint32(32).uint64(message.endedAt);
+    if (message.endedAt !== 0) {
+      writer.uint32(24).uint64(message.endedAt);
+    }
+    if (message.isWorking !== false) {
+      writer.uint32(32).bool(message.isWorking);
+    }
+    if (message.resumeId !== "") {
+      writer.uint32(794).string(message.resumeId);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): PositionCreateRequest {
+  decode(input: BinaryReader | Uint8Array, length?: number): CareerCreateRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePositionCreateRequest();
+    const message = createBaseCareerCreateRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -65,15 +70,15 @@ export const PositionCreateRequest: MessageFns<PositionCreateRequest> = {
             break;
           }
 
-          message.careerId = reader.string();
+          message.name = reader.string();
           continue;
         }
         case 2: {
-          if (tag !== 18) {
+          if (tag !== 16) {
             break;
           }
 
-          message.name = reader.string();
+          message.startedAt = longToNumber(reader.uint64());
           continue;
         }
         case 3: {
@@ -81,7 +86,7 @@ export const PositionCreateRequest: MessageFns<PositionCreateRequest> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
+          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -89,7 +94,15 @@ export const PositionCreateRequest: MessageFns<PositionCreateRequest> = {
             break;
           }
 
-          message.endedAt = longToNumber(reader.uint64());
+          message.isWorking = reader.bool();
+          continue;
+        }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.resumeId = reader.string();
           continue;
         }
       }
@@ -101,51 +114,56 @@ export const PositionCreateRequest: MessageFns<PositionCreateRequest> = {
     return message;
   },
 
-  fromJSON(object: any): PositionCreateRequest {
+  fromJSON(object: any): CareerCreateRequest {
     return {
-      careerId: isSet(object.careerId) ? globalThis.String(object.careerId) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
-      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
+      isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : false,
+      resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
-  toJSON(message: PositionCreateRequest): unknown {
+  toJSON(message: CareerCreateRequest): unknown {
     const obj: any = {};
-    if (message.careerId !== "") {
-      obj.careerId = message.careerId;
-    }
     if (message.name !== "") {
       obj.name = message.name;
     }
     if (message.startedAt !== 0) {
       obj.startedAt = Math.round(message.startedAt);
     }
-    if (message.endedAt !== undefined) {
+    if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.isWorking !== false) {
+      obj.isWorking = message.isWorking;
+    }
+    if (message.resumeId !== "") {
+      obj.resumeId = message.resumeId;
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PositionCreateRequest>, I>>(base?: I): PositionCreateRequest {
-    return PositionCreateRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<CareerCreateRequest>, I>>(base?: I): CareerCreateRequest {
+    return CareerCreateRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<PositionCreateRequest>, I>>(object: I): PositionCreateRequest {
-    const message = createBasePositionCreateRequest();
-    message.careerId = object.careerId ?? "";
+  fromPartial<I extends Exact<DeepPartial<CareerCreateRequest>, I>>(object: I): CareerCreateRequest {
+    const message = createBaseCareerCreateRequest();
     message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? 0;
-    message.endedAt = object.endedAt ?? undefined;
+    message.endedAt = object.endedAt ?? 0;
+    message.isWorking = object.isWorking ?? false;
+    message.resumeId = object.resumeId ?? "";
     return message;
   },
 };
 
-function createBasePositionUpdateRequest(): PositionUpdateRequest {
-  return { id: "", name: "", startedAt: 0, endedAt: undefined };
+function createBaseCareerUpdateRequest(): CareerUpdateRequest {
+  return { id: "", name: "", startedAt: 0, endedAt: undefined, isWorking: false };
 }
 
-export const PositionUpdateRequest: MessageFns<PositionUpdateRequest> = {
-  encode(message: PositionUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
+  encode(message: CareerUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -158,13 +176,16 @@ export const PositionUpdateRequest: MessageFns<PositionUpdateRequest> = {
     if (message.endedAt !== undefined) {
       writer.uint32(32).uint64(message.endedAt);
     }
+    if (message.isWorking !== false) {
+      writer.uint32(40).bool(message.isWorking);
+    }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): PositionUpdateRequest {
+  decode(input: BinaryReader | Uint8Array, length?: number): CareerUpdateRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePositionUpdateRequest();
+    const message = createBaseCareerUpdateRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -200,6 +221,14 @@ export const PositionUpdateRequest: MessageFns<PositionUpdateRequest> = {
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.isWorking = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -209,16 +238,17 @@ export const PositionUpdateRequest: MessageFns<PositionUpdateRequest> = {
     return message;
   },
 
-  fromJSON(object: any): PositionUpdateRequest {
+  fromJSON(object: any): CareerUpdateRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : false,
     };
   },
 
-  toJSON(message: PositionUpdateRequest): unknown {
+  toJSON(message: CareerUpdateRequest): unknown {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
@@ -232,38 +262,42 @@ export const PositionUpdateRequest: MessageFns<PositionUpdateRequest> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
+    if (message.isWorking !== false) {
+      obj.isWorking = message.isWorking;
+    }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PositionUpdateRequest>, I>>(base?: I): PositionUpdateRequest {
-    return PositionUpdateRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<CareerUpdateRequest>, I>>(base?: I): CareerUpdateRequest {
+    return CareerUpdateRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<PositionUpdateRequest>, I>>(object: I): PositionUpdateRequest {
-    const message = createBasePositionUpdateRequest();
+  fromPartial<I extends Exact<DeepPartial<CareerUpdateRequest>, I>>(object: I): CareerUpdateRequest {
+    const message = createBaseCareerUpdateRequest();
     message.id = object.id ?? "";
     message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
+    message.isWorking = object.isWorking ?? false;
     return message;
   },
 };
 
-function createBasePositionListResponse(): PositionListResponse {
-  return { positions: [] };
+function createBaseCareerListResponse(): CareerListResponse {
+  return { careers: [] };
 }
 
-export const PositionListResponse: MessageFns<PositionListResponse> = {
-  encode(message: PositionListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.positions) {
-      Position.encode(v!, writer.uint32(10).fork()).join();
+export const CareerListResponse: MessageFns<CareerListResponse> = {
+  encode(message: CareerListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.careers) {
+      Career.encode(v!, writer.uint32(10).fork()).join();
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): PositionListResponse {
+  decode(input: BinaryReader | Uint8Array, length?: number): CareerListResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePositionListResponse();
+    const message = createBaseCareerListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -272,7 +306,7 @@ export const PositionListResponse: MessageFns<PositionListResponse> = {
             break;
           }
 
-          message.positions.push(Position.decode(reader, reader.uint32()));
+          message.careers.push(Career.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -284,48 +318,46 @@ export const PositionListResponse: MessageFns<PositionListResponse> = {
     return message;
   },
 
-  fromJSON(object: any): PositionListResponse {
+  fromJSON(object: any): CareerListResponse {
     return {
-      positions: globalThis.Array.isArray(object?.positions)
-        ? object.positions.map((e: any) => Position.fromJSON(e))
-        : [],
+      careers: globalThis.Array.isArray(object?.careers) ? object.careers.map((e: any) => Career.fromJSON(e)) : [],
     };
   },
 
-  toJSON(message: PositionListResponse): unknown {
+  toJSON(message: CareerListResponse): unknown {
     const obj: any = {};
-    if (message.positions?.length) {
-      obj.positions = message.positions.map((e) => Position.toJSON(e));
+    if (message.careers?.length) {
+      obj.careers = message.careers.map((e) => Career.toJSON(e));
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PositionListResponse>, I>>(base?: I): PositionListResponse {
-    return PositionListResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<CareerListResponse>, I>>(base?: I): CareerListResponse {
+    return CareerListResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<PositionListResponse>, I>>(object: I): PositionListResponse {
-    const message = createBasePositionListResponse();
-    message.positions = object.positions?.map((e) => Position.fromPartial(e)) || [];
+  fromPartial<I extends Exact<DeepPartial<CareerListResponse>, I>>(object: I): CareerListResponse {
+    const message = createBaseCareerListResponse();
+    message.careers = object.careers?.map((e) => Career.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBasePositionResponse(): PositionResponse {
-  return { position: undefined };
+function createBaseCareerResponse(): CareerResponse {
+  return { career: undefined };
 }
 
-export const PositionResponse: MessageFns<PositionResponse> = {
-  encode(message: PositionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.position !== undefined) {
-      Position.encode(message.position, writer.uint32(10).fork()).join();
+export const CareerResponse: MessageFns<CareerResponse> = {
+  encode(message: CareerResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.career !== undefined) {
+      Career.encode(message.career, writer.uint32(10).fork()).join();
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): PositionResponse {
+  decode(input: BinaryReader | Uint8Array, length?: number): CareerResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePositionResponse();
+    const message = createBaseCareerResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -334,7 +366,7 @@ export const PositionResponse: MessageFns<PositionResponse> = {
             break;
           }
 
-          message.position = Position.decode(reader, reader.uint32());
+          message.career = Career.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -346,25 +378,25 @@ export const PositionResponse: MessageFns<PositionResponse> = {
     return message;
   },
 
-  fromJSON(object: any): PositionResponse {
-    return { position: isSet(object.position) ? Position.fromJSON(object.position) : undefined };
+  fromJSON(object: any): CareerResponse {
+    return { career: isSet(object.career) ? Career.fromJSON(object.career) : undefined };
   },
 
-  toJSON(message: PositionResponse): unknown {
+  toJSON(message: CareerResponse): unknown {
     const obj: any = {};
-    if (message.position !== undefined) {
-      obj.position = Position.toJSON(message.position);
+    if (message.career !== undefined) {
+      obj.career = Career.toJSON(message.career);
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PositionResponse>, I>>(base?: I): PositionResponse {
-    return PositionResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<CareerResponse>, I>>(base?: I): CareerResponse {
+    return CareerResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<PositionResponse>, I>>(object: I): PositionResponse {
-    const message = createBasePositionResponse();
-    message.position = (object.position !== undefined && object.position !== null)
-      ? Position.fromPartial(object.position)
+  fromPartial<I extends Exact<DeepPartial<CareerResponse>, I>>(object: I): CareerResponse {
+    const message = createBaseCareerResponse();
+    message.career = (object.career !== undefined && object.career !== null)
+      ? Career.fromPartial(object.career)
       : undefined;
     return message;
   },

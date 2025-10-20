@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Company } from '@/generated/common'
-import { createSampleCompanies } from '@/utils/sampleData'
+import { Career } from '@/generated/common'
+import { createSampleCareers } from '@/utils/sampleData'
 
-export function useCompanies() {
-    const [companies, setCompanies] = useState<Company[]>([])
+export function useCareers() {
+    const [careers, setCareers] = useState<Career[]>([])
     const [isLoading, setIsLoading] = useState(false)
 
     const fetchCompanies = useCallback(async () => {
@@ -17,12 +17,12 @@ export function useCompanies() {
             
             if (!accessToken) {
                 // 로그인하지 않은 경우 샘플 데이터 사용
-                const sampleCompanies = createSampleCompanies()
-                setCompanies(sampleCompanies)
+                const sampleCareers = createSampleCareers()
+                setCareers(sampleCareers)
                 return
             }
 
-            const response = await fetch('/api/workers/companies', {
+            const response = await fetch('/api/workers/careers', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,18 +31,18 @@ export function useCompanies() {
 
             if (response.ok) {
                 const data = await response.json()
-                setCompanies(data.companies || [])
+                setCareers(data.careers || [])
             } else {
                 console.error('Failed to fetch companies')
                 // API 실패 시 샘플 데이터 사용
-                const sampleCompanies = createSampleCompanies()
-                setCompanies(sampleCompanies)
+                const sampleCareers = createSampleCareers()
+                setCareers(sampleCareers)
             }
         } catch (error) {
             console.error('Error fetching companies:', error)
             // 에러 시 샘플 데이터 사용
-            const sampleCompanies = createSampleCompanies()
-            setCompanies(sampleCompanies)
+            const sampleCareers = createSampleCareers()
+            setCareers(sampleCareers)
         } finally {
             setIsLoading(false)
         }
@@ -54,14 +54,14 @@ export function useCompanies() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []) // 의도적으로 빈 배열 - 마운트 시 한 번만 실행
 
-    const refreshCompanies = useCallback(() => {
+    const refreshCareers = useCallback(() => {
         fetchCompanies()
     }, [fetchCompanies])
 
     // 반환 객체를 메모이제이션하여 불필요한 리렌더링 방지
     return useMemo(() => ({
-        companies,
+        careers,
         isLoading,
-        refreshCompanies
-    }), [companies, isLoading, refreshCompanies])
+        refreshCareers
+    }), [careers, isLoading, refreshCareers])
 }

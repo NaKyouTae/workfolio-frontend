@@ -121,7 +121,7 @@ export function resume_GenderToJSON(object: Resume_Gender): string {
   }
 }
 
-export interface Company {
+export interface Career {
   id: string;
   name: string;
   startedAt: number;
@@ -139,7 +139,7 @@ export interface Project {
   isVisible: boolean;
   startedAt: number;
   endedAt?: number | undefined;
-  company?: Company | undefined;
+  career?: Career | undefined;
   createdAt: number;
   updatedAt: number;
 }
@@ -149,7 +149,7 @@ export interface Position {
   name: string;
   startedAt: number;
   endedAt: number;
-  company?: Company | undefined;
+  career?: Career | undefined;
   createdAt: number;
   updatedAt: number;
 }
@@ -159,7 +159,7 @@ export interface Salary {
   amount: number;
   startedAt: number;
   endedAt: number;
-  company?: Company | undefined;
+  career?: Career | undefined;
   createdAt: number;
   updatedAt: number;
 }
@@ -206,7 +206,6 @@ export interface Record {
   startedAt: number;
   endedAt: number;
   worker?: Worker | undefined;
-  company?: Company | undefined;
   recordGroup?: RecordGroup | undefined;
   createdAt: number;
   updatedAt: number;
@@ -335,8 +334,8 @@ export interface JobSearch {
   endedAt?: number | undefined;
   memo?: string | undefined;
   worker?: Worker | undefined;
-  prevCompany?: Company | undefined;
-  nextCompany?: Company | undefined;
+  prevCareer?: Career | undefined;
+  nextCareer?: Career | undefined;
   createdAt: number;
   updatedAt: number;
 }
@@ -1071,7 +1070,7 @@ export const Resume: MessageFns<Resume> = {
   },
 };
 
-function createBaseCompany(): Company {
+function createBaseCareer(): Career {
   return {
     id: "",
     name: "",
@@ -1084,8 +1083,8 @@ function createBaseCompany(): Company {
   };
 }
 
-export const Company: MessageFns<Company> = {
-  encode(message: Company, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const Career: MessageFns<Career> = {
+  encode(message: Career, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -1113,10 +1112,10 @@ export const Company: MessageFns<Company> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Company {
+  decode(input: BinaryReader | Uint8Array, length?: number): Career {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCompany();
+    const message = createBaseCareer();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1193,7 +1192,7 @@ export const Company: MessageFns<Company> = {
     return message;
   },
 
-  fromJSON(object: any): Company {
+  fromJSON(object: any): Career {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
@@ -1206,7 +1205,7 @@ export const Company: MessageFns<Company> = {
     };
   },
 
-  toJSON(message: Company): unknown {
+  toJSON(message: Career): unknown {
     const obj: any = {};
     if (message.id !== "") {
       obj.id = message.id;
@@ -1235,11 +1234,11 @@ export const Company: MessageFns<Company> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<Company>, I>>(base?: I): Company {
-    return Company.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<Career>, I>>(base?: I): Career {
+    return Career.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<Company>, I>>(object: I): Company {
-    const message = createBaseCompany();
+  fromPartial<I extends Exact<DeepPartial<Career>, I>>(object: I): Career {
+    const message = createBaseCareer();
     message.id = object.id ?? "";
     message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? 0;
@@ -1262,7 +1261,7 @@ function createBaseProject(): Project {
     isVisible: false,
     startedAt: 0,
     endedAt: undefined,
-    company: undefined,
+    career: undefined,
     createdAt: 0,
     updatedAt: 0,
   };
@@ -1288,8 +1287,8 @@ export const Project: MessageFns<Project> = {
     if (message.endedAt !== undefined) {
       writer.uint32(48).uint64(message.endedAt);
     }
-    if (message.company !== undefined) {
-      Company.encode(message.company, writer.uint32(402).fork()).join();
+    if (message.career !== undefined) {
+      Career.encode(message.career, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -1360,7 +1359,7 @@ export const Project: MessageFns<Project> = {
             break;
           }
 
-          message.company = Company.decode(reader, reader.uint32());
+          message.career = Career.decode(reader, reader.uint32());
           continue;
         }
         case 98: {
@@ -1396,7 +1395,7 @@ export const Project: MessageFns<Project> = {
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      company: isSet(object.company) ? Company.fromJSON(object.company) : undefined,
+      career: isSet(object.career) ? Career.fromJSON(object.career) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -1422,8 +1421,8 @@ export const Project: MessageFns<Project> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.company !== undefined) {
-      obj.company = Company.toJSON(message.company);
+    if (message.career !== undefined) {
+      obj.career = Career.toJSON(message.career);
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -1445,8 +1444,8 @@ export const Project: MessageFns<Project> = {
     message.isVisible = object.isVisible ?? false;
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
-    message.company = (object.company !== undefined && object.company !== null)
-      ? Company.fromPartial(object.company)
+    message.career = (object.career !== undefined && object.career !== null)
+      ? Career.fromPartial(object.career)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
@@ -1455,7 +1454,7 @@ export const Project: MessageFns<Project> = {
 };
 
 function createBasePosition(): Position {
-  return { id: "", name: "", startedAt: 0, endedAt: 0, company: undefined, createdAt: 0, updatedAt: 0 };
+  return { id: "", name: "", startedAt: 0, endedAt: 0, career: undefined, createdAt: 0, updatedAt: 0 };
 }
 
 export const Position: MessageFns<Position> = {
@@ -1472,8 +1471,8 @@ export const Position: MessageFns<Position> = {
     if (message.endedAt !== 0) {
       writer.uint32(32).uint64(message.endedAt);
     }
-    if (message.company !== undefined) {
-      Company.encode(message.company, writer.uint32(402).fork()).join();
+    if (message.career !== undefined) {
+      Career.encode(message.career, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -1528,7 +1527,7 @@ export const Position: MessageFns<Position> = {
             break;
           }
 
-          message.company = Company.decode(reader, reader.uint32());
+          message.career = Career.decode(reader, reader.uint32());
           continue;
         }
         case 98: {
@@ -1562,7 +1561,7 @@ export const Position: MessageFns<Position> = {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
-      company: isSet(object.company) ? Company.fromJSON(object.company) : undefined,
+      career: isSet(object.career) ? Career.fromJSON(object.career) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -1582,8 +1581,8 @@ export const Position: MessageFns<Position> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.company !== undefined) {
-      obj.company = Company.toJSON(message.company);
+    if (message.career !== undefined) {
+      obj.career = Career.toJSON(message.career);
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -1603,8 +1602,8 @@ export const Position: MessageFns<Position> = {
     message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
-    message.company = (object.company !== undefined && object.company !== null)
-      ? Company.fromPartial(object.company)
+    message.career = (object.career !== undefined && object.career !== null)
+      ? Career.fromPartial(object.career)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
@@ -1613,7 +1612,7 @@ export const Position: MessageFns<Position> = {
 };
 
 function createBaseSalary(): Salary {
-  return { id: "", amount: 0, startedAt: 0, endedAt: 0, company: undefined, createdAt: 0, updatedAt: 0 };
+  return { id: "", amount: 0, startedAt: 0, endedAt: 0, career: undefined, createdAt: 0, updatedAt: 0 };
 }
 
 export const Salary: MessageFns<Salary> = {
@@ -1630,8 +1629,8 @@ export const Salary: MessageFns<Salary> = {
     if (message.endedAt !== 0) {
       writer.uint32(40).uint64(message.endedAt);
     }
-    if (message.company !== undefined) {
-      Company.encode(message.company, writer.uint32(402).fork()).join();
+    if (message.career !== undefined) {
+      Career.encode(message.career, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -1686,7 +1685,7 @@ export const Salary: MessageFns<Salary> = {
             break;
           }
 
-          message.company = Company.decode(reader, reader.uint32());
+          message.career = Career.decode(reader, reader.uint32());
           continue;
         }
         case 98: {
@@ -1720,7 +1719,7 @@ export const Salary: MessageFns<Salary> = {
       amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
-      company: isSet(object.company) ? Company.fromJSON(object.company) : undefined,
+      career: isSet(object.career) ? Career.fromJSON(object.career) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -1740,8 +1739,8 @@ export const Salary: MessageFns<Salary> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.company !== undefined) {
-      obj.company = Company.toJSON(message.company);
+    if (message.career !== undefined) {
+      obj.career = Career.toJSON(message.career);
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -1761,8 +1760,8 @@ export const Salary: MessageFns<Salary> = {
     message.amount = object.amount ?? 0;
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
-    message.company = (object.company !== undefined && object.company !== null)
-      ? Company.fromPartial(object.company)
+    message.career = (object.career !== undefined && object.career !== null)
+      ? Career.fromPartial(object.career)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
@@ -2327,7 +2326,6 @@ function createBaseRecord(): Record {
     startedAt: 0,
     endedAt: 0,
     worker: undefined,
-    company: undefined,
     recordGroup: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -2357,11 +2355,8 @@ export const Record: MessageFns<Record> = {
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
-    if (message.company !== undefined) {
-      Company.encode(message.company, writer.uint32(410).fork()).join();
-    }
     if (message.recordGroup !== undefined) {
-      RecordGroup.encode(message.recordGroup, writer.uint32(418).fork()).join();
+      RecordGroup.encode(message.recordGroup, writer.uint32(410).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -2440,14 +2435,6 @@ export const Record: MessageFns<Record> = {
             break;
           }
 
-          message.company = Company.decode(reader, reader.uint32());
-          continue;
-        }
-        case 52: {
-          if (tag !== 418) {
-            break;
-          }
-
           message.recordGroup = RecordGroup.decode(reader, reader.uint32());
           continue;
         }
@@ -2485,7 +2472,6 @@ export const Record: MessageFns<Record> = {
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
-      company: isSet(object.company) ? Company.fromJSON(object.company) : undefined,
       recordGroup: isSet(object.recordGroup) ? RecordGroup.fromJSON(object.recordGroup) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -2515,9 +2501,6 @@ export const Record: MessageFns<Record> = {
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
     }
-    if (message.company !== undefined) {
-      obj.company = Company.toJSON(message.company);
-    }
     if (message.recordGroup !== undefined) {
       obj.recordGroup = RecordGroup.toJSON(message.recordGroup);
     }
@@ -2543,9 +2526,6 @@ export const Record: MessageFns<Record> = {
     message.endedAt = object.endedAt ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
-      : undefined;
-    message.company = (object.company !== undefined && object.company !== null)
-      ? Company.fromPartial(object.company)
       : undefined;
     message.recordGroup = (object.recordGroup !== undefined && object.recordGroup !== null)
       ? RecordGroup.fromPartial(object.recordGroup)
@@ -2983,8 +2963,8 @@ function createBaseJobSearch(): JobSearch {
     endedAt: undefined,
     memo: undefined,
     worker: undefined,
-    prevCompany: undefined,
-    nextCompany: undefined,
+    prevCareer: undefined,
+    nextCareer: undefined,
     createdAt: 0,
     updatedAt: 0,
   };
@@ -3010,11 +2990,11 @@ export const JobSearch: MessageFns<JobSearch> = {
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
-    if (message.prevCompany !== undefined) {
-      Company.encode(message.prevCompany, writer.uint32(410).fork()).join();
+    if (message.prevCareer !== undefined) {
+      Career.encode(message.prevCareer, writer.uint32(410).fork()).join();
     }
-    if (message.nextCompany !== undefined) {
-      Company.encode(message.nextCompany, writer.uint32(418).fork()).join();
+    if (message.nextCareer !== undefined) {
+      Career.encode(message.nextCareer, writer.uint32(418).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -3085,7 +3065,7 @@ export const JobSearch: MessageFns<JobSearch> = {
             break;
           }
 
-          message.prevCompany = Company.decode(reader, reader.uint32());
+          message.prevCareer = Career.decode(reader, reader.uint32());
           continue;
         }
         case 52: {
@@ -3093,7 +3073,7 @@ export const JobSearch: MessageFns<JobSearch> = {
             break;
           }
 
-          message.nextCompany = Company.decode(reader, reader.uint32());
+          message.nextCareer = Career.decode(reader, reader.uint32());
           continue;
         }
         case 98: {
@@ -3129,8 +3109,8 @@ export const JobSearch: MessageFns<JobSearch> = {
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
-      prevCompany: isSet(object.prevCompany) ? Company.fromJSON(object.prevCompany) : undefined,
-      nextCompany: isSet(object.nextCompany) ? Company.fromJSON(object.nextCompany) : undefined,
+      prevCareer: isSet(object.prevCareer) ? Career.fromJSON(object.prevCareer) : undefined,
+      nextCareer: isSet(object.nextCareer) ? Career.fromJSON(object.nextCareer) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -3156,11 +3136,11 @@ export const JobSearch: MessageFns<JobSearch> = {
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
     }
-    if (message.prevCompany !== undefined) {
-      obj.prevCompany = Company.toJSON(message.prevCompany);
+    if (message.prevCareer !== undefined) {
+      obj.prevCareer = Career.toJSON(message.prevCareer);
     }
-    if (message.nextCompany !== undefined) {
-      obj.nextCompany = Company.toJSON(message.nextCompany);
+    if (message.nextCareer !== undefined) {
+      obj.nextCareer = Career.toJSON(message.nextCareer);
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -3184,11 +3164,11 @@ export const JobSearch: MessageFns<JobSearch> = {
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
       : undefined;
-    message.prevCompany = (object.prevCompany !== undefined && object.prevCompany !== null)
-      ? Company.fromPartial(object.prevCompany)
+    message.prevCareer = (object.prevCareer !== undefined && object.prevCareer !== null)
+      ? Career.fromPartial(object.prevCareer)
       : undefined;
-    message.nextCompany = (object.nextCompany !== undefined && object.nextCompany !== null)
-      ? Company.fromPartial(object.nextCompany)
+    message.nextCareer = (object.nextCareer !== undefined && object.nextCareer !== null)
+      ? Career.fromPartial(object.nextCareer)
       : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;

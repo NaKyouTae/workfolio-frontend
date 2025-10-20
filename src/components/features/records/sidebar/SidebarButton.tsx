@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { RecordGroup, Company } from '@/generated/common';
+import { RecordGroup } from '@/generated/common';
 import RecordCreateModal from '../modal/RecordCreateModal';
 
 interface SidebarButtonProps {
     editableRecordGroups: RecordGroup[];
-    companiesData: {
-        companies: Company[];
-        isLoading: boolean;
-        refreshCompanies: () => void;
-    };
 }
 
-const SidebarButton: React.FC<SidebarButtonProps> = ({ editableRecordGroups, companiesData }) => {
+const SidebarButton: React.FC<SidebarButtonProps> = ({ editableRecordGroups }) => {
     const [isRecordCreateModalOpen, setIsRecordCreateModalOpen] = useState(false);
 
     const closeRecordCreateModal = () => {
@@ -29,7 +24,6 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({ editableRecordGroups, com
                 isOpen={isRecordCreateModalOpen} 
                 onClose={closeRecordCreateModal}
                 editableRecordGroups={editableRecordGroups}
-                companiesData={companiesData}
             />
         </div>
     );

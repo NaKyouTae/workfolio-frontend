@@ -3,7 +3,7 @@ import HttpMethod from "@/enums/HttpMethod"
 import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/ui/Dropdown"
 import DateTimeInput from "@/components/ui/DateTimeInput"
-import {RecordGroup, Company} from "@/generated/common"
+import {RecordGroup} from "@/generated/common"
 import { RecordCreateRequest } from '@/generated/record'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import dayjs from 'dayjs'
@@ -13,11 +13,6 @@ interface ModalProps {
     onClose: () => void;
     selectedDate?: string | null;
     editableRecordGroups: RecordGroup[];
-    companiesData: {
-        companies: Company[];
-        isLoading: boolean;
-        refreshCompanies: () => void;
-    };
 }
 
 const RecordCreateModal: React.FC<ModalProps> = ({ 
@@ -25,7 +20,6 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     onClose, 
     selectedDate, 
     editableRecordGroups,
-    companiesData
 }) => {
     const [recordGroupId, setRecordGroupId] = useState<string | null>(null);
     const [title, setTitle] = useState<string | null>(null);
@@ -34,13 +28,9 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [companyId, setCompanyId] = useState<string | null>(null);
 
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
-    
-    // props로 받은 companiesData 사용
-    const { companies, refreshCompanies } = companiesData;
     
     // record groups를 dropdown options로 변환
     const dropdownOptions: IDropdown[] = useMemo(() => 
@@ -49,14 +39,6 @@ const RecordCreateModal: React.FC<ModalProps> = ({
             label: group.title || '',
             color: group.color
         })), [editableRecordGroups]
-    );
-    
-    // companies를 dropdown options로 변환
-    const companyOptions: IDropdown[] = useMemo(() => 
-        companies.map(company => ({
-            value: company.id || '',
-            label: company.name || ''
-        })), [companies]
     );
 
     // isAllDay 변경 시 시간 고정 로직
@@ -126,11 +108,8 @@ const RecordCreateModal: React.FC<ModalProps> = ({
             setRecordGroupId(dropdownOptions[0]?.value || null);
             setIsAllDay(false);
             setSelectedFile(null);
-            setCompanyId(null);
-            
-            refreshCompanies();
         }
-    }, [isOpen, selectedDate, refreshCompanies, dropdownOptions]);
+    }, [isOpen, selectedDate, dropdownOptions]);
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -138,7 +117,6 @@ const RecordCreateModal: React.FC<ModalProps> = ({
         const createRecordRequest = RecordCreateRequest.create({
             startedAt: DateUtil.parseToTimestamp(startedAt),
             endedAt: DateUtil.parseToTimestamp(endedAt),
-            companyId: companyId || undefined,
             recordGroupId: recordGroupId || undefined,
             title: title || undefined,
             description: description || undefined,
@@ -193,16 +171,6 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                                         options={dropdownOptions}
                                         selectedOption={recordGroupId || ''}
                                         setValue={setRecordGroupId}
-                                    />
-                                </div>
-                            </li>
-                            <li>
-                                <p>기록 할 회사</p>
-                                <div className="record-select">
-                                    <Dropdown
-                                        options={companyOptions}
-                                        selectedOption={companyId || ''}
-                                        setValue={setCompanyId}
                                     />
                                 </div>
                             </li>

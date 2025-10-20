@@ -17,7 +17,7 @@ export interface ProjectCreateRequest {
   email: string;
   startedAt: number;
   endedAt?: number | undefined;
-  companyId: string;
+  careerId: string;
 }
 
 export interface ProjectUpdateRequest {
@@ -39,7 +39,7 @@ export interface ProjectResponse {
 }
 
 function createBaseProjectCreateRequest(): ProjectCreateRequest {
-  return { title: "", description: "", isVisible: false, email: "", startedAt: 0, endedAt: undefined, companyId: "" };
+  return { title: "", description: "", isVisible: false, email: "", startedAt: 0, endedAt: undefined, careerId: "" };
 }
 
 export const ProjectCreateRequest: MessageFns<ProjectCreateRequest> = {
@@ -62,8 +62,8 @@ export const ProjectCreateRequest: MessageFns<ProjectCreateRequest> = {
     if (message.endedAt !== undefined) {
       writer.uint32(48).uint64(message.endedAt);
     }
-    if (message.companyId !== "") {
-      writer.uint32(794).string(message.companyId);
+    if (message.careerId !== "") {
+      writer.uint32(794).string(message.careerId);
     }
     return writer;
   },
@@ -128,7 +128,7 @@ export const ProjectCreateRequest: MessageFns<ProjectCreateRequest> = {
             break;
           }
 
-          message.companyId = reader.string();
+          message.careerId = reader.string();
           continue;
         }
       }
@@ -148,7 +148,7 @@ export const ProjectCreateRequest: MessageFns<ProjectCreateRequest> = {
       email: isSet(object.email) ? globalThis.String(object.email) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      companyId: isSet(object.companyId) ? globalThis.String(object.companyId) : "",
+      careerId: isSet(object.careerId) ? globalThis.String(object.careerId) : "",
     };
   },
 
@@ -172,8 +172,8 @@ export const ProjectCreateRequest: MessageFns<ProjectCreateRequest> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.companyId !== "") {
-      obj.companyId = message.companyId;
+    if (message.careerId !== "") {
+      obj.careerId = message.careerId;
     }
     return obj;
   },
@@ -189,7 +189,7 @@ export const ProjectCreateRequest: MessageFns<ProjectCreateRequest> = {
     message.email = object.email ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
-    message.companyId = object.companyId ?? "";
+    message.careerId = object.careerId ?? "";
     return message;
   },
 };

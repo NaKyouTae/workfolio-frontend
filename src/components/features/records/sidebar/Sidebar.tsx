@@ -1,5 +1,5 @@
 import React from 'react'
-import { RecordGroup, Company } from '@/generated/common';
+import { RecordGroup } from '@/generated/common';
 import { RecordGroupDetailResponse } from '@/generated/record_group';
 import RecordGroupsOwned from './record-groups/record-groups-owned/RecordGroupsOwned';
 import RecordGroupsShared from './record-groups/record-groups-shard/RecordGroupsShared';
@@ -16,14 +16,9 @@ interface SidebarProps {
         refreshRecordGroups: () => void;
         fetchRecordGroupDetails: (recordGroupId: string) => Promise<RecordGroupDetailResponse | null>;
     };
-    companiesData: {
-        companies: Company[];
-        isLoading: boolean;
-        refreshCompanies: () => void;
-    };
 }
 
-const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGroupsData, companiesData }) => {
+const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGroupsData }) => {
     const defaultExpanded = true;
     
     // props로 받은 recordGroupsData 사용
@@ -37,7 +32,6 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
         <aside>
             <SidebarButton 
                 editableRecordGroups={ownedRecordGroups}
-                companiesData={companiesData}
             />
             <div className="aside-cont">
                 <SidebarConfig onConfigToggle={onConfigToggle} />
