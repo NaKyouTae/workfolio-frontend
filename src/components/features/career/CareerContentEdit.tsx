@@ -1,11 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { Career, Certifications, Degrees, Education, Link } from '@/generated/common';
+import { Career, Certifications, Degrees, Education, Link, Project, Salary } from '@/generated/common';
 import { ResumeUpdateRequest } from '@/generated/resume';
 import CareerEdit from './edit/CareerEdit';
 import CertificationEdit from './edit/CertificationEdit';
 import DegreesEdit from './edit/DegreesEdit';
 import EducationEdit from './edit/EducationEdit';
 import LinkEdit from './edit/LinkEdit';
+import ProjectEdit from './edit/ProjectEdit';
+import SalaryEdit from './edit/SalaryEdit';
 import HttpMethod from '@/enums/HttpMethod';
 
 interface CareerContentEditProps {
@@ -27,6 +29,8 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   const [updatedDegrees, setUpdatedDegrees] = useState<Degrees[]>([]);
   const [updatedEducations, setUpdatedEducations] = useState<Education[]>([]);
   const [updatedLinks, setUpdatedLinks] = useState<Link[]>([]);
+  const [updatedProjects, setUpdatedProjects] = useState<Project[]>([]);
+  const [updatedSalaries, setUpdatedSalaries] = useState<Salary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // 각 섹션의 데이터 업데이트 핸들러
@@ -60,6 +64,18 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
     );
   }, []);
 
+  const handleProjectUpdate = useCallback((updatedProject: Project) => {
+    setUpdatedProjects(prev => 
+      prev.map(project => project.id === updatedProject.id ? updatedProject : project)
+    );
+  }, []);
+
+  const handleSalaryUpdate = useCallback((updatedSalary: Salary) => {
+    setUpdatedSalaries(prev => 
+      prev.map(salary => salary.id === updatedSalary.id ? updatedSalary : salary)
+    );
+  }, []);
+
   // ResumeUpdateRequest를 생성하고 API 호출
   const handleSaveAll = useCallback(async () => {
     setIsLoading(true);
@@ -76,7 +92,25 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
             isWorking: career.isWorking,
             employmentType: 1, // FULL_TIME으로 설정 (필요에 따라 수정)
           },
-          projects: [] // 프로젝트 데이터가 있다면 추가
+          projects: updatedProjects
+            .filter(project => project.career?.id === career.id)
+            .map(project => ({
+              id: project.id,
+              title: project.title,
+              description: project.description,
+              startedAt: project.startedAt,
+              endedAt: project.endedAt || 0,
+              isVisible: project.isVisible,
+            })),
+          salaries: updatedSalaries
+            .filter(salary => salary.career?.id === career.id)
+            .map(salary => ({
+              id: salary.id,
+              amount: salary.amount,
+              negotiationDate: salary.negotiationDate || 0,
+              memo: salary.memo || '',
+              isVisible: salary.isVisible,
+            }))
         })),
         certifications: updatedCertifications.map(cert => ({
           id: cert.id,
@@ -131,7 +165,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [updatedCareers, updatedCertifications, updatedDegrees, updatedEducations, updatedLinks, onSave]);
+  }, [updatedCareers, updatedCertifications, updatedDegrees, updatedEducations, updatedLinks, updatedProjects, updatedSalaries, onSave]);
 
   return (
     <div style={{ 
@@ -210,6 +244,28 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
           <LinkEdit 
             link={link}
             onUpdate={handleLinkUpdate}
+            onCancel={onCancel || (() => {})}
+          />
+        </div>
+      ))}
+
+      {/* ProjectEdit - 프로젝트 정보 편집 */}
+      {updatedProjects.map((project) => (
+        <div key={project.id} style={{ marginBottom: '20px' }}>
+          <ProjectEdit 
+            project={project}
+            onUpdate={handleProjectUpdate}
+            onCancel={onCancel || (() => {})}
+          />
+        </div>
+      ))}
+
+      {/* SalaryEdit - 급여 정보 편집 */}
+      {updatedSalaries.map((salary) => (
+        <div key={salary.id} style={{ marginBottom: '20px' }}>
+          <SalaryEdit 
+            salary={salary}
+            onUpdate={handleSalaryUpdate}
             onCancel={onCancel || (() => {})}
           />
         </div>

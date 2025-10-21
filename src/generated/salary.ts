@@ -13,15 +13,17 @@ export const protobufPackage = "com.spectrum.workfolio.proto";
 export interface SalaryCreateRequest {
   careerId: string;
   amount: number;
-  startedAt: number;
-  endedAt?: number | undefined;
+  negotiationDate?: number | undefined;
+  memo?: string | undefined;
+  isVisible: boolean;
 }
 
 export interface SalaryUpdateRequest {
   id: string;
   amount: number;
-  startedAt: number;
-  endedAt?: number | undefined;
+  negotiationDate?: number | undefined;
+  memo?: string | undefined;
+  isVisible: boolean;
 }
 
 export interface SalaryListResponse {
@@ -33,7 +35,7 @@ export interface SalaryResponse {
 }
 
 function createBaseSalaryCreateRequest(): SalaryCreateRequest {
-  return { careerId: "", amount: 0, startedAt: 0, endedAt: undefined };
+  return { careerId: "", amount: 0, negotiationDate: undefined, memo: undefined, isVisible: false };
 }
 
 export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
@@ -44,11 +46,14 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
     if (message.amount !== 0) {
       writer.uint32(16).uint64(message.amount);
     }
-    if (message.startedAt !== 0) {
-      writer.uint32(24).uint64(message.startedAt);
+    if (message.negotiationDate !== undefined) {
+      writer.uint32(24).uint64(message.negotiationDate);
     }
-    if (message.endedAt !== undefined) {
-      writer.uint32(32).uint64(message.endedAt);
+    if (message.memo !== undefined) {
+      writer.uint32(34).string(message.memo);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(40).bool(message.isVisible);
     }
     return writer;
   },
@@ -81,15 +86,23 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
+          message.negotiationDate = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.endedAt = longToNumber(reader.uint64());
+          message.memo = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
           continue;
         }
       }
@@ -105,8 +118,9 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
     return {
       careerId: isSet(object.careerId) ? globalThis.String(object.careerId) : "",
       amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
-      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
-      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      negotiationDate: isSet(object.negotiationDate) ? globalThis.Number(object.negotiationDate) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -118,11 +132,14 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
     if (message.amount !== 0) {
       obj.amount = Math.round(message.amount);
     }
-    if (message.startedAt !== 0) {
-      obj.startedAt = Math.round(message.startedAt);
+    if (message.negotiationDate !== undefined) {
+      obj.negotiationDate = Math.round(message.negotiationDate);
     }
-    if (message.endedAt !== undefined) {
-      obj.endedAt = Math.round(message.endedAt);
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
     }
     return obj;
   },
@@ -134,14 +151,15 @@ export const SalaryCreateRequest: MessageFns<SalaryCreateRequest> = {
     const message = createBaseSalaryCreateRequest();
     message.careerId = object.careerId ?? "";
     message.amount = object.amount ?? 0;
-    message.startedAt = object.startedAt ?? 0;
-    message.endedAt = object.endedAt ?? undefined;
+    message.negotiationDate = object.negotiationDate ?? undefined;
+    message.memo = object.memo ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
 
 function createBaseSalaryUpdateRequest(): SalaryUpdateRequest {
-  return { id: "", amount: 0, startedAt: 0, endedAt: undefined };
+  return { id: "", amount: 0, negotiationDate: undefined, memo: undefined, isVisible: false };
 }
 
 export const SalaryUpdateRequest: MessageFns<SalaryUpdateRequest> = {
@@ -152,11 +170,14 @@ export const SalaryUpdateRequest: MessageFns<SalaryUpdateRequest> = {
     if (message.amount !== 0) {
       writer.uint32(16).uint64(message.amount);
     }
-    if (message.startedAt !== 0) {
-      writer.uint32(24).uint64(message.startedAt);
+    if (message.negotiationDate !== undefined) {
+      writer.uint32(24).uint64(message.negotiationDate);
     }
-    if (message.endedAt !== undefined) {
-      writer.uint32(32).uint64(message.endedAt);
+    if (message.memo !== undefined) {
+      writer.uint32(34).string(message.memo);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(40).bool(message.isVisible);
     }
     return writer;
   },
@@ -189,15 +210,23 @@ export const SalaryUpdateRequest: MessageFns<SalaryUpdateRequest> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
+          message.negotiationDate = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.endedAt = longToNumber(reader.uint64());
+          message.memo = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
           continue;
         }
       }
@@ -213,8 +242,9 @@ export const SalaryUpdateRequest: MessageFns<SalaryUpdateRequest> = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
-      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
-      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      negotiationDate: isSet(object.negotiationDate) ? globalThis.Number(object.negotiationDate) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -226,11 +256,14 @@ export const SalaryUpdateRequest: MessageFns<SalaryUpdateRequest> = {
     if (message.amount !== 0) {
       obj.amount = Math.round(message.amount);
     }
-    if (message.startedAt !== 0) {
-      obj.startedAt = Math.round(message.startedAt);
+    if (message.negotiationDate !== undefined) {
+      obj.negotiationDate = Math.round(message.negotiationDate);
     }
-    if (message.endedAt !== undefined) {
-      obj.endedAt = Math.round(message.endedAt);
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
     }
     return obj;
   },
@@ -242,8 +275,9 @@ export const SalaryUpdateRequest: MessageFns<SalaryUpdateRequest> = {
     const message = createBaseSalaryUpdateRequest();
     message.id = object.id ?? "";
     message.amount = object.amount ?? 0;
-    message.startedAt = object.startedAt ?? 0;
-    message.endedAt = object.endedAt ?? undefined;
+    message.negotiationDate = object.negotiationDate ?? undefined;
+    message.memo = object.memo ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Career, Career_EmploymentType, Position, Salary } from '@/generated/common';
+import { Career, Career_EmploymentType, Salary } from '@/generated/common';
 import { DateUtil } from '@/utils/DateUtil';
 import HttpMethod from '@/enums/HttpMethod';
 import { CareerUpdateRequest } from '@/generated/career';
 import { SalaryCreateRequest, SalaryUpdateRequest } from '@/generated/salary';
-import { PositionCreateRequest, PositionUpdateRequest } from '@/generated/position';  
 import dayjs from 'dayjs';
 import { useUser } from '@/hooks/useUser';
 import { createSampleCareers } from '@/utils/sampleData';
@@ -30,22 +29,19 @@ const CareerView: React.FC<CareerViewProps> = ({
     position: '',
     employmentType: Career_EmploymentType.FULL_TIME,
     department: '',
-  });
-
-  const [positions, setPositions] = useState<Position[]>([]);
-  const [newPosition, setNewPosition] = useState<PositionCreateRequest>({
-    careerId: '',
-    name: '',
-    startedAt: 0,
-    endedAt: 0,
+    jobGrade: '',
+    job: '',
+    salary: 0,
+    isVisible: false,
   });
 
   const [salaries, setSalaries] = useState<Salary[]>([]);
   const [newSalary, setNewSalary] = useState<SalaryCreateRequest>({
     careerId: '',
     amount: 0,
-    startedAt: 0,
-    endedAt: 0,
+    negotiationDate: 0,
+    memo: '',
+    isVisible: false,
   });
 
   // Input 표시 상태
@@ -56,23 +52,6 @@ const CareerView: React.FC<CareerViewProps> = ({
   // 초기 로드 여부를 추적하는 ref
   const isInitialLoad = useRef(true);
 
-  // 모든 회사의 Position 조회
-  const fetchAllPositions = useCallback(async (companiesIds: string) => {
-    try {
-      const response = await fetch(`/api/positions?companiesIds=${companiesIds}`);
-      if (response.ok) {
-        const result = await response.json();
-        
-        if (result && result.positions) {
-          setPositions(result.positions);
-        }
-      } else {
-        console.error('Failed to fetch all positions:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching all positions:', error);
-    }
-  }, []);
 
   // 모든 회사의 Salary 조회
   const fetchAllSalaries = useCallback(async (companiesIds: string) => {
@@ -108,6 +87,11 @@ const CareerView: React.FC<CareerViewProps> = ({
           position: company.position,
           employmentType: company.employmentType,
           department: company.department,
+          jobGrade: company.jobGrade,
+          job: company.job,
+          salary: company.salary,
+          projects: company.projects,
+          salaries: company.salaries,
           isVisible: company.isVisible,
         }));
         
@@ -115,13 +99,11 @@ const CareerView: React.FC<CareerViewProps> = ({
         
         // 모든 회사의 position과 salary를 한 번에 조회
         const companyIds = companiesForm.map(company => company.id).join(',');
-        fetchAllPositions(companyIds);
         fetchAllSalaries(companyIds);
       } else {
         // 로그인되지 않은 경우 샘플 데이터 사용
         const sampleData = createSampleCareers();
         setCareers(sampleData);
-        setPositions([]);
         setSalaries([]);
       }
       isInitialLoad.current = false; // 초기 로드 완료 표시
@@ -162,7 +144,6 @@ const CareerView: React.FC<CareerViewProps> = ({
             
             // 모든 회사의 position과 salary를 다시 조회
             const companyIds = updatedCompanies.map(company => company.id).join(',');
-            fetchAllPositions(companyIds);
             fetchAllSalaries(companyIds);
             
             setNewCareer({
@@ -174,6 +155,10 @@ const CareerView: React.FC<CareerViewProps> = ({
               position: '',
               employmentType: Career_EmploymentType.FULL_TIME,
               department: '',
+              jobGrade: '',
+              job: '',
+              salary: 0,
+              isVisible: false,
             });
           } else {
             console.error('Failed to add company');
@@ -200,6 +185,10 @@ const CareerView: React.FC<CareerViewProps> = ({
         position: selectedCompany.position,
         employmentType: selectedCompany.employmentType,
         department: selectedCompany.department,
+        jobGrade: selectedCompany.jobGrade,
+        job: selectedCompany.job,
+        salary: selectedCompany.salary,
+        isVisible: selectedCompany.isVisible,
       };
       const response = await fetch('/api/careers', {
         method: HttpMethod.PUT,
@@ -248,19 +237,19 @@ const CareerView: React.FC<CareerViewProps> = ({
 
   // Position 관련 함수들
   const addPosition = async (companyId: string) => {
-    if (newPosition.name && newPosition.startedAt) {
+    if (newSalary.amount > 0 && newSalary.negotiationDate) {
       try {
-        const positionData = {
-          ...newPosition,
+        const salaryData = {
+          ...newSalary,
           careerId: companyId
         };
         
-        const response = await fetch(`/api/positions`, {
+        const response = await fetch(`/api/salaries`, {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(positionData),
+          body: JSON.stringify(salaryData),
         });
 
         if (response.ok) {
@@ -268,86 +257,33 @@ const CareerView: React.FC<CareerViewProps> = ({
           if (result) {
             // 성공 시 모든 회사의 position 데이터 다시 조회
             const companyIds = careers.map(company => company.id).join(',');
-            fetchAllPositions(companyIds);
-            setNewPosition({
+            fetchAllSalaries(companyIds);
+            setNewSalary({
               careerId: companyId,
-              name: '',
-              startedAt: 0,
-              endedAt: 0,
+              amount: 0,
+              negotiationDate: 0,
+              memo: '',
+              isVisible: false,
             });
-            // 성공 시 해당 회사의 직책 input 숨기기
-            setShowPositionInputs(prev => ({ ...prev, [companyId]: false }));
+            // 성공 시 해당 회사의 급여 input 숨기기
+            setShowSalaryInputs(prev => ({ ...prev, [companyId]: false }));
           } else {
-            console.error('Failed to add position');
+            console.error('Failed to add salary');
           }
         } else {
-          console.error('Failed to add position');
+          console.error('Failed to add salary');
         }
       } catch (error) {
-        console.error('Error adding position:', error);
+        console.error('Error adding salary:', error);
       }
     }
   };
 
-  const updatePosition = async (index: number) => {
-    try {
-      const selectedPosition = positions[index];
-      const updatedPositionRequest: PositionUpdateRequest = {
-        id: selectedPosition.id,
-        name: selectedPosition.name,
-        startedAt: selectedPosition.startedAt,
-        endedAt: selectedPosition.endedAt,
-      };
-      const response = await fetch('/api/positions', {
-        method: HttpMethod.PUT,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedPositionRequest),
-      });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result) {
-          // 성공 시 모든 회사의 position 데이터 다시 조회
-          const companyIds = careers.map(company => company.id).join(',');
-          fetchAllPositions(companyIds);
-        } else {
-          console.error('Failed to update position');
-        }
-      } else {
-        console.error('Failed to update position');
-      }
-    } catch (error) {
-      console.error('Error updating position:', error);
-    }
-  };
-
-  const removePosition = async (index: number) => {
-    try {
-      const selectedPosition = positions[index];
-      const response = await fetch(`/api/positions/${selectedPosition.id}`, {
-        method: HttpMethod.DELETE,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        // 성공 시 모든 회사의 position 데이터 다시 조회
-        const companyIds = careers.map(company => company.id).join(',');
-        fetchAllPositions(companyIds);
-      } else {
-        console.error('Failed to delete position');
-      }
-    } catch (error) {
-      console.error('Error deleting position:', error);
-    }
-  };
 
   // Salary 관련 함수들
   const addSalary = async (companyId: string) => {
-    if (newSalary.amount > 0 && newSalary.startedAt) {
+    if (newSalary.amount > 0 && newSalary.negotiationDate) {
       try {
         const salaryData = {
           ...newSalary,
@@ -371,8 +307,9 @@ const CareerView: React.FC<CareerViewProps> = ({
             setNewSalary({
               careerId: companyId,
               amount: 0,
-              startedAt: 0,
-              endedAt: 0,
+              negotiationDate: 0,
+              memo: '',
+              isVisible: false,
             });
             // 성공 시 해당 회사의 급여 input 숨기기
             setShowSalaryInputs(prev => ({ ...prev, [companyId]: false }));
@@ -394,8 +331,9 @@ const CareerView: React.FC<CareerViewProps> = ({
       const updatedSalaryRequest: SalaryUpdateRequest = {
         id: selectedSalary.id,
         amount: selectedSalary.amount,
-        startedAt: selectedSalary.startedAt,
-        endedAt: selectedSalary.endedAt,
+        negotiationDate: selectedSalary.negotiationDate,
+        memo: selectedSalary.memo,
+        isVisible: selectedSalary.isVisible,
       };
       const response = await fetch(`/api/salaries/${selectedSalary.career?.id}`, {
         method: HttpMethod.PUT,
@@ -631,22 +569,8 @@ const CareerView: React.FC<CareerViewProps> = ({
                       <input
                         type="text"
                         placeholder="직책명"
-                        value={newPosition.name}
-                        onChange={(e) => setNewPosition({ ...newPosition, name: e.target.value })}
-                        style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                      />
-                      <input
-                        type="date"
-                        placeholder="시작일"
-                        value={newPosition.startedAt ? DateUtil.formatTimestamp(newPosition.startedAt) : ''}
-                        onChange={(e) => setNewPosition({ ...newPosition, startedAt: DateUtil.parseToTimestamp(e.target.value) })}
-                        style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                      />
-                      <input
-                        type="date"
-                        placeholder="종료일"
-                        value={newPosition.endedAt ? DateUtil.formatTimestamp(newPosition.endedAt) : ''}
-                        onChange={(e) => setNewPosition({ ...newPosition, endedAt: DateUtil.parseToTimestamp(e.target.value) })}
+                        value={newSalary.amount ? newSalary.amount.toLocaleString('ko-KR') : ''}
+                        onChange={(e) => setNewSalary({ ...newSalary, amount: parseInt(e.target.value) || 0 })}
                         style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
                       />
                     </div>
@@ -681,9 +605,9 @@ const CareerView: React.FC<CareerViewProps> = ({
                   </div>
                 )}
                 <div>
-                  {positions?.filter(pos => pos.career?.id === company.id).map((position, posIndex) => (
+                  {salaries?.filter(sal => sal.career?.id === company.id).map((salary, salIndex) => (
                     <div 
-                      key={posIndex} 
+                      key={salary.id} 
                       style={{ 
                         display: 'flex', 
                         gap: '10px', 
@@ -697,25 +621,24 @@ const CareerView: React.FC<CareerViewProps> = ({
                       }}
                     >
                       <div style={{ flex: 1 }}>
-                        <div><strong>{position.name}</strong></div>
-                        <div>{DateUtil.formatDateRange(position.startedAt, position.endedAt)}</div>
+                        <div><strong>{salary.amount.toLocaleString('ko-KR')}원</strong></div>
+                        <div>{DateUtil.formatTimestamp(salary.negotiationDate || 0)}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
                         <button 
-                          onClick={() => updatePosition(posIndex)}
-                          style={{ 
-                            width: '50px', 
-                            height: '30px', 
-                            backgroundColor: '#28a745', 
-                            color: 'white', 
-                            border: 'none', 
+                          onClick={() => updateSalary(salIndex)}
+                          style={{
+                            backgroundColor: '#28a745',
+                            color: 'white',
+                            border: 'none',
                             borderRadius: '4px',
-                            cursor: 'pointer'
+                            padding: '8px 16px',
+                            cursor: 'pointer',
                           }}
                         >
                           수정
                         </button>
-                        {renderAddButton('삭제', '#dc3545', () => removePosition(posIndex))}
+                        {renderAddButton('삭제', '#dc3545', () => removeSalary(salIndex))}
                       </div>
                     </div>
                   ))}
@@ -752,15 +675,8 @@ const CareerView: React.FC<CareerViewProps> = ({
                       <input
                         type="date"
                         placeholder="시작일"
-                        value={newSalary.startedAt ? DateUtil.formatTimestamp(newSalary.startedAt) : ''}
-                        onChange={(e) => setNewSalary({ ...newSalary, startedAt: DateUtil.parseToTimestamp(e.target.value) })}
-                        style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                      />
-                      <input
-                        type="date"
-                        placeholder="종료일"
-                        value={newSalary.endedAt ? DateUtil.formatTimestamp(newSalary.endedAt) : ''}
-                        onChange={(e) => setNewSalary({ ...newSalary, endedAt: DateUtil.parseToTimestamp(e.target.value) })}
+                        value={newSalary.negotiationDate ? DateUtil.formatTimestamp(newSalary.negotiationDate) : ''}
+                        onChange={(e) => setNewSalary({ ...newSalary, negotiationDate: DateUtil.parseToTimestamp(e.target.value) })}
                         style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
                       />
                     </div>
@@ -797,22 +713,22 @@ const CareerView: React.FC<CareerViewProps> = ({
                 <div>
                   {salaries?.filter(sal => sal.career?.id === company.id).map((salary, salIndex) => (
                     <div 
-                      key={salIndex} 
+                      key={salary.id} 
                       style={{ 
                         display: 'flex', 
                         gap: '10px', 
-                        justifyContent: 'space-between', 
-                        padding: '10px', 
-                        border: '1px solid #eee', 
-                        marginBottom: '8px', 
-                        borderRadius: '4px', 
+                        justifyContent: 'space-between',
+                        padding: '10px',
+                        border: '1px solid #eee',
+                        marginBottom: '8px',
+                        borderRadius: '4px',
                         alignItems: 'center',
-                        backgroundColor: '#fafafa'
+                        backgroundColor: '#fafafa',
                       }}
                     >
                       <div style={{ flex: 1 }}>
                         <div><strong>{Number(salary.amount).toLocaleString('ko-KR')}원</strong></div>
-                        <div>{DateUtil.formatDateRange(salary.startedAt, salary.endedAt)}</div>
+                        <div>{DateUtil.formatTimestamp(salary.negotiationDate || 0)}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
                         <button 

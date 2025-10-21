@@ -53,6 +53,7 @@ export interface ResumeUpdateRequest_DegreesRequest {
 export interface ResumeUpdateRequest_CareerRequest {
   career?: ResumeUpdateRequest_CareerRequest_Career | undefined;
   projects: ResumeUpdateRequest_CareerRequest_Project[];
+  salaries: ResumeUpdateRequest_CareerRequest_Salary[];
 }
 
 export interface ResumeUpdateRequest_CareerRequest_Career {
@@ -132,6 +133,14 @@ export interface ResumeUpdateRequest_CareerRequest_Project {
   isVisible: boolean;
   startedAt: number;
   endedAt?: number | undefined;
+}
+
+export interface ResumeUpdateRequest_CareerRequest_Salary {
+  id?: string | undefined;
+  amount: number;
+  negotiationDate?: number | undefined;
+  memo?: string | undefined;
+  isVisible: boolean;
 }
 
 export interface ResumeUpdateRequest_CertificationsRequest {
@@ -684,7 +693,7 @@ export const ResumeUpdateRequest_DegreesRequest: MessageFns<ResumeUpdateRequest_
 };
 
 function createBaseResumeUpdateRequest_CareerRequest(): ResumeUpdateRequest_CareerRequest {
-  return { career: undefined, projects: [] };
+  return { career: undefined, projects: [], salaries: [] };
 }
 
 export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_CareerRequest> = {
@@ -694,6 +703,9 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
     }
     for (const v of message.projects) {
       ResumeUpdateRequest_CareerRequest_Project.encode(v!, writer.uint32(18).fork()).join();
+    }
+    for (const v of message.salaries) {
+      ResumeUpdateRequest_CareerRequest_Salary.encode(v!, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -721,6 +733,14 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
           message.projects.push(ResumeUpdateRequest_CareerRequest_Project.decode(reader, reader.uint32()));
           continue;
         }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.salaries.push(ResumeUpdateRequest_CareerRequest_Salary.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -736,6 +756,9 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
       projects: globalThis.Array.isArray(object?.projects)
         ? object.projects.map((e: any) => ResumeUpdateRequest_CareerRequest_Project.fromJSON(e))
         : [],
+      salaries: globalThis.Array.isArray(object?.salaries)
+        ? object.salaries.map((e: any) => ResumeUpdateRequest_CareerRequest_Salary.fromJSON(e))
+        : [],
     };
   },
 
@@ -746,6 +769,9 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
     }
     if (message.projects?.length) {
       obj.projects = message.projects.map((e) => ResumeUpdateRequest_CareerRequest_Project.toJSON(e));
+    }
+    if (message.salaries?.length) {
+      obj.salaries = message.salaries.map((e) => ResumeUpdateRequest_CareerRequest_Salary.toJSON(e));
     }
     return obj;
   },
@@ -763,6 +789,7 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
       ? ResumeUpdateRequest_CareerRequest_Career.fromPartial(object.career)
       : undefined;
     message.projects = object.projects?.map((e) => ResumeUpdateRequest_CareerRequest_Project.fromPartial(e)) || [];
+    message.salaries = object.salaries?.map((e) => ResumeUpdateRequest_CareerRequest_Salary.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1162,6 +1189,134 @@ export const ResumeUpdateRequest_CareerRequest_Project: MessageFns<ResumeUpdateR
     message.isVisible = object.isVisible ?? false;
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
+    return message;
+  },
+};
+
+function createBaseResumeUpdateRequest_CareerRequest_Salary(): ResumeUpdateRequest_CareerRequest_Salary {
+  return { id: undefined, amount: 0, negotiationDate: undefined, memo: undefined, isVisible: false };
+}
+
+export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRequest_CareerRequest_Salary> = {
+  encode(message: ResumeUpdateRequest_CareerRequest_Salary, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== undefined) {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.amount !== 0) {
+      writer.uint32(16).uint64(message.amount);
+    }
+    if (message.negotiationDate !== undefined) {
+      writer.uint32(24).uint64(message.negotiationDate);
+    }
+    if (message.memo !== undefined) {
+      writer.uint32(34).string(message.memo);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(40).bool(message.isVisible);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ResumeUpdateRequest_CareerRequest_Salary {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseResumeUpdateRequest_CareerRequest_Salary();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.amount = longToNumber(reader.uint64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.negotiationDate = longToNumber(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.memo = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ResumeUpdateRequest_CareerRequest_Salary {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : undefined,
+      amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
+      negotiationDate: isSet(object.negotiationDate) ? globalThis.Number(object.negotiationDate) : undefined,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+    };
+  },
+
+  toJSON(message: ResumeUpdateRequest_CareerRequest_Salary): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = message.id;
+    }
+    if (message.amount !== 0) {
+      obj.amount = Math.round(message.amount);
+    }
+    if (message.negotiationDate !== undefined) {
+      obj.negotiationDate = Math.round(message.negotiationDate);
+    }
+    if (message.memo !== undefined) {
+      obj.memo = message.memo;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_Salary>, I>>(
+    base?: I,
+  ): ResumeUpdateRequest_CareerRequest_Salary {
+    return ResumeUpdateRequest_CareerRequest_Salary.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_Salary>, I>>(
+    object: I,
+  ): ResumeUpdateRequest_CareerRequest_Salary {
+    const message = createBaseResumeUpdateRequest_CareerRequest_Salary();
+    message.id = object.id ?? undefined;
+    message.amount = object.amount ?? 0;
+    message.negotiationDate = object.negotiationDate ?? undefined;
+    message.memo = object.memo ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
