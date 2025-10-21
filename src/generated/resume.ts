@@ -14,6 +14,7 @@ import {
   Resume_Gender,
   resume_GenderFromJSON,
   resume_GenderToJSON,
+  ResumeDetail,
 } from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
@@ -63,6 +64,9 @@ export interface ResumeUpdateRequest_CareerRequest_Career {
   position: string;
   employmentType: ResumeUpdateRequest_CareerRequest_Career_EmploymentType;
   department: string;
+  jobGrade: string;
+  job: string;
+  salary: number;
   isVisible: boolean;
 }
 
@@ -157,6 +161,10 @@ export interface ResumeUpdateRequest_LinkRequest {
 
 export interface ResumeListResponse {
   resumes: Resume[];
+}
+
+export interface ResumeDetailListResponse {
+  resumes: ResumeDetail[];
 }
 
 export interface ResumeResponse {
@@ -769,6 +777,9 @@ function createBaseResumeUpdateRequest_CareerRequest_Career(): ResumeUpdateReque
     position: "",
     employmentType: 0,
     department: "",
+    jobGrade: "",
+    job: "",
+    salary: 0,
     isVisible: false,
   };
 }
@@ -799,8 +810,17 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     if (message.department !== "") {
       writer.uint32(66).string(message.department);
     }
+    if (message.jobGrade !== "") {
+      writer.uint32(74).string(message.jobGrade);
+    }
+    if (message.job !== "") {
+      writer.uint32(82).string(message.job);
+    }
+    if (message.salary !== 0) {
+      writer.uint32(88).uint32(message.salary);
+    }
     if (message.isVisible !== false) {
-      writer.uint32(72).bool(message.isVisible);
+      writer.uint32(240).bool(message.isVisible);
     }
     return writer;
   },
@@ -877,7 +897,31 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
           continue;
         }
         case 9: {
-          if (tag !== 72) {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.jobGrade = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.job = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.salary = reader.uint32();
+          continue;
+        }
+        case 30: {
+          if (tag !== 240) {
             break;
           }
 
@@ -905,6 +949,9 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
         ? resumeUpdateRequest_CareerRequest_Career_EmploymentTypeFromJSON(object.employmentType)
         : 0,
       department: isSet(object.department) ? globalThis.String(object.department) : "",
+      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
+      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
@@ -935,6 +982,15 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     if (message.department !== "") {
       obj.department = message.department;
     }
+    if (message.jobGrade !== "") {
+      obj.jobGrade = message.jobGrade;
+    }
+    if (message.job !== "") {
+      obj.job = message.job;
+    }
+    if (message.salary !== 0) {
+      obj.salary = Math.round(message.salary);
+    }
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
@@ -958,6 +1014,9 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     message.position = object.position ?? "";
     message.employmentType = object.employmentType ?? 0;
     message.department = object.department ?? "";
+    message.jobGrade = object.jobGrade ?? "";
+    message.job = object.job ?? "";
+    message.salary = object.salary ?? 0;
     message.isVisible = object.isVisible ?? false;
     return message;
   },
@@ -1561,6 +1620,68 @@ export const ResumeListResponse: MessageFns<ResumeListResponse> = {
   fromPartial<I extends Exact<DeepPartial<ResumeListResponse>, I>>(object: I): ResumeListResponse {
     const message = createBaseResumeListResponse();
     message.resumes = object.resumes?.map((e) => Resume.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseResumeDetailListResponse(): ResumeDetailListResponse {
+  return { resumes: [] };
+}
+
+export const ResumeDetailListResponse: MessageFns<ResumeDetailListResponse> = {
+  encode(message: ResumeDetailListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.resumes) {
+      ResumeDetail.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ResumeDetailListResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseResumeDetailListResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.resumes.push(ResumeDetail.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ResumeDetailListResponse {
+    return {
+      resumes: globalThis.Array.isArray(object?.resumes)
+        ? object.resumes.map((e: any) => ResumeDetail.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ResumeDetailListResponse): unknown {
+    const obj: any = {};
+    if (message.resumes?.length) {
+      obj.resumes = message.resumes.map((e) => ResumeDetail.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ResumeDetailListResponse>, I>>(base?: I): ResumeDetailListResponse {
+    return ResumeDetailListResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ResumeDetailListResponse>, I>>(object: I): ResumeDetailListResponse {
+    const message = createBaseResumeDetailListResponse();
+    message.resumes = object.resumes?.map((e) => ResumeDetail.fromPartial(e)) || [];
     return message;
   },
 };

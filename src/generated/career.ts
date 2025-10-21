@@ -18,6 +18,10 @@ export interface CareerCreateRequest {
   position: string;
   employmentType: Career_EmploymentType;
   department: string;
+  jobGrade: string;
+  job: string;
+  salary: number;
+  isVisible: boolean;
   resumeId: string;
 }
 
@@ -30,6 +34,10 @@ export interface CareerUpdateRequest {
   position: string;
   employmentType: Career_EmploymentType;
   department: string;
+  jobGrade: string;
+  job: string;
+  salary: number;
+  isVisible: boolean;
 }
 
 export interface CareerListResponse {
@@ -49,6 +57,10 @@ function createBaseCareerCreateRequest(): CareerCreateRequest {
     position: "",
     employmentType: 0,
     department: "",
+    jobGrade: "",
+    job: "",
+    salary: 0,
+    isVisible: false,
     resumeId: "",
   };
 }
@@ -75,6 +87,18 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     }
     if (message.department !== "") {
       writer.uint32(66).string(message.department);
+    }
+    if (message.jobGrade !== "") {
+      writer.uint32(74).string(message.jobGrade);
+    }
+    if (message.job !== "") {
+      writer.uint32(82).string(message.job);
+    }
+    if (message.salary !== 0) {
+      writer.uint32(88).uint32(message.salary);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
     }
     if (message.resumeId !== "") {
       writer.uint32(794).string(message.resumeId);
@@ -145,6 +169,38 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
           message.department = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.jobGrade = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.job = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.salary = reader.uint32();
+          continue;
+        }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -171,6 +227,10 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
       position: isSet(object.position) ? globalThis.String(object.position) : "",
       employmentType: isSet(object.employmentType) ? career_EmploymentTypeFromJSON(object.employmentType) : 0,
       department: isSet(object.department) ? globalThis.String(object.department) : "",
+      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
+      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
@@ -198,6 +258,18 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     if (message.department !== "") {
       obj.department = message.department;
     }
+    if (message.jobGrade !== "") {
+      obj.jobGrade = message.jobGrade;
+    }
+    if (message.job !== "") {
+      obj.job = message.job;
+    }
+    if (message.salary !== 0) {
+      obj.salary = Math.round(message.salary);
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
     if (message.resumeId !== "") {
       obj.resumeId = message.resumeId;
     }
@@ -216,6 +288,10 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     message.position = object.position ?? "";
     message.employmentType = object.employmentType ?? 0;
     message.department = object.department ?? "";
+    message.jobGrade = object.jobGrade ?? "";
+    message.job = object.job ?? "";
+    message.salary = object.salary ?? 0;
+    message.isVisible = object.isVisible ?? false;
     message.resumeId = object.resumeId ?? "";
     return message;
   },
@@ -231,6 +307,10 @@ function createBaseCareerUpdateRequest(): CareerUpdateRequest {
     position: "",
     employmentType: 0,
     department: "",
+    jobGrade: "",
+    job: "",
+    salary: 0,
+    isVisible: false,
   };
 }
 
@@ -259,6 +339,18 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     }
     if (message.department !== "") {
       writer.uint32(66).string(message.department);
+    }
+    if (message.jobGrade !== "") {
+      writer.uint32(74).string(message.jobGrade);
+    }
+    if (message.job !== "") {
+      writer.uint32(82).string(message.job);
+    }
+    if (message.salary !== 0) {
+      writer.uint32(88).uint32(message.salary);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
     }
     return writer;
   },
@@ -334,6 +426,38 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
           message.department = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.jobGrade = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.job = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.salary = reader.uint32();
+          continue;
+        }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -353,6 +477,10 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
       position: isSet(object.position) ? globalThis.String(object.position) : "",
       employmentType: isSet(object.employmentType) ? career_EmploymentTypeFromJSON(object.employmentType) : 0,
       department: isSet(object.department) ? globalThis.String(object.department) : "",
+      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
+      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -382,6 +510,18 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     if (message.department !== "") {
       obj.department = message.department;
     }
+    if (message.jobGrade !== "") {
+      obj.jobGrade = message.jobGrade;
+    }
+    if (message.job !== "") {
+      obj.job = message.job;
+    }
+    if (message.salary !== 0) {
+      obj.salary = Math.round(message.salary);
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
     return obj;
   },
 
@@ -398,6 +538,10 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     message.position = object.position ?? "";
     message.employmentType = object.employmentType ?? 0;
     message.department = object.department ?? "";
+    message.jobGrade = object.jobGrade ?? "";
+    message.job = object.job ?? "";
+    message.salary = object.salary ?? 0;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
