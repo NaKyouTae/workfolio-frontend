@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
-import { Degrees } from '@/generated/common';
+import { Degrees, Degrees_DegreesStatus } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
 import { DateTime } from 'luxon';
 
 interface DegreesEditProps {
   degree: Degrees;
-  onUpdate: () => void;
+  onUpdate: (updatedDegree: Degrees) => void;
   onCancel: () => void;
 }
 
 const DegreesEdit: React.FC<DegreesEditProps> = ({ degree, onUpdate, onCancel }) => {
   const [formData, setFormData] = useState({
-    school: degree.school,
+    name: degree.name,
     major: degree.major,
-    degree: degree.degree,
     startedAt: degree.startedAt,
     endedAt: degree.endedAt,
+    status: degree.status,
+    isVisible: degree.isVisible,
+    resume: degree.resume,
+    createdAt: degree.createdAt,
+    updatedAt: degree.updatedAt,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`/api/workers/degrees/${degree.id}`, {
+      const response = await fetch(`/api/degrees/${degree.id}`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +35,12 @@ const DegreesEdit: React.FC<DegreesEditProps> = ({ degree, onUpdate, onCancel })
       });
 
       if (response.ok) {
-        onUpdate();
+        // 업데이트된 데이터를 상위 컴포넌트로 전달
+        const updatedDegree: Degrees = {
+          ...degree,
+          ...formData
+        };
+        onUpdate(updatedDegree);
       } else {
         console.error('Failed to update degree');
       }
@@ -58,8 +67,8 @@ const DegreesEdit: React.FC<DegreesEditProps> = ({ degree, onUpdate, onCancel })
           </label>
           <input
             type="text"
-            value={formData.school}
-            onChange={(e) => setFormData({ ...formData, school: e.target.value })}
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
             style={{
               width: '100%',
@@ -98,8 +107,8 @@ const DegreesEdit: React.FC<DegreesEditProps> = ({ degree, onUpdate, onCancel })
               학위 <span style={{ color: 'red' }}>*</span>
             </label>
             <select
-              value={formData.degree}
-              onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as unknown as Degrees_DegreesStatus })}
               required
               style={{
                 width: '100%',
@@ -110,12 +119,10 @@ const DegreesEdit: React.FC<DegreesEditProps> = ({ degree, onUpdate, onCancel })
                 boxSizing: 'border-box',
               }}
             >
-              <option value="">선택</option>
-              <option value="고졸">고졸</option>
-              <option value="전문학사">전문학사</option>
-              <option value="학사">학사</option>
-              <option value="석사">석사</option>
-              <option value="박사">박사</option>
+              <option value={Degrees_DegreesStatus.UNKNOWN}>선택</option>
+              <option value={Degrees_DegreesStatus.IN_PROGRESS}>진행중</option>
+              <option value={Degrees_DegreesStatus.GRADUATING}>졸업예정</option>
+              <option value={Degrees_DegreesStatus.GRADUATED}>졸업</option>
             </select>
           </div>
         </div>

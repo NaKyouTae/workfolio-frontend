@@ -4,7 +4,7 @@ import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { SuccessResponse } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
 
-// POST /api/workers/degrees - 학위 생성
+// POST /api/positions - 직책 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<SuccessResponse>(
-      'http://localhost:8080/api/workers/positions', 
+      'http://localhost:8080/api/positions', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/degrees - 학위 수정
+// PUT /api/positions - 직책 수정
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<SuccessResponse>(
-      'http://localhost:8080/api/workers/positions', 
+      'http://localhost:8080/api/positions', 
       HttpMethod.PUT, 
       body, 
       accessToken,

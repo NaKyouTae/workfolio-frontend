@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DegreesCreateRequest, DegreesUpdateRequest } from '@/generated/degrees';
-import { Degrees } from '@/generated/common';
+import { Degrees, Degrees_DegreesStatus } from '@/generated/common';
 import { DateUtil } from '@/utils/DateUtil';
 import HttpMethod from '@/enums/HttpMethod';
 
@@ -19,6 +19,7 @@ const DegreesView: React.FC<DegreesViewProps> = ({
     major: '',
     startedAt: 0,
     endedAt: 0,
+    status: Degrees_DegreesStatus.UNKNOWN,
     resumeId: ''
   });
 
@@ -38,7 +39,10 @@ const DegreesView: React.FC<DegreesViewProps> = ({
         startedAt: degree.startedAt,
         endedAt: degree.endedAt,
         createdAt: degree.createdAt,
-        updatedAt: degree.updatedAt
+        updatedAt: degree.updatedAt,
+        status: degree.status,
+        isVisible: degree.isVisible,
+        resume: degree.resume,
       }));
       setDegrees(degreesForm);
       isInitialLoad.current = false;
@@ -64,7 +68,7 @@ const DegreesView: React.FC<DegreesViewProps> = ({
   const addDegree = async () => {
     if (newDegree.name && newDegree.major && newDegree.startedAt) {
       try {
-        const response = await fetch('/api/workers/degrees', {
+        const response = await fetch('/api/degrees', {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
@@ -81,6 +85,7 @@ const DegreesView: React.FC<DegreesViewProps> = ({
               major: '',
               startedAt: 0,
               endedAt: 0,
+              status: Degrees_DegreesStatus.UNKNOWN,
               resumeId: ''
             });
           } else {
@@ -98,7 +103,7 @@ const DegreesView: React.FC<DegreesViewProps> = ({
   // 학위 수정
   const updateDegree = async (index: number, updatedDegree: DegreesUpdateRequest) => {
     try {
-      const response = await fetch('/api/workers/degrees', {
+      const response = await fetch('/api/degrees', {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +131,7 @@ const DegreesView: React.FC<DegreesViewProps> = ({
   // 학위 삭제
   const removeDegree = async (index: number) => {
     try {
-      const response = await fetch(`/api/workers/degrees/${index}`, {
+      const response = await fetch(`/api/degrees/${index}`, {
         method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',

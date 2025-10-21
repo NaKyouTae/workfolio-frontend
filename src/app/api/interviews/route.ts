@@ -4,7 +4,7 @@ import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { InterviewCreateRequest, InterviewListResponse, InterviewResponse, InterviewUpdateRequest } from '@/generated/interview';
 
-// GET /api/workers/job-search-companies - 이직 회사 목록 조회
+// GET /api/interviews - 인터뷰 목록 조회
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const jobSearchCompanyId = searchParams.get('jobSearchCompanyId');
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/workers/job-search-companies - 이직 회사 생성
+// POST /api/interviews - 인터뷰 생성
 export async function POST(request: NextRequest) {
   try {
     const body: InterviewCreateRequest = await request.json();

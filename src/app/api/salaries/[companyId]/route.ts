@@ -4,7 +4,7 @@ import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import HttpMethod from '@/enums/HttpMethod';
 import { SalaryResponse } from '@/generated/salary';
 
-// POST /api/workers/degrees - 학위 생성
+// POST /api/salaries - 급여 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<SalaryResponse>(
-      'http://localhost:8080/api/workers/salaries', 
+      'http://localhost:8080/api/salaries', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/degrees - 학위 수정
+// PUT /api/salaries - 급여 수정
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<SalaryResponse>(
-      'http://localhost:8080/api/workers/salaries', 
+      'http://localhost:8080/api/salaries', 
       HttpMethod.PUT, 
       body, 
       accessToken,

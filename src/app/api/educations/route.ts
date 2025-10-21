@@ -4,7 +4,7 @@ import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { EducationListResponse, EducationResponse } from '@/generated/education';
 import HttpMethod from '@/enums/HttpMethod';
 
-// GET /api/workers/educations - 교육 목록 조회
+// GET /api/educations - 교육 목록 조회
 export async function GET() {
   try {
     const accessToken = await getCookie('accessToken');
@@ -15,7 +15,7 @@ export async function GET() {
       }
     
     const res = await apiFetchHandler<EducationListResponse>(
-      'http://localhost:8080/api/workers/educations', 
+      'http://localhost:8080/api/educations', 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -30,7 +30,7 @@ export async function GET() {
   }
 }
 
-// POST /api/workers/educations - 교육 생성
+// POST /api/educations - 교육 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<EducationResponse>(
-      'http://localhost:8080/api/workers/educations', 
+      'http://localhost:8080/api/educations', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/educations - 교육 수정
+// PUT /api/educations - 교육 수정
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -73,7 +73,7 @@ export async function PUT(request: NextRequest) {
       }
     
       const res = await apiFetchHandler<EducationResponse>(
-      'http://localhost:8080/api/workers/educations', 
+      'http://localhost:8080/api/educations', 
       HttpMethod.PUT, 
       body, 
       accessToken,

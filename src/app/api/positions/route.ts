@@ -4,7 +4,7 @@ import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { PositionListResponse, PositionResponse } from '@/generated/position';
 import HttpMethod from '@/enums/HttpMethod';
 
-// GET /api/workers/positions - 직책 목록 조회
+// GET /api/positions - 직책 목록 조회
 export async function GET(request: NextRequest) {
   const companiesIds = request.nextUrl.searchParams.get('companiesIds');
   
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
     
     const res = await apiFetchHandler<PositionListResponse>(
-      `http://localhost:8080/api/workers/positions?companiesIds=${companiesIds}`, 
+      `http://localhost:8080/api/positions?companiesIds=${companiesIds}`, 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/workers/degrees - 학위 생성
+// POST /api/positions - 직책 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<PositionResponse>(
-      'http://localhost:8080/api/workers/positions', 
+      'http://localhost:8080/api/positions', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/degrees - 학위 수정
+// PUT /api/positions - 직책 수정
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -73,7 +73,7 @@ export async function PUT(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<PositionResponse>(
-      'http://localhost:8080/api/workers/positions', 
+      'http://localhost:8080/api/positions', 
       HttpMethod.PUT, 
       body, 
       accessToken,

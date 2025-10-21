@@ -5,24 +5,27 @@ import { DateTime } from 'luxon';
 
 interface EducationEditProps {
   education: Education;
-  onUpdate: () => void;
+  onUpdate: (updatedEducation: Education) => void;
   onCancel: () => void;
 }
 
 const EducationEdit: React.FC<EducationEditProps> = ({ education, onUpdate, onCancel }) => {
   const [formData, setFormData] = useState({
     name: education.name,
-    institution: education.institution,
+    agency: education.agency,
     startedAt: education.startedAt,
     endedAt: education.endedAt,
-    description: education.description || '',
+    isVisible: education.isVisible,
+    resume: education.resume,
+    createdAt: education.createdAt,
+    updatedAt: education.updatedAt,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`/api/workers/educations/${education.id}`, {
+      const response = await fetch(`/api/educations/${education.id}`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +34,12 @@ const EducationEdit: React.FC<EducationEditProps> = ({ education, onUpdate, onCa
       });
 
       if (response.ok) {
-        onUpdate();
+        // 업데이트된 데이터를 상위 컴포넌트로 전달
+        const updatedEducation: Education = {
+          ...education,
+          ...formData
+        };
+        onUpdate(updatedEducation);
       } else {
         console.error('Failed to update education');
       }
@@ -78,8 +86,8 @@ const EducationEdit: React.FC<EducationEditProps> = ({ education, onUpdate, onCa
           </label>
           <input
             type="text"
-            value={formData.institution}
-            onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
+            value={formData.agency}
+            onChange={(e) => setFormData({ ...formData, agency: e.target.value })}
             required
             style={{
               width: '100%',
@@ -145,8 +153,8 @@ const EducationEdit: React.FC<EducationEditProps> = ({ education, onUpdate, onCa
             설명
           </label>
           <textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            value={formData.agency}
+            onChange={(e) => setFormData({ ...formData, agency: e.target.value })}
             rows={4}
             style={{
               width: '100%',

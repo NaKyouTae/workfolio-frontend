@@ -38,7 +38,9 @@ const EducationView: React.FC<EducationViewProps> = ({
         startedAt: education.startedAt,
         endedAt: education.endedAt,
         createdAt: education.createdAt,
-        updatedAt: education.updatedAt
+        updatedAt: education.updatedAt,
+        isVisible: education.isVisible,
+        resume: education.resume,
       }));
       setEducations(educationsForm);
       isInitialLoad.current = false;
@@ -65,7 +67,7 @@ const EducationView: React.FC<EducationViewProps> = ({
   const addEducation = async () => {
     if (newEducation.name && newEducation.agency && newEducation.startedAt) {
       try {
-        const response = await fetch('/api/workers/educations', {
+        const response = await fetch('/api/educations', {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
@@ -99,7 +101,7 @@ const EducationView: React.FC<EducationViewProps> = ({
   // 교육 이력 수정
   const updateEducation = async (index: number, updatedEducation: EducationUpdateRequest) => {
     try {
-      const response = await fetch('/api/workers/educations', {
+      const response = await fetch('/api/educations', {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +129,7 @@ const EducationView: React.FC<EducationViewProps> = ({
   // 교육 이력 삭제
   const removeEducation = async (index: number) => {
     try {
-      const response = await fetch(`/api/workers/educations/${index}`, {
+      const response = await fetch(`/api/educations/${index}`, {
         method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',

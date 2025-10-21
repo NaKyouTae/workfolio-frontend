@@ -40,7 +40,9 @@ const CertificationView: React.FC<CertificationViewProps> = ({
         issuer: cert.issuer,
         issuedAt: cert.issuedAt,
         number: cert.number || '',
-        expirationPeriod: cert.expirationPeriod || 0
+        expirationPeriod: cert.expirationPeriod || 0,
+        isVisible: cert.isVisible,
+        resume: cert.resume,
       }));
       setCertifications(certificationsForm);
       isInitialLoad.current = false;
@@ -66,7 +68,7 @@ const CertificationView: React.FC<CertificationViewProps> = ({
   const addCertification = async () => {
     if (newCertification.name && newCertification.issuer && newCertification.issuedAt) {
       try {
-        const response = await fetch('/api/workers/certifications', {
+        const response = await fetch('/api/certifications', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -101,7 +103,7 @@ const CertificationView: React.FC<CertificationViewProps> = ({
   // 자격증 수정
   const updateCertification = async (index: number, updatedCertification: Certifications) => {
     try {
-      const response = await fetch('/api/workers/certifications', {
+      const response = await fetch('/api/certifications', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +131,7 @@ const CertificationView: React.FC<CertificationViewProps> = ({
   // 자격증 삭제
   const removeCertification = async (index: number) => {
     try {
-      const response = await fetch(`/api/workers/certifications/${index}`, {
+      const response = await fetch(`/api/certifications/${index}`, {
         method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',

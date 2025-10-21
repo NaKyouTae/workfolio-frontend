@@ -4,7 +4,7 @@ import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { DegreesListResponse, DegreesResponse } from '@/generated/degrees';
 import HttpMethod from '@/enums/HttpMethod';
 
-// GET /api/workers/degrees - 학위 목록 조회
+// GET /api/degrees - 학위 목록 조회
 export async function GET() {
   try {
     const accessToken = await getCookie('accessToken');
@@ -15,7 +15,7 @@ export async function GET() {
       }
     
     const res = await apiFetchHandler<DegreesListResponse>(
-      'http://localhost:8080/api/workers/degrees', 
+      'http://localhost:8080/api/degrees', 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -30,7 +30,7 @@ export async function GET() {
   }
 }
 
-// POST /api/workers/degrees - 학위 생성
+// POST /api/degrees - 학위 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<DegreesResponse>(
-      'http://localhost:8080/api/workers/degrees', 
+      'http://localhost:8080/api/degrees', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/degrees - 학위 수정
+// PUT /api/degrees - 학위 수정
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -71,7 +71,7 @@ export async function PUT(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<DegreesResponse>(
-      'http://localhost:8080/api/workers/degrees', 
+      'http://localhost:8080/api/degrees', 
       HttpMethod.PUT, 
       body, 
       accessToken,

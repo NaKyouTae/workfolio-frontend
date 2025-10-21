@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Career, Position, Salary } from '@/generated/common';
+import { Career, Career_EmploymentType, Position, Salary } from '@/generated/common';
 import { DateUtil } from '@/utils/DateUtil';
 import HttpMethod from '@/enums/HttpMethod';
 import { CareerUpdateRequest } from '@/generated/career';
@@ -27,6 +27,9 @@ const CareerView: React.FC<CareerViewProps> = ({
     endedAt: 0,
     isWorking: false,
     resumeId: '',
+    position: '',
+    employmentType: Career_EmploymentType.FULL_TIME,
+    department: '',
   });
 
   const [positions, setPositions] = useState<Position[]>([]);
@@ -56,7 +59,7 @@ const CareerView: React.FC<CareerViewProps> = ({
   // 모든 회사의 Position 조회
   const fetchAllPositions = useCallback(async (companiesIds: string) => {
     try {
-      const response = await fetch(`/api/workers/positions?companiesIds=${companiesIds}`);
+      const response = await fetch(`/api/positions?companiesIds=${companiesIds}`);
       if (response.ok) {
         const result = await response.json();
         
@@ -74,7 +77,7 @@ const CareerView: React.FC<CareerViewProps> = ({
   // 모든 회사의 Salary 조회
   const fetchAllSalaries = useCallback(async (companiesIds: string) => {
     try {
-      const response = await fetch(`/api/workers/salaries?companiesIds=${companiesIds}`);
+      const response = await fetch(`/api/salaries?companiesIds=${companiesIds}`);
       if (response.ok) {
         const result = await response.json();
         
@@ -102,6 +105,10 @@ const CareerView: React.FC<CareerViewProps> = ({
           startedAt: company.startedAt,
           endedAt: company.endedAt,
           isWorking: company.isWorking,
+          position: company.position,
+          employmentType: company.employmentType,
+          department: company.department,
+          isVisible: company.isVisible,
         }));
         
         setCareers(companiesForm);
@@ -133,7 +140,7 @@ const CareerView: React.FC<CareerViewProps> = ({
   const addCompany = async () => {
     if (newCareer.name && newCareer.startedAt) {
       try {
-        const response = await fetch('/api/workers/companies', {
+        const response = await fetch('/api/careers', {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
@@ -164,6 +171,9 @@ const CareerView: React.FC<CareerViewProps> = ({
               endedAt: 0,
               isWorking: false,
               resumeId: '',
+              position: '',
+              employmentType: Career_EmploymentType.FULL_TIME,
+              department: '',
             });
           } else {
             console.error('Failed to add company');
@@ -187,8 +197,11 @@ const CareerView: React.FC<CareerViewProps> = ({
         startedAt: selectedCompany.startedAt,
         endedAt: selectedCompany.endedAt,
         isWorking: selectedCompany.isWorking,
+        position: selectedCompany.position,
+        employmentType: selectedCompany.employmentType,
+        department: selectedCompany.department,
       };
-      const response = await fetch('/api/workers/companies', {
+      const response = await fetch('/api/careers', {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -216,7 +229,7 @@ const CareerView: React.FC<CareerViewProps> = ({
   // 회사 삭제
   const removeCompany = async (index: number) => {
     try {
-      const response = await fetch(`/api/workers/companies/${index}`, {
+      const response = await fetch(`/api/careers/${index}`, {
         method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',
@@ -242,7 +255,7 @@ const CareerView: React.FC<CareerViewProps> = ({
           careerId: companyId
         };
         
-        const response = await fetch(`/api/workers/positions`, {
+        const response = await fetch(`/api/positions`, {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
@@ -285,7 +298,7 @@ const CareerView: React.FC<CareerViewProps> = ({
         startedAt: selectedPosition.startedAt,
         endedAt: selectedPosition.endedAt,
       };
-      const response = await fetch('/api/workers/positions', {
+      const response = await fetch('/api/positions', {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -313,7 +326,7 @@ const CareerView: React.FC<CareerViewProps> = ({
   const removePosition = async (index: number) => {
     try {
       const selectedPosition = positions[index];
-      const response = await fetch(`/api/workers/positions/${selectedPosition.id}`, {
+      const response = await fetch(`/api/positions/${selectedPosition.id}`, {
         method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',
@@ -341,7 +354,7 @@ const CareerView: React.FC<CareerViewProps> = ({
           careerId: companyId
         };
         
-        const response = await fetch(`/api/workers/salaries`, {
+        const response = await fetch(`/api/salaries`, {
           method: HttpMethod.POST,
           headers: {
             'Content-Type': 'application/json',
@@ -384,7 +397,7 @@ const CareerView: React.FC<CareerViewProps> = ({
         startedAt: selectedSalary.startedAt,
         endedAt: selectedSalary.endedAt,
       };
-      const response = await fetch(`/api/workers/salaries/${selectedSalary.career?.id}`, {
+      const response = await fetch(`/api/salaries/${selectedSalary.career?.id}`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -412,7 +425,7 @@ const CareerView: React.FC<CareerViewProps> = ({
   const removeSalary = async (index: number) => {
     try {
       const selectedSalary = salaries[index];
-      const response = await fetch(`/api/workers/salaries/${selectedSalary.career?.id}`, {
+      const response = await fetch(`/api/salaries/${selectedSalary.career?.id}`, {
         method: HttpMethod.DELETE,
         headers: {
           'Content-Type': 'application/json',

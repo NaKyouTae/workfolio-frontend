@@ -5,7 +5,7 @@ import { DateTime } from 'luxon';
 
 interface CertificationEditProps {
   certification: Certifications;
-  onUpdate: () => void;
+  onUpdate: (updatedCertification: Certifications) => void;
   onCancel: () => void;
 }
 
@@ -22,7 +22,7 @@ const CertificationEdit: React.FC<CertificationEditProps> = ({ certification, on
     e.preventDefault();
     
     try {
-      const response = await fetch(`/api/workers/certifications/${certification.id}`, {
+      const response = await fetch(`/api/certifications/${certification.id}`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +31,12 @@ const CertificationEdit: React.FC<CertificationEditProps> = ({ certification, on
       });
 
       if (response.ok) {
-        onUpdate();
+        // 업데이트된 데이터를 상위 컴포넌트로 전달
+        const updatedCertification: Certifications = {
+          ...certification,
+          ...formData
+        };
+        onUpdate(updatedCertification);
       } else {
         console.error('Failed to update certification');
       }

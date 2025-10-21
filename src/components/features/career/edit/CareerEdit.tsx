@@ -3,13 +3,13 @@ import { Career } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
 import { DateTime } from 'luxon';
 
-interface CompanyEditProps {
+interface CareerEditProps {
   career: Career;
-  onUpdate: () => void;
+  onUpdate: (updatedCareer: Career) => void;
   onCancel: () => void;
 }
 
-const CompanyEdit: React.FC<CompanyEditProps> = ({ career, onUpdate, onCancel }) => {
+const CareerEdit: React.FC<CareerEditProps> = ({ career, onUpdate, onCancel }) => {
   const [formData, setFormData] = useState({
     name: career.name,
     startedAt: career.startedAt,
@@ -30,7 +30,12 @@ const CompanyEdit: React.FC<CompanyEditProps> = ({ career, onUpdate, onCancel })
       });
 
       if (response.ok) {
-        onUpdate();
+        // 업데이트된 데이터를 상위 컴포넌트로 전달
+        const updatedCareer: Career = {
+          ...career,
+          ...formData
+        };
+        onUpdate(updatedCareer);
       } else {
         console.error('Failed to update career');
       }
@@ -174,5 +179,5 @@ const CompanyEdit: React.FC<CompanyEditProps> = ({ career, onUpdate, onCancel })
   );
 };
 
-export default CompanyEdit;
+export default CareerEdit;
 

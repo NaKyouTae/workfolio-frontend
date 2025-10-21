@@ -4,7 +4,7 @@ import { getCookie } from '@/utils/cookie';
 import HttpMethod from '@/enums/HttpMethod';
 import { NextRequest, NextResponse } from 'next/server';
 
-// GET /api/workers/certifications - 자격증 목록 조회
+// GET /api/certifications - 자격증 목록 조회
 export async function GET() {
   try {
       const accessToken = await getCookie('accessToken');
@@ -15,7 +15,7 @@ export async function GET() {
       }
       
       const res = await apiFetchHandler<CertificationsListResponse>(
-          'http://localhost:8080/api/workers/certifications', 
+          'http://localhost:8080/api/certifications', 
           HttpMethod.GET, 
           null, 
           accessToken,
@@ -31,7 +31,7 @@ export async function GET() {
   }
 }
 
-// POST /api/workers/certifications - 자격증 생성
+// POST /api/certifications - 자격증 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<CertificationsResponse>(
-      'http://localhost:8080/api/workers/certifications', 
+      'http://localhost:8080/api/certifications', 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/certifications - 자격증 수정
+// PUT /api/certifications - 자격증 수정
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<CertificationsResponse>(
-      'http://localhost:8080/api/workers/certifications', 
+      'http://localhost:8080/api/certifications', 
       HttpMethod.PUT, 
       body, 
       accessToken,
