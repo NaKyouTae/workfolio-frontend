@@ -1,8 +1,6 @@
 import React from 'react';
 import { Resume } from '@/generated/common';
 import CareerView from './view/CareerView';
-import CertificationView from './view/CertificationView';
-import DegreesView from './view/DegreesView';
 import EducationView from './view/EducationView';
 
 interface CareerContentViewProps {
@@ -22,8 +20,6 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({ selectedResume })
       flex: 1
     }}>
       <CareerView />
-      <CertificationView />
-      <DegreesView />
       <EducationView />
     </div>
   );

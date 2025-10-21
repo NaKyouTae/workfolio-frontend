@@ -1,149 +1,117 @@
-import React, { useState, useCallback } from 'react';
-import { Career, Certifications, Degrees, Education, Link, Project, Salary } from '@/generated/common';
-import { ResumeUpdateRequest } from '@/generated/resume';
-import CareerEdit from './edit/CareerEdit';
-import CertificationEdit from './edit/CertificationEdit';
-import DegreesEdit from './edit/DegreesEdit';
-import EducationEdit from './edit/EducationEdit';
-import LinkEdit from './edit/LinkEdit';
-import ProjectEdit from './edit/ProjectEdit';
-import SalaryEdit from './edit/SalaryEdit';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Resume } from '@/generated/common';
+import { 
+  ResumeUpdateRequest, 
+  ResumeUpdateRequest_CareerRequest,
+  ResumeUpdateRequest_EducationRequest,
+  ResumeUpdateRequest_ActivityRequest,
+  ResumeUpdateRequest_LanguageSkillRequest,
+  ResumeUpdateRequest_AttachmentRequest
+} from '@/generated/resume';
 import HttpMethod from '@/enums/HttpMethod';
 
 interface CareerContentEditProps {
+  selectedResume: Resume;
   onSave?: () => void;
   onCancel?: () => void;
 }
 
 /**
  * 이력서 상세 정보를 편집할 수 있는 컴포넌트
- * 모든 Edit 컴포넌트들을 포함합니다
+ * ResumeUpdateRequest 구조에 맞춰 모든 Edit 컴포넌트들을 포함합니다
  */
 const CareerContentEdit: React.FC<CareerContentEditProps> = ({ 
+  selectedResume,
   onSave,
   onCancel 
 }) => {
-  // 각 섹션의 변경된 데이터를 저장하는 state
-  const [updatedCareers, setUpdatedCareers] = useState<Career[]>([]);
-  const [updatedCertifications, setUpdatedCertifications] = useState<Certifications[]>([]);
-  const [updatedDegrees, setUpdatedDegrees] = useState<Degrees[]>([]);
-  const [updatedEducations, setUpdatedEducations] = useState<Education[]>([]);
-  const [updatedLinks, setUpdatedLinks] = useState<Link[]>([]);
-  const [updatedProjects, setUpdatedProjects] = useState<Project[]>([]);
-  const [updatedSalaries, setUpdatedSalaries] = useState<Salary[]>([]);
+  // ResumeUpdateRequest 구조에 맞춘 state
+  const [careers, setCareers] = useState<ResumeUpdateRequest_CareerRequest[]>([]);
+  const [educations, setEducations] = useState<ResumeUpdateRequest_EducationRequest[]>([]);
+  const [activities, setActivities] = useState<ResumeUpdateRequest_ActivityRequest[]>([]);
+  const [languages, setLanguages] = useState<ResumeUpdateRequest_LanguageSkillRequest[]>([]);
+  const [attachments, setAttachments] = useState<ResumeUpdateRequest_AttachmentRequest[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 각 섹션의 데이터 업데이트 핸들러
-  const handleCareerUpdate = useCallback((updatedCareer: Career) => {
-    setUpdatedCareers(prev => 
-      prev.map(career => career.id === updatedCareer.id ? updatedCareer : career)
-    );
-  }, []);
+  // selectedResume로부터 초기 데이터 로드
+  useEffect(() => {
+    // TODO: selectedResume의 데이터를 ResumeUpdateRequest 구조로 변환하여 초기화
+    // 현재는 빈 배열로 초기화
+    setCareers([]);
+    setEducations([]);
+    setActivities([]);
+    setLanguages([]);
+    setAttachments([]);
+  }, [selectedResume]);
 
-  const handleCertificationUpdate = useCallback((updatedCertification: Certifications) => {
-    setUpdatedCertifications(prev => 
-      prev.map(cert => cert.id === updatedCertification.id ? updatedCertification : cert)
-    );
-  }, []);
+  // 업데이트 핸들러들 (추후 각 Edit 컴포넌트에서 사용)
+  // const handleCareerUpdate = useCallback((index: number, updatedCareer: ResumeUpdateRequest_CareerRequest) => {
+  //   setCareers(prev => {
+  //     const newCareers = [...prev];
+  //     newCareers[index] = updatedCareer;
+  //     return newCareers;
+  //   });
+  // }, []);
 
-  const handleDegreeUpdate = useCallback((updatedDegree: Degrees) => {
-    setUpdatedDegrees(prev => 
-      prev.map(degree => degree.id === updatedDegree.id ? updatedDegree : degree)
-    );
-  }, []);
+  // const handleEducationUpdate = useCallback((index: number, updatedEducation: ResumeUpdateRequest_EducationRequest) => {
+  //   setEducations(prev => {
+  //     const newEducations = [...prev];
+  //     newEducations[index] = updatedEducation;
+  //     return newEducations;
+  //   });
+  // }, []);
 
-  const handleEducationUpdate = useCallback((updatedEducation: Education) => {
-    setUpdatedEducations(prev => 
-      prev.map(edu => edu.id === updatedEducation.id ? updatedEducation : edu)
-    );
-  }, []);
+  // const handleActivityUpdate = useCallback((index: number, updatedActivity: ResumeUpdateRequest_ActivityRequest) => {
+  //   setActivities(prev => {
+  //     const newActivities = [...prev];
+  //     newActivities[index] = updatedActivity;
+  //     return newActivities;
+  //   });
+  // }, []);
 
-  const handleLinkUpdate = useCallback((updatedLink: Link) => {
-    setUpdatedLinks(prev => 
-      prev.map(link => link.id === updatedLink.id ? updatedLink : link)
-    );
-  }, []);
+  // const handleLanguageUpdate = useCallback((index: number, updatedLanguage: ResumeUpdateRequest_LanguageSkillRequest) => {
+  //   setLanguages(prev => {
+  //     const newLanguages = [...prev];
+  //     newLanguages[index] = updatedLanguage;
+  //     return newLanguages;
+  //   });
+  // }, []);
 
-  const handleProjectUpdate = useCallback((updatedProject: Project) => {
-    setUpdatedProjects(prev => 
-      prev.map(project => project.id === updatedProject.id ? updatedProject : project)
-    );
-  }, []);
-
-  const handleSalaryUpdate = useCallback((updatedSalary: Salary) => {
-    setUpdatedSalaries(prev => 
-      prev.map(salary => salary.id === updatedSalary.id ? updatedSalary : salary)
-    );
-  }, []);
+  // const handleAttachmentUpdate = useCallback((index: number, updatedAttachment: ResumeUpdateRequest_AttachmentRequest) => {
+  //   setAttachments(prev => {
+  //     const newAttachments = [...prev];
+  //     newAttachments[index] = updatedAttachment;
+  //     return newAttachments;
+  //   });
+  // }, []);
 
   // ResumeUpdateRequest를 생성하고 API 호출
   const handleSaveAll = useCallback(async () => {
     setIsLoading(true);
     
     try {
-      // ResumeUpdateRequest 메시지 생성
-      const updateRequest = ResumeUpdateRequest.create({
-        careers: updatedCareers.map(career => ({
-          career: {
-            id: career.id,
-            name: career.name,
-            startedAt: career.startedAt,
-            endedAt: career.endedAt,
-            isWorking: career.isWorking,
-            employmentType: 1, // FULL_TIME으로 설정 (필요에 따라 수정)
-          },
-          projects: updatedProjects
-            .filter(project => project.career?.id === career.id)
-            .map(project => ({
-              id: project.id,
-              title: project.title,
-              description: project.description,
-              startedAt: project.startedAt,
-              endedAt: project.endedAt || 0,
-              isVisible: project.isVisible,
-            })),
-          salaries: updatedSalaries
-            .filter(salary => salary.career?.id === career.id)
-            .map(salary => ({
-              id: salary.id,
-              amount: salary.amount,
-              negotiationDate: salary.negotiationDate || 0,
-              memo: salary.memo || '',
-              isVisible: salary.isVisible,
-            }))
-        })),
-        certifications: updatedCertifications.map(cert => ({
-          id: cert.id,
-          name: cert.name,
-          issuer: cert.issuer,
-          issuedAt: cert.issuedAt,
-          number: cert.number || '',
-          expirationPeriod: cert.expirationPeriod || 0,
-        })),
-        degrees: updatedDegrees.map(degree => ({
-          id: degree.id,
-          name: degree.name,
-          major: degree.major,
-          startedAt: degree.startedAt,
-          endedAt: degree.endedAt,
-        })),
-        educations: updatedEducations.map(edu => ({
-          id: edu.id,
-          name: edu.name,
-          startedAt: edu.startedAt,
-          endedAt: edu.endedAt,
-          agency: edu.agency || '',
-        })),
-        links: updatedLinks.map(link => ({
-          id: link.id,
-          url: link.url,
-          isVisible: link.isVisible,
-        })),
-      });
+      // ResumeUpdateRequest 생성
+      const updateRequest: ResumeUpdateRequest = {
+        id: selectedResume.id,
+        title: selectedResume.title,
+        // name은 Resume이 아닌 Worker에 있는 속성이므로 별도 처리 필요
+        // name: selectedResume.worker?.name,
+        phone: selectedResume.phone,
+        email: selectedResume.email,
+        birthDate: selectedResume.brithDate, // 오타 주의: brithDate
+        gender: selectedResume.gender,
+        isPublic: selectedResume.isPublic,
+        isDefault: selectedResume.isDefault,
+        careers: careers,
+        educations: educations,
+        activities: activities,
+        languages: languages,
+        attachments: attachments,
+      };
 
       // API 호출
-      const response = await fetch('/api/resume/update', {
-        method: HttpMethod.POST,
+      const response = await fetch('/api/resumes', {
+        method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -152,20 +120,20 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
 
       if (response.ok) {
         const result = await response.json();
-        if (result.isSuccess) {
-          onSave?.();
-        } else {
-          console.error('Failed to update resume:', result.message);
-        }
+        console.log('Resume updated successfully:', result);
+        onSave?.();
       } else {
-        console.error('Failed to update resume');
+        const error = await response.json();
+        console.error('Failed to update resume:', error);
+        alert(`이력서 수정 실패: ${error.error || '알 수 없는 오류'}`);
       }
     } catch (error) {
       console.error('Error updating resume:', error);
+      alert('이력서 수정 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
-  }, [updatedCareers, updatedCertifications, updatedDegrees, updatedEducations, updatedLinks, updatedProjects, updatedSalaries, onSave]);
+  }, [selectedResume, careers, educations, activities, languages, attachments, onSave]);
 
   return (
     <div style={{ 
@@ -194,82 +162,90 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         </div>
       </div>
 
-      {/* CareerEdit - 회사 정보 편집 */}
-      {updatedCareers.map((career) => (
-        <div key={career.id} style={{ marginBottom: '20px' }}>
-          <CareerEdit 
-            career={career}
-            onUpdate={handleCareerUpdate}
-            onCancel={onCancel || (() => {})}
-          />
+      {/* ResumeUpdateRequest 구조 설명 */}
+      <div style={{
+        padding: '20px',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        marginBottom: '20px'
+      }}>
+        <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#333' }}>
+          이력서 구조
+        </h3>
+        
+        {/* Careers 섹션 */}
+        <div style={{ marginBottom: '16px' }}>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#555' }}>
+            경력 ({careers.length}개)
+          </h4>
+          <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
+            회사 정보, 성과(프로젝트), 급여 정보
+          </p>
         </div>
-      ))}
 
-      {/* CertificationEdit - 자격증 정보 편집 */}
-      {updatedCertifications.map((certification) => (
-        <div key={certification.id} style={{ marginBottom: '20px' }}>
-          <CertificationEdit 
-            certification={certification}
-            onUpdate={handleCertificationUpdate}
-            onCancel={onCancel || (() => {})}
-          />
+        {/* Educations 섹션 */}
+        <div style={{ marginBottom: '16px' }}>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#555' }}>
+            학력 ({educations.length}개)
+          </h4>
+          <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
+            학교, 전공, 학위 정보
+          </p>
         </div>
-      ))}
 
-      {/* DegreesEdit - 학위 정보 편집 */}
-      {updatedDegrees.map((degree) => (
-        <div key={degree.id} style={{ marginBottom: '20px' }}>
-          <DegreesEdit 
-            degree={degree}
-            onUpdate={handleDegreeUpdate}
-            onCancel={onCancel || (() => {})}
-          />
+        {/* Activities 섹션 */}
+        <div style={{ marginBottom: '16px' }}>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#555' }}>
+            활동 ({activities.length}개)
+          </h4>
+          <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
+            자격증, 수상, 봉사활동, 대외활동 등
+          </p>
         </div>
-      ))}
 
-      {/* EducationEdit - 교육 정보 편집 */}
-      {updatedEducations.map((education) => (
-        <div key={education.id} style={{ marginBottom: '20px' }}>
-          <EducationEdit 
-            education={education}
-            onUpdate={handleEducationUpdate}
-            onCancel={onCancel || (() => {})}
-          />
+        {/* Languages 섹션 */}
+        <div style={{ marginBottom: '16px' }}>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#555' }}>
+            어학 ({languages.length}개)
+          </h4>
+          <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
+            언어 능력 및 시험 점수
+          </p>
         </div>
-      ))}
 
-      {/* LinkEdit - 링크 정보 편집 */}
-      {updatedLinks.map((link) => (
-        <div key={link.id} style={{ marginBottom: '20px' }}>
-          <LinkEdit 
-            link={link}
-            onUpdate={handleLinkUpdate}
-            onCancel={onCancel || (() => {})}
-          />
+        {/* Attachments 섹션 */}
+        <div>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#555' }}>
+            첨부파일 ({attachments.length}개)
+          </h4>
+          <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
+            포트폴리오, 증명서 등
+          </p>
         </div>
-      ))}
+      </div>
 
-      {/* ProjectEdit - 프로젝트 정보 편집 */}
-      {updatedProjects.map((project) => (
-        <div key={project.id} style={{ marginBottom: '20px' }}>
-          <ProjectEdit 
-            project={project}
-            onUpdate={handleProjectUpdate}
-            onCancel={onCancel || (() => {})}
-          />
-        </div>
-      ))}
-
-      {/* SalaryEdit - 급여 정보 편집 */}
-      {updatedSalaries.map((salary) => (
-        <div key={salary.id} style={{ marginBottom: '20px' }}>
-          <SalaryEdit 
-            salary={salary}
-            onUpdate={handleSalaryUpdate}
-            onCancel={onCancel || (() => {})}
-          />
-        </div>
-      ))}
+      {/* 편집 가능한 섹션들 - 추후 구현 */}
+      <div style={{
+        padding: '20px',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        textAlign: 'center',
+        color: '#666',
+        marginBottom: '20px'
+      }}>
+        <p style={{ margin: 0, fontSize: '14px' }}>
+          각 섹션의 편집 컴포넌트는 ResumeUpdateRequest 구조에 맞춰 구현될 예정입니다.
+        </p>
+        <p style={{ margin: '8px 0 0 0', fontSize: '12px', color: '#999' }}>
+          - Career: 회사 정보 + 성과(Achievement) + 급여<br />
+          - Education: 학교 교육 정보<br />
+          - Activity: 자격증, 수상, 봉사활동 등<br />
+          - Language: 언어 능력<br />
+          - Attachment: 첨부파일
+        </p>
+      </div>
 
       {/* 저장 버튼 */}
       <div style={{
@@ -277,8 +253,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         backgroundColor: '#fff',
         borderRadius: '8px',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        textAlign: 'center',
-        marginTop: '20px'
+        textAlign: 'center'
       }}>
         <button
           onClick={handleSaveAll}
@@ -318,4 +293,3 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
 };
 
 export default CareerContentEdit;
-
