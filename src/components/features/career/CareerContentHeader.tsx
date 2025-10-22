@@ -1,8 +1,8 @@
 import React from 'react';
-import { Resume } from '@/generated/common';
+import { ResumeDetail } from '@/generated/common';
 
 interface CareerContentHeaderProps {
-  selectedResume: Resume;
+  selectedResumeDetail: ResumeDetail | null;
   isLoggedIn: boolean;
   isEditMode: boolean;
   onEdit?: () => void;
@@ -11,7 +11,7 @@ interface CareerContentHeaderProps {
 }
 
 const CareerContentHeader: React.FC<CareerContentHeaderProps> = ({ 
-  selectedResume, 
+  selectedResumeDetail, 
   isLoggedIn,
   isEditMode,
   onEdit,
@@ -37,8 +37,8 @@ const CareerContentHeader: React.FC<CareerContentHeaderProps> = ({
           color: '#333', 
           margin: 0 
         }}>
-          {selectedResume.title}
-          {isEditMode && (
+          {selectedResumeDetail?.title}
+          {selectedResumeDetail?.title && isEditMode && (
             <span style={{
               marginLeft: '12px',
               fontSize: '14px',

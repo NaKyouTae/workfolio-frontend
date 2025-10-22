@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import CareerContentHeader from './CareerContentHeader';
-import { Resume } from '@/generated/common';
+import { ResumeDetail } from '@/generated/common';
 import CareerContentView from './CareerContentView';
 import CareerContentEdit from './CareerContentEdit';
 
 interface CareerContentProps {
   isLoggedIn: boolean;
-  selectedResume: Resume;
+  selectedResumeDetail: ResumeDetail | null;
 }
 
 /**
  * 이력서 상세 콘텐츠를 관리하는 컴포넌트
  * 편집 모드와 읽기 모드를 전환합니다
  */
-const CareerContent: React.FC<CareerContentProps> = ({ isLoggedIn, selectedResume }) => {
+const CareerContent: React.FC<CareerContentProps> = ({ isLoggedIn, selectedResumeDetail }) => {
   // 편집 모드 상태
   const [isEditMode, setIsEditMode] = useState(false);
   
@@ -35,14 +35,14 @@ const CareerContent: React.FC<CareerContentProps> = ({ isLoggedIn, selectedResum
   // 복제 핸들러
   const handleDuplicate = () => {
     // TODO: 복제 기능 구현
-    console.log('복제:', selectedResume);
+    console.log('복제:', selectedResumeDetail);
     alert('복제 기능은 추후 구현될 예정입니다.');
   };
 
   // PDF 내보내기 핸들러
   const handleExportPDF = () => {
     // TODO: PDF 내보내기 기능 구현
-    console.log('PDF 내보내기:', selectedResume);
+    console.log('PDF 내보내기:', selectedResumeDetail);
     alert('PDF 내보내기 기능은 추후 구현될 예정입니다.');
   };
 
@@ -55,7 +55,7 @@ const CareerContent: React.FC<CareerContentProps> = ({ isLoggedIn, selectedResum
     }}>
       {/* 전체 헤더 */}
       <CareerContentHeader 
-        selectedResume={selectedResume}
+        selectedResumeDetail={selectedResumeDetail}
         isLoggedIn={isLoggedIn}
         isEditMode={isEditMode}
         onEdit={handleToggleEditMode}
@@ -66,13 +66,13 @@ const CareerContent: React.FC<CareerContentProps> = ({ isLoggedIn, selectedResum
       {/* 편집 모드에 따라 View 또는 Edit 컴포넌트 렌더링 */}
       {isEditMode ? (
         <CareerContentEdit 
-          selectedResume={selectedResume}
+          selectedResumeDetail={selectedResumeDetail}
           onSave={handleEditComplete}
           onCancel={handleEditCancel}
         />
       ) : (
         <CareerContentView 
-          selectedResume={selectedResume}
+          selectedResumeDetail={selectedResumeDetail}
         />
       )}
     </div>

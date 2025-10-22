@@ -2,14 +2,22 @@
     margin: 10px 0;
 }
 
+.input-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
 .input-field {
     padding: 10px;
     width: 100%;
     max-width: 300px;
-    font-size: 16px;
+    font-size: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
     outline: none;
+    height: 36px;
 }
 
 .input-field:focus {

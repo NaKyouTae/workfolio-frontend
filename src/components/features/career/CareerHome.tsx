@@ -1,20 +1,20 @@
 import React from 'react';
-import { Resume } from '@/generated/common';
+import { ResumeDetail } from '@/generated/common';
 import CareerContent from './CareerContent';
 
 interface CareerHomeProps {
-  selectedResume: Resume | null;
-  resumes: Resume[];
+  selectedResumeDetail: ResumeDetail | null;
+  resumeDetails: ResumeDetail[];
   isLoggedIn: boolean;
 }
 
 const CareerHome: React.FC<CareerHomeProps> = ({
-  selectedResume,
-  resumes,
+  selectedResumeDetail,
+  resumeDetails,
   isLoggedIn,
 }) => {
   // 이력서 상세 페이지 표시
-  if (selectedResume) {
+  if (selectedResumeDetail) {
     return (
       <div style={{
         flex: 1,
@@ -27,7 +27,7 @@ const CareerHome: React.FC<CareerHomeProps> = ({
       }}>
         <CareerContent
           isLoggedIn={isLoggedIn}
-          selectedResume={selectedResume}
+          selectedResumeDetail={selectedResumeDetail}
         />
       </div>
     );
@@ -93,7 +93,7 @@ const CareerHome: React.FC<CareerHomeProps> = ({
               color: '#007bff',
               margin: 0
             }}>
-              {resumes.length}
+              {resumeDetails.length}
             </p>
           </div>
           
@@ -117,7 +117,7 @@ const CareerHome: React.FC<CareerHomeProps> = ({
               color: '#28a745',
               margin: 0
             }}>
-              {resumes.filter(resume => resume.isDefault).length}
+              {resumeDetails.filter(resumeDetail => resumeDetail.isDefault).length}
             </p>
           </div>
           
@@ -141,7 +141,7 @@ const CareerHome: React.FC<CareerHomeProps> = ({
               color: '#17a2b8',
               margin: 0
             }}>
-              {resumes.filter(resume => resume.isPublic).length}
+              {resumeDetails.filter(resumeDetail => resumeDetail.isPublic).length}
             </p>
           </div>
         </div>

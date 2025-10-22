@@ -178,7 +178,7 @@ export interface ResumeUpdateRequest_LanguageSkillRequest {
 
 export interface ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
   id?: string | undefined;
-  testName?: string | undefined;
+  name?: string | undefined;
   score?: string | undefined;
   acquiredAt?: number | undefined;
   isVisible?: boolean | undefined;
@@ -1720,7 +1720,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
 };
 
 function createBaseResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest(): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
-  return { id: undefined, testName: undefined, score: undefined, acquiredAt: undefined, isVisible: undefined };
+  return { id: undefined, name: undefined, score: undefined, acquiredAt: undefined, isVisible: undefined };
 }
 
 export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: MessageFns<
@@ -1733,8 +1733,8 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
     if (message.id !== undefined) {
       writer.uint32(10).string(message.id);
     }
-    if (message.testName !== undefined) {
-      writer.uint32(18).string(message.testName);
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
     }
     if (message.score !== undefined) {
       writer.uint32(26).string(message.score);
@@ -1771,7 +1771,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
             break;
           }
 
-          message.testName = reader.string();
+          message.name = reader.string();
           continue;
         }
         case 3: {
@@ -1810,7 +1810,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
   fromJSON(object: any): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-      testName: isSet(object.testName) ? globalThis.String(object.testName) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
       score: isSet(object.score) ? globalThis.String(object.score) : undefined,
       acquiredAt: isSet(object.acquiredAt) ? globalThis.Number(object.acquiredAt) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
@@ -1822,8 +1822,8 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
     if (message.id !== undefined) {
       obj.id = message.id;
     }
-    if (message.testName !== undefined) {
-      obj.testName = message.testName;
+    if (message.name !== undefined) {
+      obj.name = message.name;
     }
     if (message.score !== undefined) {
       obj.score = message.score;
@@ -1847,7 +1847,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
   ): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
     const message = createBaseResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest();
     message.id = object.id ?? undefined;
-    message.testName = object.testName ?? undefined;
+    message.name = object.name ?? undefined;
     message.score = object.score ?? undefined;
     message.acquiredAt = object.acquiredAt ?? undefined;
     message.isVisible = object.isVisible ?? undefined;

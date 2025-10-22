@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Resume } from '@/generated/common';
+import { ResumeDetail } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
 import CareerCreateModal from './CareerCreateModal';
 
 interface CareerSidebarProps {
-  selectedResume: Resume | null;
-  onResumeSelect: (resume: Resume) => void;
+  selectedResumeDetail: ResumeDetail | null;
+  onResumeSelect: (resume: ResumeDetail) => void;
   onGoHome: () => void;
 }
 
-const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResume, onResumeSelect, onGoHome }) => {
-  const [resumes, setResumes] = useState<Resume[]>([]);
+const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResumeDetail, onResumeSelect, onGoHome }) => {
+  const [resumeDetails, setResumeDetails] = useState<ResumeDetail[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 이력서 목록 가져오기
-  const fetchResumes = useCallback(async () => {
+  const fetchResumeDetails = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/resumes', {
@@ -24,7 +24,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResume, onResumeS
 
       if (response.ok) {
         const data = await response.json();
-        setResumes(data.resumes || []);
+        setResumeDetails(data.resumes || []);
       } else {
         console.error('Failed to fetch resumes:', response.status);
       }
@@ -36,8 +36,8 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResume, onResumeS
   }, []);
 
   useEffect(() => {
-    fetchResumes();
-  }, [fetchResumes]);
+    fetchResumeDetails();
+  }, [fetchResumeDetails]);
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -48,7 +48,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResume, onResumeS
   };
 
   const handleResumeCreated = () => {
-    fetchResumes(); // 이력서 목록 새로고침
+    fetchResumeDetails(); // 이력서 목록 새로고침
   };
 
   return (
@@ -112,21 +112,21 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResume, onResumeS
             style={{
               padding: '12px 16px',
               margin: '4px 0',
-              backgroundColor: !selectedResume ? '#e3f2fd' : 'transparent',
-              border: !selectedResume ? '1px solid #2196f3' : '1px solid transparent',
+              backgroundColor: !selectedResumeDetail ? '#e3f2fd' : 'transparent',
+              border: !selectedResumeDetail ? '1px solid #2196f3' : '1px solid transparent',
               borderRadius: '6px',
               cursor: 'pointer',
               transition: 'all 0.2s',
               fontSize: '14px',
-              color: !selectedResume ? '#1976d2' : '#333'
+              color: !selectedResumeDetail ? '#1976d2' : '#333'
             }}
             onMouseOver={(e) => {
-              if (selectedResume) {
+              if (selectedResumeDetail) {
                 e.currentTarget.style.backgroundColor = '#f5f5f5';
               }
             }}
             onMouseOut={(e) => {
-              if (selectedResume) {
+              if (selectedResumeDetail) {
                 e.currentTarget.style.backgroundColor = 'transparent';
               }
             }}
@@ -156,40 +156,40 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResume, onResumeS
           <div style={{ fontSize: '12px', color: '#999', padding: '8px 0' }}>
             로딩 중...
           </div>
-        ) : resumes.length > 0 ? (
+        ) : resumeDetails.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {resumes.map((resume) => {
-              const isSelected = selectedResume?.id === resume.id;
+            {resumeDetails.map((resumeDetail) => {
+              const isSelected = selectedResumeDetail?.id === resumeDetail.id;
               return (
                 <div
-                  key={resume.id}
-                  onClick={() => onResumeSelect(resume)}
+                  key={resumeDetail.id}
+                  onClick={() => onResumeSelect(resumeDetail)}
                   style={{
                     padding: '8px 12px',
                     borderRadius: '6px',
                     fontSize: '13px',
                     color: '#333',
-                    backgroundColor: isSelected ? '#e3f2fd' : (resume.isDefault ? '#e8f5e9' : '#f5f5f5'),
-                    border: isSelected ? '2px solid #2196f3' : (resume.isDefault ? '1px solid #4caf50' : '1px solid transparent'),
+                    backgroundColor: isSelected ? '#e3f2fd' : (resumeDetail.isDefault ? '#e8f5e9' : '#f5f5f5'),
+                    border: isSelected ? '2px solid #2196f3' : (resumeDetail.isDefault ? '1px solid #4caf50' : '1px solid transparent'),
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
                     if (!isSelected) {
-                      e.currentTarget.style.backgroundColor = resume.isDefault ? '#c8e6c9' : '#e0e0e0';
+                      e.currentTarget.style.backgroundColor = resumeDetail.isDefault ? '#c8e6c9' : '#e0e0e0';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isSelected) {
-                      e.currentTarget.style.backgroundColor = resume.isDefault ? '#e8f5e9' : '#f5f5f5';
+                      e.currentTarget.style.backgroundColor = resumeDetail.isDefault ? '#e8f5e9' : '#f5f5f5';
                     } else {
                       e.currentTarget.style.backgroundColor = '#e3f2fd';
                     }
                   }}
                 >
-                <div style={{ fontWeight: resume.isDefault ? '600' : '400' }}>
-                  {resume.title}
-                  {resume.isDefault && (
+                <div style={{ fontWeight: resumeDetail.isDefault ? '600' : '400' }}>
+                  {resumeDetail.title}
+                  {resumeDetail.isDefault && (
                     <span style={{ 
                       marginLeft: '6px', 
                       fontSize: '10px',
@@ -200,18 +200,6 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResume, onResumeS
                     </span>
                   )}
                 </div>
-                {resume.description && (
-                  <div style={{ 
-                    fontSize: '11px', 
-                    color: '#666', 
-                    marginTop: '2px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    {resume.description}
-                  </div>
-                )}
               </div>
               );
             })}

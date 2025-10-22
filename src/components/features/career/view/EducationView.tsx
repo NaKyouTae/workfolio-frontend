@@ -5,18 +5,16 @@ import { EducationCreateRequest, EducationUpdateRequest } from '@/generated/educ
 import HttpMethod from '@/enums/HttpMethod';
 
 interface EducationViewProps {
-  initialData?: Education[];
+  educations?: Education[];
   onDataChange?: (data: Education[]) => void;
 }
 
 const EducationView: React.FC<EducationViewProps> = ({ 
-  initialData = [], 
+  educations = [], 
   onDataChange
 }) => {
-  const [educations, setEducations] = useState<Education[]>([]);
   const [newEducation, setNewEducation] = useState<EducationCreateRequest>({
     name: '',
-    agency: '',
     startedAt: 0,
     endedAt: 0,
     resumeId: ''
@@ -30,26 +28,14 @@ const EducationView: React.FC<EducationViewProps> = ({
 
   // 초기 데이터 로드
   useEffect(() => {
-    if (isInitialLoad.current && initialData && initialData.length > 0) {
-      const educationsForm: Education[] = initialData.map((education: Education) => ({
-        id: education.id,
-        name: education.name,
-        agency: education.agency,
-        startedAt: education.startedAt,
-        endedAt: education.endedAt,
-        createdAt: education.createdAt,
-        updatedAt: education.updatedAt,
-        isVisible: education.isVisible,
-        resume: education.resume,
-      }));
-      setEducations(educationsForm);
+    if (isInitialLoad.current && educations && educations.length > 0) {
       isInitialLoad.current = false;
     }
-  }, [initialData]);
+  }, [educations]);
 
   // 데이터 변경 시 부모에게 알림 (초기 로드 제외)
   useEffect(() => {
-    if (!isInitialLoad.current && educations.length >= 0 && onDataChange) {
+    if (!isInitialLoad.current && educations && educations.length >= 0 && onDataChange) {
       onDataChange(educations as Education[]);
     }
   }, [educations, onDataChange]);
@@ -57,7 +43,6 @@ const EducationView: React.FC<EducationViewProps> = ({
 
   // 데이터 변경 핸들러
   const handleDataChange = (newEducations: Education[]) => {
-    setEducations(newEducations);
     if (onDataChange) {
       onDataChange(newEducations as Education[]);
     }
@@ -65,7 +50,7 @@ const EducationView: React.FC<EducationViewProps> = ({
 
   // 교육 이력 추가
   const addEducation = async () => {
-    if (newEducation.name && newEducation.agency && newEducation.startedAt) {
+    if (newEducation.name && newEducation.startedAt) {
       try {
         const response = await fetch('/api/educations', {
           method: HttpMethod.POST,
@@ -81,7 +66,6 @@ const EducationView: React.FC<EducationViewProps> = ({
             handleDataChange([...educations, result.education]);
             setNewEducation({
               name: '',
-              agency: '',
               startedAt: 0,
               endedAt: 0,
               resumeId: ''
@@ -203,8 +187,8 @@ const EducationView: React.FC<EducationViewProps> = ({
             <input
               type="text"
               placeholder="교육기관"
-              value={newEducation.agency}
-              onChange={(e) => setNewEducation({ ...newEducation, agency: e.target.value })}
+              value={newEducation.name}
+              onChange={(e) => setNewEducation({ ...newEducation, name: e.target.value })}
               style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', flex: 1, minWidth: '150px' }}
             />
             <input
@@ -272,10 +256,10 @@ const EducationView: React.FC<EducationViewProps> = ({
           >
             <div style={{ flex: 1 }}>
               <div><strong>{education.name}</strong></div>
-              <div>교육기관: {education.agency}</div>
+              <div>교육기관: {education.name}</div>
               <div>시작일: {education.startedAt ? DateUtil.formatTimestamp(education.startedAt) : ''}</div>
               <div>종료일: {education.endedAt ? DateUtil.formatTimestamp(education.endedAt) : ''}</div>
-              <div>{DateUtil.formatTimestamp(education.startedAt)} ~ {DateUtil.formatTimestamp(education.endedAt || 0)}</div>
+              <div>{DateUtil.formatTimestamp(education.startedAt || 0)} ~ {DateUtil.formatTimestamp(education.endedAt || 0)}</div>
             </div>
             <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
               <button 

@@ -10,9 +10,10 @@ interface DropdownProps {
     selectedOption: string;
     options: IDropdown[]; // 옵션 배열
     setValue: (value: string) => void; // 선택된 옵션의 값을 설정하는 함수
+    label?: string;
 }
 
-const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
+const Dropdown = ({ selectedOption, options, setValue, label }: DropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     
@@ -47,6 +48,7 @@ const Dropdown = ({ selectedOption, options, setValue }: DropdownProps) => {
     
     return (
         <div className="dropdown" ref={dropdownRef}>
+            {label && <label className="dropdown-label">{label}</label>}
             <button 
                 type="button"
                 onClick={toggleDropdown} 

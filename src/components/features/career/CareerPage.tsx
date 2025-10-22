@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import CareerSidebar from './CareerSidebar';
 import CareerHome from './CareerHome';
 import { useUser } from '@/hooks/useUser';
-import { Resume } from '@/generated/common';
+import { ResumeDetail } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
 
 const CareerPage: React.FC = () => {
@@ -10,8 +10,8 @@ const CareerPage: React.FC = () => {
   const { isLoggedIn, user, isLoading: userLoading, fetchUser } = useUser();
 
   // 선택된 이력서
-  const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
-  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [selectedResumeDetail, setSelectedResumeDetail] = useState<ResumeDetail | null>(null);
+  const [resumeDetails, setResumeDetails] = useState<ResumeDetail[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // 초기 로드 여부를 추적하는 ref
@@ -30,7 +30,7 @@ const CareerPage: React.FC = () => {
   }, []);
 
   // 이력서 목록 조회
-  const fetchResumes = useCallback(async () => {
+  const fetchResumeDetails = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/resumes', {
@@ -39,7 +39,7 @@ const CareerPage: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setResumes(data.resumes || []);
+        setResumeDetails(data.resumeDetails || []);
       } else {
         console.error('Failed to fetch resumes');
       }
@@ -51,17 +51,17 @@ const CareerPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchResumes();
-  }, [fetchResumes]);
+    fetchResumeDetails();
+  }, [fetchResumeDetails]);
 
   // 이력서 상세 보기
-  const viewResumeDetail = (resume: Resume) => {
-    setSelectedResume(resume);
+  const viewResumeDetail = (resumeDetail: ResumeDetail) => {
+    setSelectedResumeDetail(resumeDetail);
   };
 
   // 이력서 홈으로 이동
   const goHome = () => {
-    setSelectedResume(null);
+    setSelectedResumeDetail(null);
   };
 
   // 로딩 중일 때
@@ -82,13 +82,13 @@ const CareerPage: React.FC = () => {
   return (
     <main style={{ display: 'flex', height: 'calc(100vh - 6.4rem)', backgroundColor: '#f8f9fa' }}>
       <CareerSidebar 
-        selectedResume={selectedResume}
+        selectedResumeDetail={selectedResumeDetail || null}
         onResumeSelect={viewResumeDetail}
         onGoHome={goHome}
       />
       <CareerHome 
-        selectedResume={selectedResume}
-        resumes={resumes}
+        selectedResumeDetail={selectedResumeDetail || null}
+        resumeDetails={resumeDetails}
         isLoggedIn={isLoggedIn}
       />
     </main>

@@ -4,6 +4,13 @@
     width: 100%;
 }
 
+.dropdown-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: #666;
+}
+
 .dropdown-toggle {
     padding: 10px 20px;
     font-size: 16px;

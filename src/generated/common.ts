@@ -69,7 +69,7 @@ export function account_AccountTypeToJSON(object: Account_AccountType): string {
 export interface Resume {
   id: string;
   title?: string | undefined;
-  description?: string | undefined;
+  name?: string | undefined;
   phone?: string | undefined;
   email?: string | undefined;
   brithDate?: number | undefined;
@@ -122,13 +122,24 @@ export function resume_GenderToJSON(object: Resume_Gender): string {
 }
 
 export interface ResumeDetail {
-  resume?: Resume | undefined;
+  id: string;
+  title?: string | undefined;
+  name?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
+  brithDate?: number | undefined;
+  gender?: Resume_Gender | undefined;
+  isPublic?: boolean | undefined;
+  isDefault?: boolean | undefined;
+  publicId?: string | undefined;
   worker?: Worker | undefined;
   careers: Career[];
   educations: Education[];
   activities: Activity[];
   languageSkills: LanguageSkill[];
   attachments: Attachment[];
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface Career {
@@ -1234,7 +1245,7 @@ function createBaseResume(): Resume {
   return {
     id: "",
     title: undefined,
-    description: undefined,
+    name: undefined,
     phone: undefined,
     email: undefined,
     brithDate: undefined,
@@ -1256,8 +1267,8 @@ export const Resume: MessageFns<Resume> = {
     if (message.title !== undefined) {
       writer.uint32(18).string(message.title);
     }
-    if (message.description !== undefined) {
-      writer.uint32(26).string(message.description);
+    if (message.name !== undefined) {
+      writer.uint32(26).string(message.name);
     }
     if (message.phone !== undefined) {
       writer.uint32(34).string(message.phone);
@@ -1320,7 +1331,7 @@ export const Resume: MessageFns<Resume> = {
             break;
           }
 
-          message.description = reader.string();
+          message.name = reader.string();
           continue;
         }
         case 4: {
@@ -1416,7 +1427,7 @@ export const Resume: MessageFns<Resume> = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       title: isSet(object.title) ? globalThis.String(object.title) : undefined,
-      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
       phone: isSet(object.phone) ? globalThis.String(object.phone) : undefined,
       email: isSet(object.email) ? globalThis.String(object.email) : undefined,
       brithDate: isSet(object.brithDate) ? globalThis.Number(object.brithDate) : undefined,
@@ -1438,8 +1449,8 @@ export const Resume: MessageFns<Resume> = {
     if (message.title !== undefined) {
       obj.title = message.title;
     }
-    if (message.description !== undefined) {
-      obj.description = message.description;
+    if (message.name !== undefined) {
+      obj.name = message.name;
     }
     if (message.phone !== undefined) {
       obj.phone = message.phone;
@@ -1481,7 +1492,7 @@ export const Resume: MessageFns<Resume> = {
     const message = createBaseResume();
     message.id = object.id ?? "";
     message.title = object.title ?? undefined;
-    message.description = object.description ?? undefined;
+    message.name = object.name ?? undefined;
     message.phone = object.phone ?? undefined;
     message.email = object.email ?? undefined;
     message.brithDate = object.brithDate ?? undefined;
@@ -1500,38 +1511,82 @@ export const Resume: MessageFns<Resume> = {
 
 function createBaseResumeDetail(): ResumeDetail {
   return {
-    resume: undefined,
+    id: "",
+    title: undefined,
+    name: undefined,
+    phone: undefined,
+    email: undefined,
+    brithDate: undefined,
+    gender: undefined,
+    isPublic: undefined,
+    isDefault: undefined,
+    publicId: undefined,
     worker: undefined,
     careers: [],
     educations: [],
     activities: [],
     languageSkills: [],
     attachments: [],
+    createdAt: 0,
+    updatedAt: 0,
   };
 }
 
 export const ResumeDetail: MessageFns<ResumeDetail> = {
   encode(message: ResumeDetail, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.resume !== undefined) {
-      Resume.encode(message.resume, writer.uint32(10).fork()).join();
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== undefined) {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(26).string(message.name);
+    }
+    if (message.phone !== undefined) {
+      writer.uint32(34).string(message.phone);
+    }
+    if (message.email !== undefined) {
+      writer.uint32(42).string(message.email);
+    }
+    if (message.brithDate !== undefined) {
+      writer.uint32(48).uint64(message.brithDate);
+    }
+    if (message.gender !== undefined) {
+      writer.uint32(56).int32(message.gender);
+    }
+    if (message.isPublic !== undefined) {
+      writer.uint32(64).bool(message.isPublic);
+    }
+    if (message.isDefault !== undefined) {
+      writer.uint32(72).bool(message.isDefault);
+    }
+    if (message.publicId !== undefined) {
+      writer.uint32(82).string(message.publicId);
     }
     if (message.worker !== undefined) {
-      Worker.encode(message.worker, writer.uint32(18).fork()).join();
+      Worker.encode(message.worker, writer.uint32(402).fork()).join();
     }
     for (const v of message.careers) {
-      Career.encode(v!, writer.uint32(26).fork()).join();
+      Career.encode(v!, writer.uint32(410).fork()).join();
     }
     for (const v of message.educations) {
-      Education.encode(v!, writer.uint32(34).fork()).join();
+      Education.encode(v!, writer.uint32(418).fork()).join();
     }
     for (const v of message.activities) {
-      Activity.encode(v!, writer.uint32(42).fork()).join();
+      Activity.encode(v!, writer.uint32(426).fork()).join();
     }
     for (const v of message.languageSkills) {
-      LanguageSkill.encode(v!, writer.uint32(50).fork()).join();
+      LanguageSkill.encode(v!, writer.uint32(434).fork()).join();
     }
     for (const v of message.attachments) {
-      Attachment.encode(v!, writer.uint32(58).fork()).join();
+      Attachment.encode(v!, writer.uint32(442).fork()).join();
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(784).uint64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(792).uint64(message.updatedAt);
     }
     return writer;
   },
@@ -1548,7 +1603,7 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
             break;
           }
 
-          message.resume = Resume.decode(reader, reader.uint32());
+          message.id = reader.string();
           continue;
         }
         case 2: {
@@ -1556,7 +1611,7 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
             break;
           }
 
-          message.worker = Worker.decode(reader, reader.uint32());
+          message.title = reader.string();
           continue;
         }
         case 3: {
@@ -1564,7 +1619,7 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
             break;
           }
 
-          message.careers.push(Career.decode(reader, reader.uint32()));
+          message.name = reader.string();
           continue;
         }
         case 4: {
@@ -1572,7 +1627,7 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
             break;
           }
 
-          message.educations.push(Education.decode(reader, reader.uint32()));
+          message.phone = reader.string();
           continue;
         }
         case 5: {
@@ -1580,23 +1635,111 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
             break;
           }
 
-          message.activities.push(Activity.decode(reader, reader.uint32()));
+          message.email = reader.string();
           continue;
         }
         case 6: {
-          if (tag !== 50) {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.brithDate = longToNumber(reader.uint64());
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.gender = reader.int32() as any;
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.isPublic = reader.bool();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.isDefault = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.publicId = reader.string();
+          continue;
+        }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.worker = Worker.decode(reader, reader.uint32());
+          continue;
+        }
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.careers.push(Career.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.educations.push(Education.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 53: {
+          if (tag !== 426) {
+            break;
+          }
+
+          message.activities.push(Activity.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 54: {
+          if (tag !== 434) {
             break;
           }
 
           message.languageSkills.push(LanguageSkill.decode(reader, reader.uint32()));
           continue;
         }
-        case 7: {
-          if (tag !== 58) {
+        case 55: {
+          if (tag !== 442) {
             break;
           }
 
           message.attachments.push(Attachment.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
+            break;
+          }
+
+          message.createdAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
+            break;
+          }
+
+          message.updatedAt = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -1610,7 +1753,16 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
 
   fromJSON(object: any): ResumeDetail {
     return {
-      resume: isSet(object.resume) ? Resume.fromJSON(object.resume) : undefined,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      title: isSet(object.title) ? globalThis.String(object.title) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      phone: isSet(object.phone) ? globalThis.String(object.phone) : undefined,
+      email: isSet(object.email) ? globalThis.String(object.email) : undefined,
+      brithDate: isSet(object.brithDate) ? globalThis.Number(object.brithDate) : undefined,
+      gender: isSet(object.gender) ? resume_GenderFromJSON(object.gender) : undefined,
+      isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : undefined,
+      isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : undefined,
+      publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : undefined,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       careers: globalThis.Array.isArray(object?.careers) ? object.careers.map((e: any) => Career.fromJSON(e)) : [],
       educations: globalThis.Array.isArray(object?.educations)
@@ -1625,13 +1777,42 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
       attachments: globalThis.Array.isArray(object?.attachments)
         ? object.attachments.map((e: any) => Attachment.fromJSON(e))
         : [],
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
   },
 
   toJSON(message: ResumeDetail): unknown {
     const obj: any = {};
-    if (message.resume !== undefined) {
-      obj.resume = Resume.toJSON(message.resume);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.title !== undefined) {
+      obj.title = message.title;
+    }
+    if (message.name !== undefined) {
+      obj.name = message.name;
+    }
+    if (message.phone !== undefined) {
+      obj.phone = message.phone;
+    }
+    if (message.email !== undefined) {
+      obj.email = message.email;
+    }
+    if (message.brithDate !== undefined) {
+      obj.brithDate = Math.round(message.brithDate);
+    }
+    if (message.gender !== undefined) {
+      obj.gender = resume_GenderToJSON(message.gender);
+    }
+    if (message.isPublic !== undefined) {
+      obj.isPublic = message.isPublic;
+    }
+    if (message.isDefault !== undefined) {
+      obj.isDefault = message.isDefault;
+    }
+    if (message.publicId !== undefined) {
+      obj.publicId = message.publicId;
     }
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
@@ -1651,6 +1832,12 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
     if (message.attachments?.length) {
       obj.attachments = message.attachments.map((e) => Attachment.toJSON(e));
     }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
     return obj;
   },
 
@@ -1659,9 +1846,16 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
   },
   fromPartial<I extends Exact<DeepPartial<ResumeDetail>, I>>(object: I): ResumeDetail {
     const message = createBaseResumeDetail();
-    message.resume = (object.resume !== undefined && object.resume !== null)
-      ? Resume.fromPartial(object.resume)
-      : undefined;
+    message.id = object.id ?? "";
+    message.title = object.title ?? undefined;
+    message.name = object.name ?? undefined;
+    message.phone = object.phone ?? undefined;
+    message.email = object.email ?? undefined;
+    message.brithDate = object.brithDate ?? undefined;
+    message.gender = object.gender ?? undefined;
+    message.isPublic = object.isPublic ?? undefined;
+    message.isDefault = object.isDefault ?? undefined;
+    message.publicId = object.publicId ?? undefined;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
       : undefined;
@@ -1670,6 +1864,8 @@ export const ResumeDetail: MessageFns<ResumeDetail> = {
     message.activities = object.activities?.map((e) => Activity.fromPartial(e)) || [];
     message.languageSkills = object.languageSkills?.map((e) => LanguageSkill.fromPartial(e)) || [];
     message.attachments = object.attachments?.map((e) => Attachment.fromPartial(e)) || [];
+    message.createdAt = object.createdAt ?? 0;
+    message.updatedAt = object.updatedAt ?? 0;
     return message;
   },
 };
