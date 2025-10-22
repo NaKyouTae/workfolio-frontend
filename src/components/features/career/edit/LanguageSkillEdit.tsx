@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ResumeUpdateRequest_LanguageSkillRequest } from '@/generated/resume';
+import { ResumeUpdateRequest_LanguageSkillRequest, ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest } from '@/generated/resume';
 import { LanguageSkill_Language, LanguageSkill_LanguageLevel } from '@/generated/common';
 import Dropdown from '@/components/ui/Dropdown';
 import styles from '../CareerContentEdit.module.css';
@@ -16,7 +16,6 @@ interface LanguageSkillEditProps {
  */
 const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, onUpdate }) => {
   const createEmptyLanguageSkill = (): ResumeUpdateRequest_LanguageSkillRequest => ({
-    id: `temp_${Date.now()}`,
     language: LanguageSkill_Language.ENGLISH,
     level: LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN,
     isVisible: true,
@@ -131,7 +130,7 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
           {/* 어학 시험 */}
           <LanguageTestEdit
             languageTests={languageSkill.languageTests || []}
-            onUpdate={(languageTests) => {
+            onUpdate={(languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[]) => {
               const newLanguageSkills = [...languageSkills];
               newLanguageSkills[index] = {
                 ...newLanguageSkills[index],

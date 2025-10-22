@@ -15,7 +15,6 @@ interface SalaryEditProps {
  */
 const SalaryEdit: React.FC<SalaryEditProps> = ({ salary, onUpdate, onCancel }) => {
   const [formData, setFormData] = useState<ResumeUpdateRequest_CareerRequest_Salary>({
-    id: salary.id,
     amount: salary.amount,
     negotiationDate: salary.negotiationDate,
     memo: salary.memo,
@@ -26,7 +25,7 @@ const SalaryEdit: React.FC<SalaryEditProps> = ({ salary, onUpdate, onCancel }) =
 
   useEffect(() => {
     setFormData({
-      id: salary.id,
+      id: salary.id || undefined,
       amount: salary.amount,
       negotiationDate: salary.negotiationDate,
       memo: salary.memo,

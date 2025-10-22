@@ -1,18 +1,19 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CareerSidebar from './CareerSidebar';
 import CareerHome from './CareerHome';
 import { useUser } from '@/hooks/useUser';
+import { useResumeDetails } from '@/hooks/useResumeDetails';
 import { ResumeDetail } from '@/generated/common';
-import HttpMethod from '@/enums/HttpMethod';
 
 const CareerPage: React.FC = () => {
   // 사용자 인증 상태
-  const { isLoggedIn, user, isLoading: userLoading, fetchUser } = useUser();
+  const { user, isLoading: userLoading, fetchUser } = useUser();
+
+  // 이력서 목록 관리
+  const { resumeDetails, isLoading, fetchResumeDetails, refreshResumeDetails } = useResumeDetails();
 
   // 선택된 이력서
   const [selectedResumeDetail, setSelectedResumeDetail] = useState<ResumeDetail | null>(null);
-  const [resumeDetails, setResumeDetails] = useState<ResumeDetail[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   // 초기 로드 여부를 추적하는 ref
   const userFetchAttempted = useRef(false);
@@ -29,33 +30,15 @@ const CareerPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 이력서 목록 조회
-  const fetchResumeDetails = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/resumes', {
-        method: HttpMethod.GET,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setResumeDetails(data.resumeDetails || []);
-      } else {
-        console.error('Failed to fetch resumes');
-      }
-    } catch (error) {
-      console.error('Error fetching resumes:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     fetchResumeDetails();
   }, [fetchResumeDetails]);
 
   // 이력서 상세 보기
   const viewResumeDetail = (resumeDetail: ResumeDetail) => {
+    console.log('===================1111============');
+    console.log(resumeDetail);
+    console.log('===================1111============');
     setSelectedResumeDetail(resumeDetail);
   };
 
@@ -82,14 +65,16 @@ const CareerPage: React.FC = () => {
   return (
     <main style={{ display: 'flex', height: 'calc(100vh - 6.4rem)', backgroundColor: '#f8f9fa' }}>
       <CareerSidebar 
+        resumeDetails={resumeDetails}
         selectedResumeDetail={selectedResumeDetail || null}
+        refreshResumeDetails={refreshResumeDetails}
         onResumeSelect={viewResumeDetail}
         onGoHome={goHome}
       />
       <CareerHome 
         selectedResumeDetail={selectedResumeDetail || null}
         resumeDetails={resumeDetails}
-        isLoggedIn={isLoggedIn}
+        onRefresh={refreshResumeDetails}
       />
     </main>
   );

@@ -15,7 +15,6 @@ interface LanguageTestEditProps {
  */
 const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUpdate }) => {
   const createEmptyLanguageTest = (): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest => ({
-    id: `temp_${Date.now()}`,
     name: '',
     score: '',
     acquiredAt: undefined,

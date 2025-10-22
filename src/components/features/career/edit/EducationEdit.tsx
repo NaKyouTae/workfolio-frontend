@@ -17,8 +17,7 @@ interface EducationEditProps {
  * sectionHeader, 추가 버튼, 개별 학력 항목 포함
  */
 const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) => {
-  const createEmptyEducation = (): ResumeUpdateRequest_EducationRequest => ({
-    id: `temp_${Date.now()}`,
+  const createEmptyEducation = (): ResumeUpdateRequest_EducationRequest => ({ 
     major: '',
     name: '',
     status: Education_EducationStatus.GRADUATED,

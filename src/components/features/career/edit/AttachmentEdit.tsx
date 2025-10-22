@@ -16,7 +16,6 @@ interface AttachmentEditProps {
  */
 const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }) => {
   const createEmptyAttachment = (): ResumeUpdateRequest_AttachmentRequest => ({
-    id: `temp_${Date.now()}`,
     type: Attachment_AttachmentType.PORTFOLIO,
     fileName: '',
     fileUrl: '',

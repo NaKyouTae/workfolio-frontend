@@ -15,7 +15,6 @@ interface AchievementEditProps {
  */
 const AchievementEdit: React.FC<AchievementEditProps> = ({ achievement, onUpdate, onCancel }) => {
   const [formData, setFormData] = useState<ResumeUpdateRequest_CareerRequest_Achievement>({
-    id: achievement.id,
     title: achievement.title,
     role: achievement.role,
     description: achievement.description,

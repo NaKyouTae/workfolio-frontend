@@ -5,13 +5,13 @@ import CareerContent from './CareerContent';
 interface CareerHomeProps {
   selectedResumeDetail: ResumeDetail | null;
   resumeDetails: ResumeDetail[];
-  isLoggedIn: boolean;
+  onRefresh?: () => void;
 }
 
 const CareerHome: React.FC<CareerHomeProps> = ({
   selectedResumeDetail,
   resumeDetails,
-  isLoggedIn,
+  onRefresh,
 }) => {
   // 이력서 상세 페이지 표시
   if (selectedResumeDetail) {
@@ -26,8 +26,8 @@ const CareerHome: React.FC<CareerHomeProps> = ({
         width: '100%'
       }}>
         <CareerContent
-          isLoggedIn={isLoggedIn}
           selectedResumeDetail={selectedResumeDetail}
+          onRefresh={onRefresh}
         />
       </div>
     );

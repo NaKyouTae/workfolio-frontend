@@ -1,43 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { ResumeDetail } from '@/generated/common';
-import HttpMethod from '@/enums/HttpMethod';
+import React, { useState } from 'react';
 import CareerCreateModal from './CareerCreateModal';
+import { ResumeDetail } from '@/generated/common';
 
 interface CareerSidebarProps {
+  resumeDetails: ResumeDetail[];
   selectedResumeDetail: ResumeDetail | null;
+  refreshResumeDetails: () => void;
   onResumeSelect: (resume: ResumeDetail) => void;
   onGoHome: () => void;
 }
 
-const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResumeDetail, onResumeSelect, onGoHome }) => {
-  const [resumeDetails, setResumeDetails] = useState<ResumeDetail[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshResumeDetails, selectedResumeDetail, onResumeSelect, onGoHome }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 이력서 목록 가져오기
-  const fetchResumeDetails = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/resumes', {
-        method: HttpMethod.GET,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setResumeDetails(data.resumes || []);
-      } else {
-        console.error('Failed to fetch resumes:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching resumes:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchResumeDetails();
-  }, [fetchResumeDetails]);
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -48,7 +22,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResumeDetail, onR
   };
 
   const handleResumeCreated = () => {
-    fetchResumeDetails(); // 이력서 목록 새로고침
+    refreshResumeDetails(); // 이력서 목록 새로고침
   };
 
   return (
@@ -152,11 +126,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ selectedResumeDetail, onR
           </div>
 
           {/* 이력서 목록 */}
-        {isLoading ? (
-          <div style={{ fontSize: '12px', color: '#999', padding: '8px 0' }}>
-            로딩 중...
-          </div>
-        ) : resumeDetails.length > 0 ? (
+        {resumeDetails.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {resumeDetails.map((resumeDetail) => {
               const isSelected = selectedResumeDetail?.id === resumeDetail.id;

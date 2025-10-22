@@ -18,7 +18,6 @@ interface ActivityEditProps {
  */
 const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => {
   const createEmptyActivity = (): ResumeUpdateRequest_ActivityRequest => ({
-    id: `temp_${Date.now()}`,
     type: Activity_ActivityType.CERTIFICATION,
     name: '',
     organization: '',

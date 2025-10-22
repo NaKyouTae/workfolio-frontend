@@ -19,7 +19,6 @@ interface CareerEditProps {
 const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
   const createEmptyCareer = (): ResumeUpdateRequest_CareerRequest => ({
     career: {
-      id: `temp_${Date.now()}`,
       name: '',
       startedAt: DateTime.now().toMillis(),
       endedAt: undefined,
