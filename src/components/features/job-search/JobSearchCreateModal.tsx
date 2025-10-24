@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
-import { Company } from '@/generated/common';
+import { Career } from '@/generated/common';
 import { JobSearchCreateRequest } from '@/generated/job_search';
 import JobSearchForm from './JobSearchForm';
 import HttpMethod from '@/enums/HttpMethod';
 import styles from './JobSearchCreate.module.css';
+import dayjs from 'dayjs';
 
 interface JobSearchCreateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  companies: Company[];
+  careers: Career[];
   onSuccess: () => void;
 }
 
 const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
   isOpen,
   onClose,
-  companies,
+  careers,
   onSuccess
 }) => {
   const [createForm, setCreateForm] = useState<JobSearchCreateRequest>({
     title: '',
-    startedAt: new Date().getTime(),
+    startedAt: dayjs().valueOf(),
     endedAt: undefined,
-    prevCompanyId: undefined,
-    nextCompanyId: undefined,
+    prevCareerId: undefined,
+    nextCareerId: undefined,
     memo: undefined
   });
   const [isCreating, setIsCreating] = useState(false);
@@ -54,10 +55,10 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
         onClose();
         setCreateForm({
           title: '',
-          startedAt: new Date().getTime(),
+          startedAt: dayjs().valueOf(),
           endedAt: undefined,
-          prevCompanyId: undefined,
-          nextCompanyId: undefined,
+          prevCareerId: undefined,
+          nextCareerId: undefined,
           memo: undefined
         });
       } else {
@@ -102,7 +103,7 @@ const JobSearchCreateModal: React.FC<JobSearchCreateModalProps> = ({
             <JobSearchForm
               formData={createForm}
               onFormChange={handleFormChange}
-              companies={companies}
+              careers={careers}
             />
           </div>
 

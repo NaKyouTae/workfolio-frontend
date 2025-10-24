@@ -15,43 +15,6 @@ message Worker {
   uint64 updated_at = 99;
 }
 
-message Company {
-  string id = 1;
-  string name = 2;
-  uint64 started_at = 3;
-  uint64 ended_at = 4;
-  bool is_working = 5;
-
-  Worker worker = 50;
-
-  uint64 created_at = 98;
-  uint64 updated_at = 99;
-}
-
-message Position {
-  string id = 1;
-  string name = 2;
-  uint64 started_at = 3;
-  uint64 ended_at = 4;
-
-  Company company = 50;
-
-  uint64 created_at = 98;
-  uint64 updated_at = 99;
-}
-
-message Salary {
-  string id = 1;
-  uint64 amount = 2;
-  uint64 started_at = 4;
-  uint64 ended_at = 5;
-
-  Company company = 50;
-
-  uint64 created_at = 98;
-  uint64 updated_at = 99;
-}
-
 message Account {
   enum AccountType {
     ACCOUNT_TYPE_UNSPECIFIED = 0;
@@ -70,13 +33,24 @@ message Account {
   uint64 updated_at = 99;
 }
 
-message Certifications {
+message Resume {
+  enum Gender {
+    MALE = 0;
+    FEMALE = 1;
+  }
+
   string id = 1;
-  string name = 2;
-  string number = 3;
-  string issuer = 4;
-  uint64 issued_at = 5;
-  uint64 expiration_period = 6;
+  string title = 2;
+  string name = 3;
+  string phone = 4;
+  string email = 5;
+  optional uint64 birth_date = 6;
+  optional Resume.Gender gender = 7;
+  string job = 8;
+  optional bool is_public = 9;
+  optional bool is_default = 10;
+  string public_id = 11;
+  string description = 12;
 
   Worker worker = 50;
 
@@ -84,27 +58,240 @@ message Certifications {
   uint64 updated_at = 99;
 }
 
-message Degrees {
+message ResumeDetail {
   string id = 1;
-  string name = 2;
-  string major = 3;
-  uint64 started_at = 4;
-  uint64 ended_at = 5;
+  string title = 2;
+  string name = 3;
+  string phone = 4;
+  string email = 5;
+  optional uint64 birth_date = 6;
+  optional Resume.Gender gender = 7;
+  string job = 8;
+  optional bool is_public = 9;
+  optional bool is_default = 10;
+  string public_id = 11;
+  string description = 12;
 
   Worker worker = 50;
+
+  repeated Career careers = 51;
+  repeated Education educations = 52;
+  repeated Activity activities = 53;
+  repeated Project projects = 54;
+  repeated LanguageSkill language_skills = 55;
+  repeated Attachment attachments = 56;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Career {
+  enum EmploymentType {
+    FULL_TIME = 0;
+    CONTRACT = 1;
+    INTERN = 2;
+    FREELANCER = 3;
+  }
+
+  string id = 1;
+  string name = 2;
+  optional uint64 started_at = 3;
+  optional uint64 ended_at = 4;
+  optional bool is_working = 5;
+  string position = 6;
+  optional EmploymentType employmentType = 7;
+  string department = 8;
+  string job_grade = 9;
+  string job = 10;
+  uint32 salary = 11;
+  string description = 12;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+  repeated Achievement achievements = 51;
+  repeated Salary salaries = 52;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Achievement {
+  string id = 1;
+  string title = 2;
+  string role = 3;
+  string description = 4;
+  optional uint64 started_at = 5;
+  optional uint64 ended_at = 6;
+
+  bool is_visible = 30;
+
+  Career career = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Salary {
+  string id = 1;
+  uint64 amount = 2;
+  string memo = 3;
+  optional uint64 negotiation_date = 4;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Career career = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
 }
 
 message Education {
+  enum EducationStatus {
+    GRADUATED = 0;
+    GRADUATING = 1;
+    ENROLLED = 2;
+    DROPPED_OUT = 3;
+    COMPLETED = 4;
+    ON_LEAVE = 5;
+  }
+
+  string id = 1;
+  string major = 2;
+  string name = 3;
+  string description = 4;
+  optional EducationStatus status = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Activity {
+  enum ActivityType {
+    EXTERNAL = 0;
+    EDUCATION = 1;
+    CERTIFICATION = 2;
+    AWARD = 3;
+    COMPETITION = 4;
+    ETC = 5;
+  }
+
+  string id = 1;
+  optional ActivityType type = 2;
+  string name = 3;
+  string organization = 4;
+  string certificate_number = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+  string description = 8;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Project {
+  string id = 1;
+  string title = 2;
+  string role = 3;
+  string description = 4;
+  optional uint64 started_at = 5;
+  optional uint64 ended_at = 6;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message LanguageSkill {
+  enum Language {
+    ENGLISH = 0;
+    JAPANESE = 1;
+    CHINESE = 2;
+    KOREAN = 3;
+    FRENCH = 4;
+    SPANISH = 5;
+    GERMAN = 6;
+    RUSSIAN = 7;
+    VIETNAMESE = 8;
+    ITALIAN = 9;
+    THAI = 10;
+    ARABIC = 11;
+    PORTUGUESE = 12;
+    INDONESIAN = 13;
+    MONGOLIAN = 14;
+    TURKISH = 15;
+  }
+  enum LanguageLevel {
+    DAILY_CONVERSATION = 0;
+    BUSINESS_CONVERSATION = 1;
+    NATIVE_LEVEL = 2;
+  }
+
+  string id = 1;
+  optional Language language = 2;
+  optional LanguageLevel level = 3;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+  repeated LanguageTest language_tests = 51;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message LanguageTest {
   string id = 1;
   string name = 2;
-  uint64 started_at = 3;
-  uint64 ended_at = 4;
-  string agency = 5;
+  string score = 3;
+  optional uint64 acquired_at = 4;
 
-  Worker worker = 50;
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  LanguageSkill language_skill = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Attachment {
+  enum AttachmentType {
+    RESUME = 0;
+    PORTFOLIO = 1;
+    CERTIFICATE = 2;
+    CAREER_STATEMENT = 3;
+    ETC = 4;
+  }
+
+  string id = 1;
+  optional AttachmentType type = 2;
+  string file_name = 3;
+  string file_url = 4;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -126,8 +313,7 @@ message Record {
   uint64 ended_at = 6;
 
   Worker worker = 50;
-  Company company = 51;
-  RecordGroup record_group = 52;
+  RecordGroup record_group = 51;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -144,7 +330,7 @@ message RecordGroup {
   string id = 1;
   RecordGroupType type = 2;
   string title = 3;
-  bool is_public = 4;
+  bool is_default = 4;
   string public_id = 5;
   string color = 6;
 
@@ -179,8 +365,8 @@ message JobSearch {
   optional string memo = 5;
 
   Worker worker = 50;
-  optional Company prev_company = 51;
-  optional Company next_company = 52;
+  optional Career prev_career = 51;
+  optional Career next_career = 52;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -233,6 +419,22 @@ message Interview {
   optional string memo = 6;
 
   JobSearchCompany job_search_company = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message SystemConfig {
+  enum SystemConfigType {
+    UNKNOWN = 0;
+    DEFAULT_RECORD_TYPE = 1;
+  }
+
+  string id = 1;
+  SystemConfigType type = 2;
+  string value = 3;
+
+  Worker worker = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;

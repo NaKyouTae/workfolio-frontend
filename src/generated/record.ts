@@ -15,7 +15,6 @@ export interface RecordCreateRequest {
   description: string;
   startedAt: number;
   endedAt: number;
-  companyId?: string | undefined;
   recordGroupId: string;
 }
 
@@ -24,7 +23,6 @@ export interface RecordUpdateRequest {
   description: string;
   startedAt: number;
   endedAt: number;
-  companyId?: string | undefined;
   id: string;
 }
 
@@ -43,7 +41,7 @@ export interface RecordResponse {
 }
 
 function createBaseRecordCreateRequest(): RecordCreateRequest {
-  return { title: "", description: "", startedAt: 0, endedAt: 0, companyId: undefined, recordGroupId: "" };
+  return { title: "", description: "", startedAt: 0, endedAt: 0, recordGroupId: "" };
 }
 
 export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
@@ -59,9 +57,6 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     }
     if (message.endedAt !== 0) {
       writer.uint32(32).int64(message.endedAt);
-    }
-    if (message.companyId !== undefined) {
-      writer.uint32(786).string(message.companyId);
     }
     if (message.recordGroupId !== "") {
       writer.uint32(794).string(message.recordGroupId);
@@ -108,14 +103,6 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
           message.endedAt = longToNumber(reader.int64());
           continue;
         }
-        case 98: {
-          if (tag !== 786) {
-            break;
-          }
-
-          message.companyId = reader.string();
-          continue;
-        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -139,7 +126,6 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
-      companyId: isSet(object.companyId) ? globalThis.String(object.companyId) : undefined,
       recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
     };
   },
@@ -158,9 +144,6 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.companyId !== undefined) {
-      obj.companyId = message.companyId;
-    }
     if (message.recordGroupId !== "") {
       obj.recordGroupId = message.recordGroupId;
     }
@@ -176,14 +159,13 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
-    message.companyId = object.companyId ?? undefined;
     message.recordGroupId = object.recordGroupId ?? "";
     return message;
   },
 };
 
 function createBaseRecordUpdateRequest(): RecordUpdateRequest {
-  return { title: "", description: "", startedAt: 0, endedAt: 0, companyId: undefined, id: "" };
+  return { title: "", description: "", startedAt: 0, endedAt: 0, id: "" };
 }
 
 export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
@@ -199,9 +181,6 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     }
     if (message.endedAt !== 0) {
       writer.uint32(32).int64(message.endedAt);
-    }
-    if (message.companyId !== undefined) {
-      writer.uint32(786).string(message.companyId);
     }
     if (message.id !== "") {
       writer.uint32(794).string(message.id);
@@ -248,14 +227,6 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
           message.endedAt = longToNumber(reader.int64());
           continue;
         }
-        case 98: {
-          if (tag !== 786) {
-            break;
-          }
-
-          message.companyId = reader.string();
-          continue;
-        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -279,7 +250,6 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
-      companyId: isSet(object.companyId) ? globalThis.String(object.companyId) : undefined,
       id: isSet(object.id) ? globalThis.String(object.id) : "",
     };
   },
@@ -298,9 +268,6 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.companyId !== undefined) {
-      obj.companyId = message.companyId;
-    }
     if (message.id !== "") {
       obj.id = message.id;
     }
@@ -316,7 +283,6 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
-    message.companyId = object.companyId ?? undefined;
     message.id = object.id ?? "";
     return message;
   },

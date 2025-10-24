@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { JobSearch, Company } from '@/generated/common';
+import { JobSearch, Career } from '@/generated/common';
 import { JobSearchUpdateRequest } from '@/generated/job_search';
 import JobSearchForm from './JobSearchForm';
 import HttpMethod from '@/enums/HttpMethod';
 import styles from './JobSearchUpdate.module.css';
+import dayjs from 'dayjs';
 
 interface JobSearchUpdateModalProps {
   isOpen: boolean;
   onClose: () => void;
   editingJobSearch: JobSearch | null;
-  companies: Company[];
+  careers: Career[];
   onSuccess: () => void;
 }
 
@@ -17,16 +18,16 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
   isOpen,
   onClose,
   editingJobSearch,
-  companies,
+  careers,
   onSuccess
 }) => {
   const [createForm, setCreateForm] = useState<JobSearchUpdateRequest>({
     id: '',
     title: '',
-    startedAt: new Date().getTime(),
+    startedAt: dayjs().valueOf(),
     endedAt: undefined,
-    prevCompanyId: undefined,
-    nextCompanyId: undefined,
+    prevCareerId: undefined,
+    nextCareerId: undefined,
     memo: undefined
   });
   const [isUpdating, setIsUpdating] = useState(false);
@@ -39,8 +40,8 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
         title: editingJobSearch.title || '',
         startedAt: parseInt(editingJobSearch.startedAt.toString()),
         endedAt: editingJobSearch.endedAt ? parseInt(editingJobSearch.endedAt.toString()) : undefined,
-        prevCompanyId: editingJobSearch.prevCompany?.id,
-        nextCompanyId: editingJobSearch.nextCompany?.id,
+        prevCareerId: editingJobSearch.prevCareer?.id,
+        nextCareerId: editingJobSearch.nextCareer?.id,
         memo: editingJobSearch.memo
       });
     }
@@ -64,8 +65,8 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
         title: createForm.title,
         startedAt: parseInt(createForm.startedAt.toString()),
         endedAt: createForm.endedAt ? parseInt(createForm.endedAt.toString()) : undefined,
-        prevCompanyId: createForm.prevCompanyId,
-        nextCompanyId: createForm.nextCompanyId,
+        prevCareerId: createForm.prevCareerId,
+        nextCareerId: createForm.nextCareerId,
         memo: createForm.memo
       };
 
@@ -83,10 +84,10 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
         setCreateForm({
           id: '',
           title: '',
-          startedAt: new Date().getTime(),
+          startedAt: dayjs().valueOf(),
           endedAt: undefined,
-          prevCompanyId: undefined,
-          nextCompanyId: undefined,
+          prevCareerId: undefined,
+          nextCareerId: undefined,
           memo: undefined
         });
         alert('이직이 성공적으로 수정되었습니다.');
@@ -132,7 +133,7 @@ const JobSearchUpdateModal: React.FC<JobSearchUpdateModalProps> = ({
             <JobSearchForm
               formData={createForm}
               onFormChange={handleFormChange}
-              companies={companies}
+              careers={careers}
             />
           </div>
 

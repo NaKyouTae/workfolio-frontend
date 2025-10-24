@@ -1,16 +1,16 @@
 import React from 'react';
 import { JobSearchCreateRequest, JobSearchUpdateRequest } from '@/generated/job_search';
-import { Company } from '@/generated/common';
+import { Career } from '@/generated/common';
 import DatePicker from '@/components/ui/DatePicker';
 import styles from './JobSearchForm.module.css';
 
 interface JobSearchFormProps {
   formData: JobSearchCreateRequest | JobSearchUpdateRequest;
   onFormChange: (field: string, value: string | number | undefined) => void;
-  companies: Company[];
+  careers: Career[];
 }
 
-const JobSearchForm: React.FC<JobSearchFormProps> = ({ formData, onFormChange, companies }) => {
+const JobSearchForm: React.FC<JobSearchFormProps> = ({ formData, onFormChange, careers }) => {
   return (
     <div className={styles.container}>
       <div className={styles.field}>
@@ -57,14 +57,14 @@ const JobSearchForm: React.FC<JobSearchFormProps> = ({ formData, onFormChange, c
         <div className={styles.field}>
           <label className={styles.label}>이전 회사</label>
           <select
-            value={formData.prevCompanyId || ''}
-            onChange={(e) => onFormChange('prevCompanyId', e.target.value || undefined)}
+            value={formData.prevCareerId || ''}
+            onChange={(e) => onFormChange('prevCareerId', e.target.value || undefined)}
             className={styles.select}
           >
             <option value="">이전 회사를 선택하세요</option>
-            {companies.map((company) => (
-              <option key={company.id} value={company.id}>
-                {company.name}
+            {careers.map((career) => (
+              <option key={career.id} value={career.id}>
+                {career.name}
               </option>
             ))}
           </select>
@@ -73,14 +73,14 @@ const JobSearchForm: React.FC<JobSearchFormProps> = ({ formData, onFormChange, c
         <div className={styles.field}>
           <label className={styles.label}>이후 회사</label>
           <select
-            value={formData.nextCompanyId || ''}
-            onChange={(e) => onFormChange('nextCompanyId', e.target.value || undefined)}
+            value={formData.nextCareerId || ''}
+            onChange={(e) => onFormChange('nextCareerId', e.target.value || undefined)}
             className={styles.select}
           >
             <option value="">이후 회사를 선택하세요</option>
-            {companies.map((company) => (
-              <option key={company.id} value={company.id}>
-                {company.name}
+            {careers.map((career) => (
+              <option key={career.id} value={career.id}>
+                {career.name}
               </option>
             ))}
           </select>

@@ -14,8 +14,8 @@ export interface JobSearchCreateRequest {
   title: string;
   startedAt: number;
   endedAt?: number | undefined;
-  prevCompanyId?: string | undefined;
-  nextCompanyId?: string | undefined;
+  prevCareerId?: string | undefined;
+  nextCareerId?: string | undefined;
   memo?: string | undefined;
 }
 
@@ -23,8 +23,8 @@ export interface JobSearchUpdateRequest {
   title: string;
   startedAt: number;
   endedAt?: number | undefined;
-  prevCompanyId?: string | undefined;
-  nextCompanyId?: string | undefined;
+  prevCareerId?: string | undefined;
+  nextCareerId?: string | undefined;
   memo?: string | undefined;
   id: string;
 }
@@ -42,8 +42,8 @@ function createBaseJobSearchCreateRequest(): JobSearchCreateRequest {
     title: "",
     startedAt: 0,
     endedAt: undefined,
-    prevCompanyId: undefined,
-    nextCompanyId: undefined,
+    prevCareerId: undefined,
+    nextCareerId: undefined,
     memo: undefined,
   };
 }
@@ -59,11 +59,11 @@ export const JobSearchCreateRequest: MessageFns<JobSearchCreateRequest> = {
     if (message.endedAt !== undefined) {
       writer.uint32(24).uint64(message.endedAt);
     }
-    if (message.prevCompanyId !== undefined) {
-      writer.uint32(34).string(message.prevCompanyId);
+    if (message.prevCareerId !== undefined) {
+      writer.uint32(34).string(message.prevCareerId);
     }
-    if (message.nextCompanyId !== undefined) {
-      writer.uint32(42).string(message.nextCompanyId);
+    if (message.nextCareerId !== undefined) {
+      writer.uint32(42).string(message.nextCareerId);
     }
     if (message.memo !== undefined) {
       writer.uint32(50).string(message.memo);
@@ -107,7 +107,7 @@ export const JobSearchCreateRequest: MessageFns<JobSearchCreateRequest> = {
             break;
           }
 
-          message.prevCompanyId = reader.string();
+          message.prevCareerId = reader.string();
           continue;
         }
         case 5: {
@@ -115,7 +115,7 @@ export const JobSearchCreateRequest: MessageFns<JobSearchCreateRequest> = {
             break;
           }
 
-          message.nextCompanyId = reader.string();
+          message.nextCareerId = reader.string();
           continue;
         }
         case 6: {
@@ -140,8 +140,8 @@ export const JobSearchCreateRequest: MessageFns<JobSearchCreateRequest> = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      prevCompanyId: isSet(object.prevCompanyId) ? globalThis.String(object.prevCompanyId) : undefined,
-      nextCompanyId: isSet(object.nextCompanyId) ? globalThis.String(object.nextCompanyId) : undefined,
+      prevCareerId: isSet(object.prevCareerId) ? globalThis.String(object.prevCareerId) : undefined,
+      nextCareerId: isSet(object.nextCareerId) ? globalThis.String(object.nextCareerId) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
     };
   },
@@ -157,11 +157,11 @@ export const JobSearchCreateRequest: MessageFns<JobSearchCreateRequest> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.prevCompanyId !== undefined) {
-      obj.prevCompanyId = message.prevCompanyId;
+    if (message.prevCareerId !== undefined) {
+      obj.prevCareerId = message.prevCareerId;
     }
-    if (message.nextCompanyId !== undefined) {
-      obj.nextCompanyId = message.nextCompanyId;
+    if (message.nextCareerId !== undefined) {
+      obj.nextCareerId = message.nextCareerId;
     }
     if (message.memo !== undefined) {
       obj.memo = message.memo;
@@ -177,8 +177,8 @@ export const JobSearchCreateRequest: MessageFns<JobSearchCreateRequest> = {
     message.title = object.title ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
-    message.prevCompanyId = object.prevCompanyId ?? undefined;
-    message.nextCompanyId = object.nextCompanyId ?? undefined;
+    message.prevCareerId = object.prevCareerId ?? undefined;
+    message.nextCareerId = object.nextCareerId ?? undefined;
     message.memo = object.memo ?? undefined;
     return message;
   },
@@ -189,8 +189,8 @@ function createBaseJobSearchUpdateRequest(): JobSearchUpdateRequest {
     title: "",
     startedAt: 0,
     endedAt: undefined,
-    prevCompanyId: undefined,
-    nextCompanyId: undefined,
+    prevCareerId: undefined,
+    nextCareerId: undefined,
     memo: undefined,
     id: "",
   };
@@ -207,11 +207,11 @@ export const JobSearchUpdateRequest: MessageFns<JobSearchUpdateRequest> = {
     if (message.endedAt !== undefined) {
       writer.uint32(24).uint64(message.endedAt);
     }
-    if (message.prevCompanyId !== undefined) {
-      writer.uint32(34).string(message.prevCompanyId);
+    if (message.prevCareerId !== undefined) {
+      writer.uint32(34).string(message.prevCareerId);
     }
-    if (message.nextCompanyId !== undefined) {
-      writer.uint32(42).string(message.nextCompanyId);
+    if (message.nextCareerId !== undefined) {
+      writer.uint32(42).string(message.nextCareerId);
     }
     if (message.memo !== undefined) {
       writer.uint32(50).string(message.memo);
@@ -258,7 +258,7 @@ export const JobSearchUpdateRequest: MessageFns<JobSearchUpdateRequest> = {
             break;
           }
 
-          message.prevCompanyId = reader.string();
+          message.prevCareerId = reader.string();
           continue;
         }
         case 5: {
@@ -266,7 +266,7 @@ export const JobSearchUpdateRequest: MessageFns<JobSearchUpdateRequest> = {
             break;
           }
 
-          message.nextCompanyId = reader.string();
+          message.nextCareerId = reader.string();
           continue;
         }
         case 6: {
@@ -299,8 +299,8 @@ export const JobSearchUpdateRequest: MessageFns<JobSearchUpdateRequest> = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      prevCompanyId: isSet(object.prevCompanyId) ? globalThis.String(object.prevCompanyId) : undefined,
-      nextCompanyId: isSet(object.nextCompanyId) ? globalThis.String(object.nextCompanyId) : undefined,
+      prevCareerId: isSet(object.prevCareerId) ? globalThis.String(object.prevCareerId) : undefined,
+      nextCareerId: isSet(object.nextCareerId) ? globalThis.String(object.nextCareerId) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
       id: isSet(object.id) ? globalThis.String(object.id) : "",
     };
@@ -317,11 +317,11 @@ export const JobSearchUpdateRequest: MessageFns<JobSearchUpdateRequest> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.prevCompanyId !== undefined) {
-      obj.prevCompanyId = message.prevCompanyId;
+    if (message.prevCareerId !== undefined) {
+      obj.prevCareerId = message.prevCareerId;
     }
-    if (message.nextCompanyId !== undefined) {
-      obj.nextCompanyId = message.nextCompanyId;
+    if (message.nextCareerId !== undefined) {
+      obj.nextCareerId = message.nextCareerId;
     }
     if (message.memo !== undefined) {
       obj.memo = message.memo;
@@ -340,8 +340,8 @@ export const JobSearchUpdateRequest: MessageFns<JobSearchUpdateRequest> = {
     message.title = object.title ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? undefined;
-    message.prevCompanyId = object.prevCompanyId ?? undefined;
-    message.nextCompanyId = object.nextCompanyId ?? undefined;
+    message.prevCareerId = object.prevCareerId ?? undefined;
+    message.nextCareerId = object.nextCareerId ?? undefined;
     message.memo = object.memo ?? undefined;
     message.id = object.id ?? "";
     return message;

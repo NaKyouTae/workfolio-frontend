@@ -6,7 +6,12 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { Education } from "./common";
+import {
+  Education,
+  Education_EducationStatus,
+  education_EducationStatusFromJSON,
+  education_EducationStatusToJSON,
+} from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
@@ -15,18 +20,27 @@ export interface EducationListResponse {
 }
 
 export interface EducationCreateRequest {
+  major: string;
   name: string;
-  startedAt: number;
+  description: string;
+  status?: Education_EducationStatus | undefined;
+  startedAt?: number | undefined;
   endedAt?: number | undefined;
-  agency: string;
+  isVisible: boolean;
+  priority: number;
+  resumeId: string;
 }
 
 export interface EducationUpdateRequest {
   id: string;
+  major: string;
   name: string;
-  startedAt: number;
+  description: string;
+  status?: Education_EducationStatus | undefined;
+  startedAt?: number | undefined;
   endedAt?: number | undefined;
-  agency: string;
+  isVisible: boolean;
+  priority: number;
 }
 
 export interface EducationResponse {
@@ -96,22 +110,47 @@ export const EducationListResponse: MessageFns<EducationListResponse> = {
 };
 
 function createBaseEducationCreateRequest(): EducationCreateRequest {
-  return { name: "", startedAt: 0, endedAt: undefined, agency: "" };
+  return {
+    major: "",
+    name: "",
+    description: "",
+    status: undefined,
+    startedAt: undefined,
+    endedAt: undefined,
+    isVisible: false,
+    priority: 0,
+    resumeId: "",
+  };
 }
 
 export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
   encode(message: EducationCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.major !== "") {
+      writer.uint32(18).string(message.major);
     }
-    if (message.startedAt !== 0) {
-      writer.uint32(16).uint64(message.startedAt);
+    if (message.name !== "") {
+      writer.uint32(26).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
+    if (message.status !== undefined) {
+      writer.uint32(40).int32(message.status);
+    }
+    if (message.startedAt !== undefined) {
+      writer.uint32(48).uint64(message.startedAt);
     }
     if (message.endedAt !== undefined) {
-      writer.uint32(24).uint64(message.endedAt);
+      writer.uint32(56).uint64(message.endedAt);
     }
-    if (message.agency !== "") {
-      writer.uint32(34).string(message.agency);
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
+    }
+    if (message.resumeId !== "") {
+      writer.uint32(794).string(message.resumeId);
     }
     return writer;
   },
@@ -123,28 +162,20 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.major = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
             break;
           }
 
           message.name = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.startedAt = longToNumber(reader.uint64());
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.endedAt = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -152,7 +183,55 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
             break;
           }
 
-          message.agency = reader.string();
+          message.description = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
+        case 99: {
+          if (tag !== 794) {
+            break;
+          }
+
+          message.resumeId = reader.string();
           continue;
         }
       }
@@ -166,26 +245,46 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
 
   fromJSON(object: any): EducationCreateRequest {
     return {
+      major: isSet(object.major) ? globalThis.String(object.major) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
-      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      status: isSet(object.status) ? education_EducationStatusFromJSON(object.status) : undefined,
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      agency: isSet(object.agency) ? globalThis.String(object.agency) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
+      resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
   toJSON(message: EducationCreateRequest): unknown {
     const obj: any = {};
+    if (message.major !== "") {
+      obj.major = message.major;
+    }
     if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.startedAt !== 0) {
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.status !== undefined) {
+      obj.status = education_EducationStatusToJSON(message.status);
+    }
+    if (message.startedAt !== undefined) {
       obj.startedAt = Math.round(message.startedAt);
     }
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.agency !== "") {
-      obj.agency = message.agency;
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
+    if (message.resumeId !== "") {
+      obj.resumeId = message.resumeId;
     }
     return obj;
   },
@@ -195,16 +294,31 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
   },
   fromPartial<I extends Exact<DeepPartial<EducationCreateRequest>, I>>(object: I): EducationCreateRequest {
     const message = createBaseEducationCreateRequest();
+    message.major = object.major ?? "";
     message.name = object.name ?? "";
-    message.startedAt = object.startedAt ?? 0;
+    message.description = object.description ?? "";
+    message.status = object.status ?? undefined;
+    message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
-    message.agency = object.agency ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
+    message.resumeId = object.resumeId ?? "";
     return message;
   },
 };
 
 function createBaseEducationUpdateRequest(): EducationUpdateRequest {
-  return { id: "", name: "", startedAt: 0, endedAt: undefined, agency: "" };
+  return {
+    id: "",
+    major: "",
+    name: "",
+    description: "",
+    status: undefined,
+    startedAt: undefined,
+    endedAt: undefined,
+    isVisible: false,
+    priority: 0,
+  };
 }
 
 export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
@@ -212,17 +326,29 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+    if (message.major !== "") {
+      writer.uint32(18).string(message.major);
     }
-    if (message.startedAt !== 0) {
-      writer.uint32(24).uint64(message.startedAt);
+    if (message.name !== "") {
+      writer.uint32(26).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
+    if (message.status !== undefined) {
+      writer.uint32(40).int32(message.status);
+    }
+    if (message.startedAt !== undefined) {
+      writer.uint32(48).uint64(message.startedAt);
     }
     if (message.endedAt !== undefined) {
-      writer.uint32(32).uint64(message.endedAt);
+      writer.uint32(56).uint64(message.endedAt);
     }
-    if (message.agency !== "") {
-      writer.uint32(42).string(message.agency);
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -247,31 +373,63 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
             break;
           }
 
-          message.name = reader.string();
+          message.major = reader.string();
           continue;
         }
         case 3: {
-          if (tag !== 24) {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
             break;
           }
 
           message.startedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 4: {
-          if (tag !== 32) {
+        case 7: {
+          if (tag !== 56) {
             break;
           }
 
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 5: {
-          if (tag !== 42) {
+        case 30: {
+          if (tag !== 240) {
             break;
           }
 
-          message.agency = reader.string();
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
           continue;
         }
       }
@@ -286,10 +444,14 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
   fromJSON(object: any): EducationUpdateRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
+      major: isSet(object.major) ? globalThis.String(object.major) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
-      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      status: isSet(object.status) ? education_EducationStatusFromJSON(object.status) : undefined,
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      agency: isSet(object.agency) ? globalThis.String(object.agency) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -298,17 +460,29 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
     if (message.id !== "") {
       obj.id = message.id;
     }
+    if (message.major !== "") {
+      obj.major = message.major;
+    }
     if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.startedAt !== 0) {
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.status !== undefined) {
+      obj.status = education_EducationStatusToJSON(message.status);
+    }
+    if (message.startedAt !== undefined) {
       obj.startedAt = Math.round(message.startedAt);
     }
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.agency !== "") {
-      obj.agency = message.agency;
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     return obj;
   },
@@ -319,10 +493,14 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
   fromPartial<I extends Exact<DeepPartial<EducationUpdateRequest>, I>>(object: I): EducationUpdateRequest {
     const message = createBaseEducationUpdateRequest();
     message.id = object.id ?? "";
+    message.major = object.major ?? "";
     message.name = object.name ?? "";
-    message.startedAt = object.startedAt ?? 0;
+    message.description = object.description ?? "";
+    message.status = object.status ?? undefined;
+    message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
-    message.agency = object.agency ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };

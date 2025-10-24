@@ -23,7 +23,7 @@ export interface CreateRecordGroupRequest {
   priority: number;
 }
 
-export interface ListRecordGroupResponse {
+export interface RecordGroupListResponse {
   groups: RecordGroup[];
 }
 
@@ -32,14 +32,13 @@ export interface RecordGroupDetailResponse {
   workers: Worker[];
 }
 
-export interface JoinRecordGroupRequest {
+export interface RecordGroupJoinRequest {
   recordGroupId: string;
   workerId: string;
 }
 
-export interface UpdateRecordGroupRequest {
+export interface RecordGroupUpdateRequest {
   title: string;
-  isPublic: boolean;
   color: string;
   priority: number;
 }
@@ -156,22 +155,22 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
   },
 };
 
-function createBaseListRecordGroupResponse(): ListRecordGroupResponse {
+function createBaseRecordGroupListResponse(): RecordGroupListResponse {
   return { groups: [] };
 }
 
-export const ListRecordGroupResponse: MessageFns<ListRecordGroupResponse> = {
-  encode(message: ListRecordGroupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const RecordGroupListResponse: MessageFns<RecordGroupListResponse> = {
+  encode(message: RecordGroupListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.groups) {
       RecordGroup.encode(v!, writer.uint32(10).fork()).join();
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): ListRecordGroupResponse {
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordGroupListResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListRecordGroupResponse();
+    const message = createBaseRecordGroupListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -192,13 +191,13 @@ export const ListRecordGroupResponse: MessageFns<ListRecordGroupResponse> = {
     return message;
   },
 
-  fromJSON(object: any): ListRecordGroupResponse {
+  fromJSON(object: any): RecordGroupListResponse {
     return {
       groups: globalThis.Array.isArray(object?.groups) ? object.groups.map((e: any) => RecordGroup.fromJSON(e)) : [],
     };
   },
 
-  toJSON(message: ListRecordGroupResponse): unknown {
+  toJSON(message: RecordGroupListResponse): unknown {
     const obj: any = {};
     if (message.groups?.length) {
       obj.groups = message.groups.map((e) => RecordGroup.toJSON(e));
@@ -206,11 +205,11 @@ export const ListRecordGroupResponse: MessageFns<ListRecordGroupResponse> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<ListRecordGroupResponse>, I>>(base?: I): ListRecordGroupResponse {
-    return ListRecordGroupResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<RecordGroupListResponse>, I>>(base?: I): RecordGroupListResponse {
+    return RecordGroupListResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ListRecordGroupResponse>, I>>(object: I): ListRecordGroupResponse {
-    const message = createBaseListRecordGroupResponse();
+  fromPartial<I extends Exact<DeepPartial<RecordGroupListResponse>, I>>(object: I): RecordGroupListResponse {
+    const message = createBaseRecordGroupListResponse();
     message.groups = object.groups?.map((e) => RecordGroup.fromPartial(e)) || [];
     return message;
   },
@@ -294,12 +293,12 @@ export const RecordGroupDetailResponse: MessageFns<RecordGroupDetailResponse> = 
   },
 };
 
-function createBaseJoinRecordGroupRequest(): JoinRecordGroupRequest {
+function createBaseRecordGroupJoinRequest(): RecordGroupJoinRequest {
   return { recordGroupId: "", workerId: "" };
 }
 
-export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
-  encode(message: JoinRecordGroupRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
+  encode(message: RecordGroupJoinRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.recordGroupId !== "") {
       writer.uint32(10).string(message.recordGroupId);
     }
@@ -309,10 +308,10 @@ export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): JoinRecordGroupRequest {
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordGroupJoinRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseJoinRecordGroupRequest();
+    const message = createBaseRecordGroupJoinRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -341,14 +340,14 @@ export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
     return message;
   },
 
-  fromJSON(object: any): JoinRecordGroupRequest {
+  fromJSON(object: any): RecordGroupJoinRequest {
     return {
       recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
       workerId: isSet(object.workerId) ? globalThis.String(object.workerId) : "",
     };
   },
 
-  toJSON(message: JoinRecordGroupRequest): unknown {
+  toJSON(message: RecordGroupJoinRequest): unknown {
     const obj: any = {};
     if (message.recordGroupId !== "") {
       obj.recordGroupId = message.recordGroupId;
@@ -359,42 +358,39 @@ export const JoinRecordGroupRequest: MessageFns<JoinRecordGroupRequest> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<JoinRecordGroupRequest>, I>>(base?: I): JoinRecordGroupRequest {
-    return JoinRecordGroupRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<RecordGroupJoinRequest>, I>>(base?: I): RecordGroupJoinRequest {
+    return RecordGroupJoinRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<JoinRecordGroupRequest>, I>>(object: I): JoinRecordGroupRequest {
-    const message = createBaseJoinRecordGroupRequest();
+  fromPartial<I extends Exact<DeepPartial<RecordGroupJoinRequest>, I>>(object: I): RecordGroupJoinRequest {
+    const message = createBaseRecordGroupJoinRequest();
     message.recordGroupId = object.recordGroupId ?? "";
     message.workerId = object.workerId ?? "";
     return message;
   },
 };
 
-function createBaseUpdateRecordGroupRequest(): UpdateRecordGroupRequest {
-  return { title: "", isPublic: false, color: "", priority: 0 };
+function createBaseRecordGroupUpdateRequest(): RecordGroupUpdateRequest {
+  return { title: "", color: "", priority: 0 };
 }
 
-export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
-  encode(message: UpdateRecordGroupRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const RecordGroupUpdateRequest: MessageFns<RecordGroupUpdateRequest> = {
+  encode(message: RecordGroupUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.title !== "") {
       writer.uint32(10).string(message.title);
     }
-    if (message.isPublic !== false) {
-      writer.uint32(16).bool(message.isPublic);
-    }
     if (message.color !== "") {
-      writer.uint32(26).string(message.color);
+      writer.uint32(18).string(message.color);
     }
     if (message.priority !== 0) {
-      writer.uint32(32).uint64(message.priority);
+      writer.uint32(24).uint64(message.priority);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): UpdateRecordGroupRequest {
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordGroupUpdateRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateRecordGroupRequest();
+    const message = createBaseRecordGroupUpdateRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -407,23 +403,15 @@ export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
           continue;
         }
         case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.isPublic = reader.bool();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
+          if (tag !== 18) {
             break;
           }
 
           message.color = reader.string();
           continue;
         }
-        case 4: {
-          if (tag !== 32) {
+        case 3: {
+          if (tag !== 24) {
             break;
           }
 
@@ -439,22 +427,18 @@ export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
     return message;
   },
 
-  fromJSON(object: any): UpdateRecordGroupRequest {
+  fromJSON(object: any): RecordGroupUpdateRequest {
     return {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
-      isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : false,
       color: isSet(object.color) ? globalThis.String(object.color) : "",
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
-  toJSON(message: UpdateRecordGroupRequest): unknown {
+  toJSON(message: RecordGroupUpdateRequest): unknown {
     const obj: any = {};
     if (message.title !== "") {
       obj.title = message.title;
-    }
-    if (message.isPublic !== false) {
-      obj.isPublic = message.isPublic;
     }
     if (message.color !== "") {
       obj.color = message.color;
@@ -465,13 +449,12 @@ export const UpdateRecordGroupRequest: MessageFns<UpdateRecordGroupRequest> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UpdateRecordGroupRequest>, I>>(base?: I): UpdateRecordGroupRequest {
-    return UpdateRecordGroupRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<RecordGroupUpdateRequest>, I>>(base?: I): RecordGroupUpdateRequest {
+    return RecordGroupUpdateRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UpdateRecordGroupRequest>, I>>(object: I): UpdateRecordGroupRequest {
-    const message = createBaseUpdateRecordGroupRequest();
+  fromPartial<I extends Exact<DeepPartial<RecordGroupUpdateRequest>, I>>(object: I): RecordGroupUpdateRequest {
+    const message = createBaseRecordGroupUpdateRequest();
     message.title = object.title ?? "";
-    message.isPublic = object.isPublic ?? false;
     message.color = object.color ?? "";
     message.priority = object.priority ?? 0;
     return message;

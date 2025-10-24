@@ -5,18 +5,22 @@ interface InputProps {
     placeholder?: string; // 입력 필드의 placeholder
     value: string;        // 입력값
     onChange: (e: ChangeEvent<HTMLInputElement>) => void; // 입력값 변경 이벤트
+    label?: string; // 입력 필드의 라벨
 }
 
-const Input = ({ type = 'text', placeholder, value, onChange }: InputProps) => {
+const Input = ({ type = 'text', placeholder, value, onChange, label }: InputProps) => {
     return (
         <div className="input-wrapper">
-            <input
-                type={type}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-                className="input-field"
-            />
+            {label && <label className="input-label">{label}</label>}
+            <div className="input-field-container">
+                <input
+                    type={type}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                    className="input-field"
+                />
+            </div>
         </div>
     );
 };

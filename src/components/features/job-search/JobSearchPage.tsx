@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { JobSearch, Company } from '@/generated/common';
+import { JobSearch, Career } from '@/generated/common';
 import { JobSearchListResponse } from '@/generated/job_search';
 import HttpMethod from '@/enums/HttpMethod';
 import { useUser } from '@/hooks/useUser';
-import { createSampleJobSearches, createSampleCompanies } from '@/utils/sampleData';
+import { createSampleJobSearches, createSampleCareers } from '@/utils/sampleData';
 import JobSearchCreateModal from './JobSearchCreateModal';
 import JobSearchUpdateModal from './JobSearchUpdateModal';
 import JobSearchSidebar from './JobSearchSidebar';
@@ -13,7 +13,7 @@ import styles from './JobSearchPage.module.css';
 const JobSearchPage: React.FC = () => {
   const { isLoggedIn } = useUser();
   const [jobSearches, setJobSearches] = useState<JobSearch[]>([]);
-  const [companies, setCompanies] = useState<Company[]>([]);
+  const [careers, setCareers] = useState<Career[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -21,28 +21,28 @@ const JobSearchPage: React.FC = () => {
   const [selectedJobSearch, setSelectedJobSearch] = useState<JobSearch | null>(null);
 
   // 회사 목록 조회
-  const fetchCompanies = useCallback(async () => {
+  const fetchCareers = useCallback(async () => {
     try {
       if (isLoggedIn) {
         // 로그인된 경우 서버에서 데이터 조회
-        const response = await fetch('/api/workers/companies', {
+        const response = await fetch('/api/careers', {
           method: HttpMethod.GET,
         });
 
         if (response.ok) {
           const data = await response.json();
-          setCompanies(data.companies || []);
+          setCareers(data.careers || []);
         } else {
-          console.error('Failed to fetch companies');
+          console.error('Failed to fetch careers');
         }
       } else {
         // 로그인하지 않은 경우 샘플 데이터 사용
-        console.log('Using sample company data for non-logged-in user');
-        const sampleData = createSampleCompanies();
-        setCompanies(sampleData);
+        console.log('Using sample careers data for non-logged-in user');
+        const sampleData = createSampleCareers();
+        setCareers(sampleData);
       }
     } catch (error) {
-      console.error('Error fetching companies:', error);
+      console.error('Error fetching careers:', error);
     }
   }, [isLoggedIn]);
 
@@ -77,9 +77,9 @@ const JobSearchPage: React.FC = () => {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    fetchCompanies();
+    fetchCareers();
     fetchJobSearches();
-  }, [fetchCompanies, fetchJobSearches]);
+  }, [fetchCareers, fetchJobSearches]);
 
 
   // 이직 상세 보기
@@ -117,7 +117,7 @@ const JobSearchPage: React.FC = () => {
       {/* 메인 콘텐츠 영역 */}
       <JobSearchHome
         selectedJobSearch={selectedJobSearch}
-        companies={companies}
+        careers={careers}
         onBack={goHome}
         onJobSearchDelete={fetchJobSearches}
       />
@@ -126,7 +126,7 @@ const JobSearchPage: React.FC = () => {
       <JobSearchCreateModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        companies={companies}
+        careers={careers}
         onSuccess={fetchJobSearches}
       />
 
@@ -138,7 +138,7 @@ const JobSearchPage: React.FC = () => {
           setEditingJobSearch(null);
         }}
         editingJobSearch={editingJobSearch}
-        companies={companies}
+        careers={careers}
         onSuccess={fetchJobSearches}
       />
     </main>

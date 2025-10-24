@@ -1,9 +1,10 @@
 import { DateTime } from "luxon";
 import { useState, useRef, useEffect } from "react";
 import styles from './DatePicker.module.css';
+import DateUtil from '@/utils/DateUtil';
 
 interface DatePickerProps {
-    value: string | undefined;
+    value: number | string | undefined;
     onChange: (newDate: string) => void;
     label?: string;
     required?: boolean;
@@ -14,15 +15,25 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, label, require
     const [dateInputValue, setDateInputValue] = useState('');
     const calendarRef = useRef<HTMLDivElement>(null);
     
-    const dateTime = value ? DateTime.fromISO(value) : DateTime.now();
+    // value가 number(timestamp)면 ISO 문자열로 변환
+    const getFormattedValue = (): string | undefined => {
+        if (!value) return undefined;
+        if (typeof value === 'number') {
+            return DateUtil.formatTimestamp(value);
+        }
+        return value;
+    };
+    
+    const formattedValue = getFormattedValue();
+    const dateTime = formattedValue ? DateTime.fromISO(formattedValue) : DateTime.now();
     
     useEffect(() => {
-        if (!value) {
+        if (!formattedValue) {
             setDateInputValue('---- -- --');
         } else {
             setDateInputValue(dateTime.toFormat('yyyy. MM. dd.'));
         }
-    }, [value, dateTime]);
+    }, [formattedValue, dateTime]);
     
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

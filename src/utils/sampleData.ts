@@ -1,12 +1,13 @@
-import { Company, Certifications, Degrees, Education, Worker, JobSearch, JobSearchCompany, Interview, JobSearchCompany_Status, Interview_Type } from '@/generated/common'
+import { Career, Certifications, Degrees, Education, Worker, JobSearch, JobSearchCompany, Interview, JobSearchCompany_Status, Interview_Type, RecordGroup, RecordGroup_RecordGroupType, Resume, Resume_Gender } from '@/generated/common'
 import dayjs from 'dayjs'
 
-export const createSampleRecordGroups = () => {
+export const createSampleRecordGroups = (): RecordGroup[] => {
     return [
         {
             id: '1',
             title: '업무',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'work',
             color: '#ffc107',
             priority: 1,
@@ -16,7 +17,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '2',
             title: '프로젝트',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'project',
             color: '#fd7e14',
             priority: 2,
@@ -26,7 +28,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '3',
             title: '출장',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'business-trip',
             color: '#ffc107',
             priority: 3,
@@ -36,7 +39,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '4',
             title: '개인 일정',
-            isPublic: false,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'personal',
             color: '#28a745',
             priority: 4,
@@ -46,7 +50,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '5',
             title: '독서 토론 동호회',
-            isPublic: true,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'book-club',
             color: '#007bff',
             priority: 5,
@@ -56,7 +61,8 @@ export const createSampleRecordGroups = () => {
         {
             id: '6',
             title: '워크폴리오 사이드 프로젝트',
-            isPublic: true,
+            isDefault: false,
+            type: RecordGroup_RecordGroupType.PRIVATE,
             publicId: 'workfolio-side',
             color: '#17a2b8',
             priority: 6,
@@ -1436,6 +1442,22 @@ export const createSampleRecords = (recordGroups: object[]) => {
     ]
 }
 
+// 샘플 Resume 데이터
+const createSampleResume = (): Resume => ({
+    id: 'sample-resume-1',
+    title: '김개발',
+    description: '김개발은 개발자입니다.',
+    phone: '010-1234-5678',
+    email: 'devkim@example.com',
+    brithDate: Date.now() - 365 * 24 * 60 * 60 * 1000, // 1년 전
+    gender: Resume_Gender.MALE,
+    isPublic: true,
+    isDefault: true,
+    publicId: 'sample-public-id-1',
+    createdAt: Date.now() - 365 * 24 * 60 * 60 * 1000, // 1년 전
+    updatedAt: Date.now()
+});
+
 // 샘플 Worker 데이터
 const createSampleWorker = (): Worker => ({
     id: 'sample-worker-1',
@@ -1446,38 +1468,38 @@ const createSampleWorker = (): Worker => ({
 });
 
 // 샘플 회사 데이터
-export const createSampleCompanies = (): Company[] => {
+export const createSampleCareers = (): Career[] => {
     const now = Date.now();
-    const worker = createSampleWorker();
+    const resume = createSampleResume();
     
     return [
         {
-            id: 'company-1',
+            id: 'career-1',
             name: '테크스타트업',
             startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
             endedAt: now - 1 * 365 * 24 * 60 * 60 * 1000, // 1년 전
             isWorking: false,
-            worker,
+            resume,
             createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
         },
         {
-            id: 'company-2',
+            id: 'career-2',
             name: '글로벌 IT 기업',
             startedAt: now - 1 * 365 * 24 * 60 * 60 * 1000, // 1년 전
             endedAt: 0, // 현재 재직 중
             isWorking: true,
-            worker,
+            resume,
             createdAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now
         },
         {
-            id: 'company-3',
+            id: 'career-3',
             name: '중견 소프트웨어 회사',
             startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000, // 3년 전
             endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
             isWorking: false,
-            worker,
+            resume,
             createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
         }
@@ -1487,7 +1509,7 @@ export const createSampleCompanies = (): Company[] => {
 // 샘플 자격증 데이터
 export const createSampleCertifications = (): Certifications[] => {
     const now = Date.now();
-    const worker = createSampleWorker();
+    const resume = createSampleResume();
     
     return [
         {
@@ -1497,7 +1519,7 @@ export const createSampleCertifications = (): Certifications[] => {
             issuer: 'Amazon Web Services',
             issuedAt: now - 6 * 30 * 24 * 60 * 60 * 1000, // 6개월 전
             expirationPeriod: 3 * 365 * 24 * 60 * 60 * 1000, // 3년
-            worker,
+            resume,
             createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now - 6 * 30 * 24 * 60 * 60 * 1000
         },
@@ -1508,7 +1530,7 @@ export const createSampleCertifications = (): Certifications[] => {
             issuer: '한국산업인력공단',
             issuedAt: now - 1 * 365 * 24 * 60 * 60 * 1000, // 1년 전
             expirationPeriod: 0, // 영구
-            worker,
+            resume,
             createdAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
         },
@@ -1519,7 +1541,7 @@ export const createSampleCertifications = (): Certifications[] => {
             issuer: 'Project Management Institute',
             issuedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
             expirationPeriod: 3 * 365 * 24 * 60 * 60 * 1000, // 3년
-            worker,
+            resume,
             createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
         },
@@ -1530,7 +1552,7 @@ export const createSampleCertifications = (): Certifications[] => {
             issuer: 'Google Cloud',
             issuedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
             expirationPeriod: 3 * 365 * 24 * 60 * 60 * 1000, // 3년
-            worker,
+            resume,
             createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
         }
@@ -1540,7 +1562,7 @@ export const createSampleCertifications = (): Certifications[] => {
 // 샘플 학위 데이터
 export const createSampleDegrees = (): Degrees[] => {
     const now = Date.now();
-    const worker = createSampleWorker();
+    const resume = createSampleResume();
     
     return [
         {
@@ -1549,7 +1571,7 @@ export const createSampleDegrees = (): Degrees[] => {
             major: '컴퓨터공학',
             startedAt: now - 6 * 365 * 24 * 60 * 60 * 1000, // 6년 전
             endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
-            worker,
+            resume,
             createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
         },
@@ -1559,7 +1581,7 @@ export const createSampleDegrees = (): Degrees[] => {
             major: '소프트웨어공학',
             startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000, // 4년 전
             endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
-            worker,
+            resume,
             createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
         }
@@ -1569,7 +1591,7 @@ export const createSampleDegrees = (): Degrees[] => {
 // 샘플 교육 데이터
 export const createSampleEducations = (): Education[] => {
     const now = Date.now();
-    const worker = createSampleWorker();
+    const resume = createSampleResume();
     
     return [
         {
@@ -1578,7 +1600,7 @@ export const createSampleEducations = (): Education[] => {
             startedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
             endedAt: now - 2 * 30 * 24 * 60 * 60 * 1000, // 2개월 전
             agency: '프로그래머스',
-            worker,
+            resume,
             createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now - 2 * 30 * 24 * 60 * 60 * 1000
         },
@@ -1588,7 +1610,7 @@ export const createSampleEducations = (): Education[] => {
             startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000, // 6개월 전
             endedAt: now - 5 * 30 * 24 * 60 * 60 * 1000, // 5개월 전
             agency: 'AWS 교육 파트너',
-            worker,
+            resume,
             createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now - 5 * 30 * 24 * 60 * 60 * 1000
         },
@@ -1598,7 +1620,7 @@ export const createSampleEducations = (): Education[] => {
             startedAt: now - 1 * 30 * 24 * 60 * 60 * 1000, // 1개월 전
             endedAt: now - 15 * 24 * 60 * 60 * 1000, // 15일 전
             agency: '한국데이터베이스진흥원',
-            worker,
+            resume,
             createdAt: now - 1 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now - 15 * 24 * 60 * 60 * 1000
         },
@@ -1608,7 +1630,7 @@ export const createSampleEducations = (): Education[] => {
             startedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
             endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
             agency: '한국프로젝트관리협회',
-            worker,
+            resume,
             createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
         }
@@ -1619,7 +1641,8 @@ export const createSampleEducations = (): Education[] => {
 export const createSampleJobSearches = (): JobSearch[] => {
     const now = Date.now();
     const worker = createSampleWorker();
-    
+    const resume = createSampleResume();
+
     return [
         {
             id: 'jobsearch-1',
@@ -1628,23 +1651,23 @@ export const createSampleJobSearches = (): JobSearch[] => {
             endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
             memo: '대기업 중심으로 이직 활동을 진행했습니다. 총 15개 회사에 지원하여 3개 회사에서 최종 면접까지 진행했습니다.',
             worker,
-            prevCompany: {
+            prevCareer: {
                 id: 'company-1',
                 name: '테크스타트업',
                 startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
                 endedAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
                 isWorking: false,
-                worker,
+                resume,
                 createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
             },
-            nextCompany: {
+            nextCareer: {
                 id: 'company-2',
                 name: '글로벌 IT 기업',
                 startedAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
                 endedAt: 0,
                 isWorking: true,
-                worker,
+                resume,
                 createdAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
                 updatedAt: now
             },
@@ -1658,23 +1681,23 @@ export const createSampleJobSearches = (): JobSearch[] => {
             endedAt: now - 8 * 30 * 24 * 60 * 60 * 1000, // 8개월 전
             memo: '스타트업과 중견기업을 중심으로 이직 활동을 진행했습니다. 개발자 커뮤니티를 통해 많은 기회를 얻을 수 있었습니다.',
             worker,
-            prevCompany: {
+            prevCareer: {
                 id: 'company-3',
                 name: '중견 소프트웨어 회사',
                 startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
                 endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
                 isWorking: false,
-                worker,
+                resume,
                 createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
             },
-            nextCompany: {
+            nextCareer: {
                 id: 'company-1',
                 name: '테크스타트업',
                 startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
                 endedAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
                 isWorking: false,
-                worker,
+                resume,
                 createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
                 updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
             },

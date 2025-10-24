@@ -41,13 +41,17 @@ export async function apiFetchHandler<T>(
             redirect("http://localhost:3000/login");
         }
         
-        if (contentType && contentType.includes('application/json')) {
-            const data = await response.json();
+        // 응답 body를 텍스트로 먼저 읽기
+        const responseText = await response.text();
+        
+        // JSON 파싱 시도
+        try {
+            const data = responseText ? JSON.parse(responseText) : {};
             return NextResponse.json(data, { status });
-        } else {
-            const errorText = await response.json();
-            console.error('Unexpected Response:', errorText);
-            return NextResponse.json({ message: 'Invalid response format' }, { status: 500 });
+        } catch (parseError) {
+            console.error('Failed to parse JSON response:', responseText);
+            console.error('Parse error:', parseError);
+            return NextResponse.json({ message: 'Invalid JSON response', raw: responseText }, { status: 500 });
         }
         
     } catch (error) {

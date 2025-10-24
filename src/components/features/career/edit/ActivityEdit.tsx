@@ -1,0 +1,259 @@
+import React, { useEffect } from 'react';
+import { ResumeUpdateRequest_ActivityRequest } from '@/generated/resume';
+import { Activity_ActivityType } from '@/generated/common';
+import Input from '@/components/ui/Input';
+import Dropdown from '@/components/ui/Dropdown';
+import styles from '../CareerContentEdit.module.css';
+import DatePicker from '@/components/ui/DatePicker';
+import DateUtil from '@/utils/DateUtil';
+import { DateTime } from 'luxon';
+import { normalizeEnumValue } from '@/utils/commonUtils';
+import DraggableList from '@/components/ui/DraggableList';
+import DraggableItem from '@/components/ui/DraggableItem';
+import CardActions from '@/components/ui/CardActions';
+
+interface ActivityEditProps {
+  activities: ResumeUpdateRequest_ActivityRequest[];
+  onUpdate: (activities: ResumeUpdateRequest_ActivityRequest[]) => void;
+}
+
+interface ActivityItemProps {
+  activity: ResumeUpdateRequest_ActivityRequest;
+  index: number;
+  handleActivityChange: (index: number, field: keyof ResumeUpdateRequest_ActivityRequest, value: string | number | boolean | undefined) => void;
+  toggleVisible: (index: number) => void;
+  handleDeleteActivity: (index: number) => void;
+}
+
+const ActivityItem: React.FC<ActivityItemProps> = ({
+  activity,
+  index,
+  handleActivityChange,
+  toggleVisible,
+  handleDeleteActivity,
+}) => {
+  return (
+    <DraggableItem 
+      id={activity.id || `activity-${index}`}
+      className={styles.cardWrapper}
+    >
+      <div className={styles.card}>
+        <div className={styles.gridContainer2}>
+        {/* 활동명 */}
+        <div className={styles.formField}>
+          <Input 
+            type="text"
+            label="활동명"
+            placeholder="정보처리기사"
+            value={activity.name || ''}
+            onChange={(e) => handleActivityChange(index, 'name', e.target.value)}
+          />
+        </div>
+        {/* 활동 유형 */}
+        <div className={styles.formField}>
+          <Dropdown
+            label="구분"
+            selectedOption={normalizeEnumValue(activity.type, Activity_ActivityType)}
+            options={[
+              { value: Activity_ActivityType.EXTERNAL, label: '대외활동' },
+              { value: Activity_ActivityType.EDUCATION, label: '교육' },
+              { value: Activity_ActivityType.CERTIFICATION, label: '자격증' },
+              { value: Activity_ActivityType.AWARD, label: '수상' },
+              { value: Activity_ActivityType.ETC, label: '기타' },
+            ]}
+            setValue={(value) => handleActivityChange(index, 'type', normalizeEnumValue(value, Activity_ActivityType))}
+          />
+        </div>
+
+      </div>
+      <div className={styles.gridContainer2}>
+        {/* 기관/단체명 */}
+        <div className={styles.formField}>
+          <Input 
+            type="text"
+            label="기관"
+            placeholder="한국산업인력공단"
+            value={activity.organization || ''}
+            onChange={(e) => handleActivityChange(index, 'organization', e.target.value)}
+          />
+        </div>
+        <div className={styles.formField}>
+          <DatePicker
+            label="기간"
+            value={activity.startedAt}
+            onChange={(date) => handleActivityChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+            required={false}
+          />
+        </div>
+      </div>
+
+      <div className={styles.gridContainer2}>
+        {
+          activity.type === Activity_ActivityType.CERTIFICATION && (
+            <>
+              <div className={styles.formField}>
+                <Input 
+                  type="text"
+                  label="자격증 번호"
+                  placeholder="00-00-000000"
+                  value={activity.certificateNumber || ''}
+                  onChange={(e) => handleActivityChange(index, 'certificateNumber', e.target.value)}
+                />
+              </div>
+            </>
+          )
+        }
+        {
+          activity.type !== Activity_ActivityType.CERTIFICATION && (
+            <>
+              <div className={styles.formField}>
+                <Input 
+                  type="text"
+                  label="내용"
+                  placeholder="정보처리기사 자격증을 취득하였습니다."
+                  value={activity.description || ''}
+                  onChange={(e) => handleActivityChange(index, 'description', e.target.value)}
+                />
+              </div>
+            </>
+          )
+        }
+      </div>
+      </div>
+      
+      <CardActions
+        isVisible={activity.isVisible ?? true}
+        onToggleVisible={() => toggleVisible(index)}
+        onDelete={() => handleDeleteActivity(index)}
+      />
+    </DraggableItem>
+  );
+};
+
+/**
+ * 활동 섹션 전체를 관리하는 컴포넌트
+ * sectionHeader, 추가 버튼, 개별 활동 항목 포함
+ */
+const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => {
+  const createEmptyActivity = (priority: number = 0): ResumeUpdateRequest_ActivityRequest => ({
+    type: Activity_ActivityType.CERTIFICATION,
+    name: '',
+    organization: '',
+    certificateNumber: '',
+    startedAt: undefined,
+    endedAt: undefined,
+    description: '',
+    isVisible: true,
+    priority,
+  });
+
+  // 빈 배열일 때 자동으로 항목 하나 추가
+  useEffect(() => {
+    if (activities.length === 0) {
+      onUpdate([createEmptyActivity()]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // priority를 배열 인덱스와 동기화
+  useEffect(() => {
+    const needsUpdate = activities.some((activity, idx) => activity.priority !== idx);
+    if (needsUpdate && activities.length > 0) {
+      const updated = activities.map((activity, idx) => ({
+        ...activity,
+        priority: idx
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activities.length]);
+
+  const handleAddActivity = () => {
+    const newActivity = createEmptyActivity(activities.length);
+    onUpdate([...activities, newActivity]);
+  };
+
+  const handleDeleteActivity = (index: number) => {
+    const filtered = activities.filter((_, i) => i !== index);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((activity, idx) => ({
+      ...activity,
+      priority: idx
+    }));
+    onUpdate(updated);
+  };
+
+  const handleActivityChange = (index: number, field: keyof ResumeUpdateRequest_ActivityRequest, value: string | number | boolean | undefined) => {
+    const newActivities = [...activities];
+    
+    // startedAt, endedAt는 timestamp(number)로 변환
+    if (field === 'startedAt' || field === 'endedAt') {
+      newActivities[index] = {
+        ...newActivities[index],
+        [field]: typeof value === 'string' ? DateUtil.parseToTimestamp(value) : value
+      };
+    } 
+    else {
+      newActivities[index] = {
+        ...newActivities[index],
+        [field]: value
+      };
+    }
+    
+    // priority를 인덱스로 설정
+    const updatedActivities = newActivities.map((activity, idx) => ({
+      ...activity,
+      priority: idx
+    }));
+    
+    onUpdate(updatedActivities);
+  };
+
+  const toggleVisible = (index: number) => {
+    handleActivityChange(index, 'isVisible', !activities[index].isVisible);
+  };
+
+  const handleReorder = (reorderedActivities: ResumeUpdateRequest_ActivityRequest[]) => {
+    const updatedActivities = reorderedActivities.map((activity, idx) => ({
+      ...activity,
+      priority: idx
+    }));
+    onUpdate(updatedActivities);
+  };
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHeader}>
+        <h3 className={styles.sectionTitleCounter}>
+          활동 | {activities.length}개
+        </h3>
+        <div className={styles.addButtonContainer}>
+          <button
+            onClick={handleAddActivity}
+            className={styles.addButton}
+          >
+            <span>+ 추가</span>
+          </button>
+        </div>
+      </div>
+
+      <DraggableList
+        items={activities}
+        onReorder={handleReorder}
+        getItemId={(act, idx) => act.id || `activity-${idx}`}
+        renderItem={(activity, index) => (
+          <ActivityItem
+            key={activity.id || `activity-${index}`}
+            activity={activity}
+            index={index}
+            handleActivityChange={handleActivityChange}
+            toggleVisible={toggleVisible}
+            handleDeleteActivity={handleDeleteActivity}
+          />
+        )}
+      />
+    </div>
+  );
+};
+
+export default ActivityEdit;
