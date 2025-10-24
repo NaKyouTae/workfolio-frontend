@@ -16,60 +16,53 @@ const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests }) =>
 
   return (
     <div style={{ 
-      marginTop: '12px',
-      padding: '12px',
-      backgroundColor: '#f8f9fa',
-      borderRadius: '6px'
+      backgroundColor: '#f5f5f5',
+      borderRadius: '4px',
+      padding: '16px'
     }}>
-      <div style={{ 
-        fontSize: '13px', 
-        fontWeight: '600', 
-        color: '#666',
-        marginBottom: '8px'
-      }}>
-        어학 시험
-      </div>
-      {languageTests.map((languageTest) => (
-        <div key={languageTest.id} style={{ 
-          marginBottom: '8px',
-          paddingBottom: '8px',
-          borderBottom: languageTests.indexOf(languageTest) < languageTests.length - 1 ? '1px solid #e0e0e0' : 'none'
-        }}>
-          <div style={{ 
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '4px'
-          }}>
-            <span style={{
+      {languageTests
+        .sort((a, b) => (b.acquiredAt || 0) - (a.acquiredAt || 0))
+        .map((languageTest, index) => (
+          <div 
+            key={languageTest.id}
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: index < languageTests.length - 1 ? '12px' : '0',
+              gap: '20px'
+            }}
+          >
+            {/* 좌측: 날짜와 메모 */}
+            <div>
+              <div style={{ 
+                fontSize: '14px',
+                color: '#333',
+                marginBottom: '4px',
+                width: '150px',
+              }}>
+                {DateUtil.formatTimestamp(languageTest.acquiredAt || 0, 'YYYY. MM. DD.')}
+              </div>
+              
+            </div>
+
+            {/* 우측: 금액 */}
+            <div style={{ 
               fontSize: '14px',
-              fontWeight: '500',
-              color: '#333'
+              color: '#999',
+              whiteSpace: 'nowrap'
             }}>
-              {languageTest.name}
-            </span>
+              {languageTest.name && (
+                <div style={{ 
+                  fontSize: '13px',
+                  color: '#666'
+                }}>
+                  {languageTest.name}
+                </div>
+              )}
+              {languageTest.score}
+            </div>
           </div>
-          
-          {languageTest.score && languageTest.score !== '0' && (
-            <div style={{ 
-              fontSize: '12px', 
-              color: '#666',
-              marginBottom: '2px'
-            }}>
-              점수/등급: {languageTest.score}
-            </div>
-          )}
-          
-          {languageTest.acquiredAt && (
-            <div style={{ 
-              fontSize: '12px', 
-              color: '#666'
-            }}>
-              취득년월: {DateUtil.formatTimestamp(languageTest.acquiredAt, 'yyyy.MM')}
-            </div>
-          )}
-        </div>
-      ))}
+        ))}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { ResumeUpdateRequest_ActivityRequest } from '@/generated/resume';
 import { Activity_ActivityType } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 interface ActivityViewProps {
   activities: ResumeUpdateRequest_ActivityRequest[];
@@ -11,128 +12,152 @@ interface ActivityViewProps {
  * 활동 정보 읽기 전용 컴포넌트
  */
 const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
-  const formatDate = (timestamp?: number | string) => {
-    if (!timestamp) return '-';
-    return DateUtil.formatTimestamp(timestamp);
-  };
-
   const getActivityTypeLabel = (type?: Activity_ActivityType) => {
-    const labels: Record<Activity_ActivityType, string> = {
-      [Activity_ActivityType.EXTERNAL]: '외부활동', // 외부활동
-      [Activity_ActivityType.CERTIFICATION]: '자격증', // 자격증
-      [Activity_ActivityType.AWARD]: '수상', // 수상
-      [Activity_ActivityType.EDUCATION]: '교육', // 교육
-      [Activity_ActivityType.COMPETITION]: '대회', // 대회
-      [Activity_ActivityType.ETC]: '기타', // 기타
-      [Activity_ActivityType.UNRECOGNIZED]: '미인식', // 미인식
-    };
-    return labels[type || Activity_ActivityType.UNRECOGNIZED];
+    const normalizedType = normalizeEnumValue(type, Activity_ActivityType);
+    switch (normalizedType) {
+      case Activity_ActivityType.EXTERNAL:
+        return '외부활동'; // 외부활동
+      case Activity_ActivityType.CERTIFICATION:
+        return '자격증'; // 자격증
+      case Activity_ActivityType.AWARD:
+        return '수상'; // 수상
+      case Activity_ActivityType.EDUCATION:
+        return '교육'; // 교육
+      case Activity_ActivityType.COMPETITION:
+        return '대회'; // 대회
+      case Activity_ActivityType.ETC:
+        return '기타'; // 기타
+      case Activity_ActivityType.UNRECOGNIZED:
+        return '미인식'; // 미인식
+      default:
+        return '';
+    }
   };
 
   const getActivityTypeBadgeColor = (type?: Activity_ActivityType) => {
-    const colors: Record<Activity_ActivityType, string> = {
-      [Activity_ActivityType.EXTERNAL]: '#00bcd4', // 외부활동
-      [Activity_ActivityType.CERTIFICATION]: '#2196f3', // 자격증
-      [Activity_ActivityType.AWARD]: '#ff9800', // 수상
-      [Activity_ActivityType.EDUCATION]: '#00bcd4', // 교육
-      [Activity_ActivityType.COMPETITION]: '#00bcd4', // 대회
-      [Activity_ActivityType.ETC]: '#607d8b', // 기타
-      [Activity_ActivityType.UNRECOGNIZED]: '#999', // 미인식
-    };
-    return colors[type || Activity_ActivityType.UNRECOGNIZED];
+    const normalizedType = normalizeEnumValue(type, Activity_ActivityType);
+    switch (normalizedType) {
+      case Activity_ActivityType.EXTERNAL:
+        return '#00bcd4'; // 외부활동
+      case Activity_ActivityType.CERTIFICATION:
+        return '#2196f3'; // 자격증
+      case Activity_ActivityType.AWARD:
+        return '#ff9800'; // 수상
+      case Activity_ActivityType.EDUCATION:
+        return '#00bcd4'; // 교육
+      case Activity_ActivityType.COMPETITION:
+        return '#00bcd4'; // 대회
+      case Activity_ActivityType.ETC:
+        return '#607d8b'; // 기타
+      case Activity_ActivityType.UNRECOGNIZED:
+        return '#999'; // 미인식
+      default:
+        return '#999'; // 미인식
+    }
+  };
+
+  // 활동 기간 표시
+  const formatActivityPeriod = (startedAt?: number, endedAt?: number) => {
+    const startDate = DateUtil.formatTimestamp(startedAt || 0, 'YYYY. MM. DD.');
+    
+    if (!endedAt) {
+      return startDate;
+    }
+    
+    const endDate = DateUtil.formatTimestamp(endedAt, 'YYYY. MM. DD.');
+    return `${startDate} - ${endDate}`;
   };
 
   if (!activities || activities.length === 0) {
-    return (
-      <div style={{
-        padding: '20px',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '8px',
-        marginBottom: '20px',
-        textAlign: 'center',
-        color: '#999'
-      }}>
-        등록된 활동이 없습니다.
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div style={{ marginBottom: '30px' }}>
+    <div>
       <h3 style={{ 
-        marginBottom: '16px', 
-        fontSize: '20px', 
-        fontWeight: '600', 
-        color: '#333' 
+        fontSize: '16px', 
+        fontWeight: '700', 
+        color: '#000',
+        marginBottom: '20px'
       }}>
         활동
       </h3>
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {activities.filter(a => a.isVisible !== false).map((activity) => (
-          <div
+          <div 
             key={activity.id}
             style={{
               padding: '20px',
-              backgroundColor: '#fff',
-              borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              border: '1px solid #e0e0e0'
+              border: '1px solid #e0e0e0',
+              marginBottom: '16px'
             }}
           >
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
-              alignItems: 'flex-start',
-              marginBottom: '12px'
+              alignItems: 'baseline',
+              marginBottom: '6px'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: '12px'
+                }}>
+                  <h4 style={{ 
+                    fontSize: '16px', 
+                    fontWeight: '600', 
+                    color: '#333',
+                    margin: 0
+                  }}>
+                    {activity.name}
+                  </h4>
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#999',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {activity.organization}
+                  </span>
+                </div>
+              </div>
+              <div>
                 <span style={{
-                  padding: '4px 8px',
+                  fontSize: '13px',
+                  color: '#999',
+                  whiteSpace: 'nowrap',
+                  marginLeft: '16px'
+                }}>
+                  {formatActivityPeriod(activity.startedAt, activity.endedAt)}
+                </span>
+                <span style={{
+                  fontSize: '13px',
+                  color: '#999',
+                  whiteSpace: 'nowrap',
+                  marginLeft: '8px',
+                  marginRight: '8px',
+                }}>|</span>
+                <span style={{
+                  padding: '2px 8px',
                   backgroundColor: getActivityTypeBadgeColor(activity.type),
                   color: '#fff',
                   borderRadius: '4px',
-                  fontSize: '12px',
+                  fontSize: '11px',
                   fontWeight: '500'
                 }}>
                   {getActivityTypeLabel(activity.type)}
                 </span>
-                <h4 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: '600', 
-                  color: '#333',
-                  margin: 0
-                }}>
-                  {activity.name}
-                </h4>
               </div>
-              <span style={{
-                fontSize: '13px',
-                color: '#666',
-                whiteSpace: 'nowrap',
-                marginLeft: '16px'
-              }}>
-                {formatDate(activity.startedAt)} ~ {formatDate(activity.endedAt)}
-              </span>
             </div>
-
-            {activity.organization && (
-              <div style={{ 
-                marginBottom: '8px',
-                fontSize: '14px',
-                color: '#666'
-              }}>
-                <strong>발급/주최:</strong> {activity.organization}
-              </div>
-            )}
 
             {activity.certificateNumber && (
               <div style={{ 
-                marginBottom: '8px',
                 fontSize: '14px',
-                color: '#666'
+                color: '#666',
+                marginBottom: '4px'
               }}>
-                <strong>자격증 번호:</strong> {activity.certificateNumber}
+                취득번호 {activity.certificateNumber}
               </div>
             )}
 
@@ -141,8 +166,7 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
                 fontSize: '14px',
                 color: '#666',
                 lineHeight: '1.6',
-                whiteSpace: 'pre-wrap',
-                marginTop: '8px'
+                whiteSpace: 'pre-wrap'
               }}>
                 {activity.description}
               </div>

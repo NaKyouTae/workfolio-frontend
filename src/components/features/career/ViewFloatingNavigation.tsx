@@ -1,16 +1,14 @@
 import React from 'react';
-import styles from './CareerContentEdit.module.css';
+import styles from './CareerContentView.module.css';
 
-interface FloatingNavigationProps {
-  isLoading: boolean;
-  onSave: () => void;
-  onCancel?: () => void;
+interface ViewFloatingNavigationProps {
+  onExportPDF: () => void;
+  onCopyURL: () => void;
 }
 
-const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
-  isLoading,
-  onSave,
-  onCancel
+const ViewFloatingNavigation: React.FC<ViewFloatingNavigationProps> = ({
+  onExportPDF,
+  onCopyURL
 }) => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -46,7 +44,7 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
             onClick={() => scrollToSection('project')} 
             className={styles.tocItem}
           >
-            프로젝트
+            프로젝트/경험
           </button>
           <button 
             onClick={() => scrollToSection('activity')} 
@@ -68,25 +66,24 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
           </button>
         </nav>
       </div>
-      {/* 저장/취소 버튼 */}
+      {/* PDF 내보내기 / URL 복사 버튼 */}
       <div className={styles.floatingActions}>
         <button
-            onClick={onSave}
-            disabled={isLoading}
-            className={styles.floatingSaveButton}
-            >
-            {isLoading ? '저장 중...' : '이력 저장'}
-            </button>
-            <button
-            onClick={() => onCancel?.()}
-            className={styles.floatingCancelButton}
-            >
-            취소
+          onClick={onExportPDF}
+          className={styles.floatingSaveButton}
+        >
+          PDF 내보내기
+        </button>
+        <button
+          onClick={onCopyURL}
+          className={styles.floatingCancelButton}
+        >
+          URL 복사하기
         </button>
       </div>
     </div>
   );
 };
 
-export default FloatingNavigation;
+export default ViewFloatingNavigation;
 

@@ -9,14 +9,20 @@ import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
 
+// 모드 정보를 포함한 확장된 Attachment 타입
+type AttachmentWithMode = ResumeUpdateRequest_AttachmentRequest & {
+  _isFileDownloadMode?: boolean; // 파일 모드 여부를 추적하는 임시 속성
+};
+
 interface AttachmentEditProps {
   attachments: ResumeUpdateRequest_AttachmentRequest[];
   onUpdate: (attachments: ResumeUpdateRequest_AttachmentRequest[]) => void;
 }
 
 interface AttachmentItemProps {
-  attachment: ResumeUpdateRequest_AttachmentRequest;
+  attachment: AttachmentWithMode;
   index: number;
+  isFileDownloadMode: boolean; // props로 모드를 전달
   handleAttachmentChange: (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => void;
   toggleVisible: (index: number) => void;
   handleDeleteAttachment: (index: number) => void;
@@ -25,6 +31,7 @@ interface AttachmentItemProps {
 const AttachmentItem: React.FC<AttachmentItemProps> = ({
   attachment,
   index,
+  isFileDownloadMode, // props로 받은 모드 사용
   handleAttachmentChange,
   toggleVisible,
   handleDeleteAttachment,
@@ -52,16 +59,31 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
           />
         </div>
 
-        {/* 파일 URL */}
-        <div className={styles.formField}>
-          <Input 
-            type="url"
-            label="파일 URL"
-            placeholder="https://example.com/portfolio.pdf"
-            value={attachment.fileUrl || ''}
-            onChange={(e) => handleAttachmentChange(index, 'fileUrl', e.target.value)}
-          />
-        </div>
+        {/* 파일 이름 (파일 모드일 때만) */}
+        {isFileDownloadMode && (
+          <div className={styles.formField}>
+            <Input 
+              type="text"
+              label="파일 이름"
+              placeholder="portfolio.pdf"
+              value={attachment.fileName || ''}
+              onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
+            />
+          </div>
+        )}
+
+        {/* 파일 URL (URL 모드일 때만) */}
+        {!isFileDownloadMode && (
+          <div className={styles.formField}>
+            <Input 
+              type="url"
+              label="파일 URL"
+              placeholder="https://example.com/portfolio.pdf"
+              value={attachment.fileUrl || ''}
+              onChange={(e) => handleAttachmentChange(index, 'fileUrl', e.target.value)}
+            />
+          </div>
+        )}
       </div>
       </div>
       
@@ -79,19 +101,32 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
  * sectionHeader, 추가 버튼, 개별 첨부 항목 포함
  */
 const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }) => {
-  const createEmptyAttachment = (priority: number = 0): ResumeUpdateRequest_AttachmentRequest => ({
-    type: Attachment_AttachmentType.PORTFOLIO,
+  // 파일 모드로 attachment 생성 (fileName 필드 사용)
+  const createFileAttachment = (priority: number = 0): AttachmentWithMode => ({
+    type: undefined,
     fileName: '',
     fileUrl: '',
-    isVisible: true,
+    isVisible: false,
     priority,
+    _isFileDownloadMode: true, // 파일 모드 표시
   });
 
-  // 빈 배열일 때 자동으로 항목 하나 추가
+  // URL 모드로 attachment 생성 (fileUrl 필드 사용)
+  const createUrlAttachment = (priority: number = 0): AttachmentWithMode => ({
+    type: undefined,
+    fileName: '',
+    fileUrl: '',
+    isVisible: false,
+    priority,
+    _isFileDownloadMode: false, // URL 모드 표시
+  });
+
+  // 빈 배열일 때 자동으로 항목 하나 추가 (URL 모드로 기본 설정)
   useEffect(() => {
     if (attachments.length === 0) {
-      onUpdate([createEmptyAttachment()]);
+      onUpdate([createUrlAttachment()]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // priority를 배열 인덱스와 동기화
@@ -107,8 +142,13 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attachments.length]);
 
-  const handleAddAttachment = () => {
-    const newAttachment = createEmptyAttachment(attachments.length);
+  const handleAddFileAttachment = () => {
+    const newAttachment = createFileAttachment(attachments.length);
+    onUpdate([...attachments, newAttachment]);
+  };
+
+  const handleAddUrlAttachment = () => {
+    const newAttachment = createUrlAttachment(attachments.length);
     onUpdate([...attachments, newAttachment]);
   };
 
@@ -158,10 +198,16 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
         </h3>
         <div className={styles.addButtonContainer}>
           <button
-            onClick={handleAddAttachment}
+            onClick={handleAddFileAttachment}
             className={styles.addButton}
           >
-            <span>+ 추가</span>
+            <span>+ 파일 추가</span>
+          </button>
+          <button
+            onClick={handleAddUrlAttachment}
+            className={styles.addButton}
+          >
+            <span>+ URL 추가</span>
           </button>
         </div>
       </div>
@@ -170,16 +216,20 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
         items={attachments}
         onReorder={handleReorder}
         getItemId={(att, idx) => att.id || `attachment-${idx}`}
-        renderItem={(attachment, index) => (
-          <AttachmentItem
-            key={attachment.id || `attachment-${index}`}
-            attachment={attachment}
-            index={index}
-            handleAttachmentChange={handleAttachmentChange}
-            toggleVisible={toggleVisible}
-            handleDeleteAttachment={handleDeleteAttachment}
-          />
-        )}
+        renderItem={(attachment, index) => {
+          const attachmentWithMode = attachment as AttachmentWithMode;
+          return (
+            <AttachmentItem
+              key={attachment.id || `attachment-${index}`}
+              attachment={attachmentWithMode}
+              index={index}
+              isFileDownloadMode={attachmentWithMode._isFileDownloadMode ?? false} // props로 모드 전달
+              handleAttachmentChange={handleAttachmentChange}
+              toggleVisible={toggleVisible}
+              handleDeleteAttachment={handleDeleteAttachment}
+            />
+          );
+        }}
       />
     </div>
   );

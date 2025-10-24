@@ -1,6 +1,7 @@
 import React from 'react';
 import { LanguageSkill, LanguageSkill_Language, LanguageSkill_LanguageLevel } from '@/generated/common';
 import LanguageTestView from './LanguageTestView';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 interface LanguageSkillViewProps {
   languageSkills: LanguageSkill[];
@@ -11,111 +12,101 @@ interface LanguageSkillViewProps {
  */
 const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills }) => {
   const getLanguageLabel = (language?: LanguageSkill_Language) => {
-    const labels: Record<LanguageSkill_Language, string> = {
-      [LanguageSkill_Language.ENGLISH]: '영어',
-      [LanguageSkill_Language.JAPANESE]: '일본어',
-      [LanguageSkill_Language.CHINESE]: '중국어',
-      [LanguageSkill_Language.KOREAN]: '한국어',
-      [LanguageSkill_Language.FRENCH]: '프랑스어',
-      [LanguageSkill_Language.SPANISH]: '스페인어',
-      [LanguageSkill_Language.GERMAN]: '독일어',
-      [LanguageSkill_Language.RUSSIAN]: '러시아어',
-      [LanguageSkill_Language.VIETNAMESE]: '베트남어',
-      [LanguageSkill_Language.ITALIAN]: '이탈리아어',
-      [LanguageSkill_Language.THAI]: '태국어',
-      [LanguageSkill_Language.ARABIC]: '아랍어',
-      [LanguageSkill_Language.PORTUGUESE]: '포르투갈어',
-      [LanguageSkill_Language.INDONESIAN]: '인도네시아어',
-      [LanguageSkill_Language.MONGOLIAN]: '몽골어',
-      [LanguageSkill_Language.TURKISH]: '터키어',
-      [LanguageSkill_Language.UNRECOGNIZED]: '미선택',
-    };
-    return labels[language || LanguageSkill_Language.UNRECOGNIZED];
+    const normalizedLanguage = normalizeEnumValue(language, LanguageSkill_Language);
+    switch (normalizedLanguage) {
+      case LanguageSkill_Language.ENGLISH:
+        return '영어';
+      case LanguageSkill_Language.JAPANESE:
+        return '일본어';
+      case LanguageSkill_Language.CHINESE:
+        return '중국어';
+      case LanguageSkill_Language.KOREAN:
+        return '한국어';
+      case LanguageSkill_Language.FRENCH:
+        return '프랑스어';
+      case LanguageSkill_Language.SPANISH:
+        return '스페인어';
+      case LanguageSkill_Language.GERMAN:
+        return '독일어';
+      case LanguageSkill_Language.RUSSIAN:
+        return '러시아어';
+      case LanguageSkill_Language.VIETNAMESE:
+        return '베트남어';
+      case LanguageSkill_Language.ITALIAN:
+        return '이탈리아어';
+      case LanguageSkill_Language.THAI:
+        return '태국어';
+      case LanguageSkill_Language.ARABIC:
+        return '아랍어';
+      case LanguageSkill_Language.PORTUGUESE:
+        return '포르투갈어';
+      case LanguageSkill_Language.INDONESIAN:
+        return '인도네시아어';
+      case LanguageSkill_Language.MONGOLIAN:
+        return '몽골어';
+      case LanguageSkill_Language.TURKISH:
+        return '터키어';
+      case LanguageSkill_Language.UNRECOGNIZED:
+        return '미선택';
+      default:
+        return '';
+    }
   };
 
   const getLevelLabel = (level?: LanguageSkill_LanguageLevel) => {
-    const labels: Record<LanguageSkill_LanguageLevel, string> = {
-      [LanguageSkill_LanguageLevel.DAILY_CONVERSATION]: '일상 회화 가능',
-      [LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION]: '비즈니스 회화 가능',
-      [LanguageSkill_LanguageLevel.NATIVE_LEVEL]: '원어민 수준',
-      [LanguageSkill_LanguageLevel.UNRECOGNIZED]: '미선택',
-    };
-    return labels[level || LanguageSkill_LanguageLevel.UNRECOGNIZED];
-  };
-
-  const getLevelColor = (level?: LanguageSkill_LanguageLevel) => {
-    const colors: Record<LanguageSkill_LanguageLevel, string> = {
-      [LanguageSkill_LanguageLevel.DAILY_CONVERSATION]: '#ff9800',
-      [LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION]: '#2196f3',
-      [LanguageSkill_LanguageLevel.NATIVE_LEVEL]: '#4caf50',
-      [LanguageSkill_LanguageLevel.UNRECOGNIZED]: '#999',
-    };
-    return colors[level || LanguageSkill_LanguageLevel.UNRECOGNIZED];
+    const normalizedLevel = normalizeEnumValue(level, LanguageSkill_LanguageLevel);
+    switch (normalizedLevel) {
+      case LanguageSkill_LanguageLevel.DAILY_CONVERSATION:
+        return '일상 회화 가능';
+      case LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION:
+        return '비즈니스 회화 가능';
+      case LanguageSkill_LanguageLevel.NATIVE_LEVEL:
+        return '원어민 수준';
+      case LanguageSkill_LanguageLevel.UNRECOGNIZED:
+        return '미선택';
+      default:
+        return '';
+    }
   };
 
   if (!languageSkills || languageSkills.length === 0) {
-    return (
-      <div style={{
-        padding: '20px',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '8px',
-        marginBottom: '20px',
-        textAlign: 'center',
-        color: '#999'
-      }}>
-        등록된 어학 능력이 없습니다.
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div style={{ marginBottom: '30px' }}>
+    <div>
       <h3 style={{ 
-        marginBottom: '16px', 
-        fontSize: '20px', 
-        fontWeight: '600', 
-        color: '#333' 
+        fontSize: '16px', 
+        fontWeight: '700', 
+        color: '#000',
+        marginBottom: '20px'
       }}>
-        어학
+        언어
       </h3>
       
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: '16px' 
-      }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {languageSkills.filter(l => l.isVisible !== false).map((languageSkill) => (
-          <div
+          <div 
             key={languageSkill.id}
             style={{
               padding: '20px',
-              backgroundColor: '#fff',
-              borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              border: '1px solid #e0e0e0'
+              border: '1px solid #e0e0e0',
+              marginBottom: '16px'
             }}
           >
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: '12px'
+            <h4 style={{ 
+              fontSize: '16px', 
+              fontWeight: '600', 
+              color: '#333',
+              marginBottom: '8px'
             }}>
-              <h4 style={{ 
-                fontSize: '16px', 
-                fontWeight: '600', 
-                color: '#333',
-                margin: 0
-              }}>
-                {getLanguageLabel(languageSkill.language)}
-              </h4>
+              {getLanguageLabel(languageSkill.language)}
+            </h4>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <span style={{
-                padding: '4px 12px',
-                backgroundColor: getLevelColor(languageSkill.level),
-                color: '#fff',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontWeight: '500'
+                fontSize: '13px',
+                color: '#999',
+                whiteSpace: 'nowrap',                
               }}>
                 {getLevelLabel(languageSkill.level)}
               </span>

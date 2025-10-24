@@ -101,7 +101,7 @@ export class DateUtil {
    * @param dateString - 날짜 문자열
    * @returns Date 객체
    */
-  static toDate(dateString: string): Date {
+  static toDate(dateString: number): Date {
     return dayjs(dateString).toDate();
   }
 

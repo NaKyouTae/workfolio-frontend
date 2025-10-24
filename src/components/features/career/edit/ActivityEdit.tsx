@@ -84,6 +84,17 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
             onChange={(date) => handleActivityChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
             required={false}
           />
+          { activity.type !== Activity_ActivityType.CERTIFICATION && (
+            <>  
+              <span className={styles.dateSeparator}>-</span>
+              <DatePicker
+                label="종료일"
+                value={activity.endedAt}
+                onChange={(date) => handleActivityChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
+                required={false}
+              />
+            </>
+          )}
         </div>
       </div>
 

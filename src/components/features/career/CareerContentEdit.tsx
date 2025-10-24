@@ -31,7 +31,7 @@ import EducationEdit from './edit/EducationEdit';
 import ActivityEdit from './edit/ActivityEdit';
 import LanguageSkillEdit from './edit/LanguageSkillEdit';
 import AttachmentEdit from './edit/AttachmentEdit';
-import FloatingNavigation from './FloatingNavigation';
+import EditFloatingNavigation from './EditFloatingNavigation';
 import Input from '@/components/ui/Input';
 
 interface CareerContentEditProps {
@@ -132,6 +132,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         const normalized: ResumeUpdateRequest_ProjectRequest = {
           title: project.title || '',
           role: project.role || '',
+          affiliation: project.affiliation || '',
           description: project.description || '',
           isVisible: project.isVisible ?? false,
           priority: project.priority || 0
@@ -353,7 +354,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         </div>
 
         {/* 오른쪽 플로팅 네비게이션 */}
-        <FloatingNavigation
+        <EditFloatingNavigation
           isLoading={isLoading}
           onSave={handleSaveAll}
           {...(onCancel && { onCancel })}

@@ -191,6 +191,7 @@ export interface ResumeUpdateRequest_AttachmentRequest {
 export interface ResumeUpdateRequest_ProjectRequest {
   id?: string | undefined;
   title: string;
+  affiliation: string;
   role: string;
   description: string;
   startedAt?: number | undefined;
@@ -2022,6 +2023,7 @@ function createBaseResumeUpdateRequest_ProjectRequest(): ResumeUpdateRequest_Pro
   return {
     id: undefined,
     title: "",
+    affiliation: "",
     role: "",
     description: "",
     startedAt: undefined,
@@ -2039,17 +2041,20 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
     if (message.title !== "") {
       writer.uint32(18).string(message.title);
     }
+    if (message.affiliation !== "") {
+      writer.uint32(26).string(message.affiliation);
+    }
     if (message.role !== "") {
-      writer.uint32(26).string(message.role);
+      writer.uint32(34).string(message.role);
     }
     if (message.description !== "") {
-      writer.uint32(34).string(message.description);
+      writer.uint32(42).string(message.description);
     }
     if (message.startedAt !== undefined) {
-      writer.uint32(40).uint64(message.startedAt);
+      writer.uint32(48).uint64(message.startedAt);
     }
     if (message.endedAt !== undefined) {
-      writer.uint32(48).uint64(message.endedAt);
+      writer.uint32(56).uint64(message.endedAt);
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
@@ -2088,7 +2093,7 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
             break;
           }
 
-          message.role = reader.string();
+          message.affiliation = reader.string();
           continue;
         }
         case 4: {
@@ -2096,19 +2101,27 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
             break;
           }
 
-          message.description = reader.string();
+          message.role = reader.string();
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
             break;
           }
 
           message.startedAt = longToNumber(reader.uint64());
           continue;
         }
-        case 6: {
-          if (tag !== 48) {
+        case 7: {
+          if (tag !== 56) {
             break;
           }
 
@@ -2144,6 +2157,7 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       title: isSet(object.title) ? globalThis.String(object.title) : "",
+      affiliation: isSet(object.affiliation) ? globalThis.String(object.affiliation) : "",
       role: isSet(object.role) ? globalThis.String(object.role) : "",
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
@@ -2160,6 +2174,9 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
     }
     if (message.title !== "") {
       obj.title = message.title;
+    }
+    if (message.affiliation !== "") {
+      obj.affiliation = message.affiliation;
     }
     if (message.role !== "") {
       obj.role = message.role;
@@ -2193,6 +2210,7 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
     const message = createBaseResumeUpdateRequest_ProjectRequest();
     message.id = object.id ?? undefined;
     message.title = object.title ?? "";
+    message.affiliation = object.affiliation ?? "";
     message.role = object.role ?? "";
     message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? undefined;

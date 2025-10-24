@@ -1,129 +1,76 @@
 import React from 'react';
 import { Salary } from '@/generated/common';
-import DateUtil from '@/utils/DateUtil';
+import { DateUtil } from '@/utils/DateUtil';
 
 interface SalaryViewProps {
-  salary: Salary;
-  onEdit?: () => void;
+  salaries: Salary[];
 }
 
-const SalaryView: React.FC<SalaryViewProps> = ({ salary, onEdit }) => {
-  const formatDate = (timestamp: number | string) => {
-    if (!timestamp) return '-';
-    return DateUtil.formatTimestamp(timestamp, 'yyyy.MM.dd');
-  };
+/**
+ * 급여 이력 읽기 전용 컴포넌트
+ */
+const SalaryView: React.FC<SalaryViewProps> = ({ salaries }) => {
+  if (!salaries || salaries.length === 0) {
+    return null;
+  }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('ko-KR', {
-      style: 'currency',
-      currency: 'KRW',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  // 임시: 모든 salaries 표시 (디버깅용)
+  // TODO: isVisible 필터링 다시 활성화
+  const visibleSalaries = salaries; 
+
+  if (visibleSalaries.length === 0) {
+    return null;
+  }
 
   return (
-    <div style={{
-      padding: '20px',
-      backgroundColor: '#fff',
-      borderRadius: '8px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      marginBottom: '16px'
+    <div style={{ 
+      backgroundColor: '#f5f5f5',
+      borderRadius: '4px',
+      padding: '16px'
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        <h3 style={{ 
-          margin: 0, 
-          fontSize: '18px', 
-          fontWeight: '600', 
-          color: '#333',
-          flex: 1
-        }}>
-          급여 정보
-        </h3>
-        {onEdit && (
-          <button
-            onClick={onEdit}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              backgroundColor: '#fff',
-              color: '#666',
-              fontSize: '12px',
-              cursor: 'pointer',
-              marginLeft: '12px'
+      {visibleSalaries
+        .sort((a, b) => (b.negotiationDate || 0) - (a.negotiationDate || 0))
+        .map((salary, index) => (
+          <div 
+            key={salary.id}
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: index < visibleSalaries.length - 1 ? '12px' : '0',
+              gap: '20px'
             }}
           >
-            편집
-          </button>
-        )}
-      </div>
+            {/* 좌측: 날짜와 메모 */}
+            <div>
+              <div style={{ 
+                fontSize: '14px',
+                color: '#333',
+                marginBottom: '4px',
+                width: '150px',
+              }}>
+                {DateUtil.formatTimestamp(salary.negotiationDate || 0, 'YYYY. MM. DD.')}
+              </div>
+              
+            </div>
 
-      <div style={{ marginBottom: '12px' }}>
-        <div style={{ 
-          fontSize: '24px', 
-          fontWeight: '700', 
-          color: '#2196f3',
-          marginBottom: '8px'
-        }}>
-          {formatCurrency(salary.amount)}
-        </div>
-        
-        {salary.negotiationDate && (
-          <div style={{ 
-            fontSize: '14px', 
-            color: '#666',
-            marginBottom: '8px'
-          }}>
-            협상일: {formatDate(salary.negotiationDate)}
-          </div>
-        )}
-
-        {!salary.isVisible && (
-          <span style={{ 
-            fontSize: '12px', 
-            color: '#999',
-            fontStyle: 'italic'
-          }}>
-            (비공개)
-          </span>
-        )}
-      </div>
-
-      {salary.memo && (
-        <div style={{ marginBottom: '12px' }}>
-          <div style={{ 
-            fontSize: '14px', 
-            color: '#555',
-            backgroundColor: '#f8f9fa',
-            padding: '12px',
-            borderRadius: '6px',
-            border: '1px solid #e9ecef'
-          }}>
-            <strong style={{ color: '#333', marginBottom: '4px', display: 'block' }}>메모:</strong>
+            {/* 우측: 금액 */}
             <div style={{ 
-              whiteSpace: 'pre-wrap',
-              lineHeight: '1.5'
+              fontSize: '14px',
+              color: '#999',
+              whiteSpace: 'nowrap'
             }}>
-              {salary.memo}
+              {salary.memo && (
+                <div style={{ 
+                  fontSize: '13px',
+                  color: '#666'
+                }}>
+                  {salary.memo}
+                </div>
+              )}
+              {(salary.amount).toLocaleString('ko-KR')}만 원
             </div>
           </div>
-        </div>
-      )}
-
-      <div style={{ 
-        fontSize: '12px', 
-        color: '#999',
-        borderTop: '1px solid #eee',
-        paddingTop: '8px'
-      }}>
-        <span>생성일: {formatDate(salary.createdAt)}</span>
-        {salary.updatedAt !== salary.createdAt && (
-          <span style={{ marginLeft: '12px' }}>
-            수정일: {formatDate(salary.updatedAt)}
-          </span>
-        )}
-      </div>
+        ))}
     </div>
   );
 };

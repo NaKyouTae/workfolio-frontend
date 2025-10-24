@@ -57,6 +57,17 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
           />
         </div>
       </div>
+      <div className={styles.gridContainer2}>
+        <div className={styles.formField}>
+        <Input 
+            type="text"
+            label="소속"
+            placeholder="네이버"
+            value={project.affiliation || ''}
+            onChange={(e) => handleProjectChange(index, 'affiliation', e.target.value)}
+          />
+        </div>
+      </div>
 
       <div className={styles.gridContainer2}>
         {/* 시작일 */}
@@ -111,6 +122,7 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
   const createEmptyProject = (priority: number = 0): ResumeUpdateRequest_ProjectRequest => ({
     title: '',
     role: '',
+    affiliation: '',
     description: '',
     startedAt: undefined,
     endedAt: undefined,
