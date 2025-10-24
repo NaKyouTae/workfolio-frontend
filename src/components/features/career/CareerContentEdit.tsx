@@ -47,6 +47,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
 }) => {
   // 기본 정보
   const [title, setTitle] = useState(selectedResumeDetail?.title || '');
+  const [isDefault, setIsDefault] = useState(selectedResumeDetail?.isDefault || false);
   const [name, setName] = useState(selectedResumeDetail?.name || '');
   const [birthDate, setBirthDate] = useState<number | undefined>(() => {
     const normalized = DateUtil.normalizeTimestamp(selectedResumeDetail?.birthDate);
@@ -70,6 +71,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   useEffect(() => {
     if (selectedResumeDetail) {
       setTitle(selectedResumeDetail.title || '');
+      setIsDefault(selectedResumeDetail.isDefault || false);
       setName(selectedResumeDetail.name || '');
       const normalizedBirthDate = DateUtil.normalizeTimestamp(selectedResumeDetail.birthDate);
       setBirthDate(normalizedBirthDate === 0 ? undefined : normalizedBirthDate);
@@ -210,7 +212,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         job,
         description,
         isPublic: selectedResumeDetail?.isPublic || false,
-        isDefault: selectedResumeDetail?.isDefault || false,
+        isDefault,
         careers,
         projects,
         educations,
@@ -245,7 +247,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, job, description, careers, projects, educations, activities, languages, attachments, onSave]);
+  }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, job, description, isDefault, careers, projects, educations, activities, languages, attachments, onSave]);
 
   return (
     <div className={styles.container}>
@@ -255,13 +257,28 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         borderBottom: '1px solid #e0e0e0',
         boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
       }}>
-        <Input
-          type="text"
-          label="제목"
-          placeholder="이력서 제목"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <ul>
+            <li>
+                <input
+                    type="checkbox"
+                    checked={isDefault}
+                    onChange={(e) => setIsDefault(e.target.checked)}
+                    id="isDefault"
+                />
+                <label htmlFor="isDefault"><p>기본</p></label>
+            </li>
+          </ul>
+          <div style={{ flex: 1 }}>
+            <Input
+              type="text"
+              label="제목"
+              placeholder="이력서 제목"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
 
       <div style={{ display: 'flex', position: 'relative', gap: '20px', justifyContent: 'space-between' }}>

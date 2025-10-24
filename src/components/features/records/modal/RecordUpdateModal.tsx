@@ -23,7 +23,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     record, 
     allRecordGroups,
 }) => {
-    const [recordGroupId, setRecordGroupId] = useState<string>('');
+    const [recordGroupId, setRecordGroupId] = useState<string | undefined>(undefined);
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
@@ -142,7 +142,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                                     <Dropdown
                                         options={dropdownOptions}
                                         selectedOption={recordGroupId}
-                                        setValue={setRecordGroupId}
+                                        setValue={(value) => setRecordGroupId(value as string)}
                                     />
                                 </div>
                             </li>

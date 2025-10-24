@@ -21,7 +21,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     selectedDate, 
     editableRecordGroups,
 }) => {
-    const [recordGroupId, setRecordGroupId] = useState<string | null>(null);
+    const [recordGroupId, setRecordGroupId] = useState<string | undefined>(undefined);
     const [title, setTitle] = useState<string | null>(null);
     const [description, setDescription] = useState<string | null>(null);
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
@@ -105,7 +105,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
             }
             
             // 첫 번째 editableRecordGroup을 기본값으로 설정
-            setRecordGroupId(dropdownOptions[0]?.value || null);
+            setRecordGroupId(dropdownOptions[0]?.value as string || undefined);
             setIsAllDay(false);
             setSelectedFile(null);
         }
@@ -170,7 +170,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                                     <Dropdown
                                         options={dropdownOptions}
                                         selectedOption={recordGroupId || ''}
-                                        setValue={setRecordGroupId}
+                                        setValue={(value) => setRecordGroupId(value as string)}
                                     />
                                 </div>
                             </li>
