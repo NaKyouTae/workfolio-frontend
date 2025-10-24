@@ -12,7 +12,6 @@ interface LanguageSkillViewProps {
 const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills }) => {
   const getLanguageLabel = (language?: LanguageSkill_Language) => {
     const labels: Record<LanguageSkill_Language, string> = {
-      [LanguageSkill_Language.LANGUAGE_UNKNOWN]: '미선택',
       [LanguageSkill_Language.ENGLISH]: '영어',
       [LanguageSkill_Language.JAPANESE]: '일본어',
       [LanguageSkill_Language.CHINESE]: '중국어',
@@ -31,29 +30,27 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills })
       [LanguageSkill_Language.TURKISH]: '터키어',
       [LanguageSkill_Language.UNRECOGNIZED]: '미선택',
     };
-    return labels[language || LanguageSkill_Language.LANGUAGE_UNKNOWN];
+    return labels[language || LanguageSkill_Language.UNRECOGNIZED];
   };
 
   const getLevelLabel = (level?: LanguageSkill_LanguageLevel) => {
     const labels: Record<LanguageSkill_LanguageLevel, string> = {
-      [LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN]: '미선택',
       [LanguageSkill_LanguageLevel.DAILY_CONVERSATION]: '일상 회화 가능',
       [LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION]: '비즈니스 회화 가능',
       [LanguageSkill_LanguageLevel.NATIVE_LEVEL]: '원어민 수준',
       [LanguageSkill_LanguageLevel.UNRECOGNIZED]: '미선택',
     };
-    return labels[level || LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN];
+    return labels[level || LanguageSkill_LanguageLevel.UNRECOGNIZED];
   };
 
   const getLevelColor = (level?: LanguageSkill_LanguageLevel) => {
     const colors: Record<LanguageSkill_LanguageLevel, string> = {
-      [LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN]: '#999',
       [LanguageSkill_LanguageLevel.DAILY_CONVERSATION]: '#ff9800',
       [LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION]: '#2196f3',
       [LanguageSkill_LanguageLevel.NATIVE_LEVEL]: '#4caf50',
       [LanguageSkill_LanguageLevel.UNRECOGNIZED]: '#999',
     };
-    return colors[level || LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN];
+    return colors[level || LanguageSkill_LanguageLevel.UNRECOGNIZED];
   };
 
   if (!languageSkills || languageSkills.length === 0) {

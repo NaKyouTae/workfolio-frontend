@@ -1,21 +1,21 @@
 import React from 'react';
-import { ResumeUpdateRequest_CareerRequest_Achievement } from '@/generated/resume';
-import { DateTime } from 'luxon';
+import { Project } from '@/generated/common';
+import { DateUtil } from '@/utils/DateUtil';
 
-interface AchievementViewProps {
-  achievements: ResumeUpdateRequest_CareerRequest_Achievement[];
+interface ProjectViewProps {
+  projects: Project[];
 }
 
 /**
- * 성과/프로젝트 정보 읽기 전용 컴포넌트
+ * 프로젝트 정보 읽기 전용 컴포넌트
  */
-const AchievementView: React.FC<AchievementViewProps> = ({ achievements }) => {
+const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
   const formatDate = (timestamp?: number) => {
     if (!timestamp) return '-';
-    return DateTime.fromMillis(timestamp).toFormat('yyyy.MM');
+    return DateUtil.formatTimestamp(timestamp, 'yyyy.MM');
   };
 
-  if (!achievements || achievements.length === 0) {
+  if (!projects || projects.length === 0) {
     return (
       <div style={{
         padding: '20px',
@@ -25,7 +25,7 @@ const AchievementView: React.FC<AchievementViewProps> = ({ achievements }) => {
         textAlign: 'center',
         color: '#999'
       }}>
-        등록된 프로젝트/성과가 없습니다.
+        등록된 프로젝트가 없습니다.
       </div>
     );
   }
@@ -38,13 +38,13 @@ const AchievementView: React.FC<AchievementViewProps> = ({ achievements }) => {
         fontWeight: '600', 
         color: '#333' 
       }}>
-        프로젝트 & 성과
+        프로젝트
       </h3>
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {achievements.filter(a => a.isVisible !== false).map((achievement) => (
+        {projects.filter(p => p.isVisible !== false).map((project) => (
           <div
-            key={achievement.id}
+            key={project.id}
             style={{
               padding: '20px',
               backgroundColor: '#fff',
@@ -65,7 +65,7 @@ const AchievementView: React.FC<AchievementViewProps> = ({ achievements }) => {
                 color: '#333',
                 margin: 0
               }}>
-                {achievement.title}
+                {project.title}
               </h4>
               <span style={{
                 fontSize: '13px',
@@ -73,28 +73,28 @@ const AchievementView: React.FC<AchievementViewProps> = ({ achievements }) => {
                 whiteSpace: 'nowrap',
                 marginLeft: '16px'
               }}>
-                {formatDate(achievement.startedAt)} ~ {formatDate(achievement.endedAt)}
+                {formatDate(project.startedAt)} ~ {formatDate(project.endedAt)}
               </span>
             </div>
 
-            {achievement.role && (
+            {project.role && (
               <div style={{ 
                 marginBottom: '8px',
                 fontSize: '14px',
                 color: '#666'
               }}>
-                <strong>역할:</strong> {achievement.role}
+                <strong>역할:</strong> {project.role}
               </div>
             )}
 
-            {achievement.description && (
+            {project.description && (
               <div style={{ 
                 fontSize: '14px',
                 color: '#666',
                 lineHeight: '1.6',
                 whiteSpace: 'pre-wrap'
               }}>
-                {achievement.description}
+                {project.description}
               </div>
             )}
           </div>
@@ -104,5 +104,5 @@ const AchievementView: React.FC<AchievementViewProps> = ({ achievements }) => {
   );
 };
 
-export default AchievementView;
+export default ProjectView;
 

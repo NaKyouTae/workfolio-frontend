@@ -37,6 +37,26 @@ export const useResumeDetails = () => {
     }
   }, []);
 
+  // 특정 이력서 상세 조회
+  const fetchResumeDetail = useCallback(async (): Promise<ResumeDetail | null> => {
+    try {
+      const response = await fetch(`/api/resumes/details`, {
+        method: HttpMethod.GET,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.resume || null;
+      } else {
+        console.error('Failed to fetch resume detail');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching resume detail:', error);
+      return null;
+    }
+  }, []);
+
   // 이력서 목록 리프레시
   const refreshResumeDetails = useCallback(async () => {
     await fetchResumeDetails();
@@ -47,6 +67,7 @@ export const useResumeDetails = () => {
     isLoading,
     error,
     fetchResumeDetails,
+    fetchResumeDetail,
     refreshResumeDetails,
   };
 };

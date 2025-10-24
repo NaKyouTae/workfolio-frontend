@@ -122,7 +122,7 @@ const SalaryEdit: React.FC<SalaryEditProps> = ({ salary, onUpdate, onCancel }) =
         <div style={{ marginBottom: '16px' }}>
           <DatePicker
             label="협상일"
-            value={formData.negotiationDate ? DateTime.fromMillis(formData.negotiationDate).toISO() || undefined : undefined}
+            value={formData.negotiationDate}
             onChange={handleDateChange}
             required={false}
           />

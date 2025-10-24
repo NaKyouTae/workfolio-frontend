@@ -3,19 +3,24 @@ import { Resume_Gender } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import DatePicker from '@/components/ui/DatePicker';
 import { DateUtil } from '@/utils/DateUtil';
+import { compareEnumValue } from '@/utils/commonUtils';
 import styles from '../CareerContentEdit.module.css';
 
 interface BasicInfoEditProps {
   name: string;
-  birthDate: number;
-  gender: Resume_Gender;
+  birthDate: number | undefined;
+  gender: Resume_Gender | undefined;
   phone: string;
   email: string;
+  job: string;
+  description: string;
   onNameChange: (name: string) => void;
   onBirthDateChange: (birthDate: number) => void;
-  onGenderChange: (gender: Resume_Gender) => void;
+  onGenderChange: (gender: Resume_Gender | undefined) => void;
+  onJobChange: (job: string) => void;
   onPhoneChange: (phone: string) => void;
   onEmailChange: (email: string) => void;
+  onDescriptionChange: (description: string) => void;
 }
 
 /**
@@ -24,15 +29,19 @@ interface BasicInfoEditProps {
  */
 const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   name,
+  job,
   birthDate,
   gender,
   phone,
   email,
+  description,
   onNameChange,
+  onJobChange,
   onBirthDateChange,
   onGenderChange,
   onPhoneChange,
   onEmailChange,
+  onDescriptionChange,
 }) => {
   return (
     <div className={styles.section}>
@@ -51,14 +60,22 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             onChange={(e) => onNameChange(e.target.value)}
           />
         </div>
-        
+        <div className={styles.formField}>
+          <Input 
+            type="text"
+            label="직무"
+            placeholder="백엔드 개발자"
+            value={job}
+            onChange={(e) => onJobChange(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className={styles.gridContainer2}>
         <div className={styles.formField}>
           <DatePicker
             label="생년월일"
-            value={birthDate ? DateUtil.formatTimestamp(birthDate) : undefined}
+            value={birthDate}
             onChange={(date) => onBirthDateChange(DateUtil.parseToTimestamp(date))}
             required={false}
           />
@@ -72,7 +89,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             <label className={styles.radioLabel}>
               <input
                 type="radio"
-                checked={gender === Resume_Gender.MALE}
+                checked={compareEnumValue(gender, Resume_Gender.MALE, Resume_Gender)}
                 onChange={() => onGenderChange(Resume_Gender.MALE)}
                 className={styles.radio}
               />
@@ -81,7 +98,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             <label className={styles.radioLabel}>
               <input
                 type="radio"
-                checked={gender === Resume_Gender.FEMALE}
+                checked={compareEnumValue(gender, Resume_Gender.FEMALE, Resume_Gender)}
                 onChange={() => onGenderChange(Resume_Gender.FEMALE)}
                 className={styles.radio}
               />
@@ -109,6 +126,19 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             placeholder="hong@gmail.com"
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className={styles.gridContainer1}>
+        {/* 전화번호 */}
+        <div className={styles.formField}>
+          <Input 
+            type="text"
+            label="소개"
+            placeholder=""
+            value={description}
+            onChange={(e) => onDescriptionChange(e.target.value)}
           />
         </div>
       </div>

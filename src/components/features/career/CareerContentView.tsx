@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResumeDetail } from '@/generated/common';
 import CareerView from './view/CareerView';
+import ProjectView from './view/ProjectView';
 import EducationView from './view/EducationView';
 import ActivityView from './view/ActivityView';
 import LanguageSkillView from './view/LanguageSkillView';
@@ -136,6 +137,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({ selectedResumeDet
       }}>
         <EducationView educations={selectedResumeDetail?.educations || []} />
         <CareerView careers={selectedResumeDetail?.careers || []} />
+        <ProjectView projects={selectedResumeDetail?.projects || []} />
         <ActivityView activities={selectedResumeDetail?.activities || []} />
         <LanguageSkillView languageSkills={selectedResumeDetail?.languageSkills || []} />
         <AttachmentView attachments={selectedResumeDetail?.attachments || []} />

@@ -70,6 +70,9 @@ export async function PUT(request: NextRequest) {
           return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
       }
     
+    console.log('=== Backend Request (localhost:8080) ===');
+    console.log('Body:', JSON.stringify(body, null, 2));
+    
     const res = await apiFetchHandler<ResumeResponse>(
       'http://localhost:8080/api/resumes', 
       HttpMethod.PUT, 
@@ -78,9 +81,16 @@ export async function PUT(request: NextRequest) {
     );
     const data = await res.json();
 
-    return NextResponse.json(data);
+    console.log('=== Backend Response ===');
+    console.log('Status:', res.status);
+    console.log('Data:', JSON.stringify(data, null, 2));
+    console.log('=======================');
+
+    return NextResponse.json(data, { status: res.status });
   } catch (error) {
-    console.error('Error updating resumes:', error);
+    console.error('=== Error updating resumes ===');
+    console.error('Error:', error);
+    console.error('=============================');
     return NextResponse.json({ error: 'Failed to update resumes' }, { status: 500 });
   }
 }

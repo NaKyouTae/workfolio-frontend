@@ -37,15 +37,19 @@ export interface ResumeCreateRequest {
 
 export interface ResumeUpdateRequest {
   id: string;
-  title?: string | undefined;
-  name?: string | undefined;
-  phone?: string | undefined;
-  email?: string | undefined;
+  title: string;
+  name: string;
+  phone: string;
+  email: string;
   birthDate?: number | undefined;
   gender?: Resume_Gender | undefined;
+  job: string;
   isPublic?: boolean | undefined;
   isDefault?: boolean | undefined;
+  publicId: string;
+  description: string;
   careers: ResumeUpdateRequest_CareerRequest[];
+  projects: ResumeUpdateRequest_ProjectRequest[];
   educations: ResumeUpdateRequest_EducationRequest[];
   activities: ResumeUpdateRequest_ActivityRequest[];
   languages: ResumeUpdateRequest_LanguageSkillRequest[];
@@ -54,31 +58,30 @@ export interface ResumeUpdateRequest {
 
 export interface ResumeUpdateRequest_CareerRequest {
   career?: ResumeUpdateRequest_CareerRequest_Career | undefined;
-  achievements: ResumeUpdateRequest_CareerRequest_Achievement[];
   salaries: ResumeUpdateRequest_CareerRequest_Salary[];
 }
 
 export interface ResumeUpdateRequest_CareerRequest_Career {
   id?: string | undefined;
-  name?: string | undefined;
+  name: string;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isWorking?: boolean | undefined;
-  position?: string | undefined;
+  position: string;
   employmentType?: ResumeUpdateRequest_CareerRequest_Career_EmploymentType | undefined;
-  department?: string | undefined;
-  jobGrade?: string | undefined;
-  job?: string | undefined;
-  salary?: number | undefined;
-  isVisible?: boolean | undefined;
+  department: string;
+  jobGrade: string;
+  job: string;
+  salary: number;
+  description: string;
+  isVisible: boolean;
 }
 
 export enum ResumeUpdateRequest_CareerRequest_Career_EmploymentType {
-  UNKNOWN = 0,
-  FULL_TIME = 1,
-  CONTRACT = 2,
-  INTERN = 3,
-  FREELANCER = 4,
+  FULL_TIME = 0,
+  CONTRACT = 1,
+  INTERN = 2,
+  FREELANCER = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -87,18 +90,15 @@ export function resumeUpdateRequest_CareerRequest_Career_EmploymentTypeFromJSON(
 ): ResumeUpdateRequest_CareerRequest_Career_EmploymentType {
   switch (object) {
     case 0:
-    case "UNKNOWN":
-      return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.UNKNOWN;
-    case 1:
     case "FULL_TIME":
       return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FULL_TIME;
-    case 2:
+    case 1:
     case "CONTRACT":
       return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.CONTRACT;
-    case 3:
+    case 2:
     case "INTERN":
       return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.INTERN;
-    case 4:
+    case 3:
     case "FREELANCER":
       return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FREELANCER;
     case -1:
@@ -112,8 +112,6 @@ export function resumeUpdateRequest_CareerRequest_Career_EmploymentTypeToJSON(
   object: ResumeUpdateRequest_CareerRequest_Career_EmploymentType,
 ): string {
   switch (object) {
-    case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.UNKNOWN:
-      return "UNKNOWN";
     case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FULL_TIME:
       return "FULL_TIME";
     case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.CONTRACT:
@@ -128,68 +126,69 @@ export function resumeUpdateRequest_CareerRequest_Career_EmploymentTypeToJSON(
   }
 }
 
-export interface ResumeUpdateRequest_CareerRequest_Achievement {
-  id?: string | undefined;
-  title?: string | undefined;
-  role?: string | undefined;
-  description?: string | undefined;
-  startedAt?: number | undefined;
-  endedAt?: number | undefined;
-  isVisible?: boolean | undefined;
-}
-
 export interface ResumeUpdateRequest_CareerRequest_Salary {
   id?: string | undefined;
-  amount?: number | undefined;
+  amount: number;
+  memo: string;
   negotiationDate?: number | undefined;
-  memo?: string | undefined;
-  isVisible?: boolean | undefined;
+  isVisible: boolean;
 }
 
 export interface ResumeUpdateRequest_EducationRequest {
   id?: string | undefined;
-  major?: string | undefined;
-  name?: string | undefined;
+  major: string;
+  name: string;
+  description: string;
   status?: Education_EducationStatus | undefined;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
-  isVisible?: boolean | undefined;
+  isVisible: boolean;
 }
 
 export interface ResumeUpdateRequest_ActivityRequest {
   id?: string | undefined;
   type?: Activity_ActivityType | undefined;
-  name?: string | undefined;
-  organization?: string | undefined;
-  certificateNumber?: string | undefined;
+  name: string;
+  organization: string;
+  certificateNumber: string;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
-  description?: string | undefined;
-  isVisible?: boolean | undefined;
+  description: string;
+  isVisible: boolean;
 }
 
 export interface ResumeUpdateRequest_LanguageSkillRequest {
   id?: string | undefined;
   language?: LanguageSkill_Language | undefined;
   level?: LanguageSkill_LanguageLevel | undefined;
-  isVisible?: boolean | undefined;
+  isVisible: boolean;
   languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[];
 }
 
 export interface ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
   id?: string | undefined;
-  name?: string | undefined;
-  score?: string | undefined;
+  name: string;
+  score: string;
   acquiredAt?: number | undefined;
-  isVisible?: boolean | undefined;
+  isVisible: boolean;
 }
 
 export interface ResumeUpdateRequest_AttachmentRequest {
   id?: string | undefined;
   type?: Attachment_AttachmentType | undefined;
-  fileName?: string | undefined;
-  fileUrl?: string | undefined;
-  isVisible?: boolean | undefined;
+  fileName: string;
+  fileUrl: string;
+  isVisible: boolean;
+}
+
+export interface ResumeUpdateRequest_ProjectRequest {
+  id?: string | undefined;
+  title: string;
+  role: string;
+  description: string;
+  startedAt?: number | undefined;
+  endedAt?: number | undefined;
+  isVisible: boolean;
 }
 
 export interface ResumeListResponse {
@@ -265,15 +264,19 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
 function createBaseResumeUpdateRequest(): ResumeUpdateRequest {
   return {
     id: "",
-    title: undefined,
-    name: undefined,
-    phone: undefined,
-    email: undefined,
+    title: "",
+    name: "",
+    phone: "",
+    email: "",
     birthDate: undefined,
     gender: undefined,
+    job: "",
     isPublic: undefined,
     isDefault: undefined,
+    publicId: "",
+    description: "",
     careers: [],
+    projects: [],
     educations: [],
     activities: [],
     languages: [],
@@ -286,16 +289,16 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.title !== undefined) {
+    if (message.title !== "") {
       writer.uint32(18).string(message.title);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(26).string(message.name);
     }
-    if (message.phone !== undefined) {
+    if (message.phone !== "") {
       writer.uint32(34).string(message.phone);
     }
-    if (message.email !== undefined) {
+    if (message.email !== "") {
       writer.uint32(42).string(message.email);
     }
     if (message.birthDate !== undefined) {
@@ -304,14 +307,26 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     if (message.gender !== undefined) {
       writer.uint32(56).int32(message.gender);
     }
+    if (message.job !== "") {
+      writer.uint32(66).string(message.job);
+    }
     if (message.isPublic !== undefined) {
-      writer.uint32(64).bool(message.isPublic);
+      writer.uint32(72).bool(message.isPublic);
     }
     if (message.isDefault !== undefined) {
-      writer.uint32(72).bool(message.isDefault);
+      writer.uint32(80).bool(message.isDefault);
+    }
+    if (message.publicId !== "") {
+      writer.uint32(90).string(message.publicId);
+    }
+    if (message.description !== "") {
+      writer.uint32(98).string(message.description);
     }
     for (const v of message.careers) {
       ResumeUpdateRequest_CareerRequest.encode(v!, writer.uint32(410).fork()).join();
+    }
+    for (const v of message.projects) {
+      ResumeUpdateRequest_ProjectRequest.encode(v!, writer.uint32(418).fork()).join();
     }
     for (const v of message.educations) {
       ResumeUpdateRequest_EducationRequest.encode(v!, writer.uint32(426).fork()).join();
@@ -392,11 +407,11 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
           continue;
         }
         case 8: {
-          if (tag !== 64) {
+          if (tag !== 66) {
             break;
           }
 
-          message.isPublic = reader.bool();
+          message.job = reader.string();
           continue;
         }
         case 9: {
@@ -404,7 +419,31 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
             break;
           }
 
+          message.isPublic = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
           message.isDefault = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.publicId = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.description = reader.string();
           continue;
         }
         case 51: {
@@ -413,6 +452,14 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
           }
 
           message.careers.push(ResumeUpdateRequest_CareerRequest.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.projects.push(ResumeUpdateRequest_ProjectRequest.decode(reader, reader.uint32()));
           continue;
         }
         case 53: {
@@ -459,16 +506,22 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
   fromJSON(object: any): ResumeUpdateRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
-      title: isSet(object.title) ? globalThis.String(object.title) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
-      phone: isSet(object.phone) ? globalThis.String(object.phone) : undefined,
-      email: isSet(object.email) ? globalThis.String(object.email) : undefined,
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      phone: isSet(object.phone) ? globalThis.String(object.phone) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : "",
       birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : undefined,
       gender: isSet(object.gender) ? resume_GenderFromJSON(object.gender) : undefined,
+      job: isSet(object.job) ? globalThis.String(object.job) : "",
       isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : undefined,
       isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : undefined,
+      publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
       careers: globalThis.Array.isArray(object?.careers)
         ? object.careers.map((e: any) => ResumeUpdateRequest_CareerRequest.fromJSON(e))
+        : [],
+      projects: globalThis.Array.isArray(object?.projects)
+        ? object.projects.map((e: any) => ResumeUpdateRequest_ProjectRequest.fromJSON(e))
         : [],
       educations: globalThis.Array.isArray(object?.educations)
         ? object.educations.map((e: any) => ResumeUpdateRequest_EducationRequest.fromJSON(e))
@@ -490,16 +543,16 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     if (message.id !== "") {
       obj.id = message.id;
     }
-    if (message.title !== undefined) {
+    if (message.title !== "") {
       obj.title = message.title;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.phone !== undefined) {
+    if (message.phone !== "") {
       obj.phone = message.phone;
     }
-    if (message.email !== undefined) {
+    if (message.email !== "") {
       obj.email = message.email;
     }
     if (message.birthDate !== undefined) {
@@ -508,14 +561,26 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     if (message.gender !== undefined) {
       obj.gender = resume_GenderToJSON(message.gender);
     }
+    if (message.job !== "") {
+      obj.job = message.job;
+    }
     if (message.isPublic !== undefined) {
       obj.isPublic = message.isPublic;
     }
     if (message.isDefault !== undefined) {
       obj.isDefault = message.isDefault;
     }
+    if (message.publicId !== "") {
+      obj.publicId = message.publicId;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
     if (message.careers?.length) {
       obj.careers = message.careers.map((e) => ResumeUpdateRequest_CareerRequest.toJSON(e));
+    }
+    if (message.projects?.length) {
+      obj.projects = message.projects.map((e) => ResumeUpdateRequest_ProjectRequest.toJSON(e));
     }
     if (message.educations?.length) {
       obj.educations = message.educations.map((e) => ResumeUpdateRequest_EducationRequest.toJSON(e));
@@ -538,15 +603,19 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
   fromPartial<I extends Exact<DeepPartial<ResumeUpdateRequest>, I>>(object: I): ResumeUpdateRequest {
     const message = createBaseResumeUpdateRequest();
     message.id = object.id ?? "";
-    message.title = object.title ?? undefined;
-    message.name = object.name ?? undefined;
-    message.phone = object.phone ?? undefined;
-    message.email = object.email ?? undefined;
+    message.title = object.title ?? "";
+    message.name = object.name ?? "";
+    message.phone = object.phone ?? "";
+    message.email = object.email ?? "";
     message.birthDate = object.birthDate ?? undefined;
     message.gender = object.gender ?? undefined;
+    message.job = object.job ?? "";
     message.isPublic = object.isPublic ?? undefined;
     message.isDefault = object.isDefault ?? undefined;
+    message.publicId = object.publicId ?? "";
+    message.description = object.description ?? "";
     message.careers = object.careers?.map((e) => ResumeUpdateRequest_CareerRequest.fromPartial(e)) || [];
+    message.projects = object.projects?.map((e) => ResumeUpdateRequest_ProjectRequest.fromPartial(e)) || [];
     message.educations = object.educations?.map((e) => ResumeUpdateRequest_EducationRequest.fromPartial(e)) || [];
     message.activities = object.activities?.map((e) => ResumeUpdateRequest_ActivityRequest.fromPartial(e)) || [];
     message.languages = object.languages?.map((e) => ResumeUpdateRequest_LanguageSkillRequest.fromPartial(e)) || [];
@@ -556,16 +625,13 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
 };
 
 function createBaseResumeUpdateRequest_CareerRequest(): ResumeUpdateRequest_CareerRequest {
-  return { career: undefined, achievements: [], salaries: [] };
+  return { career: undefined, salaries: [] };
 }
 
 export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_CareerRequest> = {
   encode(message: ResumeUpdateRequest_CareerRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.career !== undefined) {
       ResumeUpdateRequest_CareerRequest_Career.encode(message.career, writer.uint32(10).fork()).join();
-    }
-    for (const v of message.achievements) {
-      ResumeUpdateRequest_CareerRequest_Achievement.encode(v!, writer.uint32(18).fork()).join();
     }
     for (const v of message.salaries) {
       ResumeUpdateRequest_CareerRequest_Salary.encode(v!, writer.uint32(26).fork()).join();
@@ -588,14 +654,6 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
           message.career = ResumeUpdateRequest_CareerRequest_Career.decode(reader, reader.uint32());
           continue;
         }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.achievements.push(ResumeUpdateRequest_CareerRequest_Achievement.decode(reader, reader.uint32()));
-          continue;
-        }
         case 3: {
           if (tag !== 26) {
             break;
@@ -616,9 +674,6 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
   fromJSON(object: any): ResumeUpdateRequest_CareerRequest {
     return {
       career: isSet(object.career) ? ResumeUpdateRequest_CareerRequest_Career.fromJSON(object.career) : undefined,
-      achievements: globalThis.Array.isArray(object?.achievements)
-        ? object.achievements.map((e: any) => ResumeUpdateRequest_CareerRequest_Achievement.fromJSON(e))
-        : [],
       salaries: globalThis.Array.isArray(object?.salaries)
         ? object.salaries.map((e: any) => ResumeUpdateRequest_CareerRequest_Salary.fromJSON(e))
         : [],
@@ -629,9 +684,6 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
     const obj: any = {};
     if (message.career !== undefined) {
       obj.career = ResumeUpdateRequest_CareerRequest_Career.toJSON(message.career);
-    }
-    if (message.achievements?.length) {
-      obj.achievements = message.achievements.map((e) => ResumeUpdateRequest_CareerRequest_Achievement.toJSON(e));
     }
     if (message.salaries?.length) {
       obj.salaries = message.salaries.map((e) => ResumeUpdateRequest_CareerRequest_Salary.toJSON(e));
@@ -651,8 +703,6 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
     message.career = (object.career !== undefined && object.career !== null)
       ? ResumeUpdateRequest_CareerRequest_Career.fromPartial(object.career)
       : undefined;
-    message.achievements =
-      object.achievements?.map((e) => ResumeUpdateRequest_CareerRequest_Achievement.fromPartial(e)) || [];
     message.salaries = object.salaries?.map((e) => ResumeUpdateRequest_CareerRequest_Salary.fromPartial(e)) || [];
     return message;
   },
@@ -661,17 +711,18 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
 function createBaseResumeUpdateRequest_CareerRequest_Career(): ResumeUpdateRequest_CareerRequest_Career {
   return {
     id: undefined,
-    name: undefined,
+    name: "",
     startedAt: undefined,
     endedAt: undefined,
     isWorking: undefined,
-    position: undefined,
+    position: "",
     employmentType: undefined,
-    department: undefined,
-    jobGrade: undefined,
-    job: undefined,
-    salary: undefined,
-    isVisible: undefined,
+    department: "",
+    jobGrade: "",
+    job: "",
+    salary: 0,
+    description: "",
+    isVisible: false,
   };
 }
 
@@ -680,7 +731,7 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     if (message.id !== undefined) {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
     if (message.startedAt !== undefined) {
@@ -692,25 +743,28 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     if (message.isWorking !== undefined) {
       writer.uint32(40).bool(message.isWorking);
     }
-    if (message.position !== undefined) {
+    if (message.position !== "") {
       writer.uint32(50).string(message.position);
     }
     if (message.employmentType !== undefined) {
       writer.uint32(56).int32(message.employmentType);
     }
-    if (message.department !== undefined) {
+    if (message.department !== "") {
       writer.uint32(66).string(message.department);
     }
-    if (message.jobGrade !== undefined) {
+    if (message.jobGrade !== "") {
       writer.uint32(74).string(message.jobGrade);
     }
-    if (message.job !== undefined) {
+    if (message.job !== "") {
       writer.uint32(82).string(message.job);
     }
-    if (message.salary !== undefined) {
+    if (message.salary !== 0) {
       writer.uint32(88).uint32(message.salary);
     }
-    if (message.isVisible !== undefined) {
+    if (message.description !== "") {
+      writer.uint32(98).string(message.description);
+    }
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -811,6 +865,14 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
           message.salary = reader.uint32();
           continue;
         }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -831,19 +893,20 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
   fromJSON(object: any): ResumeUpdateRequest_CareerRequest_Career {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : undefined,
-      position: isSet(object.position) ? globalThis.String(object.position) : undefined,
+      position: isSet(object.position) ? globalThis.String(object.position) : "",
       employmentType: isSet(object.employmentType)
         ? resumeUpdateRequest_CareerRequest_Career_EmploymentTypeFromJSON(object.employmentType)
         : undefined,
-      department: isSet(object.department) ? globalThis.String(object.department) : undefined,
-      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : undefined,
-      job: isSet(object.job) ? globalThis.String(object.job) : undefined,
-      salary: isSet(object.salary) ? globalThis.Number(object.salary) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      department: isSet(object.department) ? globalThis.String(object.department) : "",
+      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
+      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -852,7 +915,7 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     if (message.id !== undefined) {
       obj.id = message.id;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
     }
     if (message.startedAt !== undefined) {
@@ -864,25 +927,28 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     if (message.isWorking !== undefined) {
       obj.isWorking = message.isWorking;
     }
-    if (message.position !== undefined) {
+    if (message.position !== "") {
       obj.position = message.position;
     }
     if (message.employmentType !== undefined) {
       obj.employmentType = resumeUpdateRequest_CareerRequest_Career_EmploymentTypeToJSON(message.employmentType);
     }
-    if (message.department !== undefined) {
+    if (message.department !== "") {
       obj.department = message.department;
     }
-    if (message.jobGrade !== undefined) {
+    if (message.jobGrade !== "") {
       obj.jobGrade = message.jobGrade;
     }
-    if (message.job !== undefined) {
+    if (message.job !== "") {
       obj.job = message.job;
     }
-    if (message.salary !== undefined) {
+    if (message.salary !== 0) {
       obj.salary = Math.round(message.salary);
     }
-    if (message.isVisible !== undefined) {
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -898,195 +964,24 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
   ): ResumeUpdateRequest_CareerRequest_Career {
     const message = createBaseResumeUpdateRequest_CareerRequest_Career();
     message.id = object.id ?? undefined;
-    message.name = object.name ?? undefined;
+    message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.isWorking = object.isWorking ?? undefined;
-    message.position = object.position ?? undefined;
+    message.position = object.position ?? "";
     message.employmentType = object.employmentType ?? undefined;
-    message.department = object.department ?? undefined;
-    message.jobGrade = object.jobGrade ?? undefined;
-    message.job = object.job ?? undefined;
-    message.salary = object.salary ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.department = object.department ?? "";
+    message.jobGrade = object.jobGrade ?? "";
+    message.job = object.job ?? "";
+    message.salary = object.salary ?? 0;
+    message.description = object.description ?? "";
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
 
-function createBaseResumeUpdateRequest_CareerRequest_Achievement(): ResumeUpdateRequest_CareerRequest_Achievement {
-  return {
-    id: undefined,
-    title: undefined,
-    role: undefined,
-    description: undefined,
-    startedAt: undefined,
-    endedAt: undefined,
-    isVisible: undefined,
-  };
-}
-
-export const ResumeUpdateRequest_CareerRequest_Achievement: MessageFns<ResumeUpdateRequest_CareerRequest_Achievement> =
-  {
-    encode(
-      message: ResumeUpdateRequest_CareerRequest_Achievement,
-      writer: BinaryWriter = new BinaryWriter(),
-    ): BinaryWriter {
-      if (message.id !== undefined) {
-        writer.uint32(10).string(message.id);
-      }
-      if (message.title !== undefined) {
-        writer.uint32(18).string(message.title);
-      }
-      if (message.role !== undefined) {
-        writer.uint32(26).string(message.role);
-      }
-      if (message.description !== undefined) {
-        writer.uint32(34).string(message.description);
-      }
-      if (message.startedAt !== undefined) {
-        writer.uint32(40).uint64(message.startedAt);
-      }
-      if (message.endedAt !== undefined) {
-        writer.uint32(48).uint64(message.endedAt);
-      }
-      if (message.isVisible !== undefined) {
-        writer.uint32(240).bool(message.isVisible);
-      }
-      return writer;
-    },
-
-    decode(input: BinaryReader | Uint8Array, length?: number): ResumeUpdateRequest_CareerRequest_Achievement {
-      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-      let end = length === undefined ? reader.len : reader.pos + length;
-      const message = createBaseResumeUpdateRequest_CareerRequest_Achievement();
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          case 1: {
-            if (tag !== 10) {
-              break;
-            }
-
-            message.id = reader.string();
-            continue;
-          }
-          case 2: {
-            if (tag !== 18) {
-              break;
-            }
-
-            message.title = reader.string();
-            continue;
-          }
-          case 3: {
-            if (tag !== 26) {
-              break;
-            }
-
-            message.role = reader.string();
-            continue;
-          }
-          case 4: {
-            if (tag !== 34) {
-              break;
-            }
-
-            message.description = reader.string();
-            continue;
-          }
-          case 5: {
-            if (tag !== 40) {
-              break;
-            }
-
-            message.startedAt = longToNumber(reader.uint64());
-            continue;
-          }
-          case 6: {
-            if (tag !== 48) {
-              break;
-            }
-
-            message.endedAt = longToNumber(reader.uint64());
-            continue;
-          }
-          case 30: {
-            if (tag !== 240) {
-              break;
-            }
-
-            message.isVisible = reader.bool();
-            continue;
-          }
-        }
-        if ((tag & 7) === 4 || tag === 0) {
-          break;
-        }
-        reader.skip(tag & 7);
-      }
-      return message;
-    },
-
-    fromJSON(object: any): ResumeUpdateRequest_CareerRequest_Achievement {
-      return {
-        id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-        title: isSet(object.title) ? globalThis.String(object.title) : undefined,
-        role: isSet(object.role) ? globalThis.String(object.role) : undefined,
-        description: isSet(object.description) ? globalThis.String(object.description) : undefined,
-        startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
-        endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-        isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
-      };
-    },
-
-    toJSON(message: ResumeUpdateRequest_CareerRequest_Achievement): unknown {
-      const obj: any = {};
-      if (message.id !== undefined) {
-        obj.id = message.id;
-      }
-      if (message.title !== undefined) {
-        obj.title = message.title;
-      }
-      if (message.role !== undefined) {
-        obj.role = message.role;
-      }
-      if (message.description !== undefined) {
-        obj.description = message.description;
-      }
-      if (message.startedAt !== undefined) {
-        obj.startedAt = Math.round(message.startedAt);
-      }
-      if (message.endedAt !== undefined) {
-        obj.endedAt = Math.round(message.endedAt);
-      }
-      if (message.isVisible !== undefined) {
-        obj.isVisible = message.isVisible;
-      }
-      return obj;
-    },
-
-    create<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_Achievement>, I>>(
-      base?: I,
-    ): ResumeUpdateRequest_CareerRequest_Achievement {
-      return ResumeUpdateRequest_CareerRequest_Achievement.fromPartial(base ?? ({} as any));
-    },
-    fromPartial<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_Achievement>, I>>(
-      object: I,
-    ): ResumeUpdateRequest_CareerRequest_Achievement {
-      const message = createBaseResumeUpdateRequest_CareerRequest_Achievement();
-      message.id = object.id ?? undefined;
-      message.title = object.title ?? undefined;
-      message.role = object.role ?? undefined;
-      message.description = object.description ?? undefined;
-      message.startedAt = object.startedAt ?? undefined;
-      message.endedAt = object.endedAt ?? undefined;
-      message.isVisible = object.isVisible ?? undefined;
-      return message;
-    },
-  };
-
 function createBaseResumeUpdateRequest_CareerRequest_Salary(): ResumeUpdateRequest_CareerRequest_Salary {
-  return { id: undefined, amount: undefined, negotiationDate: undefined, memo: undefined, isVisible: undefined };
+  return { id: undefined, amount: 0, memo: "", negotiationDate: undefined, isVisible: false };
 }
 
 export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRequest_CareerRequest_Salary> = {
@@ -1094,16 +989,16 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
     if (message.id !== undefined) {
       writer.uint32(10).string(message.id);
     }
-    if (message.amount !== undefined) {
+    if (message.amount !== 0) {
       writer.uint32(16).uint64(message.amount);
     }
+    if (message.memo !== "") {
+      writer.uint32(26).string(message.memo);
+    }
     if (message.negotiationDate !== undefined) {
-      writer.uint32(24).uint64(message.negotiationDate);
+      writer.uint32(32).uint64(message.negotiationDate);
     }
-    if (message.memo !== undefined) {
-      writer.uint32(34).string(message.memo);
-    }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -1133,19 +1028,19 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
           continue;
         }
         case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.negotiationDate = longToNumber(reader.uint64());
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
+          if (tag !== 26) {
             break;
           }
 
           message.memo = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.negotiationDate = longToNumber(reader.uint64());
           continue;
         }
         case 30: {
@@ -1168,10 +1063,10 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
   fromJSON(object: any): ResumeUpdateRequest_CareerRequest_Salary {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-      amount: isSet(object.amount) ? globalThis.Number(object.amount) : undefined,
+      amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
       negotiationDate: isSet(object.negotiationDate) ? globalThis.Number(object.negotiationDate) : undefined,
-      memo: isSet(object.memo) ? globalThis.String(object.memo) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -1180,16 +1075,16 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
     if (message.id !== undefined) {
       obj.id = message.id;
     }
-    if (message.amount !== undefined) {
+    if (message.amount !== 0) {
       obj.amount = Math.round(message.amount);
+    }
+    if (message.memo !== "") {
+      obj.memo = message.memo;
     }
     if (message.negotiationDate !== undefined) {
       obj.negotiationDate = Math.round(message.negotiationDate);
     }
-    if (message.memo !== undefined) {
-      obj.memo = message.memo;
-    }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -1205,10 +1100,10 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
   ): ResumeUpdateRequest_CareerRequest_Salary {
     const message = createBaseResumeUpdateRequest_CareerRequest_Salary();
     message.id = object.id ?? undefined;
-    message.amount = object.amount ?? undefined;
+    message.amount = object.amount ?? 0;
+    message.memo = object.memo ?? "";
     message.negotiationDate = object.negotiationDate ?? undefined;
-    message.memo = object.memo ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
@@ -1216,12 +1111,13 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
 function createBaseResumeUpdateRequest_EducationRequest(): ResumeUpdateRequest_EducationRequest {
   return {
     id: undefined,
-    major: undefined,
-    name: undefined,
+    major: "",
+    name: "",
+    description: "",
     status: undefined,
     startedAt: undefined,
     endedAt: undefined,
-    isVisible: undefined,
+    isVisible: false,
   };
 }
 
@@ -1230,22 +1126,25 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
     if (message.id !== undefined) {
       writer.uint32(10).string(message.id);
     }
-    if (message.major !== undefined) {
+    if (message.major !== "") {
       writer.uint32(18).string(message.major);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(26).string(message.name);
     }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
     if (message.status !== undefined) {
-      writer.uint32(32).int32(message.status);
+      writer.uint32(40).int32(message.status);
     }
     if (message.startedAt !== undefined) {
-      writer.uint32(40).uint64(message.startedAt);
+      writer.uint32(48).uint64(message.startedAt);
     }
     if (message.endedAt !== undefined) {
-      writer.uint32(48).uint64(message.endedAt);
+      writer.uint32(56).uint64(message.endedAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -1283,11 +1182,11 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.status = reader.int32() as any;
+          message.description = reader.string();
           continue;
         }
         case 5: {
@@ -1295,11 +1194,19 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
+          message.status = reader.int32() as any;
           continue;
         }
         case 6: {
           if (tag !== 48) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
             break;
           }
 
@@ -1326,12 +1233,13 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
   fromJSON(object: any): ResumeUpdateRequest_EducationRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-      major: isSet(object.major) ? globalThis.String(object.major) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      major: isSet(object.major) ? globalThis.String(object.major) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
       status: isSet(object.status) ? education_EducationStatusFromJSON(object.status) : undefined,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -1340,11 +1248,14 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
     if (message.id !== undefined) {
       obj.id = message.id;
     }
-    if (message.major !== undefined) {
+    if (message.major !== "") {
       obj.major = message.major;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
     }
     if (message.status !== undefined) {
       obj.status = education_EducationStatusToJSON(message.status);
@@ -1355,7 +1266,7 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -1371,12 +1282,13 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
   ): ResumeUpdateRequest_EducationRequest {
     const message = createBaseResumeUpdateRequest_EducationRequest();
     message.id = object.id ?? undefined;
-    message.major = object.major ?? undefined;
-    message.name = object.name ?? undefined;
+    message.major = object.major ?? "";
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
     message.status = object.status ?? undefined;
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
@@ -1385,13 +1297,13 @@ function createBaseResumeUpdateRequest_ActivityRequest(): ResumeUpdateRequest_Ac
   return {
     id: undefined,
     type: undefined,
-    name: undefined,
-    organization: undefined,
-    certificateNumber: undefined,
+    name: "",
+    organization: "",
+    certificateNumber: "",
     startedAt: undefined,
     endedAt: undefined,
-    description: undefined,
-    isVisible: undefined,
+    description: "",
+    isVisible: false,
   };
 }
 
@@ -1403,13 +1315,13 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     if (message.type !== undefined) {
       writer.uint32(16).int32(message.type);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(26).string(message.name);
     }
-    if (message.organization !== undefined) {
+    if (message.organization !== "") {
       writer.uint32(34).string(message.organization);
     }
-    if (message.certificateNumber !== undefined) {
+    if (message.certificateNumber !== "") {
       writer.uint32(42).string(message.certificateNumber);
     }
     if (message.startedAt !== undefined) {
@@ -1418,10 +1330,10 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     if (message.endedAt !== undefined) {
       writer.uint32(56).uint64(message.endedAt);
     }
-    if (message.description !== undefined) {
+    if (message.description !== "") {
       writer.uint32(66).string(message.description);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -1519,13 +1431,13 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       type: isSet(object.type) ? activity_ActivityTypeFromJSON(object.type) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
-      organization: isSet(object.organization) ? globalThis.String(object.organization) : undefined,
-      certificateNumber: isSet(object.certificateNumber) ? globalThis.String(object.certificateNumber) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      organization: isSet(object.organization) ? globalThis.String(object.organization) : "",
+      certificateNumber: isSet(object.certificateNumber) ? globalThis.String(object.certificateNumber) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -1537,13 +1449,13 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     if (message.type !== undefined) {
       obj.type = activity_ActivityTypeToJSON(message.type);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.organization !== undefined) {
+    if (message.organization !== "") {
       obj.organization = message.organization;
     }
-    if (message.certificateNumber !== undefined) {
+    if (message.certificateNumber !== "") {
       obj.certificateNumber = message.certificateNumber;
     }
     if (message.startedAt !== undefined) {
@@ -1552,10 +1464,10 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.description !== undefined) {
+    if (message.description !== "") {
       obj.description = message.description;
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -1572,19 +1484,19 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     const message = createBaseResumeUpdateRequest_ActivityRequest();
     message.id = object.id ?? undefined;
     message.type = object.type ?? undefined;
-    message.name = object.name ?? undefined;
-    message.organization = object.organization ?? undefined;
-    message.certificateNumber = object.certificateNumber ?? undefined;
+    message.name = object.name ?? "";
+    message.organization = object.organization ?? "";
+    message.certificateNumber = object.certificateNumber ?? "";
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
-    message.description = object.description ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.description = object.description ?? "";
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
 
 function createBaseResumeUpdateRequest_LanguageSkillRequest(): ResumeUpdateRequest_LanguageSkillRequest {
-  return { id: undefined, language: undefined, level: undefined, isVisible: undefined, languageTests: [] };
+  return { id: undefined, language: undefined, level: undefined, isVisible: false, languageTests: [] };
 }
 
 export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRequest_LanguageSkillRequest> = {
@@ -1598,7 +1510,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
     if (message.level !== undefined) {
       writer.uint32(24).int32(message.level);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     for (const v of message.languageTests) {
@@ -1670,7 +1582,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       language: isSet(object.language) ? languageSkill_LanguageFromJSON(object.language) : undefined,
       level: isSet(object.level) ? languageSkill_LanguageLevelFromJSON(object.level) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       languageTests: globalThis.Array.isArray(object?.languageTests)
         ? object.languageTests.map((e: any) => ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest.fromJSON(e))
         : [],
@@ -1688,7 +1600,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
     if (message.level !== undefined) {
       obj.level = languageSkill_LanguageLevelToJSON(message.level);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     if (message.languageTests?.length) {
@@ -1711,7 +1623,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
     message.id = object.id ?? undefined;
     message.language = object.language ?? undefined;
     message.level = object.level ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     message.languageTests =
       object.languageTests?.map((e) => ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest.fromPartial(e)) ||
       [];
@@ -1720,7 +1632,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
 };
 
 function createBaseResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest(): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
-  return { id: undefined, name: undefined, score: undefined, acquiredAt: undefined, isVisible: undefined };
+  return { id: undefined, name: "", score: "", acquiredAt: undefined, isVisible: false };
 }
 
 export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: MessageFns<
@@ -1733,16 +1645,16 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
     if (message.id !== undefined) {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.score !== undefined) {
+    if (message.score !== "") {
       writer.uint32(26).string(message.score);
     }
     if (message.acquiredAt !== undefined) {
       writer.uint32(32).uint64(message.acquiredAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -1810,10 +1722,10 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
   fromJSON(object: any): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
-      score: isSet(object.score) ? globalThis.String(object.score) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      score: isSet(object.score) ? globalThis.String(object.score) : "",
       acquiredAt: isSet(object.acquiredAt) ? globalThis.Number(object.acquiredAt) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -1822,16 +1734,16 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
     if (message.id !== undefined) {
       obj.id = message.id;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.score !== undefined) {
+    if (message.score !== "") {
       obj.score = message.score;
     }
     if (message.acquiredAt !== undefined) {
       obj.acquiredAt = Math.round(message.acquiredAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -1847,16 +1759,16 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
   ): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
     const message = createBaseResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest();
     message.id = object.id ?? undefined;
-    message.name = object.name ?? undefined;
-    message.score = object.score ?? undefined;
+    message.name = object.name ?? "";
+    message.score = object.score ?? "";
     message.acquiredAt = object.acquiredAt ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };
 
 function createBaseResumeUpdateRequest_AttachmentRequest(): ResumeUpdateRequest_AttachmentRequest {
-  return { id: undefined, type: undefined, fileName: undefined, fileUrl: undefined, isVisible: undefined };
+  return { id: undefined, type: undefined, fileName: "", fileUrl: "", isVisible: false };
 }
 
 export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateRequest_AttachmentRequest> = {
@@ -1867,13 +1779,13 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     if (message.type !== undefined) {
       writer.uint32(16).int32(message.type);
     }
-    if (message.fileName !== undefined) {
+    if (message.fileName !== "") {
       writer.uint32(26).string(message.fileName);
     }
-    if (message.fileUrl !== undefined) {
+    if (message.fileUrl !== "") {
       writer.uint32(34).string(message.fileUrl);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -1939,9 +1851,9 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       type: isSet(object.type) ? attachment_AttachmentTypeFromJSON(object.type) : undefined,
-      fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : undefined,
-      fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
+      fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -1953,13 +1865,13 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     if (message.type !== undefined) {
       obj.type = attachment_AttachmentTypeToJSON(message.type);
     }
-    if (message.fileName !== undefined) {
+    if (message.fileName !== "") {
       obj.fileName = message.fileName;
     }
-    if (message.fileUrl !== undefined) {
+    if (message.fileUrl !== "") {
       obj.fileUrl = message.fileUrl;
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -1976,9 +1888,177 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     const message = createBaseResumeUpdateRequest_AttachmentRequest();
     message.id = object.id ?? undefined;
     message.type = object.type ?? undefined;
-    message.fileName = object.fileName ?? undefined;
-    message.fileUrl = object.fileUrl ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.fileName = object.fileName ?? "";
+    message.fileUrl = object.fileUrl ?? "";
+    message.isVisible = object.isVisible ?? false;
+    return message;
+  },
+};
+
+function createBaseResumeUpdateRequest_ProjectRequest(): ResumeUpdateRequest_ProjectRequest {
+  return {
+    id: undefined,
+    title: "",
+    role: "",
+    description: "",
+    startedAt: undefined,
+    endedAt: undefined,
+    isVisible: false,
+  };
+}
+
+export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_ProjectRequest> = {
+  encode(message: ResumeUpdateRequest_ProjectRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== undefined) {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.role !== "") {
+      writer.uint32(26).string(message.role);
+    }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
+    if (message.startedAt !== undefined) {
+      writer.uint32(40).uint64(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      writer.uint32(48).uint64(message.endedAt);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ResumeUpdateRequest_ProjectRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseResumeUpdateRequest_ProjectRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.role = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ResumeUpdateRequest_ProjectRequest {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : undefined,
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      role: isSet(object.role) ? globalThis.String(object.role) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
+      endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+    };
+  },
+
+  toJSON(message: ResumeUpdateRequest_ProjectRequest): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = message.id;
+    }
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.role !== "") {
+      obj.role = message.role;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.startedAt !== undefined) {
+      obj.startedAt = Math.round(message.startedAt);
+    }
+    if (message.endedAt !== undefined) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ResumeUpdateRequest_ProjectRequest>, I>>(
+    base?: I,
+  ): ResumeUpdateRequest_ProjectRequest {
+    return ResumeUpdateRequest_ProjectRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ResumeUpdateRequest_ProjectRequest>, I>>(
+    object: I,
+  ): ResumeUpdateRequest_ProjectRequest {
+    const message = createBaseResumeUpdateRequest_ProjectRequest();
+    message.id = object.id ?? undefined;
+    message.title = object.title ?? "";
+    message.role = object.role ?? "";
+    message.description = object.description ?? "";
+    message.startedAt = object.startedAt ?? undefined;
+    message.endedAt = object.endedAt ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };

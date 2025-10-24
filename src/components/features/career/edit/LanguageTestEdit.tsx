@@ -18,6 +18,7 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
     name: '',
     score: '',
     acquiredAt: undefined,
+    isVisible: true,
   });
 
   const handleAddLanguageTest = () => {
@@ -30,14 +31,14 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
     }
   };
 
-  const handleLanguageTestChange = (index: number, field: keyof ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest, value: string | number) => {
+  const handleLanguageTestChange = (index: number, field: keyof ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest, value: string | number | boolean) => {
     const newLanguageTests = [...languageTests];
     
-    // examinedAt는 timestamp(number)로 변환
+    // acquiredAt는 timestamp(number)로 변환
     if (field === 'acquiredAt') {
       newLanguageTests[index] = {
         ...newLanguageTests[index],
-        [field]: typeof value === 'string' ? DateUtil.parseToTimestamp(value) : value
+        [field]: typeof value === 'string' ? DateUtil.parseToTimestamp(value) : (typeof value === 'number' ? value : undefined)
       };
     } else {
       newLanguageTests[index] = {
@@ -47,6 +48,10 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
     }
     
     onUpdate(newLanguageTests);
+  };
+
+  const toggleVisible = (index: number) => {
+    handleLanguageTestChange(index, 'isVisible', !languageTests[index].isVisible);
   };
 
   return (
@@ -67,24 +72,15 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
       </div>
 
       {languageTests.map((languageTest, index) => (
-        <div key={languageTest.id || index} style={{ 
-          marginBottom: '12px', 
-          padding: '12px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '6px',
-          position: 'relative'
-        }}>
-          {languageTests.length > 0 && (
-            <button
-              onClick={() => handleDeleteLanguageTest(index)}
-              className={styles.deleteButton}
-              style={{ top: '8px', right: '8px' }}
-            >
-              ×
-            </button>
-          )}
-
-          <div className={styles.gridContainer2}>
+        <div key={languageTest.id || index} className={styles.cardWrapper}>
+          <div style={{ 
+            flex: 1,
+            padding: '12px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '6px',
+            position: 'relative'
+          }}>
+            <div className={styles.gridContainer2}>
             {/* 시험명 */}
             <div className={styles.formField}>
               <Input 
@@ -114,10 +110,26 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
               <DatePicker 
                 required={false}
                 label="취득년월"
-                value={languageTest.acquiredAt ? DateUtil.formatTimestamp(languageTest.acquiredAt) : undefined}
+                value={languageTest.acquiredAt}
                 onChange={(date) => handleLanguageTestChange(index, 'acquiredAt', date)}
               />
             </div>
+          </div>
+          </div>
+          
+          <div className={styles.cardActions}>
+            <button
+              onClick={() => toggleVisible(index)}
+              className={`${styles.visibleButton} ${languageTest.isVisible ? styles.visible : ''}`}
+            >
+              {languageTest.isVisible ? '보임' : '안보임'}
+            </button>
+            <button
+              onClick={() => handleDeleteLanguageTest(index)}
+              className={styles.cardDeleteButton}
+            >
+              ×
+            </button>
           </div>
         </div>
       ))}

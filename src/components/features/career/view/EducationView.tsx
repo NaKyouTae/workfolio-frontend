@@ -15,6 +15,9 @@ const EducationView: React.FC<EducationViewProps> = ({
 }) => {
   const [newEducation, setNewEducation] = useState<EducationCreateRequest>({
     name: '',
+    major: '',
+    description: '',
+    isVisible: false,
     startedAt: 0,
     endedAt: 0,
     resumeId: ''
@@ -65,7 +68,10 @@ const EducationView: React.FC<EducationViewProps> = ({
             if (result) {
             handleDataChange([...educations, result.education]);
             setNewEducation({
+              major: '',
               name: '',
+              description: '',
+              isVisible: false,
               startedAt: 0,
               endedAt: 0,
               resumeId: ''
@@ -186,9 +192,9 @@ const EducationView: React.FC<EducationViewProps> = ({
             />
             <input
               type="text"
-              placeholder="교육기관"
-              value={newEducation.name}
-              onChange={(e) => setNewEducation({ ...newEducation, name: e.target.value })}
+              placeholder="전공"
+              value={newEducation.major}
+              onChange={(e) => setNewEducation({ ...newEducation, major: e.target.value })}
               style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px', flex: 1, minWidth: '150px' }}
             />
             <input

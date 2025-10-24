@@ -16,16 +16,37 @@ dayjs.locale('ko');
  */
 export class DateUtil {
   static defaultFormat: string = 'YYYY-MM-DD';
+  
+  /**
+   * timestamp를 정규화 (string → number, seconds → milliseconds 변환)
+   * @param timestamp - 타임스탬프 (string 또는 number, seconds 또는 milliseconds)
+   * @returns milliseconds 단위 number (실패 시 0)
+   */
+  static normalizeTimestamp(timestamp: number | string | undefined | null): number {
+    if (!timestamp || timestamp === 0) return 0;
+
+    // string인 경우 number로 변환
+    const numTimestamp = typeof timestamp === 'string' ? parseInt(timestamp, 10) : timestamp;
+    
+    if (isNaN(numTimestamp)) return 0;
+
+    // timestamp가 10자리 이하면 seconds, 13자리면 milliseconds로 판단
+    // 10000000000 (2286년 11월)을 기준으로 구분
+    return numTimestamp < 10000000000 ? numTimestamp * 1000 : numTimestamp;
+  }
+  
   /**
    * 타임스탬프를 로컬 시간 기준 날짜 문자열로 변환
-   * @param timestamp - 밀리초 단위 타임스탬프
+   * seconds와 milliseconds를 자동으로 구분하여 처리
+   * @param timestamp - 타임스탬프 (seconds 또는 milliseconds, string도 허용)
    * @param format - 출력 형식 (기본값: 'YYYY-MM-DD')
    * @returns 포맷된 날짜 문자열
    */
-  static formatTimestamp(timestamp: number, format: string = DateUtil.defaultFormat): string {
-    if (timestamp === 0 || timestamp === undefined) return '';
-
-    return dayjs(timestamp).format(format);
+  static formatTimestamp(timestamp: number | string, format: string = DateUtil.defaultFormat): string {
+    const milliseconds = DateUtil.normalizeTimestamp(timestamp);
+    if (milliseconds === 0) return '';
+    
+    return dayjs(milliseconds).format(format);
   }
 
   /**

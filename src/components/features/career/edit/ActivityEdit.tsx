@@ -6,6 +6,8 @@ import Dropdown from '@/components/ui/Dropdown';
 import styles from '../CareerContentEdit.module.css';
 import DatePicker from '@/components/ui/DatePicker';
 import DateUtil from '@/utils/DateUtil';
+import { DateTime } from 'luxon';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 interface ActivityEditProps {
   activities: ResumeUpdateRequest_ActivityRequest[];
@@ -44,18 +46,11 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
     onUpdate(activities.filter((_, i) => i !== index));
   };
 
-  const handleActivityChange = (index: number, field: keyof ResumeUpdateRequest_ActivityRequest, value: string | number) => {
+  const handleActivityChange = (index: number, field: keyof ResumeUpdateRequest_ActivityRequest, value: string | number | boolean | undefined) => {
     const newActivities = [...activities];
     
-    // type 필드는 number로 변환
-    if (field === 'type') {
-      newActivities[index] = {
-        ...newActivities[index],
-        [field]: Number(value) as Activity_ActivityType
-      };
-    } 
     // startedAt, endedAt는 timestamp(number)로 변환
-    else if (field === 'startedAt' || field === 'endedAt') {
+    if (field === 'startedAt' || field === 'endedAt') {
       newActivities[index] = {
         ...newActivities[index],
         [field]: typeof value === 'string' ? DateUtil.parseToTimestamp(value) : value
@@ -69,6 +64,10 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
     }
     
     onUpdate(newActivities);
+  };
+
+  const toggleVisible = (index: number) => {
+    handleActivityChange(index, 'isVisible', !activities[index].isVisible);
   };
 
   return (
@@ -88,17 +87,9 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
       </div>
 
       {activities.map((activity, index) => (
-        <div key={activity.id || index} className={styles.card}>
-          {activities.length > 1 && (
-            <button
-              onClick={() => handleDeleteActivity(index)}
-              className={styles.deleteButton}
-            >
-              ×
-            </button>
-          )}
-
-          <div className={styles.gridContainer2}>
+        <div key={activity.id || index} className={styles.cardWrapper}>
+          <div className={styles.card}>
+            <div className={styles.gridContainer2}>
             {/* 활동명 */}
             <div className={styles.formField}>
               <Input 
@@ -113,16 +104,15 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
             <div className={styles.formField}>
               <Dropdown
                 label="구분"
-                selectedOption={activity.type?.toString() || String(Activity_ActivityType.CERTIFICATION)}
+                selectedOption={normalizeEnumValue(activity.type, Activity_ActivityType)}
                 options={[
-                  { value: String(Activity_ActivityType.INTERNSHIP), label: '인턴' },
-                  { value: String(Activity_ActivityType.EXTERNAL), label: '대외활동' },
-                  { value: String(Activity_ActivityType.EDUCATION), label: '교육' },
-                  { value: String(Activity_ActivityType.CERTIFICATION), label: '자격증' },
-                  { value: String(Activity_ActivityType.AWARD), label: '수상' },
-                  { value: String(Activity_ActivityType.ETC), label: '기타' },
+                  { value: Activity_ActivityType.EXTERNAL, label: '대외활동' },
+                  { value: Activity_ActivityType.EDUCATION, label: '교육' },
+                  { value: Activity_ActivityType.CERTIFICATION, label: '자격증' },
+                  { value: Activity_ActivityType.AWARD, label: '수상' },
+                  { value: Activity_ActivityType.ETC, label: '기타' },
                 ]}
-                setValue={(value) => handleActivityChange(index, 'type', value)}
+                setValue={(value) => handleActivityChange(index, 'type', normalizeEnumValue(value, Activity_ActivityType))}
               />
             </div>
 
@@ -139,11 +129,11 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
               />
             </div>
             <div className={styles.formField}>
-              <DatePicker 
-                required={false}
+              <DatePicker
                 label="기간"
-                value={activity.startedAt ? DateUtil.formatTimestamp(activity.startedAt) : undefined}
-                onChange={(date) => handleActivityChange(index, 'startedAt', date)}
+                value={activity.startedAt}
+                onChange={(date) => handleActivityChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                required={false}
               />
             </div>
           </div>
@@ -179,6 +169,22 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
                 </>
               )
             }
+          </div>
+          </div>
+          
+          <div className={styles.cardActions}>
+            <button
+              onClick={() => toggleVisible(index)}
+              className={`${styles.visibleButton} ${activity.isVisible ? styles.visible : ''}`}
+            >
+              {activity.isVisible ? '보임' : '안보임'}
+            </button>
+            <button
+              onClick={() => handleDeleteActivity(index)}
+              className={styles.cardDeleteButton}
+            >
+              ×
+            </button>
           </div>
         </div>
       ))}

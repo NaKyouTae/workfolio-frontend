@@ -20,23 +20,25 @@ export interface EducationListResponse {
 }
 
 export interface EducationCreateRequest {
-  major?: string | undefined;
-  name?: string | undefined;
+  major: string;
+  name: string;
+  description: string;
   status?: Education_EducationStatus | undefined;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
-  isVisible?: boolean | undefined;
+  isVisible: boolean;
   resumeId: string;
 }
 
 export interface EducationUpdateRequest {
   id: string;
-  major?: string | undefined;
-  name?: string | undefined;
+  major: string;
+  name: string;
+  description: string;
   status?: Education_EducationStatus | undefined;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
-  isVisible?: boolean | undefined;
+  isVisible: boolean;
 }
 
 export interface EducationResponse {
@@ -107,34 +109,38 @@ export const EducationListResponse: MessageFns<EducationListResponse> = {
 
 function createBaseEducationCreateRequest(): EducationCreateRequest {
   return {
-    major: undefined,
-    name: undefined,
+    major: "",
+    name: "",
+    description: "",
     status: undefined,
     startedAt: undefined,
     endedAt: undefined,
-    isVisible: undefined,
+    isVisible: false,
     resumeId: "",
   };
 }
 
 export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
   encode(message: EducationCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.major !== undefined) {
+    if (message.major !== "") {
       writer.uint32(18).string(message.major);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(26).string(message.name);
     }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
     if (message.status !== undefined) {
-      writer.uint32(32).int32(message.status);
+      writer.uint32(40).int32(message.status);
     }
     if (message.startedAt !== undefined) {
-      writer.uint32(40).uint64(message.startedAt);
+      writer.uint32(48).uint64(message.startedAt);
     }
     if (message.endedAt !== undefined) {
-      writer.uint32(48).uint64(message.endedAt);
+      writer.uint32(56).uint64(message.endedAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     if (message.resumeId !== "") {
@@ -167,11 +173,11 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.status = reader.int32() as any;
+          message.description = reader.string();
           continue;
         }
         case 5: {
@@ -179,11 +185,19 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
+          message.status = reader.int32() as any;
           continue;
         }
         case 6: {
           if (tag !== 48) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
             break;
           }
 
@@ -217,23 +231,27 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
 
   fromJSON(object: any): EducationCreateRequest {
     return {
-      major: isSet(object.major) ? globalThis.String(object.major) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      major: isSet(object.major) ? globalThis.String(object.major) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
       status: isSet(object.status) ? education_EducationStatusFromJSON(object.status) : undefined,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
   toJSON(message: EducationCreateRequest): unknown {
     const obj: any = {};
-    if (message.major !== undefined) {
+    if (message.major !== "") {
       obj.major = message.major;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
     }
     if (message.status !== undefined) {
       obj.status = education_EducationStatusToJSON(message.status);
@@ -244,7 +262,7 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     if (message.resumeId !== "") {
@@ -258,12 +276,13 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
   },
   fromPartial<I extends Exact<DeepPartial<EducationCreateRequest>, I>>(object: I): EducationCreateRequest {
     const message = createBaseEducationCreateRequest();
-    message.major = object.major ?? undefined;
-    message.name = object.name ?? undefined;
+    message.major = object.major ?? "";
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
     message.status = object.status ?? undefined;
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     message.resumeId = object.resumeId ?? "";
     return message;
   },
@@ -272,12 +291,13 @@ export const EducationCreateRequest: MessageFns<EducationCreateRequest> = {
 function createBaseEducationUpdateRequest(): EducationUpdateRequest {
   return {
     id: "",
-    major: undefined,
-    name: undefined,
+    major: "",
+    name: "",
+    description: "",
     status: undefined,
     startedAt: undefined,
     endedAt: undefined,
-    isVisible: undefined,
+    isVisible: false,
   };
 }
 
@@ -286,22 +306,25 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.major !== undefined) {
+    if (message.major !== "") {
       writer.uint32(18).string(message.major);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(26).string(message.name);
     }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
     if (message.status !== undefined) {
-      writer.uint32(32).int32(message.status);
+      writer.uint32(40).int32(message.status);
     }
     if (message.startedAt !== undefined) {
-      writer.uint32(40).uint64(message.startedAt);
+      writer.uint32(48).uint64(message.startedAt);
     }
     if (message.endedAt !== undefined) {
-      writer.uint32(48).uint64(message.endedAt);
+      writer.uint32(56).uint64(message.endedAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -339,11 +362,11 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.status = reader.int32() as any;
+          message.description = reader.string();
           continue;
         }
         case 5: {
@@ -351,11 +374,19 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
             break;
           }
 
-          message.startedAt = longToNumber(reader.uint64());
+          message.status = reader.int32() as any;
           continue;
         }
         case 6: {
           if (tag !== 48) {
+            break;
+          }
+
+          message.startedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
             break;
           }
 
@@ -382,12 +413,13 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
   fromJSON(object: any): EducationUpdateRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
-      major: isSet(object.major) ? globalThis.String(object.major) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      major: isSet(object.major) ? globalThis.String(object.major) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
       status: isSet(object.status) ? education_EducationStatusFromJSON(object.status) : undefined,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -396,11 +428,14 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
     if (message.id !== "") {
       obj.id = message.id;
     }
-    if (message.major !== undefined) {
+    if (message.major !== "") {
       obj.major = message.major;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
     }
     if (message.status !== undefined) {
       obj.status = education_EducationStatusToJSON(message.status);
@@ -411,7 +446,7 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
     if (message.endedAt !== undefined) {
       obj.endedAt = Math.round(message.endedAt);
     }
-    if (message.isVisible !== undefined) {
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -423,12 +458,13 @@ export const EducationUpdateRequest: MessageFns<EducationUpdateRequest> = {
   fromPartial<I extends Exact<DeepPartial<EducationUpdateRequest>, I>>(object: I): EducationUpdateRequest {
     const message = createBaseEducationUpdateRequest();
     message.id = object.id ?? "";
-    message.major = object.major ?? undefined;
-    message.name = object.name ?? undefined;
+    message.major = object.major ?? "";
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
     message.status = object.status ?? undefined;
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };

@@ -4,6 +4,7 @@ import { LanguageSkill_Language, LanguageSkill_LanguageLevel } from '@/generated
 import Dropdown from '@/components/ui/Dropdown';
 import styles from '../CareerContentEdit.module.css';
 import LanguageTestEdit from './LanguageTestEdit';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 interface LanguageSkillEditProps {
   languageSkills: ResumeUpdateRequest_LanguageSkillRequest[];
@@ -17,7 +18,7 @@ interface LanguageSkillEditProps {
 const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, onUpdate }) => {
   const createEmptyLanguageSkill = (): ResumeUpdateRequest_LanguageSkillRequest => ({
     language: LanguageSkill_Language.ENGLISH,
-    level: LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN,
+    level: LanguageSkill_LanguageLevel.DAILY_CONVERSATION,
     isVisible: true,
     languageTests: [],
   });
@@ -38,23 +39,17 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
     onUpdate(languageSkills.filter((_, i) => i !== index));
   };
 
-  const handleLanguageSkillChange = (index: number, field: keyof ResumeUpdateRequest_LanguageSkillRequest, value: string | number) => {
+  const handleLanguageSkillChange = (index: number, field: keyof ResumeUpdateRequest_LanguageSkillRequest, value: string | number | boolean | undefined) => {
     const newLanguageSkills = [...languageSkills];
-    
-    // language, level 필드는 number로 변환
-    if (field === 'language' || field === 'level') {
-      newLanguageSkills[index] = {
-        ...newLanguageSkills[index],
-        [field]: Number(value)
-      };
-    } else {
-      newLanguageSkills[index] = {
-        ...newLanguageSkills[index],
-        [field]: value
-      };
-    }
-    
+    newLanguageSkills[index] = {
+      ...newLanguageSkills[index],
+      [field]: value
+    };
     onUpdate(newLanguageSkills);
+  };
+
+  const toggleVisible = (index: number) => {
+    handleLanguageSkillChange(index, 'isVisible', !languageSkills[index].isVisible);
   };
 
   return (
@@ -74,41 +69,33 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
       </div>
 
       {languageSkills.map((languageSkill, index) => (
-        <div key={languageSkill.id || index} className={styles.card}>
-          {languageSkills.length > 1 && (
-            <button
-              onClick={() => handleDeleteLanguageSkill(index)}
-              className={styles.deleteButton}
-            >
-              ×
-            </button>
-          )}
-
-          <div className={styles.gridContainer2}>
+        <div key={languageSkill.id || index} className={styles.cardWrapper}>
+          <div className={styles.card}>
+            <div className={styles.gridContainer2}>
             {/* 언어 */}
             <div className={styles.formField}>
               <Dropdown
                 label="언어"
-                selectedOption={languageSkill.language?.toString() || String(LanguageSkill_Language.ENGLISH)}
+                selectedOption={normalizeEnumValue(languageSkill.language, LanguageSkill_Language)}
                 options={[
-                  { value: String(LanguageSkill_Language.ENGLISH), label: '영어' },
-                  { value: String(LanguageSkill_Language.JAPANESE), label: '일본어' },
-                  { value: String(LanguageSkill_Language.CHINESE), label: '중국어' },
-                  { value: String(LanguageSkill_Language.KOREAN), label: '한국어' },
-                  { value: String(LanguageSkill_Language.FRENCH), label: '프랑스어' },
-                  { value: String(LanguageSkill_Language.SPANISH), label: '스페인어' },
-                  { value: String(LanguageSkill_Language.GERMAN), label: '독일어' },
-                  { value: String(LanguageSkill_Language.RUSSIAN), label: '러시아어' },
-                  { value: String(LanguageSkill_Language.VIETNAMESE), label: '베트남어' },
-                  { value: String(LanguageSkill_Language.ITALIAN), label: '이탈리아어' },
-                  { value: String(LanguageSkill_Language.THAI), label: '태국어' },
-                  { value: String(LanguageSkill_Language.ARABIC), label: '아랍어' },
-                  { value: String(LanguageSkill_Language.PORTUGUESE), label: '포르투갈어' },
-                  { value: String(LanguageSkill_Language.INDONESIAN), label: '인도네시아어' },
-                  { value: String(LanguageSkill_Language.MONGOLIAN), label: '몽골어' },
-                  { value: String(LanguageSkill_Language.TURKISH), label: '터키어' },
+                  { value: LanguageSkill_Language.ENGLISH, label: '영어' },
+                  { value: LanguageSkill_Language.JAPANESE, label: '일본어' },
+                  { value: LanguageSkill_Language.CHINESE, label: '중국어' },
+                  { value: LanguageSkill_Language.KOREAN, label: '한국어' },
+                  { value: LanguageSkill_Language.FRENCH, label: '프랑스어' },
+                  { value: LanguageSkill_Language.SPANISH, label: '스페인어' },
+                  { value: LanguageSkill_Language.GERMAN, label: '독일어' },
+                  { value: LanguageSkill_Language.RUSSIAN, label: '러시아어' },
+                  { value: LanguageSkill_Language.VIETNAMESE, label: '베트남어' },
+                  { value: LanguageSkill_Language.ITALIAN, label: '이탈리아어' },
+                  { value: LanguageSkill_Language.THAI, label: '태국어' },
+                  { value: LanguageSkill_Language.ARABIC, label: '아랍어' },
+                  { value: LanguageSkill_Language.PORTUGUESE, label: '포르투갈어' },
+                  { value: LanguageSkill_Language.INDONESIAN, label: '인도네시아어' },
+                  { value: LanguageSkill_Language.MONGOLIAN, label: '몽골어' },
+                  { value: LanguageSkill_Language.TURKISH, label: '터키어' },
                 ]}
-                setValue={(value) => handleLanguageSkillChange(index, 'language', value)}
+                setValue={(value) => handleLanguageSkillChange(index, 'language', normalizeEnumValue(value, LanguageSkill_Language))}
               />
             </div>
 
@@ -116,13 +103,13 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
             <div className={styles.formField}>
               <Dropdown
                 label="수준"
-                selectedOption={languageSkill.level?.toString() || String(LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN)}
+                selectedOption={normalizeEnumValue(languageSkill.level, LanguageSkill_LanguageLevel)}
                 options={[
-                  { value: String(LanguageSkill_LanguageLevel.DAILY_CONVERSATION), label: '일상 회화 가능' },
-                  { value: String(LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION), label: '비즈니스 회화 가능' },
-                  { value: String(LanguageSkill_LanguageLevel.NATIVE_LEVEL), label: '원어민 수준' },
+                  { value: LanguageSkill_LanguageLevel.DAILY_CONVERSATION, label: '일상 회화 가능' },
+                  { value: LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION, label: '비즈니스 회화 가능' },
+                  { value: LanguageSkill_LanguageLevel.NATIVE_LEVEL, label: '원어민 수준' },
                 ]}
-                setValue={(value) => handleLanguageSkillChange(index, 'level', value)}
+                setValue={(value) => handleLanguageSkillChange(index, 'level', normalizeEnumValue(value, LanguageSkill_LanguageLevel))}
               />
             </div>
           </div>
@@ -139,6 +126,22 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
               onUpdate(newLanguageSkills);
             }}
           />
+          </div>
+          
+          <div className={styles.cardActions}>
+            <button
+              onClick={() => toggleVisible(index)}
+              className={`${styles.visibleButton} ${languageSkill.isVisible ? styles.visible : ''}`}
+            >
+              {languageSkill.isVisible ? '보임' : '안보임'}
+            </button>
+            <button
+              onClick={() => handleDeleteLanguageSkill(index)}
+              className={styles.cardDeleteButton}
+            >
+              ×
+            </button>
+          </div>
         </div>
       ))}
     </div>

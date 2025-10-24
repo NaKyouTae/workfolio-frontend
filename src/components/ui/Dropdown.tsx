@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 
 export interface IDropdown {
-    value: string;
+    value: string | number;
     label: string;
     color?: string;
 }
 
 interface DropdownProps {
-    selectedOption: string;
+    selectedOption: string | number | undefined;
     options: IDropdown[]; // 옵션 배열
-    setValue: (value: string) => void; // 선택된 옵션의 값을 설정하는 함수
+    setValue: (value: string | number) => void; // 선택된 옵션의 값을 설정하는 함수
     label?: string;
 }
 
@@ -21,7 +21,7 @@ const Dropdown = ({ selectedOption, options, setValue, label }: DropdownProps) =
         setIsOpen(!isOpen);
     };
     
-    const handleOptionClick = (value: string) => {
+    const handleOptionClick = (value: string | number) => {
         setValue(value); // 선택된 옵션의 title 값을 외부 상태에 설정
         setIsOpen(false); // 드롭다운 닫기
     };

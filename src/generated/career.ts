@@ -11,33 +11,35 @@ import { Career, Career_EmploymentType, career_EmploymentTypeFromJSON, career_Em
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
 export interface CareerCreateRequest {
-  name?: string | undefined;
+  name: string;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isWorking?: boolean | undefined;
-  position?: string | undefined;
+  position: string;
   employmentType?: Career_EmploymentType | undefined;
-  department?: string | undefined;
-  jobGrade?: string | undefined;
-  job?: string | undefined;
-  salary?: number | undefined;
-  isVisible?: boolean | undefined;
+  department: string;
+  jobGrade: string;
+  job: string;
+  salary: number;
+  description: string;
+  isVisible: boolean;
   resumeId: string;
 }
 
 export interface CareerUpdateRequest {
   id: string;
-  name?: string | undefined;
+  name: string;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isWorking?: boolean | undefined;
-  position?: string | undefined;
+  position: string;
   employmentType?: Career_EmploymentType | undefined;
-  department?: string | undefined;
-  jobGrade?: string | undefined;
-  job?: string | undefined;
-  salary?: number | undefined;
-  isVisible?: boolean | undefined;
+  department: string;
+  jobGrade: string;
+  job: string;
+  salary: number;
+  description: string;
+  isVisible: boolean;
 }
 
 export interface CareerListResponse {
@@ -50,24 +52,25 @@ export interface CareerResponse {
 
 function createBaseCareerCreateRequest(): CareerCreateRequest {
   return {
-    name: undefined,
+    name: "",
     startedAt: undefined,
     endedAt: undefined,
     isWorking: undefined,
-    position: undefined,
+    position: "",
     employmentType: undefined,
-    department: undefined,
-    jobGrade: undefined,
-    job: undefined,
-    salary: undefined,
-    isVisible: undefined,
+    department: "",
+    jobGrade: "",
+    job: "",
+    salary: 0,
+    description: "",
+    isVisible: false,
     resumeId: "",
   };
 }
 
 export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
   encode(message: CareerCreateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
     if (message.startedAt !== undefined) {
@@ -79,25 +82,28 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     if (message.isWorking !== undefined) {
       writer.uint32(40).bool(message.isWorking);
     }
-    if (message.position !== undefined) {
+    if (message.position !== "") {
       writer.uint32(50).string(message.position);
     }
     if (message.employmentType !== undefined) {
       writer.uint32(56).int32(message.employmentType);
     }
-    if (message.department !== undefined) {
+    if (message.department !== "") {
       writer.uint32(66).string(message.department);
     }
-    if (message.jobGrade !== undefined) {
+    if (message.jobGrade !== "") {
       writer.uint32(74).string(message.jobGrade);
     }
-    if (message.job !== undefined) {
+    if (message.job !== "") {
       writer.uint32(82).string(message.job);
     }
-    if (message.salary !== undefined) {
+    if (message.salary !== 0) {
       writer.uint32(88).uint32(message.salary);
     }
-    if (message.isVisible !== undefined) {
+    if (message.description !== "") {
+      writer.uint32(98).string(message.description);
+    }
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     if (message.resumeId !== "") {
@@ -193,6 +199,14 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
           message.salary = reader.uint32();
           continue;
         }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -220,24 +234,25 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
 
   fromJSON(object: any): CareerCreateRequest {
     return {
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : undefined,
-      position: isSet(object.position) ? globalThis.String(object.position) : undefined,
+      position: isSet(object.position) ? globalThis.String(object.position) : "",
       employmentType: isSet(object.employmentType) ? career_EmploymentTypeFromJSON(object.employmentType) : undefined,
-      department: isSet(object.department) ? globalThis.String(object.department) : undefined,
-      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : undefined,
-      job: isSet(object.job) ? globalThis.String(object.job) : undefined,
-      salary: isSet(object.salary) ? globalThis.Number(object.salary) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      department: isSet(object.department) ? globalThis.String(object.department) : "",
+      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
+      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
 
   toJSON(message: CareerCreateRequest): unknown {
     const obj: any = {};
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
     }
     if (message.startedAt !== undefined) {
@@ -249,25 +264,28 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     if (message.isWorking !== undefined) {
       obj.isWorking = message.isWorking;
     }
-    if (message.position !== undefined) {
+    if (message.position !== "") {
       obj.position = message.position;
     }
     if (message.employmentType !== undefined) {
       obj.employmentType = career_EmploymentTypeToJSON(message.employmentType);
     }
-    if (message.department !== undefined) {
+    if (message.department !== "") {
       obj.department = message.department;
     }
-    if (message.jobGrade !== undefined) {
+    if (message.jobGrade !== "") {
       obj.jobGrade = message.jobGrade;
     }
-    if (message.job !== undefined) {
+    if (message.job !== "") {
       obj.job = message.job;
     }
-    if (message.salary !== undefined) {
+    if (message.salary !== 0) {
       obj.salary = Math.round(message.salary);
     }
-    if (message.isVisible !== undefined) {
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     if (message.resumeId !== "") {
@@ -281,17 +299,18 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
   },
   fromPartial<I extends Exact<DeepPartial<CareerCreateRequest>, I>>(object: I): CareerCreateRequest {
     const message = createBaseCareerCreateRequest();
-    message.name = object.name ?? undefined;
+    message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.isWorking = object.isWorking ?? undefined;
-    message.position = object.position ?? undefined;
+    message.position = object.position ?? "";
     message.employmentType = object.employmentType ?? undefined;
-    message.department = object.department ?? undefined;
-    message.jobGrade = object.jobGrade ?? undefined;
-    message.job = object.job ?? undefined;
-    message.salary = object.salary ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.department = object.department ?? "";
+    message.jobGrade = object.jobGrade ?? "";
+    message.job = object.job ?? "";
+    message.salary = object.salary ?? 0;
+    message.description = object.description ?? "";
+    message.isVisible = object.isVisible ?? false;
     message.resumeId = object.resumeId ?? "";
     return message;
   },
@@ -300,17 +319,18 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
 function createBaseCareerUpdateRequest(): CareerUpdateRequest {
   return {
     id: "",
-    name: undefined,
+    name: "",
     startedAt: undefined,
     endedAt: undefined,
     isWorking: undefined,
-    position: undefined,
+    position: "",
     employmentType: undefined,
-    department: undefined,
-    jobGrade: undefined,
-    job: undefined,
-    salary: undefined,
-    isVisible: undefined,
+    department: "",
+    jobGrade: "",
+    job: "",
+    salary: 0,
+    description: "",
+    isVisible: false,
   };
 }
 
@@ -319,7 +339,7 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
     if (message.startedAt !== undefined) {
@@ -331,25 +351,28 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     if (message.isWorking !== undefined) {
       writer.uint32(40).bool(message.isWorking);
     }
-    if (message.position !== undefined) {
+    if (message.position !== "") {
       writer.uint32(50).string(message.position);
     }
     if (message.employmentType !== undefined) {
       writer.uint32(56).int32(message.employmentType);
     }
-    if (message.department !== undefined) {
+    if (message.department !== "") {
       writer.uint32(66).string(message.department);
     }
-    if (message.jobGrade !== undefined) {
+    if (message.jobGrade !== "") {
       writer.uint32(74).string(message.jobGrade);
     }
-    if (message.job !== undefined) {
+    if (message.job !== "") {
       writer.uint32(82).string(message.job);
     }
-    if (message.salary !== undefined) {
+    if (message.salary !== 0) {
       writer.uint32(88).uint32(message.salary);
     }
-    if (message.isVisible !== undefined) {
+    if (message.description !== "") {
+      writer.uint32(98).string(message.description);
+    }
+    if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
     }
     return writer;
@@ -450,6 +473,14 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
           message.salary = reader.uint32();
           continue;
         }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -470,17 +501,18 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
   fromJSON(object: any): CareerUpdateRequest {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : undefined,
-      position: isSet(object.position) ? globalThis.String(object.position) : undefined,
+      position: isSet(object.position) ? globalThis.String(object.position) : "",
       employmentType: isSet(object.employmentType) ? career_EmploymentTypeFromJSON(object.employmentType) : undefined,
-      department: isSet(object.department) ? globalThis.String(object.department) : undefined,
-      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : undefined,
-      job: isSet(object.job) ? globalThis.String(object.job) : undefined,
-      salary: isSet(object.salary) ? globalThis.Number(object.salary) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : undefined,
+      department: isSet(object.department) ? globalThis.String(object.department) : "",
+      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
+      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
     };
   },
 
@@ -489,7 +521,7 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     if (message.id !== "") {
       obj.id = message.id;
     }
-    if (message.name !== undefined) {
+    if (message.name !== "") {
       obj.name = message.name;
     }
     if (message.startedAt !== undefined) {
@@ -501,25 +533,28 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     if (message.isWorking !== undefined) {
       obj.isWorking = message.isWorking;
     }
-    if (message.position !== undefined) {
+    if (message.position !== "") {
       obj.position = message.position;
     }
     if (message.employmentType !== undefined) {
       obj.employmentType = career_EmploymentTypeToJSON(message.employmentType);
     }
-    if (message.department !== undefined) {
+    if (message.department !== "") {
       obj.department = message.department;
     }
-    if (message.jobGrade !== undefined) {
+    if (message.jobGrade !== "") {
       obj.jobGrade = message.jobGrade;
     }
-    if (message.job !== undefined) {
+    if (message.job !== "") {
       obj.job = message.job;
     }
-    if (message.salary !== undefined) {
+    if (message.salary !== 0) {
       obj.salary = Math.round(message.salary);
     }
-    if (message.isVisible !== undefined) {
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
     return obj;
@@ -531,17 +566,18 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
   fromPartial<I extends Exact<DeepPartial<CareerUpdateRequest>, I>>(object: I): CareerUpdateRequest {
     const message = createBaseCareerUpdateRequest();
     message.id = object.id ?? "";
-    message.name = object.name ?? undefined;
+    message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.isWorking = object.isWorking ?? undefined;
-    message.position = object.position ?? undefined;
+    message.position = object.position ?? "";
     message.employmentType = object.employmentType ?? undefined;
-    message.department = object.department ?? undefined;
-    message.jobGrade = object.jobGrade ?? undefined;
-    message.job = object.job ?? undefined;
-    message.salary = object.salary ?? undefined;
-    message.isVisible = object.isVisible ?? undefined;
+    message.department = object.department ?? "";
+    message.jobGrade = object.jobGrade ?? "";
+    message.job = object.job ?? "";
+    message.salary = object.salary ?? 0;
+    message.description = object.description ?? "";
+    message.isVisible = object.isVisible ?? false;
     return message;
   },
 };

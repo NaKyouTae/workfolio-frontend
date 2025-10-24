@@ -4,6 +4,7 @@ import { Attachment_AttachmentType } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
 import styles from '../CareerContentEdit.module.css';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 interface AttachmentEditProps {
   attachments: ResumeUpdateRequest_AttachmentRequest[];
@@ -37,13 +38,17 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     onUpdate(attachments.filter((_, i) => i !== index));
   };
 
-  const handleAttachmentChange = (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string) => {
+  const handleAttachmentChange = (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => {
     const newAttachments = [...attachments];
     newAttachments[index] = {
       ...newAttachments[index],
       [field]: value
     };
     onUpdate(newAttachments);
+  };
+
+  const toggleVisible = (index: number) => {
+    handleAttachmentChange(index, 'isVisible', !attachments[index].isVisible);
   };
 
   return (
@@ -63,33 +68,27 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
       </div>
 
       {attachments.map((attachment, index) => (
-        <div key={attachment.id || index} className={styles.card}>
-          {attachments.length > 1 && (
-            <button
-              onClick={() => handleDeleteAttachment(index)}
-              className={styles.deleteButton}
-            >
-              ×
-            </button>
-          )}
-
-          <div className={styles.gridContainer2}>
+        <div key={attachment.id || index} className={styles.cardWrapper}>
+          <div className={styles.card}>
+            <div className={styles.gridContainer2}>
             {/* 종류 */}
             <div className={styles.formField}>
               <Dropdown
                 label="종류"
-                selectedOption={attachment.type?.toString() || String(Attachment_AttachmentType.PORTFOLIO)}
+                selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
                 options={[
-                  { value: String(Attachment_AttachmentType.PORTFOLIO), label: '포트폴리오' },
-                  { value: String(Attachment_AttachmentType.CERTIFICATE), label: '증명서' },
-                  { value: String(Attachment_AttachmentType.RESUME), label: '이력서' },
+                  { value: Attachment_AttachmentType.RESUME, label: '이력서' },
+                  { value: Attachment_AttachmentType.PORTFOLIO, label: '포트폴리오' },
+                  { value: Attachment_AttachmentType.CAREER_STATEMENT, label: '경력기술서' },
+                  { value: Attachment_AttachmentType.CERTIFICATE, label: '증명서' },
+                  { value: Attachment_AttachmentType.ETC, label: '기타' },
                 ]}
-                setValue={(value) => handleAttachmentChange(index, 'type', value)}
+                setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
               />
             </div>
 
             {/* 파일 URL */}
-            <div className={styles.formFieldSpan2}>
+            <div className={styles.formField}>
               <Input 
                 type="url"
                 label="파일 URL"
@@ -98,6 +97,22 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
                 onChange={(e) => handleAttachmentChange(index, 'fileUrl', e.target.value)}
               />
             </div>
+          </div>
+          </div>
+          
+          <div className={styles.cardActions}>
+            <button
+              onClick={() => toggleVisible(index)}
+              className={`${styles.visibleButton} ${attachment.isVisible ? styles.visible : ''}`}
+            >
+              {attachment.isVisible ? '보임' : '안보임'}
+            </button>
+            <button
+              onClick={() => handleDeleteAttachment(index)}
+              className={styles.cardDeleteButton}
+            >
+              ×
+            </button>
           </div>
         </div>
       ))}

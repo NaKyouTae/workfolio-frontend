@@ -10,7 +10,7 @@ const CareerPage: React.FC = () => {
   const { user, isLoading: userLoading, fetchUser } = useUser();
 
   // 이력서 목록 관리
-  const { resumeDetails, isLoading, fetchResumeDetails, refreshResumeDetails } = useResumeDetails();
+  const { resumeDetails, isLoading, fetchResumeDetails, fetchResumeDetail, refreshResumeDetails } = useResumeDetails();
 
   // 선택된 이력서
   const [selectedResumeDetail, setSelectedResumeDetail] = useState<ResumeDetail | null>(null);
@@ -36,10 +36,19 @@ const CareerPage: React.FC = () => {
 
   // 이력서 상세 보기
   const viewResumeDetail = (resumeDetail: ResumeDetail) => {
-    console.log('===================1111============');
-    console.log(resumeDetail);
-    console.log('===================1111============');
     setSelectedResumeDetail(resumeDetail);
+  };
+
+  // 선택된 이력서 새로고침
+  const refreshSelectedResumeDetail = async () => {
+    if (selectedResumeDetail?.id) {
+      const updatedResume = await fetchResumeDetail();
+      if (updatedResume) {
+        setSelectedResumeDetail(updatedResume);
+      }
+    }
+    // 목록도 함께 새로고침
+    await refreshResumeDetails();
   };
 
   // 이력서 홈으로 이동
@@ -74,7 +83,7 @@ const CareerPage: React.FC = () => {
       <CareerHome 
         selectedResumeDetail={selectedResumeDetail || null}
         resumeDetails={resumeDetails}
-        onRefresh={refreshResumeDetails}
+        onRefresh={refreshSelectedResumeDetail}
       />
     </main>
   );

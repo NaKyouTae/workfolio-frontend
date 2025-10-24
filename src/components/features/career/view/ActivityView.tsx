@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResumeUpdateRequest_ActivityRequest } from '@/generated/resume';
 import { Activity_ActivityType } from '@/generated/common';
-import { DateTime } from 'luxon';
+import DateUtil from '@/utils/DateUtil';
 
 interface ActivityViewProps {
   activities: ResumeUpdateRequest_ActivityRequest[];
@@ -11,37 +11,35 @@ interface ActivityViewProps {
  * 활동 정보 읽기 전용 컴포넌트
  */
 const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
-  const formatDate = (timestamp?: number) => {
+  const formatDate = (timestamp?: number | string) => {
     if (!timestamp) return '-';
-    return DateTime.fromMillis(timestamp).toFormat('yyyy.MM');
+    return DateUtil.formatTimestamp(timestamp);
   };
 
   const getActivityTypeLabel = (type?: Activity_ActivityType) => {
     const labels: Record<Activity_ActivityType, string> = {
-      [Activity_ActivityType.UNKNOWN]: '미분류', // 미분류
-      [Activity_ActivityType.INTERNSHIP]: '인턴', // 인턴
       [Activity_ActivityType.EXTERNAL]: '외부활동', // 외부활동
       [Activity_ActivityType.CERTIFICATION]: '자격증', // 자격증
       [Activity_ActivityType.AWARD]: '수상', // 수상
       [Activity_ActivityType.EDUCATION]: '교육', // 교육
+      [Activity_ActivityType.COMPETITION]: '대회', // 대회
       [Activity_ActivityType.ETC]: '기타', // 기타
       [Activity_ActivityType.UNRECOGNIZED]: '미인식', // 미인식
     };
-    return labels[type || Activity_ActivityType.UNKNOWN];
+    return labels[type || Activity_ActivityType.UNRECOGNIZED];
   };
 
   const getActivityTypeBadgeColor = (type?: Activity_ActivityType) => {
     const colors: Record<Activity_ActivityType, string> = {
-      [Activity_ActivityType.UNKNOWN]: '#999', // 미분류
-      [Activity_ActivityType.INTERNSHIP]: '#2196f3', // 인턴
       [Activity_ActivityType.EXTERNAL]: '#00bcd4', // 외부활동
       [Activity_ActivityType.CERTIFICATION]: '#2196f3', // 자격증
       [Activity_ActivityType.AWARD]: '#ff9800', // 수상
       [Activity_ActivityType.EDUCATION]: '#00bcd4', // 교육
+      [Activity_ActivityType.COMPETITION]: '#00bcd4', // 대회
       [Activity_ActivityType.ETC]: '#607d8b', // 기타
       [Activity_ActivityType.UNRECOGNIZED]: '#999', // 미인식
     };
-    return colors[type || Activity_ActivityType.UNKNOWN];
+    return colors[type || Activity_ActivityType.UNRECOGNIZED];
   };
 
   if (!activities || activities.length === 0) {

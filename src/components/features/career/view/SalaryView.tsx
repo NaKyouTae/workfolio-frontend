@@ -1,6 +1,6 @@
 import React from 'react';
 import { Salary } from '@/generated/common';
-import { DateTime } from 'luxon';
+import DateUtil from '@/utils/DateUtil';
 
 interface SalaryViewProps {
   salary: Salary;
@@ -8,8 +8,9 @@ interface SalaryViewProps {
 }
 
 const SalaryView: React.FC<SalaryViewProps> = ({ salary, onEdit }) => {
-  const formatDate = (timestamp: number) => {
-    return DateTime.fromMillis(timestamp).toFormat('yyyy.MM.dd');
+  const formatDate = (timestamp: number | string) => {
+    if (!timestamp) return '-';
+    return DateUtil.formatTimestamp(timestamp, 'yyyy.MM.dd');
   };
 
   const formatCurrency = (amount: number) => {
