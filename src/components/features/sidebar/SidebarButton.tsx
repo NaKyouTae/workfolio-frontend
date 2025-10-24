@@ -14,7 +14,7 @@ const SidebarButton: React.FC = () => {
 
     return (
         <div className="aside-button">
-            <button className="md" onClick={openRecordCreateModal}>새 기록 추가</button>
+            <button className="md" onClick={openRecordCreateModal}>신규 기록 추가</button>
             <RecordCreateModal 
                 isOpen={isRecordCreateModalOpen} 
                 onClose={closeRecordCreateModal}

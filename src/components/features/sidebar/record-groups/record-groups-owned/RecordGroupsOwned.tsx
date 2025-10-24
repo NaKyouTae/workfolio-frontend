@@ -78,7 +78,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = ({
                 <ul className="record-group-list">
                     {isCreatingGroup && (
                         <NewRecordGroupItem
-                            placeholder="새 기록장 이름"
+                            placeholder="신규 기록장 이름"
                             onSave={createRecordGroup}
                             onCancel={() => setIsCreatingGroup(false)}
                         />
