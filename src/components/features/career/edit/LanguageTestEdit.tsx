@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest } from '@/generated/resume';
 import Input from '@/components/ui/Input';
 import DatePicker from '@/components/ui/DatePicker';
@@ -14,20 +14,41 @@ interface LanguageTestEditProps {
  * 어학 시험 서브섹션을 관리하는 컴포넌트
  */
 const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUpdate }) => {
-  const createEmptyLanguageTest = (): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest => ({
+  const createEmptyLanguageTest = (priority: number = 0): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest => ({
     name: '',
     score: '',
     acquiredAt: undefined,
     isVisible: true,
+    priority,
   });
 
+  // priority를 배열 인덱스와 동기화
+  useEffect(() => {
+    const needsUpdate = languageTests.some((test, idx) => test.priority !== idx);
+    if (needsUpdate && languageTests.length > 0) {
+      const updated = languageTests.map((test, idx) => ({
+        ...test,
+        priority: idx
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [languageTests.length]);
+
   const handleAddLanguageTest = () => {
-    onUpdate([...languageTests, createEmptyLanguageTest()]);
+    const newLanguageTest = createEmptyLanguageTest(languageTests.length);
+    onUpdate([...languageTests, newLanguageTest]);
   };
 
   const handleDeleteLanguageTest = (index: number) => {
     if (languageTests.length > 0) {
-      onUpdate(languageTests.filter((_, i) => i !== index));
+      const filtered = languageTests.filter((_, i) => i !== index);
+      // priority를 인덱스로 재설정
+      const updated = filtered.map((languageTest, idx) => ({
+        ...languageTest,
+        priority: idx
+      }));
+      onUpdate(updated);
     }
   };
 
@@ -47,7 +68,13 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
       };
     }
     
-    onUpdate(newLanguageTests);
+    // priority를 인덱스로 설정
+    const updatedLanguageTests = newLanguageTests.map((languageTest, idx) => ({
+      ...languageTest,
+      priority: idx
+    }));
+    
+    onUpdate(updatedLanguageTests);
   };
 
   const toggleVisible = (index: number) => {

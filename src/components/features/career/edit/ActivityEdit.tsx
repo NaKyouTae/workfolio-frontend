@@ -19,7 +19,7 @@ interface ActivityEditProps {
  * sectionHeader, 추가 버튼, 개별 활동 항목 포함
  */
 const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => {
-  const createEmptyActivity = (): ResumeUpdateRequest_ActivityRequest => ({
+  const createEmptyActivity = (priority: number = 0): ResumeUpdateRequest_ActivityRequest => ({
     type: Activity_ActivityType.CERTIFICATION,
     name: '',
     organization: '',
@@ -28,6 +28,7 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
     endedAt: undefined,
     description: '',
     isVisible: true,
+    priority,
   });
 
   // 빈 배열일 때 자동으로 항목 하나 추가
@@ -38,12 +39,32 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // priority를 배열 인덱스와 동기화
+  useEffect(() => {
+    const needsUpdate = activities.some((activity, idx) => activity.priority !== idx);
+    if (needsUpdate && activities.length > 0) {
+      const updated = activities.map((activity, idx) => ({
+        ...activity,
+        priority: idx
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activities.length]);
+
   const handleAddActivity = () => {
-    onUpdate([...activities, createEmptyActivity()]);
+    const newActivity = createEmptyActivity(activities.length);
+    onUpdate([...activities, newActivity]);
   };
 
   const handleDeleteActivity = (index: number) => {
-    onUpdate(activities.filter((_, i) => i !== index));
+    const filtered = activities.filter((_, i) => i !== index);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((activity, idx) => ({
+      ...activity,
+      priority: idx
+    }));
+    onUpdate(updated);
   };
 
   const handleActivityChange = (index: number, field: keyof ResumeUpdateRequest_ActivityRequest, value: string | number | boolean | undefined) => {
@@ -63,7 +84,13 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
       };
     }
     
-    onUpdate(newActivities);
+    // priority를 인덱스로 설정
+    const updatedActivities = newActivities.map((activity, idx) => ({
+      ...activity,
+      priority: idx
+    }));
+    
+    onUpdate(updatedActivities);
   };
 
   const toggleVisible = (index: number) => {

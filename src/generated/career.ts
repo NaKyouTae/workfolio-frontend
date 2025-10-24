@@ -23,6 +23,7 @@ export interface CareerCreateRequest {
   salary: number;
   description: string;
   isVisible: boolean;
+  priority: number;
   resumeId: string;
 }
 
@@ -40,6 +41,7 @@ export interface CareerUpdateRequest {
   salary: number;
   description: string;
   isVisible: boolean;
+  priority: number;
 }
 
 export interface CareerListResponse {
@@ -64,6 +66,7 @@ function createBaseCareerCreateRequest(): CareerCreateRequest {
     salary: 0,
     description: "",
     isVisible: false,
+    priority: 0,
     resumeId: "",
   };
 }
@@ -105,6 +108,9 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.resumeId !== "") {
       writer.uint32(794).string(message.resumeId);
@@ -215,6 +221,14 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -246,6 +260,7 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
       salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       resumeId: isSet(object.resumeId) ? globalThis.String(object.resumeId) : "",
     };
   },
@@ -288,6 +303,9 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.resumeId !== "") {
       obj.resumeId = message.resumeId;
     }
@@ -311,6 +329,7 @@ export const CareerCreateRequest: MessageFns<CareerCreateRequest> = {
     message.salary = object.salary ?? 0;
     message.description = object.description ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.resumeId = object.resumeId ?? "";
     return message;
   },
@@ -331,6 +350,7 @@ function createBaseCareerUpdateRequest(): CareerUpdateRequest {
     salary: 0,
     description: "",
     isVisible: false,
+    priority: 0,
   };
 }
 
@@ -374,6 +394,9 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -489,6 +512,14 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -513,6 +544,7 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
       salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -557,6 +589,9 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -578,6 +613,7 @@ export const CareerUpdateRequest: MessageFns<CareerUpdateRequest> = {
     message.salary = object.salary ?? 0;
     message.description = object.description ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };

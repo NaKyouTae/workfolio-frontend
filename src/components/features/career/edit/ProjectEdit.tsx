@@ -15,13 +15,14 @@ interface ProjectEditProps {
  * sectionHeader, 추가 버튼, 개별 프로젝트 항목 포함
  */
 const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
-  const createEmptyProject = (): ResumeUpdateRequest_ProjectRequest => ({
+  const createEmptyProject = (priority: number = 0): ResumeUpdateRequest_ProjectRequest => ({
     title: '',
     role: '',
     description: '',
     startedAt: undefined,
     endedAt: undefined,
     isVisible: true,
+    priority,
   });
 
   // 빈 배열일 때 자동으로 항목 하나 추가
@@ -32,12 +33,32 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // priority를 배열 인덱스와 동기화
+  useEffect(() => {
+    const needsUpdate = projects.some((project, idx) => project.priority !== idx);
+    if (needsUpdate && projects.length > 0) {
+      const updated = projects.map((project, idx) => ({
+        ...project,
+        priority: idx
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projects.length]);
+
   const handleAddProject = () => {
-    onUpdate([...projects, createEmptyProject()]);
+    const newProject = createEmptyProject(projects.length);
+    onUpdate([...projects, newProject]);
   };
 
   const handleDeleteProject = (index: number) => {
-    onUpdate(projects.filter((_, i) => i !== index));
+    const filtered = projects.filter((_, i) => i !== index);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((project, idx) => ({
+      ...project,
+      priority: idx
+    }));
+    onUpdate(updated);
   };
 
   const handleProjectChange = (index: number, field: keyof ResumeUpdateRequest_ProjectRequest, value: string | number | boolean | undefined) => {
@@ -56,7 +77,13 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
       };
     }
     
-    onUpdate(newProjects);
+    // priority를 인덱스로 설정
+    const updatedProjects = newProjects.map((project, idx) => ({
+      ...project,
+      priority: idx
+    }));
+    
+    onUpdate(updatedProjects);
   };
 
   const toggleVisible = (index: number) => {

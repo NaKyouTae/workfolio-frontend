@@ -16,11 +16,12 @@ interface AttachmentEditProps {
  * sectionHeader, 추가 버튼, 개별 첨부 항목 포함
  */
 const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }) => {
-  const createEmptyAttachment = (): ResumeUpdateRequest_AttachmentRequest => ({
+  const createEmptyAttachment = (priority: number = 0): ResumeUpdateRequest_AttachmentRequest => ({
     type: Attachment_AttachmentType.PORTFOLIO,
     fileName: '',
     fileUrl: '',
     isVisible: true,
+    priority,
   });
 
   // 빈 배열일 때 자동으로 항목 하나 추가
@@ -30,12 +31,32 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     }
   }, []);
 
+  // priority를 배열 인덱스와 동기화
+  useEffect(() => {
+    const needsUpdate = attachments.some((attachment, idx) => attachment.priority !== idx);
+    if (needsUpdate && attachments.length > 0) {
+      const updated = attachments.map((attachment, idx) => ({
+        ...attachment,
+        priority: idx
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attachments.length]);
+
   const handleAddAttachment = () => {
-    onUpdate([...attachments, createEmptyAttachment()]);
+    const newAttachment = createEmptyAttachment(attachments.length);
+    onUpdate([...attachments, newAttachment]);
   };
 
   const handleDeleteAttachment = (index: number) => {
-    onUpdate(attachments.filter((_, i) => i !== index));
+    const filtered = attachments.filter((_, i) => i !== index);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((attachment, idx) => ({
+      ...attachment,
+      priority: idx
+    }));
+    onUpdate(updated);
   };
 
   const handleAttachmentChange = (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => {
@@ -44,7 +65,14 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
       ...newAttachments[index],
       [field]: value
     };
-    onUpdate(newAttachments);
+    
+    // priority를 인덱스로 설정
+    const updatedAttachments = newAttachments.map((attachment, idx) => ({
+      ...attachment,
+      priority: idx
+    }));
+    
+    onUpdate(updatedAttachments);
   };
 
   const toggleVisible = (index: number) => {

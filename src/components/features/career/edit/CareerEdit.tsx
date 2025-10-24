@@ -17,7 +17,7 @@ interface CareerEditProps {
  * sectionHeader, 추가 버튼, 개별 경력 항목 포함
  */
 const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
-  const createEmptyCareer = (): ResumeUpdateRequest_CareerRequest => ({
+  const createEmptyCareer = (priority: number = 0): ResumeUpdateRequest_CareerRequest => ({
     career: {
       name: '',
       startedAt: DateTime.now().toMillis(),
@@ -31,6 +31,7 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
       description: '',
       salary: 0,
       isVisible: true,
+      priority,
     },
     salaries: [],
   });
@@ -42,12 +43,47 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
     }
   }, []);
 
+  // priority를 배열 인덱스와 동기화 (career와 salaries 모두)
+  useEffect(() => {
+    let needsUpdate = false;
+    
+    // career priority 체크
+    const careerNeedsUpdate = careers.some((career, idx) => career.career?.priority !== idx);
+    
+    // salaries priority 체크
+    const salariesNeedUpdate = careers.some(career => 
+      career.salaries?.some((salary, idx) => salary.priority !== idx)
+    );
+    
+    needsUpdate = careerNeedsUpdate || salariesNeedUpdate;
+    
+    if (needsUpdate && careers.length > 0) {
+      const updated = careers.map((career, idx) => ({
+        ...career,
+        career: career.career ? { ...career.career, priority: idx } : undefined,
+        salaries: (career.salaries || []).map((salary, salaryIdx) => ({
+          ...salary,
+          priority: salaryIdx
+        }))
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [careers.length, careers.reduce((sum, c) => sum + (c.salaries?.length || 0), 0)]);
+
   const handleAddCareer = () => {
-    onUpdate([...careers, createEmptyCareer()]);
+    const newCareer = createEmptyCareer(careers.length);
+    onUpdate([...careers, newCareer]);
   };
 
   const handleDeleteCareer = (index: number) => {
-    onUpdate(careers.filter((_, i) => i !== index));
+    const filtered = careers.filter((_, i) => i !== index);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((career, idx) => ({
+      ...career,
+      career: career.career ? { ...career.career, priority: idx } : undefined
+    }));
+    onUpdate(updated);
   };
 
   const handleCareerChange = (index: number, field: string, value: string | number | boolean | undefined) => {
@@ -58,7 +94,14 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
         [field]: value
       };
     }
-    onUpdate(newCareers);
+    
+    // priority를 인덱스로 설정
+    const updatedCareers = newCareers.map((career, idx) => ({
+      ...career,
+      career: career.career ? { ...career.career, priority: idx } : undefined
+    }));
+    
+    onUpdate(updatedCareers);
   };
 
   const toggleVisible = (index: number) => {
@@ -68,20 +111,33 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
   // Salary 추가
   const handleAddSalary = (careerIndex: number) => {
     const newCareers = [...careers];
+    const currentSalaries = newCareers[careerIndex].salaries || [];
     const newSalary: ResumeUpdateRequest_CareerRequest_Salary = {
       amount: 0,
       memo: '',
       negotiationDate: DateTime.now().toMillis(),
-      isVisible: false
+      isVisible: false,
+      priority: currentSalaries.length
     };
-    newCareers[careerIndex].salaries = [...(newCareers[careerIndex].salaries || []), newSalary];
-    onUpdate(newCareers);
+    newCareers[careerIndex].salaries = [...currentSalaries, newSalary];
+    // 전체 careers의 priority도 인덱스로 재설정
+    const updatedCareers = newCareers.map((career, idx) => ({
+      ...career,
+      career: career.career ? { ...career.career, priority: idx } : undefined
+    }));
+    onUpdate(updatedCareers);
   };
 
   // Salary 삭제
   const handleDeleteSalary = (careerIndex: number, salaryIndex: number) => {
     const newCareers = [...careers];
-    newCareers[careerIndex].salaries = newCareers[careerIndex].salaries.filter((_, i) => i !== salaryIndex);
+    const filtered = newCareers[careerIndex].salaries.filter((_, i) => i !== salaryIndex);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((salary, idx) => ({
+      ...salary,
+      priority: idx
+    }));
+    newCareers[careerIndex].salaries = updated;
     onUpdate(newCareers);
   };
 
@@ -93,7 +149,14 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
       ...newSalaries[salaryIndex],
       [field]: value
     };
-    newCareers[careerIndex].salaries = newSalaries;
+    
+    // priority를 인덱스로 설정
+    const updatedSalaries = newSalaries.map((salary, idx) => ({
+      ...salary,
+      priority: idx
+    }));
+    
+    newCareers[careerIndex].salaries = updatedSalaries;
     onUpdate(newCareers);
   };
 

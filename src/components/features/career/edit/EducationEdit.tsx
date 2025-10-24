@@ -18,7 +18,7 @@ interface EducationEditProps {
  * sectionHeader, 추가 버튼, 개별 학력 항목 포함
  */
 const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) => {
-  const createEmptyEducation = (): ResumeUpdateRequest_EducationRequest => ({
+  const createEmptyEducation = (priority: number = 0): ResumeUpdateRequest_EducationRequest => ({
     major: '',
     name: '',
     description: '',
@@ -26,6 +26,7 @@ const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) =
     startedAt: undefined,
     endedAt: undefined,
     isVisible: true,
+    priority,
   });
 
   // 빈 배열일 때 자동으로 항목 하나 추가
@@ -35,12 +36,32 @@ const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) =
     }
   }, []);
 
+  // priority를 배열 인덱스와 동기화
+  useEffect(() => {
+    const needsUpdate = educations.some((education, idx) => education.priority !== idx);
+    if (needsUpdate && educations.length > 0) {
+      const updated = educations.map((education, idx) => ({
+        ...education,
+        priority: idx
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [educations.length]);
+
   const handleAddEducation = () => {
-    onUpdate([...educations, createEmptyEducation()]);
+    const newEducation = createEmptyEducation(educations.length);
+    onUpdate([...educations, newEducation]);
   };
 
   const handleDeleteEducation = (index: number) => {
-    onUpdate(educations.filter((_, i) => i !== index));
+    const filtered = educations.filter((_, i) => i !== index);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((education, idx) => ({
+      ...education,
+      priority: idx
+    }));
+    onUpdate(updated);
   };
 
   const handleEducationChange = (index: number, field: keyof ResumeUpdateRequest_EducationRequest, value: string | number | boolean | undefined) => {
@@ -49,7 +70,14 @@ const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) =
       ...newEducations[index],
       [field]: value
     };
-    onUpdate(newEducations);
+    
+    // priority를 인덱스로 설정
+    const updatedEducations = newEducations.map((education, idx) => ({
+      ...education,
+      priority: idx
+    }));
+    
+    onUpdate(updatedEducations);
   };
 
   const toggleVisible = (index: number) => {

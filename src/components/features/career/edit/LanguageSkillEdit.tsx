@@ -16,10 +16,11 @@ interface LanguageSkillEditProps {
  * sectionHeader, 추가 버튼, 개별 어학 항목 포함
  */
 const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, onUpdate }) => {
-  const createEmptyLanguageSkill = (): ResumeUpdateRequest_LanguageSkillRequest => ({
+  const createEmptyLanguageSkill = (priority: number = 0): ResumeUpdateRequest_LanguageSkillRequest => ({
     language: LanguageSkill_Language.ENGLISH,
     level: LanguageSkill_LanguageLevel.DAILY_CONVERSATION,
     isVisible: true,
+    priority,
     languageTests: [],
   });
 
@@ -31,12 +32,47 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // priority를 배열 인덱스와 동기화 (languageSkill와 languageTests 모두)
+  useEffect(() => {
+    let needsUpdate = false;
+    
+    // languageSkill priority 체크
+    const skillNeedsUpdate = languageSkills.some((skill, idx) => skill.priority !== idx);
+    
+    // languageTests priority 체크
+    const testsNeedUpdate = languageSkills.some(skill => 
+      skill.languageTests?.some((test, idx) => test.priority !== idx)
+    );
+    
+    needsUpdate = skillNeedsUpdate || testsNeedUpdate;
+    
+    if (needsUpdate && languageSkills.length > 0) {
+      const updated = languageSkills.map((skill, idx) => ({
+        ...skill,
+        priority: idx,
+        languageTests: (skill.languageTests || []).map((test, testIdx) => ({
+          ...test,
+          priority: testIdx
+        }))
+      }));
+      onUpdate(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [languageSkills.length, languageSkills.reduce((sum, s) => sum + (s.languageTests?.length || 0), 0)]);
+
   const handleAddLanguageSkill = () => {
-    onUpdate([...languageSkills, createEmptyLanguageSkill()]);
+    const newLanguageSkill = createEmptyLanguageSkill(languageSkills.length);
+    onUpdate([...languageSkills, newLanguageSkill]);
   };
 
   const handleDeleteLanguageSkill = (index: number) => {
-    onUpdate(languageSkills.filter((_, i) => i !== index));
+    const filtered = languageSkills.filter((_, i) => i !== index);
+    // priority를 인덱스로 재설정
+    const updated = filtered.map((languageSkill, idx) => ({
+      ...languageSkill,
+      priority: idx
+    }));
+    onUpdate(updated);
   };
 
   const handleLanguageSkillChange = (index: number, field: keyof ResumeUpdateRequest_LanguageSkillRequest, value: string | number | boolean | undefined) => {
@@ -45,7 +81,14 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
       ...newLanguageSkills[index],
       [field]: value
     };
-    onUpdate(newLanguageSkills);
+    
+    // priority를 인덱스로 설정
+    const updatedLanguageSkills = newLanguageSkills.map((languageSkill, idx) => ({
+      ...languageSkill,
+      priority: idx
+    }));
+    
+    onUpdate(updatedLanguageSkills);
   };
 
   const toggleVisible = (index: number) => {

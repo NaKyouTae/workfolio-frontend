@@ -75,6 +75,7 @@ export interface ResumeUpdateRequest_CareerRequest_Career {
   salary: number;
   description: string;
   isVisible: boolean;
+  priority: number;
 }
 
 export enum ResumeUpdateRequest_CareerRequest_Career_EmploymentType {
@@ -132,6 +133,7 @@ export interface ResumeUpdateRequest_CareerRequest_Salary {
   memo: string;
   negotiationDate?: number | undefined;
   isVisible: boolean;
+  priority: number;
 }
 
 export interface ResumeUpdateRequest_EducationRequest {
@@ -143,6 +145,7 @@ export interface ResumeUpdateRequest_EducationRequest {
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isVisible: boolean;
+  priority: number;
 }
 
 export interface ResumeUpdateRequest_ActivityRequest {
@@ -155,6 +158,7 @@ export interface ResumeUpdateRequest_ActivityRequest {
   endedAt?: number | undefined;
   description: string;
   isVisible: boolean;
+  priority: number;
 }
 
 export interface ResumeUpdateRequest_LanguageSkillRequest {
@@ -162,6 +166,7 @@ export interface ResumeUpdateRequest_LanguageSkillRequest {
   language?: LanguageSkill_Language | undefined;
   level?: LanguageSkill_LanguageLevel | undefined;
   isVisible: boolean;
+  priority: number;
   languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[];
 }
 
@@ -171,6 +176,7 @@ export interface ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
   score: string;
   acquiredAt?: number | undefined;
   isVisible: boolean;
+  priority: number;
 }
 
 export interface ResumeUpdateRequest_AttachmentRequest {
@@ -179,6 +185,7 @@ export interface ResumeUpdateRequest_AttachmentRequest {
   fileName: string;
   fileUrl: string;
   isVisible: boolean;
+  priority: number;
 }
 
 export interface ResumeUpdateRequest_ProjectRequest {
@@ -189,6 +196,7 @@ export interface ResumeUpdateRequest_ProjectRequest {
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isVisible: boolean;
+  priority: number;
 }
 
 export interface ResumeListResponse {
@@ -723,6 +731,7 @@ function createBaseResumeUpdateRequest_CareerRequest_Career(): ResumeUpdateReque
     salary: 0,
     description: "",
     isVisible: false,
+    priority: 0,
   };
 }
 
@@ -766,6 +775,9 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -881,6 +893,14 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -907,6 +927,7 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
       salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -951,6 +972,9 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -976,12 +1000,13 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     message.salary = object.salary ?? 0;
     message.description = object.description ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
 
 function createBaseResumeUpdateRequest_CareerRequest_Salary(): ResumeUpdateRequest_CareerRequest_Salary {
-  return { id: undefined, amount: 0, memo: "", negotiationDate: undefined, isVisible: false };
+  return { id: undefined, amount: 0, memo: "", negotiationDate: undefined, isVisible: false, priority: 0 };
 }
 
 export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRequest_CareerRequest_Salary> = {
@@ -1000,6 +1025,9 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -1051,6 +1079,14 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1067,6 +1103,7 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
       negotiationDate: isSet(object.negotiationDate) ? globalThis.Number(object.negotiationDate) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -1087,6 +1124,9 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -1104,6 +1144,7 @@ export const ResumeUpdateRequest_CareerRequest_Salary: MessageFns<ResumeUpdateRe
     message.memo = object.memo ?? "";
     message.negotiationDate = object.negotiationDate ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
@@ -1118,6 +1159,7 @@ function createBaseResumeUpdateRequest_EducationRequest(): ResumeUpdateRequest_E
     startedAt: undefined,
     endedAt: undefined,
     isVisible: false,
+    priority: 0,
   };
 }
 
@@ -1146,6 +1188,9 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -1221,6 +1266,14 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1240,6 +1293,7 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -1269,6 +1323,9 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -1289,6 +1346,7 @@ export const ResumeUpdateRequest_EducationRequest: MessageFns<ResumeUpdateReques
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
@@ -1304,6 +1362,7 @@ function createBaseResumeUpdateRequest_ActivityRequest(): ResumeUpdateRequest_Ac
     endedAt: undefined,
     description: "",
     isVisible: false,
+    priority: 0,
   };
 }
 
@@ -1335,6 +1394,9 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -1418,6 +1480,14 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1438,6 +1508,7 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -1470,6 +1541,9 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -1491,12 +1565,13 @@ export const ResumeUpdateRequest_ActivityRequest: MessageFns<ResumeUpdateRequest
     message.endedAt = object.endedAt ?? undefined;
     message.description = object.description ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
 
 function createBaseResumeUpdateRequest_LanguageSkillRequest(): ResumeUpdateRequest_LanguageSkillRequest {
-  return { id: undefined, language: undefined, level: undefined, isVisible: false, languageTests: [] };
+  return { id: undefined, language: undefined, level: undefined, isVisible: false, priority: 0, languageTests: [] };
 }
 
 export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRequest_LanguageSkillRequest> = {
@@ -1512,6 +1587,9 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     for (const v of message.languageTests) {
       ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest.encode(v!, writer.uint32(794).fork()).join();
@@ -1558,6 +1636,14 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -1583,6 +1669,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
       language: isSet(object.language) ? languageSkill_LanguageFromJSON(object.language) : undefined,
       level: isSet(object.level) ? languageSkill_LanguageLevelFromJSON(object.level) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       languageTests: globalThis.Array.isArray(object?.languageTests)
         ? object.languageTests.map((e: any) => ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest.fromJSON(e))
         : [],
@@ -1602,6 +1689,9 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
     }
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     if (message.languageTests?.length) {
       obj.languageTests = message.languageTests.map((e) =>
@@ -1624,6 +1714,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
     message.language = object.language ?? undefined;
     message.level = object.level ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.languageTests =
       object.languageTests?.map((e) => ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest.fromPartial(e)) ||
       [];
@@ -1632,7 +1723,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest: MessageFns<ResumeUpdateRe
 };
 
 function createBaseResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest(): ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
-  return { id: undefined, name: "", score: "", acquiredAt: undefined, isVisible: false };
+  return { id: undefined, name: "", score: "", acquiredAt: undefined, isVisible: false, priority: 0 };
 }
 
 export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: MessageFns<
@@ -1656,6 +1747,9 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -1710,6 +1804,14 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1726,6 +1828,7 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
       score: isSet(object.score) ? globalThis.String(object.score) : "",
       acquiredAt: isSet(object.acquiredAt) ? globalThis.Number(object.acquiredAt) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -1746,6 +1849,9 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -1763,12 +1869,13 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
     message.score = object.score ?? "";
     message.acquiredAt = object.acquiredAt ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
 
 function createBaseResumeUpdateRequest_AttachmentRequest(): ResumeUpdateRequest_AttachmentRequest {
-  return { id: undefined, type: undefined, fileName: "", fileUrl: "", isVisible: false };
+  return { id: undefined, type: undefined, fileName: "", fileUrl: "", isVisible: false, priority: 0 };
 }
 
 export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateRequest_AttachmentRequest> = {
@@ -1787,6 +1894,9 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -1838,6 +1948,14 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1854,6 +1972,7 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
       fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
       fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -1874,6 +1993,9 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -1891,6 +2013,7 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     message.fileName = object.fileName ?? "";
     message.fileUrl = object.fileUrl ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
@@ -1904,6 +2027,7 @@ function createBaseResumeUpdateRequest_ProjectRequest(): ResumeUpdateRequest_Pro
     startedAt: undefined,
     endedAt: undefined,
     isVisible: false,
+    priority: 0,
   };
 }
 
@@ -1929,6 +2053,9 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     return writer;
   },
@@ -1996,6 +2123,14 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2014,6 +2149,7 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -2040,6 +2176,9 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -2059,6 +2198,7 @@ export const ResumeUpdateRequest_ProjectRequest: MessageFns<ResumeUpdateRequest_
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };

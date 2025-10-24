@@ -155,6 +155,7 @@ export interface Career {
   salary: number;
   description: string;
   isVisible: boolean;
+  priority: number;
   resume?: Resume | undefined;
   achievements: Achievement[];
   salaries: Salary[];
@@ -226,6 +227,7 @@ export interface Salary {
   memo: string;
   negotiationDate?: number | undefined;
   isVisible: boolean;
+  priority: number;
   career?: Career | undefined;
   createdAt: number;
   updatedAt: number;
@@ -240,6 +242,7 @@ export interface Education {
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isVisible: boolean;
+  priority: number;
   resume?: Resume | undefined;
   createdAt: number;
   updatedAt: number;
@@ -312,6 +315,7 @@ export interface Activity {
   endedAt?: number | undefined;
   description: string;
   isVisible: boolean;
+  priority: number;
   resume?: Resume | undefined;
   createdAt: number;
   updatedAt: number;
@@ -382,6 +386,7 @@ export interface Project {
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isVisible: boolean;
+  priority: number;
   resume?: Resume | undefined;
   createdAt: number;
   updatedAt: number;
@@ -392,6 +397,7 @@ export interface LanguageSkill {
   language?: LanguageSkill_Language | undefined;
   level?: LanguageSkill_LanguageLevel | undefined;
   isVisible: boolean;
+  priority: number;
   resume?: Resume | undefined;
   languageTests: LanguageTest[];
   createdAt: number;
@@ -560,6 +566,7 @@ export interface LanguageTest {
   score: string;
   acquiredAt?: number | undefined;
   isVisible: boolean;
+  priority: number;
   languageSkill?: LanguageSkill | undefined;
   createdAt: number;
   updatedAt: number;
@@ -571,6 +578,7 @@ export interface Attachment {
   fileName: string;
   fileUrl: string;
   isVisible: boolean;
+  priority: number;
   resume?: Resume | undefined;
   createdAt: number;
   updatedAt: number;
@@ -1960,6 +1968,7 @@ function createBaseCareer(): Career {
     salary: 0,
     description: "",
     isVisible: false,
+    priority: 0,
     resume: undefined,
     achievements: [],
     salaries: [],
@@ -2008,6 +2017,9 @@ export const Career: MessageFns<Career> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.resume !== undefined) {
       Resume.encode(message.resume, writer.uint32(402).fork()).join();
@@ -2138,6 +2150,14 @@ export const Career: MessageFns<Career> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -2202,6 +2222,7 @@ export const Career: MessageFns<Career> = {
       salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       resume: isSet(object.resume) ? Resume.fromJSON(object.resume) : undefined,
       achievements: globalThis.Array.isArray(object?.achievements)
         ? object.achievements.map((e: any) => Achievement.fromJSON(e))
@@ -2253,6 +2274,9 @@ export const Career: MessageFns<Career> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.resume !== undefined) {
       obj.resume = Resume.toJSON(message.resume);
     }
@@ -2289,6 +2313,7 @@ export const Career: MessageFns<Career> = {
     message.salary = object.salary ?? 0;
     message.description = object.description ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.resume = (object.resume !== undefined && object.resume !== null)
       ? Resume.fromPartial(object.resume)
       : undefined;
@@ -2524,6 +2549,7 @@ function createBaseSalary(): Salary {
     memo: "",
     negotiationDate: undefined,
     isVisible: false,
+    priority: 0,
     career: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -2546,6 +2572,9 @@ export const Salary: MessageFns<Salary> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.career !== undefined) {
       Career.encode(message.career, writer.uint32(402).fork()).join();
@@ -2606,6 +2635,14 @@ export const Salary: MessageFns<Salary> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -2646,6 +2683,7 @@ export const Salary: MessageFns<Salary> = {
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
       negotiationDate: isSet(object.negotiationDate) ? globalThis.Number(object.negotiationDate) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       career: isSet(object.career) ? Career.fromJSON(object.career) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -2669,6 +2707,9 @@ export const Salary: MessageFns<Salary> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.career !== undefined) {
       obj.career = Career.toJSON(message.career);
     }
@@ -2691,6 +2732,7 @@ export const Salary: MessageFns<Salary> = {
     message.memo = object.memo ?? "";
     message.negotiationDate = object.negotiationDate ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.career = (object.career !== undefined && object.career !== null)
       ? Career.fromPartial(object.career)
       : undefined;
@@ -2710,6 +2752,7 @@ function createBaseEducation(): Education {
     startedAt: undefined,
     endedAt: undefined,
     isVisible: false,
+    priority: 0,
     resume: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -2741,6 +2784,9 @@ export const Education: MessageFns<Education> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.resume !== undefined) {
       Resume.encode(message.resume, writer.uint32(402).fork()).join();
@@ -2825,6 +2871,14 @@ export const Education: MessageFns<Education> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -2868,6 +2922,7 @@ export const Education: MessageFns<Education> = {
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       resume: isSet(object.resume) ? Resume.fromJSON(object.resume) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -2900,6 +2955,9 @@ export const Education: MessageFns<Education> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.resume !== undefined) {
       obj.resume = Resume.toJSON(message.resume);
     }
@@ -2925,6 +2983,7 @@ export const Education: MessageFns<Education> = {
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.resume = (object.resume !== undefined && object.resume !== null)
       ? Resume.fromPartial(object.resume)
       : undefined;
@@ -2945,6 +3004,7 @@ function createBaseActivity(): Activity {
     endedAt: undefined,
     description: "",
     isVisible: false,
+    priority: 0,
     resume: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -2979,6 +3039,9 @@ export const Activity: MessageFns<Activity> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.resume !== undefined) {
       Resume.encode(message.resume, writer.uint32(402).fork()).join();
@@ -3071,6 +3134,14 @@ export const Activity: MessageFns<Activity> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -3115,6 +3186,7 @@ export const Activity: MessageFns<Activity> = {
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       resume: isSet(object.resume) ? Resume.fromJSON(object.resume) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -3150,6 +3222,9 @@ export const Activity: MessageFns<Activity> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.resume !== undefined) {
       obj.resume = Resume.toJSON(message.resume);
     }
@@ -3176,6 +3251,7 @@ export const Activity: MessageFns<Activity> = {
     message.endedAt = object.endedAt ?? undefined;
     message.description = object.description ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.resume = (object.resume !== undefined && object.resume !== null)
       ? Resume.fromPartial(object.resume)
       : undefined;
@@ -3194,6 +3270,7 @@ function createBaseProject(): Project {
     startedAt: undefined,
     endedAt: undefined,
     isVisible: false,
+    priority: 0,
     resume: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -3222,6 +3299,9 @@ export const Project: MessageFns<Project> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.resume !== undefined) {
       Resume.encode(message.resume, writer.uint32(402).fork()).join();
@@ -3298,6 +3378,14 @@ export const Project: MessageFns<Project> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -3340,6 +3428,7 @@ export const Project: MessageFns<Project> = {
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       resume: isSet(object.resume) ? Resume.fromJSON(object.resume) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -3369,6 +3458,9 @@ export const Project: MessageFns<Project> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.resume !== undefined) {
       obj.resume = Resume.toJSON(message.resume);
     }
@@ -3393,6 +3485,7 @@ export const Project: MessageFns<Project> = {
     message.startedAt = object.startedAt ?? undefined;
     message.endedAt = object.endedAt ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.resume = (object.resume !== undefined && object.resume !== null)
       ? Resume.fromPartial(object.resume)
       : undefined;
@@ -3408,6 +3501,7 @@ function createBaseLanguageSkill(): LanguageSkill {
     language: undefined,
     level: undefined,
     isVisible: false,
+    priority: 0,
     resume: undefined,
     languageTests: [],
     createdAt: 0,
@@ -3428,6 +3522,9 @@ export const LanguageSkill: MessageFns<LanguageSkill> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.resume !== undefined) {
       Resume.encode(message.resume, writer.uint32(402).fork()).join();
@@ -3483,6 +3580,14 @@ export const LanguageSkill: MessageFns<LanguageSkill> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -3530,6 +3635,7 @@ export const LanguageSkill: MessageFns<LanguageSkill> = {
       language: isSet(object.language) ? languageSkill_LanguageFromJSON(object.language) : undefined,
       level: isSet(object.level) ? languageSkill_LanguageLevelFromJSON(object.level) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       resume: isSet(object.resume) ? Resume.fromJSON(object.resume) : undefined,
       languageTests: globalThis.Array.isArray(object?.languageTests)
         ? object.languageTests.map((e: any) => LanguageTest.fromJSON(e))
@@ -3552,6 +3658,9 @@ export const LanguageSkill: MessageFns<LanguageSkill> = {
     }
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     if (message.resume !== undefined) {
       obj.resume = Resume.toJSON(message.resume);
@@ -3577,6 +3686,7 @@ export const LanguageSkill: MessageFns<LanguageSkill> = {
     message.language = object.language ?? undefined;
     message.level = object.level ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.resume = (object.resume !== undefined && object.resume !== null)
       ? Resume.fromPartial(object.resume)
       : undefined;
@@ -3594,6 +3704,7 @@ function createBaseLanguageTest(): LanguageTest {
     score: "",
     acquiredAt: undefined,
     isVisible: false,
+    priority: 0,
     languageSkill: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -3616,6 +3727,9 @@ export const LanguageTest: MessageFns<LanguageTest> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.languageSkill !== undefined) {
       LanguageSkill.encode(message.languageSkill, writer.uint32(402).fork()).join();
@@ -3676,6 +3790,14 @@ export const LanguageTest: MessageFns<LanguageTest> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -3716,6 +3838,7 @@ export const LanguageTest: MessageFns<LanguageTest> = {
       score: isSet(object.score) ? globalThis.String(object.score) : "",
       acquiredAt: isSet(object.acquiredAt) ? globalThis.Number(object.acquiredAt) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       languageSkill: isSet(object.languageSkill) ? LanguageSkill.fromJSON(object.languageSkill) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -3739,6 +3862,9 @@ export const LanguageTest: MessageFns<LanguageTest> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.languageSkill !== undefined) {
       obj.languageSkill = LanguageSkill.toJSON(message.languageSkill);
     }
@@ -3761,6 +3887,7 @@ export const LanguageTest: MessageFns<LanguageTest> = {
     message.score = object.score ?? "";
     message.acquiredAt = object.acquiredAt ?? undefined;
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.languageSkill = (object.languageSkill !== undefined && object.languageSkill !== null)
       ? LanguageSkill.fromPartial(object.languageSkill)
       : undefined;
@@ -3777,6 +3904,7 @@ function createBaseAttachment(): Attachment {
     fileName: "",
     fileUrl: "",
     isVisible: false,
+    priority: 0,
     resume: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -3799,6 +3927,9 @@ export const Attachment: MessageFns<Attachment> = {
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.resume !== undefined) {
       Resume.encode(message.resume, writer.uint32(402).fork()).join();
@@ -3859,6 +3990,14 @@ export const Attachment: MessageFns<Attachment> = {
           message.isVisible = reader.bool();
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -3899,6 +4038,7 @@ export const Attachment: MessageFns<Attachment> = {
       fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
       fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       resume: isSet(object.resume) ? Resume.fromJSON(object.resume) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -3922,6 +4062,9 @@ export const Attachment: MessageFns<Attachment> = {
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.resume !== undefined) {
       obj.resume = Resume.toJSON(message.resume);
     }
@@ -3944,6 +4087,7 @@ export const Attachment: MessageFns<Attachment> = {
     message.fileName = object.fileName ?? "";
     message.fileUrl = object.fileUrl ?? "";
     message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.resume = (object.resume !== undefined && object.resume !== null)
       ? Resume.fromPartial(object.resume)
       : undefined;
