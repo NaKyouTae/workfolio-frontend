@@ -5,11 +5,74 @@ import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
 import styles from '../CareerContentEdit.module.css';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import DraggableList from '@/components/ui/DraggableList';
+import DraggableItem from '@/components/ui/DraggableItem';
+import CardActions from '@/components/ui/CardActions';
 
 interface AttachmentEditProps {
   attachments: ResumeUpdateRequest_AttachmentRequest[];
   onUpdate: (attachments: ResumeUpdateRequest_AttachmentRequest[]) => void;
 }
+
+interface AttachmentItemProps {
+  attachment: ResumeUpdateRequest_AttachmentRequest;
+  index: number;
+  handleAttachmentChange: (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => void;
+  toggleVisible: (index: number) => void;
+  handleDeleteAttachment: (index: number) => void;
+}
+
+const AttachmentItem: React.FC<AttachmentItemProps> = ({
+  attachment,
+  index,
+  handleAttachmentChange,
+  toggleVisible,
+  handleDeleteAttachment,
+}) => {
+  return (
+    <DraggableItem 
+      id={attachment.id || `attachment-${index}`}
+      className={styles.cardWrapper}
+    >
+      <div className={styles.card}>
+        <div className={styles.gridContainer2}>
+        {/* 종류 */}
+        <div className={styles.formField}>
+          <Dropdown
+            label="종류"
+            selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
+            options={[
+              { value: Attachment_AttachmentType.RESUME, label: '이력서' },
+              { value: Attachment_AttachmentType.PORTFOLIO, label: '포트폴리오' },
+              { value: Attachment_AttachmentType.CAREER_STATEMENT, label: '경력기술서' },
+              { value: Attachment_AttachmentType.CERTIFICATE, label: '증명서' },
+              { value: Attachment_AttachmentType.ETC, label: '기타' },
+            ]}
+            setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
+          />
+        </div>
+
+        {/* 파일 URL */}
+        <div className={styles.formField}>
+          <Input 
+            type="url"
+            label="파일 URL"
+            placeholder="https://example.com/portfolio.pdf"
+            value={attachment.fileUrl || ''}
+            onChange={(e) => handleAttachmentChange(index, 'fileUrl', e.target.value)}
+          />
+        </div>
+      </div>
+      </div>
+      
+      <CardActions
+        isVisible={attachment.isVisible ?? true}
+        onToggleVisible={() => toggleVisible(index)}
+        onDelete={() => handleDeleteAttachment(index)}
+      />
+    </DraggableItem>
+  );
+};
 
 /**
  * 첨부 섹션 전체를 관리하는 컴포넌트
@@ -79,6 +142,14 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     handleAttachmentChange(index, 'isVisible', !attachments[index].isVisible);
   };
 
+  const handleReorder = (reorderedAttachments: ResumeUpdateRequest_AttachmentRequest[]) => {
+    const updatedAttachments = reorderedAttachments.map((attachment, idx) => ({
+      ...attachment,
+      priority: idx
+    }));
+    onUpdate(updatedAttachments);
+  };
+
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
@@ -95,55 +166,21 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
         </div>
       </div>
 
-      {attachments.map((attachment, index) => (
-        <div key={attachment.id || index} className={styles.cardWrapper}>
-          <div className={styles.card}>
-            <div className={styles.gridContainer2}>
-            {/* 종류 */}
-            <div className={styles.formField}>
-              <Dropdown
-                label="종류"
-                selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
-                options={[
-                  { value: Attachment_AttachmentType.RESUME, label: '이력서' },
-                  { value: Attachment_AttachmentType.PORTFOLIO, label: '포트폴리오' },
-                  { value: Attachment_AttachmentType.CAREER_STATEMENT, label: '경력기술서' },
-                  { value: Attachment_AttachmentType.CERTIFICATE, label: '증명서' },
-                  { value: Attachment_AttachmentType.ETC, label: '기타' },
-                ]}
-                setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
-              />
-            </div>
-
-            {/* 파일 URL */}
-            <div className={styles.formField}>
-              <Input 
-                type="url"
-                label="파일 URL"
-                placeholder="https://example.com/portfolio.pdf"
-                value={attachment.fileUrl || ''}
-                onChange={(e) => handleAttachmentChange(index, 'fileUrl', e.target.value)}
-              />
-            </div>
-          </div>
-          </div>
-          
-          <div className={styles.cardActions}>
-            <button
-              onClick={() => toggleVisible(index)}
-              className={`${styles.visibleButton} ${attachment.isVisible ? styles.visible : ''}`}
-            >
-              {attachment.isVisible ? '보임' : '안보임'}
-            </button>
-            <button
-              onClick={() => handleDeleteAttachment(index)}
-              className={styles.cardDeleteButton}
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      ))}
+      <DraggableList
+        items={attachments}
+        onReorder={handleReorder}
+        getItemId={(att, idx) => att.id || `attachment-${idx}`}
+        renderItem={(attachment, index) => (
+          <AttachmentItem
+            key={attachment.id || `attachment-${index}`}
+            attachment={attachment}
+            index={index}
+            handleAttachmentChange={handleAttachmentChange}
+            toggleVisible={toggleVisible}
+            handleDeleteAttachment={handleDeleteAttachment}
+          />
+        )}
+      />
     </div>
   );
 };

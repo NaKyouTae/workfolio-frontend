@@ -19,6 +19,7 @@ const SalaryEdit: React.FC<SalaryEditProps> = ({ salary, onUpdate, onCancel }) =
     negotiationDate: salary.negotiationDate,
     memo: salary.memo,
     isVisible: salary.isVisible !== undefined ? salary.isVisible : true,
+    priority: salary.priority,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,6 +31,7 @@ const SalaryEdit: React.FC<SalaryEditProps> = ({ salary, onUpdate, onCancel }) =
       negotiationDate: salary.negotiationDate,
       memo: salary.memo,
       isVisible: salary.isVisible !== undefined ? salary.isVisible : true,
+      priority: salary.priority,
     });
   }, [salary]);
 

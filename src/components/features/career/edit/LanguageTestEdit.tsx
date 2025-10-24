@@ -4,11 +4,88 @@ import Input from '@/components/ui/Input';
 import DatePicker from '@/components/ui/DatePicker';
 import DateUtil from '@/utils/DateUtil';
 import styles from '../CareerContentEdit.module.css';
+import DraggableList from '@/components/ui/DraggableList';
+import DraggableItem from '@/components/ui/DraggableItem';
+import CardActions from '@/components/ui/CardActions';
 
 interface LanguageTestEditProps {
   languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[];
   onUpdate: (languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[]) => void;
 }
+
+interface LanguageTestItemProps {
+  languageTest: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest;
+  index: number;
+  handleLanguageTestChange: (index: number, field: keyof ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest, value: string | number | boolean) => void;
+  toggleVisible: (index: number) => void;
+  handleDeleteLanguageTest: (index: number) => void;
+}
+
+const LanguageTestItem: React.FC<LanguageTestItemProps> = ({
+  languageTest,
+  index,
+  handleLanguageTestChange,
+  toggleVisible,
+  handleDeleteLanguageTest,
+}) => {
+  return (
+    <DraggableItem 
+      id={languageTest.id || `language-test-${index}`}
+      className={styles.cardWrapper}
+      dragButtonSize={20}
+    >
+      <div style={{ 
+        flex: 1,
+        padding: '12px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '6px',
+        position: 'relative'
+      }}>
+        <div className={styles.gridContainer2}>
+        {/* 시험명 */}
+        <div className={styles.formField}>
+          <Input 
+            type="text"
+            label="시험명"
+            placeholder="TOEIC, TOEFL, JLPT 등"
+            value={languageTest.name || ''}
+            onChange={(e) => handleLanguageTestChange(index, 'name', e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className={styles.gridContainer2}>
+        {/* 점수/등급 */}
+        <div className={styles.formField}>
+          <Input 
+            type="text"
+            label="점수/등급"
+            placeholder="00-00-000000"
+            value={languageTest.score || ''}
+            onChange={(e) => handleLanguageTestChange(index, 'score', e.target.value)}
+          />
+        </div>
+
+        {/* 취득일 */}
+        <div className={styles.formField}>
+          <DatePicker 
+            required={false}
+            label="취득년월"
+            value={languageTest.acquiredAt}
+            onChange={(date) => handleLanguageTestChange(index, 'acquiredAt', date)}
+          />
+        </div>
+      </div>
+      </div>
+      
+      <CardActions
+        isVisible={languageTest.isVisible ?? true}
+        onToggleVisible={() => toggleVisible(index)}
+        onDelete={() => handleDeleteLanguageTest(index)}
+      />
+    </DraggableItem>
+  );
+};
 
 /**
  * 어학 시험 서브섹션을 관리하는 컴포넌트
@@ -81,6 +158,14 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
     handleLanguageTestChange(index, 'isVisible', !languageTests[index].isVisible);
   };
 
+  const handleReorder = (reorderedLanguageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[]) => {
+    const updatedLanguageTests = reorderedLanguageTests.map((test, idx) => ({
+      ...test,
+      priority: idx
+    }));
+    onUpdate(updatedLanguageTests);
+  };
+
   return (
     <div style={{ marginTop: '16px' }}>
       <div className={styles.sectionHeader}>
@@ -98,68 +183,21 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
         </div>
       </div>
 
-      {languageTests.map((languageTest, index) => (
-        <div key={languageTest.id || index} className={styles.cardWrapper}>
-          <div style={{ 
-            flex: 1,
-            padding: '12px',
-            backgroundColor: '#f8f9fa',
-            borderRadius: '6px',
-            position: 'relative'
-          }}>
-            <div className={styles.gridContainer2}>
-            {/* 시험명 */}
-            <div className={styles.formField}>
-              <Input 
-                type="text"
-                label="시험명"
-                placeholder="TOEIC, TOEFL, JLPT 등"
-                value={languageTest.name || ''}
-                onChange={(e) => handleLanguageTestChange(index, 'name', e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className={styles.gridContainer2}>
-            {/* 점수/등급 */}
-            <div className={styles.formField}>
-              <Input 
-                type="text"
-                label="점수/등급"
-                placeholder="00-00-000000"
-                value={languageTest.score || ''}
-                onChange={(e) => handleLanguageTestChange(index, 'score', e.target.value)}
-              />
-            </div>
-
-            {/* 취득일 */}
-            <div className={styles.formField}>
-              <DatePicker 
-                required={false}
-                label="취득년월"
-                value={languageTest.acquiredAt}
-                onChange={(date) => handleLanguageTestChange(index, 'acquiredAt', date)}
-              />
-            </div>
-          </div>
-          </div>
-          
-          <div className={styles.cardActions}>
-            <button
-              onClick={() => toggleVisible(index)}
-              className={`${styles.visibleButton} ${languageTest.isVisible ? styles.visible : ''}`}
-            >
-              {languageTest.isVisible ? '보임' : '안보임'}
-            </button>
-            <button
-              onClick={() => handleDeleteLanguageTest(index)}
-              className={styles.cardDeleteButton}
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      ))}
+      <DraggableList
+        items={languageTests}
+        onReorder={handleReorder}
+        getItemId={(test, idx) => test.id || `language-test-${idx}`}
+        renderItem={(languageTest, index) => (
+          <LanguageTestItem
+            key={languageTest.id || `language-test-${index}`}
+            languageTest={languageTest}
+            index={index}
+            handleLanguageTestChange={handleLanguageTestChange}
+            toggleVisible={toggleVisible}
+            handleDeleteLanguageTest={handleDeleteLanguageTest}
+          />
+        )}
+      />
     </div>
   );
 };
