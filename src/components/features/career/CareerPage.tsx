@@ -10,7 +10,17 @@ const CareerPage: React.FC = () => {
   const { user, isLoading: userLoading, fetchUser } = useUser();
 
   // 이력서 목록 관리
-  const { resumeDetails, isLoading, fetchResumeDetails, fetchResumeDetail, refreshResumeDetails } = useResumeDetails();
+  const { 
+    resumeDetails, 
+    isLoading, 
+    fetchResumeDetails, 
+    fetchResumeDetail, 
+    refreshResumeDetails,
+    duplicateResume,
+    deleteResume,
+    exportPDF,
+    copyURL,
+  } = useResumeDetails();
 
   // 선택된 이력서
   const [selectedResumeDetail, setSelectedResumeDetail] = useState<ResumeDetail | null>(null);
@@ -51,6 +61,12 @@ const CareerPage: React.FC = () => {
     await refreshResumeDetails();
   };
 
+  // 삭제 성공 후 홈으로 이동
+  const handleDeleteSuccess = async () => {
+    await refreshResumeDetails();
+    goHome();
+  };
+
   // 이력서 홈으로 이동
   const goHome = () => {
     setSelectedResumeDetail(null);
@@ -84,6 +100,13 @@ const CareerPage: React.FC = () => {
         selectedResumeDetail={selectedResumeDetail || null}
         resumeDetails={resumeDetails}
         onRefresh={refreshSelectedResumeDetail}
+        onGoHome={goHome}
+        onResumeSelect={viewResumeDetail}
+        duplicateResume={duplicateResume}
+        deleteResume={deleteResume}
+        exportPDF={exportPDF}
+        copyURL={copyURL}
+        onDeleteSuccess={handleDeleteSuccess}
       />
     </main>
   );

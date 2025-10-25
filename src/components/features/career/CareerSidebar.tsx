@@ -30,7 +30,6 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
       width: '250px', 
       backgroundColor: '#fff', 
       borderRight: '1px solid #e0e0e0',
-      padding: '20px 0',
       boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
       display: 'flex',
       flexDirection: 'column',
@@ -54,7 +53,8 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
             fontSize: '14px',
             fontWeight: 'bold',
             cursor: 'pointer',
-            transition: 'background-color 0.2s'
+            transition: 'background-color 0.2s',
+            height: '32px',
           }}
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
@@ -67,62 +67,46 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
       <div style={{ 
         flex: 1, 
         overflow: 'auto',
-        padding: '10px 0'
+        borderBottom: '1px solid #e0e0e0',
       }}>
-        <div style={{ 
-          padding: '0 20px 10px 20px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          color: '#666',
-          borderBottom: '1px solid #e0e0e0',
-          marginBottom: '10px'
-        }}>
-          이력서 목록
+        <div
+          onClick={onGoHome}
+          style={{
+            padding: '12px 8px',
+            margin: '8px 0',
+            backgroundColor: !selectedResumeDetail ? '#e3f2fd' : 'transparent',
+            border: !selectedResumeDetail ? '1px solid #2196f3' : '1px solid transparent',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            fontSize: '14px',
+            color: !selectedResumeDetail ? '#1976d2' : '#333',
+            borderBottom: '1px solid #e0e0e0',
+          }}
+          onMouseOver={(e) => {
+            if (selectedResumeDetail) {
+              e.currentTarget.style.backgroundColor = '#f5f5f5';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (selectedResumeDetail) {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }
+          }}
+        >
+          <div style={{ 
+            fontWeight: 'bold',
+            marginBottom: '4px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}>
+            내 이력 관리
+          </div>
         </div>
         <div style={{ padding: '0 10px' }}>
-          {/* 이력서 홈 아이템 */}
-          <div
-            onClick={onGoHome}
-            style={{
-              padding: '12px 16px',
-              margin: '4px 0',
-              backgroundColor: !selectedResumeDetail ? '#e3f2fd' : 'transparent',
-              border: !selectedResumeDetail ? '1px solid #2196f3' : '1px solid transparent',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              fontSize: '14px',
-              color: !selectedResumeDetail ? '#1976d2' : '#333'
-            }}
-            onMouseOver={(e) => {
-              if (selectedResumeDetail) {
-                e.currentTarget.style.backgroundColor = '#f5f5f5';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (selectedResumeDetail) {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }
-            }}
-          >
-            <div style={{ 
-              fontWeight: 'bold',
-              marginBottom: '4px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}>
-              🏠 이력서 홈
-            </div>
-            <div style={{ 
-              fontSize: '12px',
-              color: '#666',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}>
-              이력서 통계 및 개요
-            </div>
+          <div style={{ padding: '12px 0px', margin: '4px 0', fontSize: '14px', color: '#333' }}>
+            내 이력서
           </div>
 
           {/* 이력서 목록 */}
@@ -193,4 +177,3 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
 };
 
 export default CareerSidebar;
-

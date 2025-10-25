@@ -6,13 +6,26 @@ import CareerContentEdit from './CareerContentEdit';
 interface CareerContentProps {
   selectedResumeDetail: ResumeDetail | null;
   onRefresh?: () => void;
+  duplicateResume?: (resumeId?: string) => Promise<boolean>;
+  deleteResume?: (resumeId?: string) => Promise<boolean>;
+  exportPDF?: (resumeId?: string) => Promise<void>;
+  copyURL?: (publicId?: string) => void;
+  onDeleteSuccess?: () => void;
 }
 
 /**
  * 이력서 상세 콘텐츠를 관리하는 컴포넌트
  * 편집 모드와 읽기 모드를 전환합니다
  */
-const CareerContent: React.FC<CareerContentProps> = ({ selectedResumeDetail, onRefresh }) => {
+const CareerContent: React.FC<CareerContentProps> = ({ 
+  selectedResumeDetail, 
+  onRefresh, 
+  duplicateResume,
+  deleteResume,
+  exportPDF,
+  copyURL,
+  onDeleteSuccess,
+}) => {
   // 편집 모드 상태
   const [isEditMode, setIsEditMode] = useState(false);
   
@@ -52,6 +65,12 @@ const CareerContent: React.FC<CareerContentProps> = ({ selectedResumeDetail, onR
         <CareerContentView 
           selectedResumeDetail={selectedResumeDetail}
           onEdit={handleEdit}
+          duplicateResume={duplicateResume}
+          deleteResume={deleteResume}
+          exportPDF={exportPDF}
+          copyURL={copyURL}
+          onDuplicateSuccess={onRefresh}
+          onDeleteSuccess={onDeleteSuccess}
         />
       )}
     </div>

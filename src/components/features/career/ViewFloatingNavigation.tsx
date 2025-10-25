@@ -78,7 +78,7 @@ const ViewFloatingNavigation: React.FC<ViewFloatingNavigationProps> = ({
           onClick={onCopyURL}
           className={styles.floatingCancelButton}
         >
-          URL 복사하기
+          URL 공유하기
         </button>
       </div>
     </div>

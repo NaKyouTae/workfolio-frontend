@@ -14,44 +14,60 @@ import DateUtil from '@/utils/DateUtil';
 interface CareerContentViewProps {
   selectedResumeDetail: ResumeDetail | null;
   onEdit: () => void;
+  duplicateResume?: (resumeId?: string) => Promise<boolean>;
+  deleteResume?: (resumeId?: string) => Promise<boolean>;
+  exportPDF?: (resumeId?: string) => Promise<void>;
+  copyURL?: (publicId?: string) => void;
+  onDuplicateSuccess?: () => void; // 복제 성공 시 콜백
+  onDeleteSuccess?: () => void; // 삭제 성공 시 콜백
 }
 
 /**
  * 이력서 상세 정보를 읽기 전용으로 표시하는 컴포넌트
  * 모든 View 컴포넌트들을 포함합니다
  */
-const CareerContentView: React.FC<CareerContentViewProps> = ({ selectedResumeDetail, onEdit }) => {
+const CareerContentView: React.FC<CareerContentViewProps> = ({ 
+  selectedResumeDetail, 
+  onEdit, 
+  duplicateResume,
+  deleteResume,
+  exportPDF,
+  copyURL,
+  onDuplicateSuccess, 
+  onDeleteSuccess 
+}) => {
 
   // 복제 핸들러
-  const handleDuplicateResume = () => {
-    // TODO: 복제 기능 구현
-    console.log('복제:', selectedResumeDetail);
-    alert('복제 기능은 추후 구현될 예정입니다.');
+  const handleDuplicateResume = async () => {
+    if (!duplicateResume) return;
+    
+    const success = await duplicateResume(selectedResumeDetail?.id);
+    if (success && onDuplicateSuccess) {
+      onDuplicateSuccess();
+    }
   };
 
   // 삭제 핸들러
-  const handleDeleteResume = () => {
-    // TODO: 삭제 기능 구현
-    console.log('삭제:', selectedResumeDetail);
-    alert('삭제 기능은 추후 구현될 예정입니다.');
+  const handleDeleteResume = async () => {
+    if (!deleteResume) return;
+    
+    const success = await deleteResume(selectedResumeDetail?.id);
+    if (success && onDeleteSuccess) {
+      onDeleteSuccess();
+    }
   };
 
   // PDF 내보내기 핸들러
   const handleExportPDF = () => {
-    // TODO: PDF 내보내기 기능 구현
-    console.log('PDF 내보내기:', selectedResumeDetail);
-    alert('PDF 내보내기 기능은 추후 구현될 예정입니다.');
+    if (exportPDF) {
+      exportPDF(selectedResumeDetail?.id);
+    }
   };
 
   // URL 복사 핸들러
   const handleCopyURL = () => {
-    if (selectedResumeDetail?.publicId) {
-      const url = `${window.location.origin}/resume/${selectedResumeDetail.publicId}`;
-      navigator.clipboard.writeText(url).then(() => {
-        alert('URL이 복사되었습니다.');
-      }).catch(err => {
-        console.error('URL 복사 실패:', err);
-      });
+    if (copyURL) {
+      copyURL(selectedResumeDetail?.publicId);
     }
   };
 
