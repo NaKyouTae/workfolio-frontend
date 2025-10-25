@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Career } from '@/generated/common'
-import { createSampleCareers } from '@/utils/sampleData'
+import { createSampleCareers } from '@/utils/sampleCareerData'
 
 export function useCareers() {
     const [careers, setCareers] = useState<Career[]>([])

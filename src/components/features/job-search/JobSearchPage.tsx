@@ -3,7 +3,7 @@ import { JobSearch, Career } from '@/generated/common';
 import { JobSearchListResponse } from '@/generated/job_search';
 import HttpMethod from '@/enums/HttpMethod';
 import { useUser } from '@/hooks/useUser';
-import { createSampleJobSearches, createSampleCareers } from '@/utils/sampleData';
+import { createSampleJobSearches, createSampleCareers } from '@/utils/sampleCareerData';
 import JobSearchCreateModal from './JobSearchCreateModal';
 import JobSearchUpdateModal from './JobSearchUpdateModal';
 import JobSearchSidebar from './JobSearchSidebar';

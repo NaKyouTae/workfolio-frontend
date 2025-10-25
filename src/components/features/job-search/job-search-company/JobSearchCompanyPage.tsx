@@ -4,7 +4,7 @@ import { JobSearchCompanyListResponse } from '@/generated/job_search_company';
 import HttpMethod from '@/enums/HttpMethod';
 import DateUtil from '@/utils/DateUtil';
 import { useUser } from '@/hooks/useUser';
-import { createSampleJobSearchCompanies } from '@/utils/sampleData';
+import { createSampleJobSearchCompanies } from '@/utils/sampleCareerData';
 import JobSearchCompanyCreateModal from './JobSearchCompanyCreateModal';
 import JobSearchCompanyUpdateModal from './JobSearchCompanyUpdateModal';
 import JobSearchUpdateModal from '../JobSearchUpdateModal';

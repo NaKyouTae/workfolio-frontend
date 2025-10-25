@@ -5,7 +5,7 @@ import { JobSearchCompany } from '@/generated/common';
 import HttpMethod from '@/enums/HttpMethod';
 import DateUtil from '@/utils/DateUtil';
 import { useUser } from '@/hooks/useUser';
-import { createSampleInterviews } from '@/utils/sampleData';
+import { createSampleInterviews } from '@/utils/sampleCareerData';
 import InterviewCreateModal from './InterviewCreateModal';
 import InterviewUpdateModal from './InterviewUpdateModal';
 import styles from './InterviewPage.module.css';

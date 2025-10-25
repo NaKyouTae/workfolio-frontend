@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Record } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleData';
+import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleRecordData';
 import HttpMethod from '@/enums/HttpMethod';
 import { CalendarViewType } from '@/models/CalendarTypes';
 import dayjs from 'dayjs';

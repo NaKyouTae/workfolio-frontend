@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { createSampleRecordGroups } from '@/utils/sampleData';
+import { createSampleRecordGroups } from '@/utils/sampleRecordData';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroupDetailResponse } from '@/generated/record_group';
 import { useShallow } from 'zustand/react/shallow';
