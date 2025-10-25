@@ -96,37 +96,6 @@ export const useResumeDetails = () => {
     }
   }, []);
 
-  // 특정 이력서 상세 조회
-  const fetchResumeDetail = useCallback(async (): Promise<ResumeDetail | null> => {
-    try {
-      // 로그인 상태 확인
-      if (!checkIsLoggedIn()) {
-        console.log('User not logged in, returning sample data');
-        const sampleData = createSampleResumeDetails();
-        return sampleData[0] || null;
-      }
-
-      const response = await fetch(`/api/resumes/details`, {
-        method: HttpMethod.GET,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.resume || null;
-      } else {
-        // API 호출 실패 시에도 샘플 데이터 사용
-        console.log('API call failed, returning sample data');
-        const sampleData = createSampleResumeDetails();
-        return sampleData[0] || null;
-      }
-    } catch (error) {
-      // 에러 발생 시에도 샘플 데이터 사용
-      console.log('Error fetching resume detail, returning sample data:', error);
-      const sampleData = createSampleResumeDetails();
-      return sampleData[0] || null;
-    }
-  }, []);
-
   // 이력서 목록 리프레시
   const refreshResumeDetails = useCallback(async () => {
     await fetchResumeDetails();
@@ -304,7 +273,6 @@ export const useResumeDetails = () => {
     isLoading,
     error,
     fetchResumeDetails,
-    fetchResumeDetail,
     refreshResumeDetails,
     duplicateResume,
     deleteResume,

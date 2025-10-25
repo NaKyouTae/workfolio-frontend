@@ -1,6 +1,7 @@
 import React from 'react';
 import { Project } from '@/generated/common';
 import { DateUtil } from '@/utils/DateUtil';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface ProjectViewProps {
   projects: Project[];
@@ -10,10 +11,6 @@ interface ProjectViewProps {
  * 프로젝트 정보 읽기 전용 컴포넌트
  */
 const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
-  if (!projects || projects.length === 0) {
-    return null;
-  }
-
   return (
     <div>
       <h3 style={{ 
@@ -24,6 +21,10 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
       }}>
         프로젝트
       </h3>
+      
+      {(!projects || projects.length === 0) ? (
+        <EmptyState text="등록된 프로젝트 정보가 없습니다." />
+      ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {projects.filter(p => p.isVisible !== false).map((project) => (
@@ -56,10 +57,10 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
                 </h4>
                 <span style={{
                   fontSize: '13px',
-                  color: '#999',
+                  color: project.affiliation ? '#999' : '#ddd',
                   whiteSpace: 'nowrap'
                 }}>
-                  {project.affiliation}
+                  {project.affiliation || '소속'}
                 </span>
               </div>
               <span style={{
@@ -72,30 +73,28 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
               </span>
             </div>
 
-            {project.role && (
-              <div style={{ 
-                fontSize: '14px',
-                color: '#666',
-                lineHeight: '1.6',
-                whiteSpace: 'pre-wrap'
-              }}>
-                {project.role}
-              </div>
-            )}
+            <div style={{ 
+              fontSize: '14px',
+              color: project.role ? '#666' : '#ddd',
+              lineHeight: '1.6',
+              whiteSpace: 'pre-wrap',
+              marginBottom: '4px'
+            }}>
+              {project.role || '역할'}
+            </div>
 
-            {project.description && (
-              <div style={{ 
-                fontSize: '14px',
-                color: '#666',
-                lineHeight: '1.6',
-                whiteSpace: 'pre-wrap'
-              }}>
-                {project.description}
-              </div>
-            )}
+            <div style={{ 
+              fontSize: '14px',
+              color: project.description ? '#666' : '#ddd',
+              lineHeight: '1.6',
+              whiteSpace: 'pre-wrap'
+            }}>
+              {project.description || '상세 설명'}
+            </div>
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };

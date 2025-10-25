@@ -8,6 +8,7 @@ import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface LanguageSkillEditProps {
   languageSkills: ResumeUpdateRequest_LanguageSkillRequest[];
@@ -118,14 +119,6 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
     languageTests: [],
   });
 
-  // 빈 배열일 때 자동으로 항목 하나 추가
-  useEffect(() => {
-    if (languageSkills.length === 0) {
-      onUpdate([createEmptyLanguageSkill()]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // priority를 배열 인덱스와 동기화 (languageSkill와 languageTests 모두)
   useEffect(() => {
     let needsUpdate = false;
@@ -213,23 +206,27 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
         </div>
       </div>
 
-      <DraggableList
-        items={languageSkills}
-        onReorder={handleReorder}
-        getItemId={(skill, idx) => skill.id || `language-skill-${idx}`}
-        renderItem={(languageSkill, index) => (
-          <LanguageSkillItem
-            key={languageSkill.id || `language-skill-${index}`}
-            languageSkill={languageSkill}
-            index={index}
-            handleLanguageSkillChange={handleLanguageSkillChange}
-            toggleVisible={toggleVisible}
-            handleDeleteLanguageSkill={handleDeleteLanguageSkill}
-            languageSkills={languageSkills}
-            onUpdate={onUpdate}
-          />
-        )}
-      />
+      {languageSkills.length === 0 ? (
+        <EmptyState text="등록된 어학 정보가 없습니다." />
+      ) : (
+        <DraggableList
+          items={languageSkills}
+          onReorder={handleReorder}
+          getItemId={(skill, idx) => skill.id || `language-skill-${idx}`}
+          renderItem={(languageSkill, index) => (
+            <LanguageSkillItem
+              key={languageSkill.id || `language-skill-${index}`}
+              languageSkill={languageSkill}
+              index={index}
+              handleLanguageSkillChange={handleLanguageSkillChange}
+              toggleVisible={toggleVisible}
+              handleDeleteLanguageSkill={handleDeleteLanguageSkill}
+              languageSkills={languageSkills}
+              onUpdate={onUpdate}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };

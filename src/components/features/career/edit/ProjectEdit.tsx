@@ -7,6 +7,7 @@ import styles from '../CareerContentEdit.module.css';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface ProjectEditProps {
   projects: ResumeUpdateRequest_ProjectRequest[];
@@ -130,14 +131,6 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
     priority,
   });
 
-  // 빈 배열일 때 자동으로 항목 하나 추가
-  useEffect(() => {
-    if (projects.length === 0) {
-      onUpdate([createEmptyProject()]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // priority를 배열 인덱스와 동기화
   useEffect(() => {
     const needsUpdate = projects.some((project, idx) => project.priority !== idx);
@@ -219,21 +212,25 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
         </div>
       </div>
 
-      <DraggableList
-        items={projects}
-        onReorder={handleReorder}
-        getItemId={(proj, idx) => proj.id || `project-${idx}`}
-        renderItem={(project, index) => (
-          <ProjectItem
-            key={project.id || `project-${index}`}
-            project={project}
-            index={index}
-            handleProjectChange={handleProjectChange}
-            toggleVisible={toggleVisible}
-            handleDeleteProject={handleDeleteProject}
-          />
-        )}
-      />
+      {projects.length === 0 ? (
+        <EmptyState text="등록된 프로젝트 정보가 없습니다." />
+      ) : (
+        <DraggableList
+          items={projects}
+          onReorder={handleReorder}
+          getItemId={(proj, idx) => proj.id || `project-${idx}`}
+          renderItem={(project, index) => (
+            <ProjectItem
+              key={project.id || `project-${index}`}
+              project={project}
+              index={index}
+              handleProjectChange={handleProjectChange}
+              toggleVisible={toggleVisible}
+              handleDeleteProject={handleDeleteProject}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };

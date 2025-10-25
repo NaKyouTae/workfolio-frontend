@@ -8,6 +8,7 @@ import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
+import EmptyState from '@/components/ui/EmptyState';
 
 // 모드 정보를 포함한 확장된 Attachment 타입
 type AttachmentWithMode = ResumeUpdateRequest_AttachmentRequest & {
@@ -212,25 +213,29 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
         </div>
       </div>
 
-      <DraggableList
-        items={attachments}
-        onReorder={handleReorder}
-        getItemId={(att, idx) => att.id || `attachment-${idx}`}
-        renderItem={(attachment, index) => {
-          const attachmentWithMode = attachment as AttachmentWithMode;
-          return (
-            <AttachmentItem
-              key={attachment.id || `attachment-${index}`}
-              attachment={attachmentWithMode}
-              index={index}
-              isFileDownloadMode={attachmentWithMode._isFileDownloadMode ?? false} // props로 모드 전달
-              handleAttachmentChange={handleAttachmentChange}
-              toggleVisible={toggleVisible}
-              handleDeleteAttachment={handleDeleteAttachment}
-            />
-          );
-        }}
-      />
+      {attachments.length === 0 ? (
+        <EmptyState text="등록된 첨부 정보가 없습니다." />
+      ) : (
+        <DraggableList
+          items={attachments}
+          onReorder={handleReorder}
+          getItemId={(att, idx) => att.id || `attachment-${idx}`}
+          renderItem={(attachment, index) => {
+            const attachmentWithMode = attachment as AttachmentWithMode;
+            return (
+              <AttachmentItem
+                key={attachment.id || `attachment-${index}`}
+                attachment={attachmentWithMode}
+                index={index}
+                isFileDownloadMode={attachmentWithMode._isFileDownloadMode ?? false} // props로 모드 전달
+                handleAttachmentChange={handleAttachmentChange}
+                toggleVisible={toggleVisible}
+                handleDeleteAttachment={handleDeleteAttachment}
+              />
+            );
+          }}
+        />
+      )}
     </div>
   );
 };

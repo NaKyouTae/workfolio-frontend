@@ -11,6 +11,7 @@ import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface ActivityEditProps {
   activities: ResumeUpdateRequest_ActivityRequest[];
@@ -158,14 +159,6 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
     priority,
   });
 
-  // 빈 배열일 때 자동으로 항목 하나 추가
-  useEffect(() => {
-    if (activities.length === 0) {
-      onUpdate([createEmptyActivity()]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // priority를 배열 인덱스와 동기화
   useEffect(() => {
     const needsUpdate = activities.some((activity, idx) => activity.priority !== idx);
@@ -248,21 +241,25 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
         </div>
       </div>
 
-      <DraggableList
-        items={activities}
-        onReorder={handleReorder}
-        getItemId={(act, idx) => act.id || `activity-${idx}`}
-        renderItem={(activity, index) => (
-          <ActivityItem
-            key={activity.id || `activity-${index}`}
-            activity={activity}
-            index={index}
-            handleActivityChange={handleActivityChange}
-            toggleVisible={toggleVisible}
-            handleDeleteActivity={handleDeleteActivity}
-          />
-        )}
-      />
+      {activities.length === 0 ? (
+        <EmptyState text="등록된 활동 정보가 없습니다." />
+      ) : (
+        <DraggableList
+          items={activities}
+          onReorder={handleReorder}
+          getItemId={(act, idx) => act.id || `activity-${idx}`}
+          renderItem={(activity, index) => (
+            <ActivityItem
+              key={activity.id || `activity-${index}`}
+              activity={activity}
+              index={index}
+              handleActivityChange={handleActivityChange}
+              toggleVisible={toggleVisible}
+              handleDeleteActivity={handleDeleteActivity}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };

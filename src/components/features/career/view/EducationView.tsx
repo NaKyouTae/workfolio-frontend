@@ -2,6 +2,7 @@ import React from 'react';
 import { Education, Education_EducationStatus } from '@/generated/common';
 import { DateUtil } from '@/utils/DateUtil';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface EducationViewProps {
   educations?: Education[];
@@ -34,10 +35,6 @@ const EducationView: React.FC<EducationViewProps> = ({
     }
   };
 
-  if (!educations || educations.length === 0) {
-    return null;
-  }
-
   return (
     <div>
       <h3 style={{ 
@@ -48,6 +45,10 @@ const EducationView: React.FC<EducationViewProps> = ({
       }}>
         학력
       </h3>
+      
+      {(!educations || educations.length === 0) ? (
+        <EmptyState text="등록된 학력 정보가 없습니다." />
+      ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {educations.filter(e => e.isVisible !== false).map((education) => (
@@ -73,24 +74,20 @@ const EducationView: React.FC<EducationViewProps> = ({
               }}>
                 {education.name}
               </h4>
-              {education.major && (
-                <div style={{ 
-                  fontSize: '14px',
-                  color: '#666',
-                  marginBottom: '4px'
-                }}>
-                  {education.major}
-                </div>
-              )}
-              {education.description && (
-                <div style={{ 
-                  fontSize: '13px',
-                  color: '#999',
-                  marginTop: '8px'
-                }}>
-                  {education.description}
-                </div>
-              )}
+              <div style={{ 
+                fontSize: '14px',
+                color: education.major ? '#666' : '#ddd',
+                marginBottom: '4px'
+              }}>
+                {education.major || '전공'}
+              </div>
+              <div style={{ 
+                fontSize: '13px',
+                color: education.description ? '#999' : '#ddd',
+                marginTop: '8px'
+              }}>
+                {education.description || '내용'}
+              </div>
             </div>
 
             {/* 우측: Date Range | Status */}
@@ -111,6 +108,7 @@ const EducationView: React.FC<EducationViewProps> = ({
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };

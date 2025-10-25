@@ -3,6 +3,7 @@ import { ResumeUpdateRequest_ActivityRequest } from '@/generated/resume';
 import { Activity_ActivityType } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface ActivityViewProps {
   activities: ResumeUpdateRequest_ActivityRequest[];
@@ -68,10 +69,6 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
     return `${startDate} - ${endDate}`;
   };
 
-  if (!activities || activities.length === 0) {
-    return null;
-  }
-
   return (
     <div>
       <h3 style={{ 
@@ -82,6 +79,10 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
       }}>
         활동
       </h3>
+      
+      {(!activities || activities.length === 0) ? (
+        <EmptyState text="등록된 활동 정보가 없습니다." />
+      ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {activities.filter(a => a.isVisible !== false).map((activity) => (
@@ -115,10 +116,10 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
                   </h4>
                   <span style={{
                     fontSize: '13px',
-                    color: '#999',
+                    color: activity.organization ? '#999' : '#ddd',
                     whiteSpace: 'nowrap'
                   }}>
-                    {activity.organization}
+                    {activity.organization || '기관'}
                   </span>
                 </div>
               </div>
@@ -151,29 +152,26 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
               </div>
             </div>
 
-            {activity.certificateNumber && (
-              <div style={{ 
-                fontSize: '14px',
-                color: '#666',
-                marginBottom: '4px'
-              }}>
-                취득번호 {activity.certificateNumber}
-              </div>
-            )}
+            <div style={{ 
+              fontSize: '14px',
+              color: activity.certificateNumber ? '#666' : '#ddd',
+              marginBottom: '4px'
+            }}>
+              {activity.certificateNumber ? `취득번호 ${activity.certificateNumber}` : '취득번호'}
+            </div>
 
-            {activity.description && (
-              <div style={{ 
-                fontSize: '14px',
-                color: '#666',
-                lineHeight: '1.6',
-                whiteSpace: 'pre-wrap'
-              }}>
-                {activity.description}
-              </div>
-            )}
+            <div style={{ 
+              fontSize: '14px',
+              color: activity.description ? '#666' : '#ddd',
+              lineHeight: '1.6',
+              whiteSpace: 'pre-wrap'
+            }}>
+              {activity.description || '내용'}
+            </div>
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };

@@ -15,8 +15,7 @@ const CareerPage: React.FC = () => {
   const { 
     resumeDetails, 
     isLoading, 
-    fetchResumeDetails, 
-    fetchResumeDetail, 
+    fetchResumeDetails,
     refreshResumeDetails,
     duplicateResume,
     deleteResume,
@@ -36,6 +35,9 @@ const CareerPage: React.FC = () => {
 
   // 초기 로드 여부를 추적하는 ref
   const userFetchAttempted = useRef(false);
+  
+  // 편집 완료 후 강제 업데이트를 위한 ref
+  const forceUpdateAfterSave = useRef(false);
 
   // 컴포넌트 마운트 시 사용자 정보 가져오기
   useEffect(() => {
@@ -52,6 +54,21 @@ const CareerPage: React.FC = () => {
   useEffect(() => {
     fetchResumeDetails();
   }, [fetchResumeDetails]);
+
+  // resumeDetails가 업데이트되면 selectedResumeDetail도 업데이트
+  useEffect(() => {
+    if (selectedResumeDetail && resumeDetails.length > 0) {
+      const updatedResume = resumeDetails.find(r => r.id === selectedResumeDetail.id);
+      if (updatedResume) {
+        // 편집 완료 후이거나 updatedAt이 다른 경우 업데이트
+        if (forceUpdateAfterSave.current || updatedResume.updatedAt !== selectedResumeDetail.updatedAt) {
+          setSelectedResumeDetail(updatedResume);
+          forceUpdateAfterSave.current = false; // 플래그 리셋
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resumeDetails]);
 
   // 이력서 상세 보기 (View 모드)
   const viewResumeDetail = (resumeDetail: ResumeDetail) => {
@@ -72,22 +89,11 @@ const CareerPage: React.FC = () => {
     setEditFrom('view'); // View에서 왔음을 기록
   };
 
-  // 선택된 이력서 새로고침
-  const refreshSelectedResumeDetail = async () => {
-    if (selectedResumeDetail?.id) {
-      const updatedResume = await fetchResumeDetail();
-      if (updatedResume) {
-        setSelectedResumeDetail(updatedResume);
-      }
-    }
-    // 목록도 함께 새로고침
-    await refreshResumeDetails();
-  };
-
   // 편집 완료 (저장 후 View 모드로 전환)
   const handleEditComplete = async () => {
     setIsEditMode(false);
-    await refreshSelectedResumeDetail();
+    forceUpdateAfterSave.current = true; // 강제 업데이트 플래그 설정
+    await refreshResumeDetails();
   };
 
   // 편집 취소 (이전 화면으로 복귀)

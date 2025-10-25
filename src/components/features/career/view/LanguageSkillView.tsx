@@ -2,6 +2,7 @@ import React from 'react';
 import { LanguageSkill, LanguageSkill_Language, LanguageSkill_LanguageLevel } from '@/generated/common';
 import LanguageTestView from './LanguageTestView';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface LanguageSkillViewProps {
   languageSkills: LanguageSkill[];
@@ -69,10 +70,6 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills })
     }
   };
 
-  if (!languageSkills || languageSkills.length === 0) {
-    return null;
-  }
-
   return (
     <div>
       <h3 style={{ 
@@ -83,6 +80,10 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills })
       }}>
         언어
       </h3>
+      
+      {(!languageSkills || languageSkills.length === 0) ? (
+        <EmptyState text="등록된 어학 정보가 없습니다." />
+      ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {languageSkills.filter(l => l.isVisible !== false).map((languageSkill) => (
@@ -119,6 +120,7 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills })
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };

@@ -45,21 +45,24 @@ const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests }) =>
               
             </div>
 
-            {/* 우측: 금액 */}
+            {/* 우측: 시험명과 점수 */}
             <div style={{ 
               fontSize: '14px',
-              color: '#999',
               whiteSpace: 'nowrap'
             }}>
-              {languageTest.name && (
-                <div style={{ 
-                  fontSize: '13px',
-                  color: '#666'
-                }}>
-                  {languageTest.name}
-                </div>
-              )}
-              {languageTest.score}
+              <div style={{ 
+                fontSize: '13px',
+                color: languageTest.name ? '#666' : '#ddd',
+                marginBottom: '4px'
+              }}>
+                {languageTest.name || '시험명'}
+              </div>
+              <div style={{
+                fontSize: '13px',
+                color: languageTest.score ? '#999' : '#ddd'
+              }}>
+                {languageTest.score || '점수'}
+              </div>
             </div>
           </div>
         ))}

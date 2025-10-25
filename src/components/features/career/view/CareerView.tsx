@@ -4,6 +4,7 @@ import { DateUtil } from '@/utils/DateUtil';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import SalaryView from './SalaryView';
 import dayjs from 'dayjs';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface CareerViewProps {
   careers?: Career[];
@@ -107,10 +108,6 @@ const CareerView: React.FC<CareerViewProps> = ({
     return `${years}년 ${months}개월`;
   };
 
-  if (!careers || careers.length === 0) {
-    return null;
-  }
-
   const totalPeriod = calculateTotalCareerPeriod();
 
   return (
@@ -125,14 +122,20 @@ const CareerView: React.FC<CareerViewProps> = ({
         gap: '10px'
       }}> 
         <span>경력</span>
-        <span style={{
-          fontSize: '14px',
-          fontWeight: '400',
-          color: '#999'
-        }}>
-          {totalPeriod}
-        </span>
+        {careers && careers.length > 0 && (
+          <span style={{
+            fontSize: '14px',
+            fontWeight: '400',
+            color: '#999'
+          }}>
+            {totalPeriod}
+          </span>
+        )}
       </h3>
+      
+      {(!careers || careers.length === 0) ? (
+        <EmptyState text="등록된 경력 정보가 없습니다." />
+      ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {careers.filter(c => c.isVisible !== false).map((career) => (
@@ -167,14 +170,12 @@ const CareerView: React.FC<CareerViewProps> = ({
                 }}>
                   {career.name}
                 </h4>
-                {career.position && (
-                  <div style={{ 
-                    fontSize: '14px',
-                    color: '#999'
-                  }}>
-                    {career.position}
-                  </div>
-                )}
+                <div style={{ 
+                  fontSize: '14px',
+                  color: career.position ? '#999' : '#ddd'
+                }}>
+                  {career.position || '직책'}
+                </div>
               </div>
 
               {/* 우측: 날짜, 재직상태, 연봉 */}
@@ -202,35 +203,39 @@ const CareerView: React.FC<CareerViewProps> = ({
               </div>
             </div>
 
-            {/* 중간: 부서 | 직책 | 직급 */}
-            {(career.department || career.position || career.jobGrade) && (
-              <div style={{ 
-                fontSize: '14px',
-                color: '#666',
-                marginBottom: '12px'
-              }}>
-                {[career.department, career.position, career.jobGrade].filter(Boolean).join(' | ')}
-              </div>
-            )}
+            {/* 중간: 부서 | 직급 */}
+            <div style={{ 
+              fontSize: '14px',
+              marginBottom: '12px',
+              display: 'flex',
+              gap: '8px'
+            }}>
+              <span style={{ color: career.department ? '#666' : '#ddd' }}>
+                {career.department || '부서'}
+              </span>
+              <span style={{ color: '#666' }}>|</span>
+              <span style={{ color: career.jobGrade ? '#666' : '#ddd' }}>
+                {career.jobGrade || '직급'}
+              </span>
+            </div>
 
             {/* 직무 내용 */}
-            {career.description && (
-              <div style={{ 
-                fontSize: '14px',
-                color: '#333',
-                lineHeight: '1.6',
-                whiteSpace: 'pre-wrap',
-                marginBottom: '16px'
-              }}>
-                {career.description}
-              </div>
-            )}
+            <div style={{ 
+              fontSize: '14px',
+              color: career.description ? '#333' : '#ddd',
+              lineHeight: '1.6',
+              whiteSpace: 'pre-wrap',
+              marginBottom: '16px'
+            }}>
+              {career.description || '직무 내용'}
+            </div>
 
             {/* 급여 이력 */}
             <SalaryView salaries={career.salaries || []} />
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };

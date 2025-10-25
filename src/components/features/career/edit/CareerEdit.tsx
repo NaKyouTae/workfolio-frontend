@@ -9,6 +9,7 @@ import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface CareerEditProps {
   careers: ResumeUpdateRequest_CareerRequest[];
@@ -319,13 +320,6 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
     salaries: [],
   });
 
-  // 빈 배열일 때 자동으로 항목 하나 추가
-  useEffect(() => {
-    if (careers.length === 0) {
-      onUpdate([createEmptyCareer()]);
-    }
-  }, []);
-
   // priority를 배열 인덱스와 동기화 (career와 salaries 모두)
   useEffect(() => {
     let needsUpdate = false;
@@ -473,25 +467,29 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
         </div>
       </div>
 
-      <DraggableList
-        items={careers}
-        onReorder={handleCareerReorder}
-        getItemId={(car, idx) => car.career?.id || `career-${idx}`}
-        renderItem={(careerRequest, index) => (
-          <CareerItem
-            key={careerRequest.career?.id || `career-${index}`}
-            careerRequest={careerRequest}
-            index={index}
-            handleCareerChange={handleCareerChange}
-            toggleVisible={toggleVisible}
-            handleDeleteCareer={handleDeleteCareer}
-            handleAddSalary={handleAddSalary}
-            handleSalaryChange={handleSalaryChange}
-            handleDeleteSalary={handleDeleteSalary}
-            handleSalaryReorder={handleSalaryReorder}
-          />
-        )}
-      />
+      {careers.length === 0 ? (
+        <EmptyState text="등록된 경력 정보가 없습니다." />
+      ) : (
+        <DraggableList
+          items={careers}
+          onReorder={handleCareerReorder}
+          getItemId={(car, idx) => car.career?.id || `career-${idx}`}
+          renderItem={(careerRequest, index) => (
+            <CareerItem
+              key={careerRequest.career?.id || `career-${index}`}
+              careerRequest={careerRequest}
+              index={index}
+              handleCareerChange={handleCareerChange}
+              toggleVisible={toggleVisible}
+              handleDeleteCareer={handleDeleteCareer}
+              handleAddSalary={handleAddSalary}
+              handleSalaryChange={handleSalaryChange}
+              handleDeleteSalary={handleDeleteSalary}
+              handleSalaryReorder={handleSalaryReorder}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };

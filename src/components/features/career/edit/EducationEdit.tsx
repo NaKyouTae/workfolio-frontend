@@ -10,6 +10,7 @@ import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface EducationEditProps {
   educations: ResumeUpdateRequest_EducationRequest[];
@@ -129,13 +130,6 @@ const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) =
     priority,
   });
 
-  // 빈 배열일 때 자동으로 항목 하나 추가
-  useEffect(() => {
-    if (educations.length === 0) {
-      onUpdate([createEmptyEducation()]);
-    }
-  }, []);
-
   // priority를 배열 인덱스와 동기화
   useEffect(() => {
     const needsUpdate = educations.some((education, idx) => education.priority !== idx);
@@ -209,21 +203,25 @@ const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) =
         </div>
       </div>
 
-      <DraggableList
-        items={educations}
-        onReorder={handleReorder}
-        getItemId={(edu, idx) => edu.id || `education-${idx}`}
-        renderItem={(education, index) => (
-          <EducationItem
-            key={education.id || `education-${index}`}
-            education={education}
-            index={index}
-            handleEducationChange={handleEducationChange}
-            toggleVisible={toggleVisible}
-            handleDeleteEducation={handleDeleteEducation}
-          />
-        )}
-      />
+      {educations.length === 0 ? (
+        <EmptyState text="등록된 학력 정보가 없습니다." />
+      ) : (
+        <DraggableList
+          items={educations}
+          onReorder={handleReorder}
+          getItemId={(edu, idx) => edu.id || `education-${idx}`}
+          renderItem={(education, index) => (
+            <EducationItem
+              key={education.id || `education-${index}`}
+              education={education}
+              index={index}
+              handleEducationChange={handleEducationChange}
+              toggleVisible={toggleVisible}
+              handleDeleteEducation={handleDeleteEducation}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };

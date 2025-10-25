@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Attachment, Attachment_AttachmentType } from '@/generated/common';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface AttachmentViewProps {
   attachments: Attachment[];
@@ -63,6 +64,9 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments }) => {
         첨부
       </h3>
       
+      {(!attachments || attachments.length === 0) ? (
+        <EmptyState text="등록된 첨부 정보가 없습니다." />
+      ) : (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {attachments.map((attachment) => (
           <div style={{ 
@@ -107,6 +111,7 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments }) => {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };
