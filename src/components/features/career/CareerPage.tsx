@@ -4,6 +4,8 @@ import CareerHome from './CareerHome';
 import { useUser } from '@/hooks/useUser';
 import { useResumeDetails } from '@/hooks/useResumeDetails';
 import { ResumeDetail } from '@/generated/common';
+import CareerContentView from './CareerContentView';
+import CareerContentEdit from './CareerContentEdit';
 
 const CareerPage: React.FC = () => {
   // 사용자 인증 상태
@@ -20,10 +22,17 @@ const CareerPage: React.FC = () => {
     deleteResume,
     exportPDF,
     copyURL,
+    calculateTotalCareer,
   } = useResumeDetails();
 
   // 선택된 이력서
   const [selectedResumeDetail, setSelectedResumeDetail] = useState<ResumeDetail | null>(null);
+  
+  // 편집 모드 상태
+  const [isEditMode, setIsEditMode] = useState(false);
+  
+  // 편집 모드 진입 위치 추적 ('home' | 'view')
+  const [editFrom, setEditFrom] = useState<'home' | 'view'>('view');
 
   // 초기 로드 여부를 추적하는 ref
   const userFetchAttempted = useRef(false);
@@ -44,9 +53,23 @@ const CareerPage: React.FC = () => {
     fetchResumeDetails();
   }, [fetchResumeDetails]);
 
-  // 이력서 상세 보기
+  // 이력서 상세 보기 (View 모드)
   const viewResumeDetail = (resumeDetail: ResumeDetail) => {
     setSelectedResumeDetail(resumeDetail);
+    setIsEditMode(false);
+  };
+
+  // 이력서 편집 (Edit 모드) - Home에서 진입
+  const editResumeDetail = (resumeDetail: ResumeDetail) => {
+    setSelectedResumeDetail(resumeDetail);
+    setIsEditMode(true);
+    setEditFrom('home'); // Home에서 왔음을 기록
+  };
+
+  // 편집 모드 토글 - View에서 진입
+  const toggleEditMode = () => {
+    setIsEditMode(prev => !prev);
+    setEditFrom('view'); // View에서 왔음을 기록
   };
 
   // 선택된 이력서 새로고침
@@ -61,6 +84,23 @@ const CareerPage: React.FC = () => {
     await refreshResumeDetails();
   };
 
+  // 편집 완료 (저장 후 View 모드로 전환)
+  const handleEditComplete = async () => {
+    setIsEditMode(false);
+    await refreshSelectedResumeDetail();
+  };
+
+  // 편집 취소 (이전 화면으로 복귀)
+  const handleEditCancel = () => {
+    if (editFrom === 'home') {
+      // Home에서 왔으면 Home으로 복귀
+      goHome();
+    } else {
+      // View에서 왔으면 View 모드로 전환
+      setIsEditMode(false);
+    }
+  };
+
   // 삭제 성공 후 홈으로 이동
   const handleDeleteSuccess = async () => {
     await refreshResumeDetails();
@@ -70,6 +110,7 @@ const CareerPage: React.FC = () => {
   // 이력서 홈으로 이동
   const goHome = () => {
     setSelectedResumeDetail(null);
+    setIsEditMode(false);
   };
 
   // 로딩 중일 때
@@ -96,18 +137,57 @@ const CareerPage: React.FC = () => {
         onResumeSelect={viewResumeDetail}
         onGoHome={goHome}
       />
-      <CareerHome 
-        selectedResumeDetail={selectedResumeDetail || null}
-        resumeDetails={resumeDetails}
-        onRefresh={refreshSelectedResumeDetail}
-        onGoHome={goHome}
-        onResumeSelect={viewResumeDetail}
-        duplicateResume={duplicateResume}
-        deleteResume={deleteResume}
-        exportPDF={exportPDF}
-        copyURL={copyURL}
-        onDeleteSuccess={handleDeleteSuccess}
-      />
+      
+      {/* 이력서 홈 (목록) */}
+      {!selectedResumeDetail && (
+        <CareerHome 
+          resumeDetails={resumeDetails}
+          onEdit={editResumeDetail}
+          duplicateResume={(resumeId) => duplicateResume(resumeId, handleDeleteSuccess)}
+          deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}
+          exportPDF={exportPDF}
+          copyURL={copyURL}
+          calculateTotalCareer={calculateTotalCareer}
+        />
+      )}
+      
+      {/* 이력서 상세 보기 (View 모드) */}
+      {selectedResumeDetail && !isEditMode && (
+        <div style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column',
+          overflow: 'hidden',
+          backgroundColor: '#f8f9fa',
+          height: '100%',
+          width: '100%'
+        }}>
+          <CareerContentView 
+            selectedResumeDetail={selectedResumeDetail}
+            onEdit={toggleEditMode}
+            duplicateResume={(resumeId) => duplicateResume(resumeId, handleDeleteSuccess)}
+            deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}
+            exportPDF={exportPDF}
+            copyURL={copyURL}
+          />
+        </div>
+      )}
+      
+      {/* 이력서 편집 (Edit 모드) */}
+      {selectedResumeDetail && isEditMode && (
+        <div style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column',
+          overflow: 'hidden'
+        }}>
+          <CareerContentEdit 
+            selectedResumeDetail={selectedResumeDetail}
+            onSave={handleEditComplete}
+            onCancel={handleEditCancel}
+          />
+        </div>
+      )}
     </main>
   );
 };

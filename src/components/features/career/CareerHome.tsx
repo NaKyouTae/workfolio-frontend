@@ -1,82 +1,41 @@
 import React, { useState } from 'react';
 import { ResumeDetail } from '@/generated/common';
-import CareerContent from './CareerContent';
 import DateUtil from '@/utils/DateUtil';
-import dayjs from 'dayjs';
 
 interface CareerHomeProps {
-  selectedResumeDetail: ResumeDetail | null;
   resumeDetails: ResumeDetail[];
-  onRefresh?: () => void;
-  onGoHome?: () => void;
-  onResumeSelect?: (resume: ResumeDetail) => void;
-  duplicateResume: (resumeId?: string) => Promise<boolean>;
-  deleteResume: (resumeId?: string) => Promise<boolean>;
+  onEdit: (resume: ResumeDetail) => void;
+  duplicateResume: (resumeId?: string) => Promise<void>;
+  deleteResume: (resumeId?: string) => Promise<void>;
   exportPDF: (resumeId?: string) => Promise<void>;
-  copyURL: (publicId?: string) => void;
-  onDeleteSuccess?: () => void;
+  copyURL: (publicId?: string) => Promise<void>;
+  calculateTotalCareer: (resume: ResumeDetail) => string;
 }
 
 const CareerHome: React.FC<CareerHomeProps> = ({
-  selectedResumeDetail,
   resumeDetails,
-  onRefresh,
-  onGoHome,
-  onResumeSelect,
+  onEdit,
   duplicateResume,
   deleteResume,
   exportPDF,
   copyURL,
-  onDeleteSuccess,
+  calculateTotalCareer,
 }) => {
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
 
-  // 이력서 상세 페이지 표시
-  if (selectedResumeDetail) {
-    return (
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        backgroundColor: '#f8f9fa',
-        height: '100%',
-        width: '100%'
-      }}>
-        <CareerContent
-          selectedResumeDetail={selectedResumeDetail}
-          onRefresh={onRefresh}
-          duplicateResume={duplicateResume}
-          deleteResume={deleteResume}
-          exportPDF={exportPDF}
-          copyURL={copyURL}
-          onDeleteSuccess={onDeleteSuccess}
-        />
-      </div>
-    );
-  }
-
   // 이력서 편집
   const handleEdit = (resume: ResumeDetail) => {
-    if (onResumeSelect) {
-      onResumeSelect(resume);
-    }
+    onEdit(resume);
   };
 
   // 이력서 복제
-  const handleDuplicate = async (resume: ResumeDetail) => {
-    const success = await duplicateResume(resume.id);
-    if (success && onRefresh) {
-      onRefresh();
-    }
+  const handleDuplicate = (resume: ResumeDetail) => {
+    duplicateResume(resume.id);
   };
 
   // 이력서 삭제
-  const handleDelete = async (resume: ResumeDetail) => {
-    const success = await deleteResume(resume.id);
-    if (success && onGoHome) {
-      onGoHome();
-    }
+  const handleDelete = (resume: ResumeDetail) => {
+    deleteResume(resume.id);
   };
 
   // PDF 내보내기
@@ -87,37 +46,6 @@ const CareerHome: React.FC<CareerHomeProps> = ({
   // URL 공유하기
   const handleCopyURL = (resume: ResumeDetail) => {
     copyURL(resume.publicId);
-  };
-
-  // 총 경력 계산
-  const calculateTotalCareer = (resume: ResumeDetail) => {
-    if (!resume.careers || resume.careers.length === 0) {
-      return '';
-    }
-
-    let totalMonths = 0;
-
-    resume.careers.forEach((career) => {
-      const startedAt = career.startedAt;
-      if (!startedAt) return;
-
-      let endTimestamp: number;
-      if (career.isWorking) {
-        endTimestamp = Date.now();
-      } else {
-        endTimestamp = DateUtil.normalizeTimestamp(career.endedAt || 0);
-      }
-
-      const start = dayjs(DateUtil.normalizeTimestamp(startedAt));
-      const end = dayjs(endTimestamp);
-      const careerMonths = end.diff(start, 'month');
-      totalMonths += careerMonths;
-    });
-
-    const years = Math.floor(totalMonths / 12);
-    const months = totalMonths % 12;
-
-    return `총 경력 ${years}년 ${months}개월`;
   };
 
   // 정렬된 이력서 목록

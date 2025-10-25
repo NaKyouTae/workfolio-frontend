@@ -71,17 +71,19 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
       }}>
         <div
           onClick={onGoHome}
-          style={{
+          style={{ 
             padding: '12px 8px',
             margin: '8px 0',
             backgroundColor: !selectedResumeDetail ? '#e3f2fd' : 'transparent',
-            border: !selectedResumeDetail ? '1px solid #2196f3' : '1px solid transparent',
+            borderTop: !selectedResumeDetail ? '1px solid #2196f3' : '1px solid transparent',
+            borderRight: !selectedResumeDetail ? '1px solid #2196f3' : '1px solid transparent',
+            borderBottom: '1px solid #e0e0e0',
+            borderLeft: !selectedResumeDetail ? '1px solid #2196f3' : '1px solid transparent',
             borderRadius: '6px',
             cursor: 'pointer',
             transition: 'all 0.2s',
             fontSize: '14px',
             color: !selectedResumeDetail ? '#1976d2' : '#333',
-            borderBottom: '1px solid #e0e0e0',
           }}
           onMouseOver={(e) => {
             if (selectedResumeDetail) {
@@ -124,7 +126,10 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
                     fontSize: '13px',
                     color: '#333',
                     backgroundColor: isSelected ? '#e3f2fd' : (resumeDetail.isDefault ? '#e8f5e9' : '#f5f5f5'),
-                    border: isSelected ? '2px solid #2196f3' : (resumeDetail.isDefault ? '1px solid #4caf50' : '1px solid transparent'),
+                    borderTop: isSelected ? '2px solid #2196f3' : (resumeDetail.isDefault ? '1px solid #4caf50' : '1px solid transparent'),
+                    borderRight: isSelected ? '2px solid #2196f3' : (resumeDetail.isDefault ? '1px solid #4caf50' : '1px solid transparent'),
+                    borderBottom: isSelected ? '2px solid #2196f3' : (resumeDetail.isDefault ? '1px solid #4caf50' : '1px solid transparent'),
+                    borderLeft: isSelected ? '2px solid #2196f3' : (resumeDetail.isDefault ? '1px solid #4caf50' : '1px solid transparent'),
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
                   }}

@@ -14,12 +14,10 @@ import DateUtil from '@/utils/DateUtil';
 interface CareerContentViewProps {
   selectedResumeDetail: ResumeDetail | null;
   onEdit: () => void;
-  duplicateResume?: (resumeId?: string) => Promise<boolean>;
-  deleteResume?: (resumeId?: string) => Promise<boolean>;
-  exportPDF?: (resumeId?: string) => Promise<void>;
-  copyURL?: (publicId?: string) => void;
-  onDuplicateSuccess?: () => void; // 복제 성공 시 콜백
-  onDeleteSuccess?: () => void; // 삭제 성공 시 콜백
+  duplicateResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
+  deleteResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
+  exportPDF?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
+  copyURL?: (publicId?: string, onSuccess?: () => void) => Promise<void>;
 }
 
 /**
@@ -33,27 +31,18 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   deleteResume,
   exportPDF,
   copyURL,
-  onDuplicateSuccess, 
-  onDeleteSuccess 
 }) => {
-
   // 복제 핸들러
-  const handleDuplicateResume = async () => {
-    if (!duplicateResume) return;
-    
-    const success = await duplicateResume(selectedResumeDetail?.id);
-    if (success && onDuplicateSuccess) {
-      onDuplicateSuccess();
+  const handleDuplicateResume = () => {
+    if (duplicateResume) {
+      duplicateResume(selectedResumeDetail?.id);
     }
   };
 
   // 삭제 핸들러
-  const handleDeleteResume = async () => {
-    if (!deleteResume) return;
-    
-    const success = await deleteResume(selectedResumeDetail?.id);
-    if (success && onDeleteSuccess) {
-      onDeleteSuccess();
+  const handleDeleteResume = () => {
+    if (deleteResume) {
+      deleteResume(selectedResumeDetail?.id);
     }
   };
 
@@ -270,8 +259,6 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
           />
         </div>
       </div>
-
-      
     </div>
   );
 };

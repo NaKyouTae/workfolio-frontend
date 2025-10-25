@@ -1,0 +1,54 @@
+.overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 40px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.notification {
+  padding: 16px 32px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  pointer-events: auto;
+  animation: slideUp 0.3s ease-out, fadeIn 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
+}
+
+.notification:hover {
+  opacity: 0.9;
+}
+
+.text {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

@@ -5,6 +5,8 @@ import "../../public/assets/css/font.css"
 import "../../public/assets/css/ico.css"
 import "../../public/assets/css/common.css"
 import "../../public/assets/css/style.css"
+import ConfirmDialogProvider from "@/components/ui/ConfirmDialogProvider"
+import NotificationProvider from "@/components/ui/NotificationProvider"
 
 export const metadata = {
     title: "워크폴리오 - 나만의 기록장",
@@ -32,7 +34,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <meta property="og:image" content="" /> */}
                 </Head>
             </head>
-            <body>{children}</body>
+            <body>
+                {children}
+                <ConfirmDialogProvider />
+                <NotificationProvider />
+            </body>
         </html>
     );
 }

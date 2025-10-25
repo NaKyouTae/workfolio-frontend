@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './CareerContentEdit.module.css';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface EditFloatingNavigationProps {
   isLoading: boolean;
@@ -12,10 +13,26 @@ const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
   onSave,
   onCancel
 }) => {
+  const { confirm } = useConfirm();
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleCancel = async () => {
+    const result = await confirm({
+      icon: '/assets/img/ico/ic-warning.png',
+      title: '이력서 작성을 취소하시겠어요?',
+      description: '지금까지 입력한 내용이 저장되지 않아요.\n지금 나가면 처음부터 다시 작성해야 할 수 있어요.',
+      confirmText: '취소하기',
+      cancelText: '돌아가기',
+    });
+
+    if (result) {
+      onCancel?.();
     }
   };
 
@@ -78,7 +95,7 @@ const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
             {isLoading ? '저장 중...' : '이력 저장'}
             </button>
             <button
-            onClick={() => onCancel?.()}
+            onClick={handleCancel}
             className={styles.floatingCancelButton}
             >
             취소

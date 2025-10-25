@@ -1,0 +1,119 @@
+/* 배경 오버레이 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 다이얼로그 */
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 440px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  text-align: center;
+}
+
+/* 컨텐츠 */
+.content {
+  padding: 20px;
+}
+
+/* 아이콘 */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 48px;
+}
+
+.icon svg {
+  width: 64px;
+  height: 64px;
+  color: #999;
+}
+
+/* 제목 */
+.title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+/* 설명 */
+.description {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* 버튼 그룹 */
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  border-top: 1px solid #e0e0e0;
+  padding: 20px;
+}
+
+/* 취소 버튼 */
+.cancelButton {
+  flex: 1;
+  padding: 12px 24px;
+  border-top: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #f5f5f5;
+  border-top-color: #ccc;
+  border-right-color: #ccc;
+  border-bottom-color: #ccc;
+  border-left-color: #ccc;
+}
+
+/* 확인 버튼 */
+.confirmButton {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ffc107;
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirmButton:hover {
+  background-color: #ffb300;
+}
+
