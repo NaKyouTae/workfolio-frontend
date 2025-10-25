@@ -33,13 +33,21 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments }) => {
   };
 
   const getAttachmentTypeIcon = (attachment: Attachment) => {
+
+    if(attachment.fileUrl == "" && attachment.fileName == "") {
+      return <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+        <Image src="/assets/img/ico/ic-empty.png" alt="etc" width={16} height={16} />
+        <span>{'파일명 또는 URL'}</span>
+      </div>
+    }
+
     if(attachment.fileUrl == "" && attachment.fileName != "") {
       return <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => {
         // TODO: 파일 다운로드
         window.open(attachment.fileUrl, '_blank');
       }}>
         <Image src="/assets/img/ico/ic-download.png" alt="etc" width={16} height={16} />
-        <span>{attachment.fileName}</span>
+        <span>{attachment.fileName || '파일명'}</span>
       </div>
     }
 
@@ -48,7 +56,7 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments }) => {
         window.open(attachment.fileUrl, '_blank');
       }}>
         <Image src="/assets/img/ico/ic-open.png" alt="etc" width={16} height={16} />
-        <span>{attachment.fileUrl}</span>
+        <span>{attachment.fileUrl || 'URL'}</span>
       </div>
     }
   };

@@ -223,18 +223,25 @@ const CareerHome: React.FC<CareerHomeProps> = ({
                     <h3 style={{
                       fontSize: '18px',
                       fontWeight: '700',
-                      color: '#000',
+                      color: resume.title ? '#000' : '#ddd',
                       margin: 0
                     }}>
-                      {resume.title}
+                      {resume.title || '제목 없음'}
                     </h3>
                   </div>
                   <div style={{
                     fontSize: '14px',
-                    color: '#666',
-                    marginBottom: '4px'
+                    marginBottom: '4px',
+                    display: 'flex',
+                    gap: '8px'
                   }}>
-                    {resume.job} | {calculateTotalCareer(resume)}
+                    <span style={{ color: resume.job ? '#666' : '#ddd' }}>
+                      {resume.job || '직무'}
+                    </span>
+                    <span style={{ color: '#666' }}>|</span>
+                    <span style={{ color: calculateTotalCareer(resume) ? '#666' : '#ddd' }}>
+                      {calculateTotalCareer(resume) || '경력 없음'}
+                    </span>
                   </div>
                   <div style={{
                     fontSize: '13px',

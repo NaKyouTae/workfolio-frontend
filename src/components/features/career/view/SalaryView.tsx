@@ -48,7 +48,7 @@ const SalaryView: React.FC<SalaryViewProps> = ({ salaries }) => {
                 marginBottom: '4px',
                 width: '150px',
               }}>
-                {DateUtil.formatTimestamp(salary.negotiationDate || 0, 'YYYY. MM. DD.')}
+                {DateUtil.formatTimestamp(salary.negotiationDate || 0, 'YYYY. MM. DD.') || '기간'}
               </div>
               
             </div>
@@ -64,10 +64,14 @@ const SalaryView: React.FC<SalaryViewProps> = ({ salaries }) => {
                   fontSize: '13px',
                   color: '#666'
                 }}>
-                  {salary.memo}
+                  {salary.memo || '메모'}
                 </div>
               )}
-              {(salary.amount).toLocaleString('ko-KR')}만 원
+              <span style={{ color: (salary.amount && salary.amount > 0) ? '#999' : '#ddd' }}>
+                {(salary.amount && salary.amount > 0) 
+                  ? `연봉 ${salary.amount.toLocaleString('ko-KR')}만 원` 
+                  : '연봉'}
+              </span>
             </div>
           </div>
         ))}

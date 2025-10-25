@@ -72,7 +72,7 @@ const EducationView: React.FC<EducationViewProps> = ({
                 color: '#333',
                 marginBottom: '6px'
               }}>
-                {education.name}
+                {education.name || '학교명'}
               </h4>
               <div style={{ 
                 fontSize: '14px',
@@ -97,7 +97,7 @@ const EducationView: React.FC<EducationViewProps> = ({
               fontSize: '13px',
               color: '#999'
             }}>
-              {DateUtil.formatTimestamp(education.startedAt || 0, "YYYY. MM.")} - {DateUtil.formatTimestamp(education.endedAt || 0, "YYYY. MM.")}
+              {DateUtil.formatTimestamp(education.startedAt || 0, "YYYY. MM.") || '시작일'} - {DateUtil.formatTimestamp(education.endedAt || 0, "YYYY. MM.") || '종료일'}
               {education.status && (
                 <>
                   {' | '}

@@ -59,6 +59,10 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
 
   // 활동 기간 표시
   const formatActivityPeriod = (startedAt?: number, endedAt?: number) => {
+    if (!startedAt) {
+      return '기간';
+    }
+    
     const startDate = DateUtil.formatTimestamp(startedAt || 0, 'YYYY. MM. DD.');
     
     if (!endedAt) {
@@ -112,7 +116,7 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
                     color: '#333',
                     margin: 0
                   }}>
-                    {activity.name}
+                    {activity.name || '활동명'}
                   </h4>
                   <span style={{
                     fontSize: '13px',

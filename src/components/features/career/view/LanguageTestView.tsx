@@ -40,7 +40,7 @@ const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests }) =>
                 marginBottom: '4px',
                 width: '150px',
               }}>
-                {DateUtil.formatTimestamp(languageTest.acquiredAt || 0, 'YYYY. MM. DD.')}
+                {DateUtil.formatTimestamp(languageTest.acquiredAt || 0, 'YYYY. MM. DD.') || '기간'}
               </div>
               
             </div>

@@ -53,7 +53,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
                   color: '#333',
                   margin: 0
                 }}>
-                  {project.title}
+                  {project.title || '프로젝트명'}
                 </h4>
                 <span style={{
                   fontSize: '13px',
@@ -69,7 +69,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
                 whiteSpace: 'nowrap',
                 marginLeft: '16px'
               }}>
-                {DateUtil.formatTimestamp(project.startedAt || 0, 'YYYY. MM.')} - {DateUtil.formatTimestamp(project.endedAt || 0, 'YYYY. MM.')} 
+                {DateUtil.formatTimestamp(project.startedAt || 0, 'YYYY. MM.') || '기간'} - {DateUtil.formatTimestamp(project.endedAt || 0, 'YYYY. MM.') || '기간'} 
               </span>
             </div>
 

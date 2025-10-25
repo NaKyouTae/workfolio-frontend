@@ -192,13 +192,13 @@ const CareerView: React.FC<CareerViewProps> = ({
                       {' | '}
                       {getEmploymentTypeLabel(career.employmentType)}
                     </>
-                  )}
-                  {career.salary && career.salary > 0 && (
-                    <>
-                      {' | '}
-                      연봉 {(career.salary).toLocaleString('ko-KR')}만 원
-                    </>
-                  )}
+                  )} 
+                  {' | '}
+                  <span style={{ color: (career.salary && career.salary > 0) ? '#999' : '#ddd' }}>
+                    {(career.salary && career.salary > 0) 
+                      ? `연봉 ${career.salary.toLocaleString('ko-KR')}만 원` 
+                      : '연봉'}
+                  </span>
                 </div>
               </div>
             </div>

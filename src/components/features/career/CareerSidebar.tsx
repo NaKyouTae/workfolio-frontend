@@ -34,7 +34,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden'
-    }}>
+    }}> 
       {/* 이력서 추가 버튼 */}
       <div style={{ 
         padding: '20px', 
@@ -147,7 +147,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
                   }}
                 >
                 <div style={{ fontWeight: resumeDetail.isDefault ? '600' : '400' }}>
-                  {resumeDetail.title}
+                  {resumeDetail.title || '제목 없음'}
                   {resumeDetail.isDefault && (
                     <span style={{ 
                       marginLeft: '6px', 
