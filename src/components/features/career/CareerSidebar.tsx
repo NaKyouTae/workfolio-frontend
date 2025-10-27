@@ -1,28 +1,17 @@
-import React, { useState } from 'react';
-import CareerCreateModal from './CareerCreateModal';
+import React from 'react';
 import { ResumeDetail } from '@/generated/common';
 
 interface CareerSidebarProps {
   resumeDetails: ResumeDetail[];
   selectedResumeDetail: ResumeDetail | null;
-  refreshResumeDetails: () => void;
-  onResumeSelect: (resume: ResumeDetail) => void;
+  onResumeSelect: (resume: ResumeDetail) => void; 
+  onResumeCreated: () => void;
   onGoHome: () => void;
 }
 
-const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshResumeDetails, selectedResumeDetail, onResumeSelect, onGoHome }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
+const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedResumeDetail, onResumeSelect, onResumeCreated, onGoHome }) => {
   const handleResumeCreated = () => {
-    refreshResumeDetails(); // 이력서 목록 새로고침
+    onResumeCreated();
   };
 
   return (
@@ -42,7 +31,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
         backgroundColor: '#f8f9fa'
       }}>
         <button
-          onClick={handleModalOpen}
+          onClick={handleResumeCreated}
           style={{
             width: '100%',
             padding: '12px 16px',
@@ -170,13 +159,6 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, refreshRes
         )}
         </div>
       </div>
-
-      {/* 이력서 생성 모달 */}
-      <CareerCreateModal 
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        onSuccess={handleResumeCreated}
-      />
     </div>
   );
 };

@@ -21,18 +21,7 @@ import {
 import HttpMethod from '@/enums/HttpMethod';
 import { DateUtil } from '@/utils/DateUtil';
 import { normalizeEnumValue } from '@/utils/commonUtils';
-import styles from './CareerContentEdit.module.css';
-
-// Import edit components
-import BasicInfoEdit from './edit/BasicInfoEdit';
-import CareerEdit from './edit/CareerEdit';
-import ProjectEdit from './edit/ProjectEdit';
-import EducationEdit from './edit/EducationEdit';
-import ActivityEdit from './edit/ActivityEdit';
-import LanguageSkillEdit from './edit/LanguageSkillEdit';
-import AttachmentEdit from './edit/AttachmentEdit';
-import EditFloatingNavigation from './EditFloatingNavigation';
-import Input from '@/components/ui/Input';
+import CareerContentForm from './CareerContentForm';
 
 interface CareerContentEditProps {
   selectedResumeDetail: ResumeDetail | null;
@@ -65,7 +54,6 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   const [activities, setActivities] = useState<ResumeUpdateRequest_ActivityRequest[]>([]);
   const [languages, setLanguages] = useState<ResumeUpdateRequest_LanguageSkillRequest[]>([]);
   const [attachments, setAttachments] = useState<ResumeUpdateRequest_AttachmentRequest[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -199,11 +187,9 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   }, [selectedResumeDetail]);
 
   const handleSaveAll = useCallback(async () => {
-    setIsLoading(true);
     try {
       const updateRequest: ResumeUpdateRequest = {
         id: selectedResumeDetail?.id || '',
-        publicId: selectedResumeDetail?.publicId || '',
         title,
         name,
         phone,
@@ -245,122 +231,44 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
     } catch (error) {
       console.error('Error updating resume:', error);
       alert('이력서 수정 중 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
     }
   }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, job, description, isDefault, careers, projects, educations, activities, languages, attachments, onSave]);
 
   return (
-    <div className={styles.container}>
-      <div style={{ 
-        padding: '20px 30px', 
-        backgroundColor: '#fff', 
-        borderBottom: '1px solid #e0e0e0',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <ul>
-            <li>
-                <input
-                    type="checkbox"
-                    checked={isDefault}
-                    onChange={(e) => setIsDefault(e.target.checked)}
-                    id="isDefault"
-                />
-                <label htmlFor="isDefault"><p>기본</p></label>
-            </li>
-          </ul>
-          <div style={{ flex: 1 }}>
-            <Input
-              type="text"
-              label="제목"
-              placeholder="이력서 제목"
-              value={title || '나만의 이력서'}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', position: 'relative', gap: '20px', justifyContent: 'space-between' }}>
-        <div className={styles.content}>
-          {/* 기본 정보 섹션 */}
-          <div id="basic-info">
-            <BasicInfoEdit
-              name={name}
-              birthDate={birthDate}
-              gender={gender}
-              phone={phone}
-              email={email}
-              job={job}
-              description={description}
-              onNameChange={setName}
-              onBirthDateChange={setBirthDate}
-              onGenderChange={setGender}
-              onPhoneChange={setPhone}
-              onEmailChange={setEmail}
-              onJobChange={setJob}
-              onDescriptionChange={setDescription}
-            />
-          </div>
-
-          {/* 학력 섹션 */}
-          <div id="education">
-            <EducationEdit
-              educations={educations}
-              onUpdate={setEducations}
-            />
-          </div>
-
-          {/* 경력 섹션 */}
-          <div id="career">
-            <CareerEdit
-              careers={careers}
-              onUpdate={setCareers}
-            />
-          </div>
-
-          {/* 프로젝트 섹션 */}
-          <div id="project">
-            <ProjectEdit
-              projects={projects}
-              onUpdate={setProjects}
-            />
-          </div>
-
-          {/* 활동 섹션 */}
-          <div id="activity">
-            <ActivityEdit
-              activities={activities}
-              onUpdate={setActivities}
-            />
-          </div>
-
-          {/* 어학 섹션 */}
-          <div id="language">
-            <LanguageSkillEdit
-              languageSkills={languages}
-              onUpdate={setLanguages}
-            />
-          </div>
-
-          {/* 첨부 섹션 */}
-          <div id="attachment">
-            <AttachmentEdit
-              attachments={attachments}
-              onUpdate={setAttachments}
-            />
-          </div>
-        </div>
-
-        {/* 오른쪽 플로팅 네비게이션 */}
-        <EditFloatingNavigation
-          isLoading={isLoading}
-          onSave={handleSaveAll}
-          {...(onCancel && { onCancel })}
-        />
-      </div>
-    </div>
+    <CareerContentForm
+      title={title}
+      isDefault={isDefault}
+      name={name}
+      birthDate={birthDate}
+      gender={gender}
+      phone={phone}
+      email={email}
+      job={job}
+      description={description}
+      careers={careers}
+      projects={projects}
+      educations={educations}
+      activities={activities}
+      languages={languages}
+      attachments={attachments}
+      onTitleChange={setTitle}
+      onIsDefaultChange={setIsDefault}
+      onNameChange={setName}
+      onBirthDateChange={setBirthDate}
+      onGenderChange={setGender}
+      onPhoneChange={setPhone}
+      onEmailChange={setEmail}
+      onJobChange={setJob}
+      onDescriptionChange={setDescription}
+      onCareersChange={setCareers}
+      onProjectsChange={setProjects}
+      onEducationsChange={setEducations}
+      onActivitiesChange={setActivities}
+      onLanguagesChange={setLanguages}
+      onAttachmentsChange={setAttachments}
+      onSave={handleSaveAll}
+        onCancel={onCancel}
+    />
   );
 };
 

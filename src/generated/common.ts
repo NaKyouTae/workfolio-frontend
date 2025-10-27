@@ -28,23 +28,27 @@ export interface Account {
 }
 
 export enum Account_AccountType {
-  ACCOUNT_TYPE_UNSPECIFIED = 0,
-  ACCOUNT_TYPE_BASIC = 1,
-  ACCOUNT_TYPE_PREMIUM = 2,
+  UNKNOWN = 0,
+  UNSPECIFIED = 1,
+  BASIC = 2,
+  PREMIUM = 3,
   UNRECOGNIZED = -1,
 }
 
 export function account_AccountTypeFromJSON(object: any): Account_AccountType {
   switch (object) {
     case 0:
-    case "ACCOUNT_TYPE_UNSPECIFIED":
-      return Account_AccountType.ACCOUNT_TYPE_UNSPECIFIED;
+    case "UNKNOWN":
+      return Account_AccountType.UNKNOWN;
     case 1:
-    case "ACCOUNT_TYPE_BASIC":
-      return Account_AccountType.ACCOUNT_TYPE_BASIC;
+    case "UNSPECIFIED":
+      return Account_AccountType.UNSPECIFIED;
     case 2:
-    case "ACCOUNT_TYPE_PREMIUM":
-      return Account_AccountType.ACCOUNT_TYPE_PREMIUM;
+    case "BASIC":
+      return Account_AccountType.BASIC;
+    case 3:
+    case "PREMIUM":
+      return Account_AccountType.PREMIUM;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -54,12 +58,14 @@ export function account_AccountTypeFromJSON(object: any): Account_AccountType {
 
 export function account_AccountTypeToJSON(object: Account_AccountType): string {
   switch (object) {
-    case Account_AccountType.ACCOUNT_TYPE_UNSPECIFIED:
-      return "ACCOUNT_TYPE_UNSPECIFIED";
-    case Account_AccountType.ACCOUNT_TYPE_BASIC:
-      return "ACCOUNT_TYPE_BASIC";
-    case Account_AccountType.ACCOUNT_TYPE_PREMIUM:
-      return "ACCOUNT_TYPE_PREMIUM";
+    case Account_AccountType.UNKNOWN:
+      return "UNKNOWN";
+    case Account_AccountType.UNSPECIFIED:
+      return "UNSPECIFIED";
+    case Account_AccountType.BASIC:
+      return "BASIC";
+    case Account_AccountType.PREMIUM:
+      return "PREMIUM";
     case Account_AccountType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -85,17 +91,21 @@ export interface Resume {
 }
 
 export enum Resume_Gender {
-  MALE = 0,
-  FEMALE = 1,
+  UNKNOWN = 0,
+  MALE = 1,
+  FEMALE = 2,
   UNRECOGNIZED = -1,
 }
 
 export function resume_GenderFromJSON(object: any): Resume_Gender {
   switch (object) {
     case 0:
+    case "UNKNOWN":
+      return Resume_Gender.UNKNOWN;
+    case 1:
     case "MALE":
       return Resume_Gender.MALE;
-    case 1:
+    case 2:
     case "FEMALE":
       return Resume_Gender.FEMALE;
     case -1:
@@ -107,6 +117,8 @@ export function resume_GenderFromJSON(object: any): Resume_Gender {
 
 export function resume_GenderToJSON(object: Resume_Gender): string {
   switch (object) {
+    case Resume_Gender.UNKNOWN:
+      return "UNKNOWN";
     case Resume_Gender.MALE:
       return "MALE";
     case Resume_Gender.FEMALE:
@@ -164,25 +176,29 @@ export interface Career {
 }
 
 export enum Career_EmploymentType {
-  FULL_TIME = 0,
-  CONTRACT = 1,
-  INTERN = 2,
-  FREELANCER = 3,
+  UNKNOWN = 0,
+  FULL_TIME = 1,
+  CONTRACT = 2,
+  INTERN = 3,
+  FREELANCER = 4,
   UNRECOGNIZED = -1,
 }
 
 export function career_EmploymentTypeFromJSON(object: any): Career_EmploymentType {
   switch (object) {
     case 0:
+    case "UNKNOWN":
+      return Career_EmploymentType.UNKNOWN;
+    case 1:
     case "FULL_TIME":
       return Career_EmploymentType.FULL_TIME;
-    case 1:
+    case 2:
     case "CONTRACT":
       return Career_EmploymentType.CONTRACT;
-    case 2:
+    case 3:
     case "INTERN":
       return Career_EmploymentType.INTERN;
-    case 3:
+    case 4:
     case "FREELANCER":
       return Career_EmploymentType.FREELANCER;
     case -1:
@@ -194,6 +210,8 @@ export function career_EmploymentTypeFromJSON(object: any): Career_EmploymentTyp
 
 export function career_EmploymentTypeToJSON(object: Career_EmploymentType): string {
   switch (object) {
+    case Career_EmploymentType.UNKNOWN:
+      return "UNKNOWN";
     case Career_EmploymentType.FULL_TIME:
       return "FULL_TIME";
     case Career_EmploymentType.CONTRACT:
@@ -249,33 +267,37 @@ export interface Education {
 }
 
 export enum Education_EducationStatus {
-  GRADUATED = 0,
-  GRADUATING = 1,
-  ENROLLED = 2,
-  DROPPED_OUT = 3,
-  COMPLETED = 4,
-  ON_LEAVE = 5,
+  UNKNOWN = 0,
+  GRADUATED = 1,
+  GRADUATING = 2,
+  ENROLLED = 3,
+  DROPPED_OUT = 4,
+  COMPLETED = 5,
+  ON_LEAVE = 6,
   UNRECOGNIZED = -1,
 }
 
 export function education_EducationStatusFromJSON(object: any): Education_EducationStatus {
   switch (object) {
     case 0:
+    case "UNKNOWN":
+      return Education_EducationStatus.UNKNOWN;
+    case 1:
     case "GRADUATED":
       return Education_EducationStatus.GRADUATED;
-    case 1:
+    case 2:
     case "GRADUATING":
       return Education_EducationStatus.GRADUATING;
-    case 2:
+    case 3:
     case "ENROLLED":
       return Education_EducationStatus.ENROLLED;
-    case 3:
+    case 4:
     case "DROPPED_OUT":
       return Education_EducationStatus.DROPPED_OUT;
-    case 4:
+    case 5:
     case "COMPLETED":
       return Education_EducationStatus.COMPLETED;
-    case 5:
+    case 6:
     case "ON_LEAVE":
       return Education_EducationStatus.ON_LEAVE;
     case -1:
@@ -287,6 +309,8 @@ export function education_EducationStatusFromJSON(object: any): Education_Educat
 
 export function education_EducationStatusToJSON(object: Education_EducationStatus): string {
   switch (object) {
+    case Education_EducationStatus.UNKNOWN:
+      return "UNKNOWN";
     case Education_EducationStatus.GRADUATED:
       return "GRADUATED";
     case Education_EducationStatus.GRADUATING:
@@ -322,33 +346,37 @@ export interface Activity {
 }
 
 export enum Activity_ActivityType {
-  EXTERNAL = 0,
-  EDUCATION = 1,
-  CERTIFICATION = 2,
-  AWARD = 3,
-  COMPETITION = 4,
-  ETC = 5,
+  UNKNOWN = 0,
+  EXTERNAL = 1,
+  EDUCATION = 2,
+  CERTIFICATION = 3,
+  AWARD = 4,
+  COMPETITION = 5,
+  ETC = 6,
   UNRECOGNIZED = -1,
 }
 
 export function activity_ActivityTypeFromJSON(object: any): Activity_ActivityType {
   switch (object) {
     case 0:
+    case "UNKNOWN":
+      return Activity_ActivityType.UNKNOWN;
+    case 1:
     case "EXTERNAL":
       return Activity_ActivityType.EXTERNAL;
-    case 1:
+    case 2:
     case "EDUCATION":
       return Activity_ActivityType.EDUCATION;
-    case 2:
+    case 3:
     case "CERTIFICATION":
       return Activity_ActivityType.CERTIFICATION;
-    case 3:
+    case 4:
     case "AWARD":
       return Activity_ActivityType.AWARD;
-    case 4:
+    case 5:
     case "COMPETITION":
       return Activity_ActivityType.COMPETITION;
-    case 5:
+    case 6:
     case "ETC":
       return Activity_ActivityType.ETC;
     case -1:
@@ -360,6 +388,8 @@ export function activity_ActivityTypeFromJSON(object: any): Activity_ActivityTyp
 
 export function activity_ActivityTypeToJSON(object: Activity_ActivityType): string {
   switch (object) {
+    case Activity_ActivityType.UNKNOWN:
+      return "UNKNOWN";
     case Activity_ActivityType.EXTERNAL:
       return "EXTERNAL";
     case Activity_ActivityType.EDUCATION:
@@ -406,73 +436,77 @@ export interface LanguageSkill {
 }
 
 export enum LanguageSkill_Language {
-  ENGLISH = 0,
-  JAPANESE = 1,
-  CHINESE = 2,
-  KOREAN = 3,
-  FRENCH = 4,
-  SPANISH = 5,
-  GERMAN = 6,
-  RUSSIAN = 7,
-  VIETNAMESE = 8,
-  ITALIAN = 9,
-  THAI = 10,
-  ARABIC = 11,
-  PORTUGUESE = 12,
-  INDONESIAN = 13,
-  MONGOLIAN = 14,
-  TURKISH = 15,
+  LANGUAGE_UNKNOWN = 0,
+  ENGLISH = 1,
+  JAPANESE = 2,
+  CHINESE = 3,
+  KOREAN = 4,
+  FRENCH = 5,
+  SPANISH = 6,
+  GERMAN = 7,
+  RUSSIAN = 8,
+  VIETNAMESE = 9,
+  ITALIAN = 10,
+  THAI = 11,
+  ARABIC = 12,
+  PORTUGUESE = 13,
+  INDONESIAN = 14,
+  MONGOLIAN = 15,
+  TURKISH = 16,
   UNRECOGNIZED = -1,
 }
 
 export function languageSkill_LanguageFromJSON(object: any): LanguageSkill_Language {
   switch (object) {
     case 0:
+    case "LANGUAGE_UNKNOWN":
+      return LanguageSkill_Language.LANGUAGE_UNKNOWN;
+    case 1:
     case "ENGLISH":
       return LanguageSkill_Language.ENGLISH;
-    case 1:
+    case 2:
     case "JAPANESE":
       return LanguageSkill_Language.JAPANESE;
-    case 2:
+    case 3:
     case "CHINESE":
       return LanguageSkill_Language.CHINESE;
-    case 3:
+    case 4:
     case "KOREAN":
       return LanguageSkill_Language.KOREAN;
-    case 4:
+    case 5:
     case "FRENCH":
       return LanguageSkill_Language.FRENCH;
-    case 5:
+    case 6:
     case "SPANISH":
       return LanguageSkill_Language.SPANISH;
-    case 6:
+    case 7:
     case "GERMAN":
       return LanguageSkill_Language.GERMAN;
-    case 7:
+    case 8:
     case "RUSSIAN":
       return LanguageSkill_Language.RUSSIAN;
-    case 8:
+    case 9:
     case "VIETNAMESE":
       return LanguageSkill_Language.VIETNAMESE;
-    case 9:
+    case 10:
     case "ITALIAN":
       return LanguageSkill_Language.ITALIAN;
-    case 10:
+    case 11:
     case "THAI":
       return LanguageSkill_Language.THAI;
-    case 11:
+    case 12:
     case "ARABIC":
       return LanguageSkill_Language.ARABIC;
-    case 12:
+    case 13:
     case "PORTUGUESE":
       return LanguageSkill_Language.PORTUGUESE;
-    case 13:
+    case 14:
     case "INDONESIAN":
       return LanguageSkill_Language.INDONESIAN;
-    case 14:
+    case 15:
     case "MONGOLIAN":
       return LanguageSkill_Language.MONGOLIAN;
-    case 15:
+    case 16:
     case "TURKISH":
       return LanguageSkill_Language.TURKISH;
     case -1:
@@ -484,6 +518,8 @@ export function languageSkill_LanguageFromJSON(object: any): LanguageSkill_Langu
 
 export function languageSkill_LanguageToJSON(object: LanguageSkill_Language): string {
   switch (object) {
+    case LanguageSkill_Language.LANGUAGE_UNKNOWN:
+      return "LANGUAGE_UNKNOWN";
     case LanguageSkill_Language.ENGLISH:
       return "ENGLISH";
     case LanguageSkill_Language.JAPANESE:
@@ -523,21 +559,25 @@ export function languageSkill_LanguageToJSON(object: LanguageSkill_Language): st
 }
 
 export enum LanguageSkill_LanguageLevel {
-  DAILY_CONVERSATION = 0,
-  BUSINESS_CONVERSATION = 1,
-  NATIVE_LEVEL = 2,
+  LANGUAGE_LEVEL_UNKNOWN = 0,
+  DAILY_CONVERSATION = 1,
+  BUSINESS_CONVERSATION = 2,
+  NATIVE_LEVEL = 3,
   UNRECOGNIZED = -1,
 }
 
 export function languageSkill_LanguageLevelFromJSON(object: any): LanguageSkill_LanguageLevel {
   switch (object) {
     case 0:
+    case "LANGUAGE_LEVEL_UNKNOWN":
+      return LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN;
+    case 1:
     case "DAILY_CONVERSATION":
       return LanguageSkill_LanguageLevel.DAILY_CONVERSATION;
-    case 1:
+    case 2:
     case "BUSINESS_CONVERSATION":
       return LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION;
-    case 2:
+    case 3:
     case "NATIVE_LEVEL":
       return LanguageSkill_LanguageLevel.NATIVE_LEVEL;
     case -1:
@@ -549,6 +589,8 @@ export function languageSkill_LanguageLevelFromJSON(object: any): LanguageSkill_
 
 export function languageSkill_LanguageLevelToJSON(object: LanguageSkill_LanguageLevel): string {
   switch (object) {
+    case LanguageSkill_LanguageLevel.LANGUAGE_LEVEL_UNKNOWN:
+      return "LANGUAGE_LEVEL_UNKNOWN";
     case LanguageSkill_LanguageLevel.DAILY_CONVERSATION:
       return "DAILY_CONVERSATION";
     case LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION:
@@ -586,29 +628,33 @@ export interface Attachment {
 }
 
 export enum Attachment_AttachmentType {
-  RESUME = 0,
-  PORTFOLIO = 1,
-  CERTIFICATE = 2,
-  CAREER_STATEMENT = 3,
-  ETC = 4,
+  UNKNOWN = 0,
+  RESUME = 1,
+  PORTFOLIO = 2,
+  CERTIFICATE = 3,
+  CAREER_STATEMENT = 4,
+  ETC = 5,
   UNRECOGNIZED = -1,
 }
 
 export function attachment_AttachmentTypeFromJSON(object: any): Attachment_AttachmentType {
   switch (object) {
     case 0:
+    case "UNKNOWN":
+      return Attachment_AttachmentType.UNKNOWN;
+    case 1:
     case "RESUME":
       return Attachment_AttachmentType.RESUME;
-    case 1:
+    case 2:
     case "PORTFOLIO":
       return Attachment_AttachmentType.PORTFOLIO;
-    case 2:
+    case 3:
     case "CERTIFICATE":
       return Attachment_AttachmentType.CERTIFICATE;
-    case 3:
+    case 4:
     case "CAREER_STATEMENT":
       return Attachment_AttachmentType.CAREER_STATEMENT;
-    case 4:
+    case 5:
     case "ETC":
       return Attachment_AttachmentType.ETC;
     case -1:
@@ -620,6 +666,8 @@ export function attachment_AttachmentTypeFromJSON(object: any): Attachment_Attac
 
 export function attachment_AttachmentTypeToJSON(object: Attachment_AttachmentType): string {
   switch (object) {
+    case Attachment_AttachmentType.UNKNOWN:
+      return "UNKNOWN";
     case Attachment_AttachmentType.RESUME:
       return "RESUME";
     case Attachment_AttachmentType.PORTFOLIO:

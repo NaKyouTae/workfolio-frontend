@@ -6,6 +6,7 @@ import { useResumeDetails } from '@/hooks/useResumeDetails';
 import { ResumeDetail } from '@/generated/common';
 import CareerContentView from './CareerContentView';
 import CareerContentEdit from './CareerContentEdit';
+import CareerContentCreate from './CareerContentCreate';
 
 const CareerPage: React.FC = () => {
   // 사용자 인증 상태
@@ -29,7 +30,8 @@ const CareerPage: React.FC = () => {
   
   // 편집 모드 상태
   const [isEditMode, setIsEditMode] = useState(false);
-  
+  const [isCreateMode, setIsCreateMode] = useState(false);
+
   // 편집 모드 진입 위치 추적 ('home' | 'view')
   const [editFrom, setEditFrom] = useState<'home' | 'view'>('view');
 
@@ -104,6 +106,7 @@ const CareerPage: React.FC = () => {
     } else {
       // View에서 왔으면 View 모드로 전환
       setIsEditMode(false);
+      setIsCreateMode(false);
     }
   };
 
@@ -117,6 +120,18 @@ const CareerPage: React.FC = () => {
   const goHome = () => {
     setSelectedResumeDetail(null);
     setIsEditMode(false);
+  };
+
+  // 이력서 생성 모드
+  const handleResumeCreated = () => {
+    setIsCreateMode(true);
+  };
+
+  // 이력서 생성 완료 후 모드 종료
+  const handleResumeCreatedSuccess = async () => {
+    setIsEditMode(false);
+    setIsCreateMode(false);
+    await refreshResumeDetails();
   };
 
   // 로딩 중일 때
@@ -139,13 +154,13 @@ const CareerPage: React.FC = () => {
       <CareerSidebar 
         resumeDetails={resumeDetails}
         selectedResumeDetail={selectedResumeDetail || null}
-        refreshResumeDetails={refreshResumeDetails}
         onResumeSelect={viewResumeDetail}
+        onResumeCreated={handleResumeCreated}
         onGoHome={goHome}
       />
       
       {/* 이력서 홈 (목록) */}
-      {!selectedResumeDetail && (
+      {!selectedResumeDetail && !isCreateMode && (
         <CareerHome 
           resumeDetails={resumeDetails}
           onEdit={editResumeDetail}
@@ -158,7 +173,7 @@ const CareerPage: React.FC = () => {
       )}
       
       {/* 이력서 상세 보기 (View 모드) */}
-      {selectedResumeDetail && !isEditMode && (
+      {selectedResumeDetail && !isEditMode && !isCreateMode && (
         <div style={{ 
           flex: 1, 
           display: 'flex', 
@@ -180,7 +195,7 @@ const CareerPage: React.FC = () => {
       )}
       
       {/* 이력서 편집 (Edit 모드) */}
-      {selectedResumeDetail && isEditMode && (
+      {selectedResumeDetail && isEditMode && !isCreateMode && (
         <div style={{ 
           flex: 1, 
           display: 'flex', 
@@ -194,6 +209,15 @@ const CareerPage: React.FC = () => {
           />
         </div>
       )}
+      {/* 이력서 생성 모달 */}
+      {
+        isCreateMode && (
+          <CareerContentCreate
+            onCancel={handleEditCancel}
+            onSuccess={handleResumeCreatedSuccess}
+          />
+        )
+      }
     </main>
   );
 };

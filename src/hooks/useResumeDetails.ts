@@ -14,6 +14,7 @@ import {
   createSampleLanguageSkills,
   createSampleAttachments
 } from '@/utils/sampleCareerData';
+import { ResumeUpdateRequest } from '@/generated/resume';
 
 /**
  * 로그인 상태 확인 함수
@@ -268,6 +269,34 @@ export const useResumeDetails = () => {
     return `총 경력 ${years}년 ${months}개월`;
   }, []);
 
+  // 이력서 업데이트 (PUT /api/resumes)
+  const updateResume = useCallback(async (data: ResumeUpdateRequest): Promise<ResumeDetail | null> => {
+    try {
+      const response = await fetch(`/api/resumes`, {
+        method: HttpMethod.PUT,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        await fetchResumeDetails(); // 목록 새로고침
+        return result.resume || result;
+      } else {
+        const errorData = await response.json();
+        console.error('이력서 업데이트 실패:', errorData);
+        alert(`업데이트 실패: ${errorData.error || '알 수 없는 오류'}`);
+        return null;
+      }
+    } catch (error) {
+      console.error('이력서 업데이트 중 오류 발생:', error);
+      alert('이력서 업데이트 중 오류가 발생했습니다.');
+      return null;
+    }
+  }, [fetchResumeDetails]);
+
   return {
     resumeDetails,
     isLoading,
@@ -279,6 +308,7 @@ export const useResumeDetails = () => {
     exportPDF,
     copyURL,
     calculateTotalCareer,
+    updateResume,
   };
 };
 

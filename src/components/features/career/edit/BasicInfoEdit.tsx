@@ -136,7 +136,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
           <Input 
             type="text"
             label="소개"
-            placeholder=""
+            placeholder="간단 자기소개 입력"
             value={description}
             onChange={(e) => onDescriptionChange(e.target.value)}
           />

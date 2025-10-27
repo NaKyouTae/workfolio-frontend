@@ -3,13 +3,11 @@ import styles from './CareerContentEdit.module.css';
 import { useConfirm } from '@/hooks/useConfirm';
 
 interface EditFloatingNavigationProps {
-  isLoading: boolean;
   onSave: () => void;
   onCancel?: () => void;
 }
 
 const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
-  isLoading,
   onSave,
   onCancel
 }) => {
@@ -89,10 +87,9 @@ const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
       <div className={styles.floatingActions}>
         <button
             onClick={onSave}
-            disabled={isLoading}
             className={styles.floatingSaveButton}
             >
-            {isLoading ? '저장 중...' : '이력 저장'}
+            저장하기
             </button>
             <button
             onClick={handleCancel}

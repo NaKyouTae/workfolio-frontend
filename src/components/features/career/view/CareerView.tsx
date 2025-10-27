@@ -194,7 +194,20 @@ const CareerView: React.FC<CareerViewProps> = ({
                 color: '#999'
               }}>
                 <div>
-                  {formatCareerPeriod(career.startedAt, career.endedAt, career.isWorking)}
+                  {
+                    career.startedAt && (
+                      <>
+                        {`${DateUtil.formatTimestamp(career.startedAt || 0, "YYYY. MM.")}`}
+                      </>
+                    )
+                  }
+                  {
+                    career.endedAt && (
+                      <>
+                        {`- ${DateUtil.formatTimestamp(career.endedAt || 0, "YYYY. MM.")} (${totalPeriod}123)`}
+                      </>
+                    )
+                  }
                   {career.isWorking && (
                     <>
                       {' | '}
@@ -202,7 +215,7 @@ const CareerView: React.FC<CareerViewProps> = ({
                     </>
                   )} 
                   {
-                    career.salary && career.salary > 0 && (
+                    career.salary > 0 && (
                       <>
                         {' | '}
                         <span style={{ color: (career.salary && career.salary > 0) ? '#999' : '#ddd' }}>
