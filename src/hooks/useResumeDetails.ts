@@ -12,7 +12,14 @@ import {
   createSampleProjects,
   createSampleActivities,
   createSampleLanguageSkills,
-  createSampleAttachments
+  createSampleAttachments,
+  createEmptySampleResume,
+  createEmptySampleCareers,
+  createEmptySampleEducations,
+  createEmptySampleProjects,
+  createEmptySampleActivities,
+  createEmptySampleLanguageSkills,
+  createEmptySampleAttachments
 } from '@/utils/sampleCareerData';
 import { ResumeUpdateRequest } from '@/generated/resume';
 
@@ -29,12 +36,19 @@ const checkIsLoggedIn = (): boolean => {
  */
 const createSampleResumeDetails = (): ResumeDetail[] => {
   const resume = createSampleResume();
+  const emptyResume = createEmptySampleResume();
   const careers = createSampleCareers();
+  const emptyCareers = createEmptySampleCareers();
   const educations = createSampleEducations();
+  const emptyEducations = createEmptySampleEducations();
   const projects = createSampleProjects();
+  const emptyProjects = createEmptySampleProjects();
   const activities = createSampleActivities();
+  const emptyActivities = createEmptySampleActivities();
   const languageSkills = createSampleLanguageSkills();
+  const emptyLanguageSkills = createEmptySampleLanguageSkills();
   const attachments = createSampleAttachments();
+  const emptyAttachments = createEmptySampleAttachments();
 
   return [
     {
@@ -45,6 +59,15 @@ const createSampleResumeDetails = (): ResumeDetail[] => {
       activities,
       languageSkills,
       attachments,
+    },
+    {
+      ...emptyResume,
+      careers: emptyCareers,
+      educations: emptyEducations,
+      projects: emptyProjects,
+      activities: emptyActivities,
+      languageSkills: emptyLanguageSkills,
+      attachments: emptyAttachments,
     }
   ];
 };

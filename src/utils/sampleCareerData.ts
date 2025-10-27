@@ -2075,3 +2075,202 @@ export const createSampleResume11 = () => {
 
   return { resume, careers, educations, projects, activities, languageSkills, attachments };
 };
+
+// 빈 샘플 Resume 데이터 (기본값만)
+export const createEmptySampleResume = (): Resume => {
+  const now = Date.now();
+  const worker = createSampleWorker();
+  
+  return {
+    id: 'resume-empty',
+    title: '',
+    name: '',
+    phone: '',
+    email: '',
+    birthDate: undefined,
+    gender: undefined,
+    job: '',
+    description: '',
+    isDefault: false,
+    publicId: '',
+    worker,
+    createdAt: now,
+    updatedAt: now
+  };
+};
+
+// 빈 샘플 Career 데이터
+export const createEmptySampleCareers = (): Career[] => {
+  const now = Date.now();
+  const resume = createEmptySampleResume();
+  
+  return [
+    {
+      id: 'career-empty',
+      name: '',
+      position: '',
+      department: '',
+      employmentType: undefined,
+      jobGrade: '',
+      job: '',
+      salary: 0,
+      description: '',
+      isVisible: true,
+      priority: 0,
+      startedAt: undefined,
+      endedAt: undefined,
+      isWorking: false,
+      resume,
+      achievements: [],
+      salaries: [
+        {
+          id: 'salary-empty',
+          amount: 0,
+          negotiationDate: undefined,
+          memo: '',
+          isVisible: true,
+          priority: 0,
+          career: undefined,
+          createdAt: now,
+          updatedAt: now
+        }
+      ],
+      createdAt: now,
+      updatedAt: now
+    }
+  ];
+};
+
+// 빈 샘플 Education 데이터
+export const createEmptySampleEducations = (): Education[] => {
+  const now = Date.now();
+  const resume = createEmptySampleResume();
+  
+  return [
+    {
+      id: 'education-empty',
+      major: '',
+      name: '',
+      description: '',
+      status: undefined,
+      startedAt: undefined,
+      endedAt: undefined,
+      isVisible: true,
+      priority: 0,
+      resume,
+      createdAt: now,
+      updatedAt: now
+    }
+  ];
+};
+
+// 빈 샘플 Project 데이터
+export const createEmptySampleProjects = (): Project[] => {
+  const now = Date.now();
+  const resume = createEmptySampleResume();
+  
+  return [
+    {
+      id: 'project-empty',
+      title: '',
+      affiliation: '',
+      role: '',
+      description: '',
+      startedAt: undefined,
+      endedAt: undefined,
+      isVisible: true,
+      priority: 0,
+      resume,
+      createdAt: now,
+      updatedAt: now
+    }
+  ];
+};
+
+// 빈 샘플 Activity 데이터
+export const createEmptySampleActivities = (): Activity[] => {
+  const now = Date.now();
+  const resume = createEmptySampleResume();
+  
+  return [
+    {
+      id: 'activity-empty',
+      type: undefined,
+      name: '',
+      organization: '',
+      certificateNumber: '',
+      startedAt: undefined,
+      endedAt: undefined,
+      description: '',
+      isVisible: true,
+      priority: 0,
+      resume,
+      createdAt: now,
+      updatedAt: now
+    }
+  ];
+};
+
+// 빈 샘플 LanguageSkill 데이터
+export const createEmptySampleLanguageSkills = (): LanguageSkill[] => {
+  const now = Date.now();
+  const resume = createEmptySampleResume();
+  
+  return [
+    {
+      id: 'lang-empty',
+      language: undefined,
+      level: undefined,
+      isVisible: true,
+      priority: 0,
+      resume,
+      languageTests: [
+        {
+          id: 'lang-test-empty',
+          name: '',
+          score: '',
+          acquiredAt: undefined,
+          isVisible: true,
+          priority: 0,
+          createdAt: now,
+          updatedAt: now
+        }
+      ],
+      createdAt: now,
+      updatedAt: now
+    }
+  ];
+};
+
+// 빈 샘플 Attachment 데이터
+export const createEmptySampleAttachments = (): Attachment[] => {
+  const now = Date.now();
+  const resume = createEmptySampleResume();
+  
+  return [
+    {
+      id: 'attachment-empty',
+      type: undefined,
+      fileName: '',
+      fileUrl: '',
+      isVisible: true,
+      priority: 0,
+      resume,
+      createdAt: now,
+      updatedAt: now
+    }
+  ];
+};
+
+// 빈 ResumeDetail 데이터 생성
+export const createEmptySampleResumeDetails = () => {
+  const resume = createEmptySampleResume();
+  const careers = createEmptySampleCareers();
+  const educations = createEmptySampleEducations();
+  const projects = createEmptySampleProjects();
+  const activities = createEmptySampleActivities();
+  const languageSkills = createEmptySampleLanguageSkills();
+  const attachments = createEmptySampleAttachments();
+
+  return { resume, careers, educations, projects, activities, languageSkills, attachments };
+};
