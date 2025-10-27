@@ -66,28 +66,40 @@ const EducationView: React.FC<EducationViewProps> = ({
           >
             {/* 좌측: Title, Major, Description */}
             <div style={{ flex: 1 }}>
-              <h4 style={{ 
-                fontSize: '16px', 
-                fontWeight: '600', 
-                color: '#333',
-                marginBottom: '6px'
-              }}>
-                {education.name || '학교명'}
-              </h4>
-              <div style={{ 
-                fontSize: '14px',
-                color: education.major ? '#666' : '#ddd',
-                marginBottom: '4px'
-              }}>
-                {education.major || '전공'}
-              </div>
-              <div style={{ 
-                fontSize: '13px',
-                color: education.description ? '#999' : '#ddd',
-                marginTop: '8px'
-              }}>
-                {education.description || '내용'}
-              </div>
+              {
+                education.name && (
+                  <h4 style={{ 
+                    fontSize: '16px', 
+                    fontWeight: '600', 
+                    color: '#333', 
+                    marginBottom: '6px'
+                  }}>
+                    {education.name}
+                  </h4>
+                )
+              }
+              {
+                education.major && (
+                  <div style={{ 
+                    fontSize: '14px',
+                    color: education.major ? '#666' : '#ddd',
+                    marginBottom: '4px'
+                  }}>
+                    {education.major}
+                  </div>
+                )
+              }
+              {
+                education.description && (
+                  <div style={{ 
+                    fontSize: '13px',
+                    color: education.description ? '#999' : '#ddd',
+                    marginTop: '8px'
+                  }}>
+                    {education.description}
+                  </div>
+                )
+              }
             </div>
 
             {/* 우측: Date Range | Status */}
@@ -97,7 +109,20 @@ const EducationView: React.FC<EducationViewProps> = ({
               fontSize: '13px',
               color: '#999'
             }}>
-              {DateUtil.formatTimestamp(education.startedAt || 0, "YYYY. MM.") || '시작일'} - {DateUtil.formatTimestamp(education.endedAt || 0, "YYYY. MM.") || '종료일'}
+              {
+                education.startedAt && education.endedAt && (
+                  <>
+                    {`${DateUtil.formatTimestamp(education.startedAt || 0, "YYYY. MM.")}`}
+                  </>
+                )
+              }
+              {
+                education.startedAt && education.endedAt && (
+                  <>
+                    {`- ${DateUtil.formatTimestamp(education.endedAt || 0, "YYYY. MM.")}`}
+                  </>
+                )
+              }
               {education.status && (
                 <>
                   {' | '}

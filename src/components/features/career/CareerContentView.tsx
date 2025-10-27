@@ -140,9 +140,13 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                       <label htmlFor="isDefault"><p>{selectedResumeDetail?.isDefault ? '기본' : ''}</p></label>
                   </li>
                 </ul>
-                <h1 className={styles.title}>
-                  {selectedResumeDetail?.title}
-                </h1>
+                {
+                  selectedResumeDetail?.title && (
+                    <h1 className={styles.title}>
+                      {selectedResumeDetail?.title}
+                    </h1>
+                  )
+                }
                 {selectedResumeDetail?.updatedAt && (
                   <span style={{ fontSize: '14px', fontWeight: '400', color: '#999' }}>
                     최종 수정일 : {DateUtil.formatTimestamp(selectedResumeDetail.updatedAt, 'YYYY. MM. DD.')}
@@ -183,35 +187,73 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
             {/* 기본 정보 섹션 */}
             <div id="basic-info" className={styles.basicInfo}>
               <h2 className={styles.userName}>
-                {selectedResumeDetail?.name} <span style={{ color: selectedResumeDetail?.job ? 'inherit' : '#ddd' }}>{selectedResumeDetail?.job || '직무'}</span>
+                {
+                  selectedResumeDetail?.name && (
+                    <span>
+                      {selectedResumeDetail?.name}
+                    </span>
+                  )
+                }
+                {
+                  selectedResumeDetail?.job && (
+                    <span style={{ color: selectedResumeDetail?.job ? 'inherit' : '#ddd' }}>{selectedResumeDetail?.job}</span>
+                  )
+                }                
               </h2>
               <div className={styles.userMeta}>
-                <span style={{ color: selectedResumeDetail?.birthDate ? 'inherit' : '#ddd' }}>
-                  {selectedResumeDetail?.birthDate ? formatBirthDate(selectedResumeDetail.birthDate) : '생년월일'}
-                </span>
-                <span>|</span>
-                <span style={{ color: selectedResumeDetail?.gender ? 'inherit' : '#ddd' }}>
-                  {selectedResumeDetail?.gender ? getGenderLabel(selectedResumeDetail.gender) : '성별'}
-                </span>
-                <span>|</span>
-                <span style={{ color: selectedResumeDetail?.phone ? 'inherit' : '#ddd' }}>
-                  {selectedResumeDetail?.phone ? formatPhoneNumber(selectedResumeDetail.phone) : '전화번호'}
-                </span>
-                <span>|</span>
-                <span style={{ color: selectedResumeDetail?.email ? 'inherit' : '#ddd' }}>
-                  {selectedResumeDetail?.email || '이메일'}
-                </span>
+                {
+                  selectedResumeDetail?.birthDate && (
+                    <span style={{ color: selectedResumeDetail?.birthDate ? 'inherit' : '#ddd' }}>
+                    {formatBirthDate(selectedResumeDetail.birthDate)}
+                  </span>
+                  )
+                }
+                
+                {
+                  selectedResumeDetail?.gender && (
+                    <>
+                      <span>|</span>
+                      <span style={{ color: selectedResumeDetail?.gender ? 'inherit' : '#ddd' }}>
+                        {getGenderLabel(selectedResumeDetail.gender)}
+                      </span>
+                    </>
+                  )
+                }
+                {
+                  selectedResumeDetail?.phone && (
+                    <>
+                      <span>|</span>
+                      <span style={{ color: selectedResumeDetail?.phone ? 'inherit' : '#ddd' }}>
+                        {formatPhoneNumber(selectedResumeDetail.phone)}
+                      </span>
+                    </>
+                  )
+                }
+                {
+                  selectedResumeDetail?.email && (
+                    <>
+                      <span>|</span>
+                      <span style={{ color: selectedResumeDetail?.email ? 'inherit' : '#ddd' }}>
+                        {selectedResumeDetail?.email}
+                      </span>
+                    </>
+                  )
+                }
               </div>
 
               {/* 자기소개 */}
-              <div>
-                <h3 className={styles.introTitle}>
-                  -----
-                </h3>
-                <p className={styles.introText} style={{ color: selectedResumeDetail?.description ? 'inherit' : '#ddd' }}>
-                  {selectedResumeDetail?.description || '자기소개'}
-                </p>
-              </div>
+              {
+                selectedResumeDetail?.description && (
+                  <div>
+                    <h3 className={styles.introTitle}>
+                      -----
+                    </h3>
+                    <p className={styles.introText} style={{ color: selectedResumeDetail?.description ? 'inherit' : '#ddd' }}>
+                      {selectedResumeDetail?.description}
+                    </p>
+                  </div>
+                )
+              }
             </div>
 
             {/* 학력 섹션 */}

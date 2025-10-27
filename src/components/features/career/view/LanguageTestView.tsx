@@ -34,15 +34,18 @@ const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests }) =>
           >
             {/* 좌측: 날짜와 메모 */}
             <div>
-              <div style={{ 
-                fontSize: '14px',
-                color: '#333',
-                marginBottom: '4px',
-                width: '150px',
-              }}>
-                {DateUtil.formatTimestamp(languageTest.acquiredAt || 0, 'YYYY. MM. DD.') || '기간'}
-              </div>
-              
+              {
+                languageTest.acquiredAt && (
+                  <div style={{ 
+                    fontSize: '14px',
+                    color: '#333',
+                    marginBottom: '4px',
+                    width: '150px',
+                  }}>
+                    {DateUtil.formatTimestamp(languageTest.acquiredAt || 0, 'YYYY. MM. DD.')}
+                  </div>
+                )
+              }
             </div>
 
             {/* 우측: 시험명과 점수 */}
@@ -50,19 +53,28 @@ const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests }) =>
               fontSize: '14px',
               whiteSpace: 'nowrap'
             }}>
-              <div style={{ 
-                fontSize: '13px',
-                color: languageTest.name ? '#666' : '#ddd',
-                marginBottom: '4px'
-              }}>
-                {languageTest.name || '시험명'}
-              </div>
-              <div style={{
-                fontSize: '13px',
-                color: languageTest.score ? '#999' : '#ddd'
-              }}>
-                {languageTest.score || '점수'}
-              </div>
+              {
+                languageTest.name && (
+                  <div style={{ 
+                    fontSize: '13px',
+                    color: languageTest.name ? '#666' : '#ddd',
+                    marginBottom: '4px'
+                  }}>
+                    {languageTest.name}
+                  </div>
+                )
+              }
+              {
+                languageTest.score && (
+                  <div style={{ 
+                    fontSize: '13px',
+                    color: languageTest.score ? '#999' : '#ddd',
+                    marginBottom: '4px'
+                  }}>
+                    {languageTest.score}
+                  </div>
+                )
+              }
             </div>
           </div>
         ))}

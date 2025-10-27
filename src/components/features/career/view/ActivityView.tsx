@@ -59,10 +59,6 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
 
   // 활동 기간 표시
   const formatActivityPeriod = (startedAt?: number, endedAt?: number) => {
-    if (!startedAt) {
-      return '기간';
-    }
-    
     const startDate = DateUtil.formatTimestamp(startedAt || 0, 'YYYY. MM. DD.');
     
     if (!endedAt) {
@@ -110,68 +106,93 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
                   alignItems: 'baseline',
                   gap: '12px'
                 }}>
-                  <h4 style={{ 
-                    fontSize: '16px', 
-                    fontWeight: '600', 
-                    color: '#333',
-                    margin: 0
-                  }}>
-                    {activity.name || '활동명'}
-                  </h4>
-                  <span style={{
-                    fontSize: '13px',
-                    color: activity.organization ? '#999' : '#ddd',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    {activity.organization || '기관'}
-                  </span>
+                  {
+                    activity.type && (
+                      <h4 style={{ 
+                        fontSize: '16px', 
+                        fontWeight: '600', 
+                        color: '#333',
+                        margin: 0
+                      }}>
+                        {activity.name}
+                      </h4>
+                    )
+                  }
+                  
+                  {
+                    activity.organization && (
+                      <span style={{
+                        fontSize: '13px',
+                        color: activity.organization ? '#999' : '#ddd',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {activity.organization}
+                      </span>
+                    )
+                  }
+                  
                 </div>
               </div>
               <div>
-                <span style={{
-                  fontSize: '13px',
-                  color: '#999',
-                  whiteSpace: 'nowrap',
-                  marginLeft: '16px'
-                }}>
-                  {formatActivityPeriod(activity.startedAt, activity.endedAt)}
-                </span>
-                <span style={{
-                  fontSize: '13px',
-                  color: '#999',
-                  whiteSpace: 'nowrap',
-                  marginLeft: '8px',
-                  marginRight: '8px',
-                }}>|</span>
-                <span style={{
-                  padding: '2px 8px',
-                  backgroundColor: getActivityTypeBadgeColor(activity.type),
-                  color: '#fff',
-                  borderRadius: '4px',
-                  fontSize: '11px',
-                  fontWeight: '500'
-                }}>
-                  {getActivityTypeLabel(activity.type)}
-                </span>
+                {
+                  activity.startedAt && activity.endedAt && (
+                    <span style={{
+                      fontSize: '13px',
+                      color: '#999',
+                      whiteSpace: 'nowrap',
+                      marginLeft: '16px'
+                    }}>
+                      {formatActivityPeriod(activity.startedAt, activity.endedAt)}
+                    </span>
+                  )
+                }
+                {
+                  activity.type && (
+                    <>  
+                      <span style={{
+                        fontSize: '13px',
+                        color: '#999',
+                        whiteSpace: 'nowrap',
+                        marginLeft: '8px',
+                        marginRight: '8px',
+                      }}>|</span>
+                      <span style={{
+                        padding: '2px 8px',
+                        backgroundColor: getActivityTypeBadgeColor(activity.type),
+                        color: '#fff',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: '500'
+                      }}>
+                        {getActivityTypeLabel(activity.type)}
+                      </span>
+                    </>
+                  )
+                }
               </div>
             </div>
-
-            <div style={{ 
-              fontSize: '14px',
-              color: activity.certificateNumber ? '#666' : '#ddd',
-              marginBottom: '4px'
-            }}>
-              {activity.certificateNumber ? `취득번호 ${activity.certificateNumber}` : '취득번호'}
-            </div>
-
-            <div style={{ 
-              fontSize: '14px',
-              color: activity.description ? '#666' : '#ddd',
-              lineHeight: '1.6',
-              whiteSpace: 'pre-wrap'
-            }}>
-              {activity.description || '내용'}
-            </div>
+            {
+              activity.certificateNumber && (
+                <div style={{ 
+                  fontSize: '14px',
+                  color: activity.certificateNumber ? '#666' : '#ddd',
+                  marginBottom: '4px'
+                }}>
+                  {`취득번호 ${activity.certificateNumber}`}
+                </div>
+              )
+            }
+            {
+              activity.description && (
+                <div style={{ 
+                  fontSize: '14px',
+                  color: activity.description ? '#666' : '#ddd',
+                  marginBottom: '4px'
+                }}>
+                  {activity.description}
+                </div>
+              )
+            }
           </div>
         ))}
       </div>

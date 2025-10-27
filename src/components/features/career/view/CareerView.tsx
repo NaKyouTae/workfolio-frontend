@@ -162,20 +162,28 @@ const CareerView: React.FC<CareerViewProps> = ({
                 alignItems: 'baseline',
                 gap: '12px'
               }}>
-                <h4 style={{ 
-                  fontSize: '18px', 
-                  fontWeight: '700', 
-                  color: '#000',
-                  margin: 0
-                }}>
-                  {career.name}
-                </h4>
-                <div style={{ 
-                  fontSize: '14px',
-                  color: career.position ? '#999' : '#ddd'
-                }}>
-                  {career.position || '직책'}
-                </div>
+                {
+                  career.name && (
+                    <h4 style={{ 
+                      fontSize: '18px', 
+                      fontWeight: '700', 
+                      color: '#000', 
+                      margin: 0
+                    }}>
+                      {career.name}
+                    </h4>
+                  )
+                }
+                {
+                  career.position && (
+                    <div style={{ 
+                      fontSize: '14px',
+                      color: career.position ? '#999' : '#ddd'
+                    }}>
+                      {career.position}
+                    </div>
+                  )
+                }
               </div>
 
               {/* 우측: 날짜, 재직상태, 연봉 */}
@@ -193,12 +201,16 @@ const CareerView: React.FC<CareerViewProps> = ({
                       {getEmploymentTypeLabel(career.employmentType)}
                     </>
                   )} 
-                  {' | '}
-                  <span style={{ color: (career.salary && career.salary > 0) ? '#999' : '#ddd' }}>
-                    {(career.salary && career.salary > 0) 
-                      ? `연봉 ${career.salary.toLocaleString('ko-KR')}만 원` 
-                      : '연봉'}
-                  </span>
+                  {
+                    career.salary && career.salary > 0 && (
+                      <>
+                        {' | '}
+                        <span style={{ color: (career.salary && career.salary > 0) ? '#999' : '#ddd' }}>
+                          {(career.salary && career.salary > 0 && `연봉 ${career.salary.toLocaleString('ko-KR')}만 원`)}
+                        </span>
+                      </>
+                    )
+                  }
                 </div>
               </div>
             </div>
@@ -210,26 +222,37 @@ const CareerView: React.FC<CareerViewProps> = ({
               display: 'flex',
               gap: '8px'
             }}>
-              <span style={{ color: career.department ? '#666' : '#ddd' }}>
-                {career.department || '부서'}
-              </span>
-              <span style={{ color: '#666' }}>|</span>
-              <span style={{ color: career.jobGrade ? '#666' : '#ddd' }}>
-                {career.jobGrade || '직급'}
-              </span>
+              {
+                career.department && (
+                  <span style={{ color: career.department ? '#666' : '#ddd' }}>
+                    {career.department}
+                  </span>
+                )
+              }
+              {
+                career.department && (
+                  <>
+                    <span style={{ color: '#666' }}>|</span>
+                    <span style={{ color: career.jobGrade ? '#666' : '#ddd' }}>
+                      {career.jobGrade}
+                    </span>
+                  </>
+                )
+              }
             </div>
-
-            {/* 직무 내용 */}
-            <div style={{ 
-              fontSize: '14px',
-              color: career.description ? '#333' : '#ddd',
-              lineHeight: '1.6',
-              whiteSpace: 'pre-wrap',
-              marginBottom: '16px'
-            }}>
-              {career.description || '직무 내용'}
-            </div>
-
+            {
+              career.description && (
+                <div style={{ 
+                  fontSize: '14px',
+                  color: career.description ? '#333' : '#ddd',
+                  lineHeight: '1.6',
+                  whiteSpace: 'pre-wrap',
+                  marginBottom: '16px'
+                }}>
+                  {career.description}
+                </div>
+              )
+            }
             {/* 급여 이력 */}
             <SalaryView salaries={career.salaries || []} />
           </div>

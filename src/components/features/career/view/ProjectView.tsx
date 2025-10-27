@@ -47,50 +47,79 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
                 alignItems: 'baseline',
                 gap: '12px'
               }}>
-                <h4 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: '600', 
-                  color: '#333',
-                  margin: 0
-                }}>
-                  {project.title || '프로젝트명'}
-                </h4>
-                <span style={{
-                  fontSize: '13px',
-                  color: project.affiliation ? '#999' : '#ddd',
-                  whiteSpace: 'nowrap'
-                }}>
-                  {project.affiliation || '소속'}
-                </span>
+                { project.title && (
+                    <h4 style={{ 
+                      fontSize: '16px', 
+                      fontWeight: '600', 
+                      color: '#333', 
+                      margin: 0
+                    }}>
+                      {project.title}
+                    </h4>
+                  )
+                }
+                {
+                  project.affiliation && (
+                    <span style={{
+                      fontSize: '13px',
+                      color: project.affiliation ? '#999' : '#ddd',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {project.affiliation}
+                    </span>
+                  )
+                }
               </div>
-              <span style={{
-                fontSize: '13px',
-                color: '#999',
-                whiteSpace: 'nowrap',
-                marginLeft: '16px'
-              }}>
-                {DateUtil.formatTimestamp(project.startedAt || 0, 'YYYY. MM.') || '기간'} - {DateUtil.formatTimestamp(project.endedAt || 0, 'YYYY. MM.') || '기간'} 
-              </span>
+              {
+                project.startedAt && (
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#999',
+                    whiteSpace: 'nowrap',
+                    marginLeft: '16px'
+                  }}>
+                    {DateUtil.formatTimestamp(project.startedAt || 0, 'YYYY. MM.')}
+                  </span>
+                )
+              }
+              {
+                project.endedAt && (
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#999',
+                    whiteSpace: 'nowrap',
+                    marginLeft: '16px'
+                  }}>
+                    - {DateUtil.formatTimestamp(project.endedAt || 0, 'YYYY. MM.')}
+                  </span>
+                )
+              }
             </div>
-
-            <div style={{ 
-              fontSize: '14px',
-              color: project.role ? '#666' : '#ddd',
-              lineHeight: '1.6',
-              whiteSpace: 'pre-wrap',
-              marginBottom: '4px'
-            }}>
-              {project.role || '역할'}
-            </div>
-
-            <div style={{ 
-              fontSize: '14px',
-              color: project.description ? '#666' : '#ddd',
-              lineHeight: '1.6',
-              whiteSpace: 'pre-wrap'
-            }}>
-              {project.description || '상세 설명'}
-            </div>
+            {
+              project.role && (
+                <div style={{ 
+                  fontSize: '14px',
+                  color: project.role ? '#666' : '#ddd',
+                  lineHeight: '1.6',
+                  whiteSpace: 'pre-wrap',
+                  marginBottom: '4px'
+                }}>
+                  {project.role}
+                </div>
+              )
+            }
+            {
+              project.description && (
+                <div style={{ 
+                  fontSize: '14px',
+                  color: project.description ? '#666' : '#ddd',
+                  lineHeight: '1.6',
+                  whiteSpace: 'pre-wrap'
+                }}>
+                  {project.description}
+                </div>
+              )
+            }
           </div>
         ))}
       </div>

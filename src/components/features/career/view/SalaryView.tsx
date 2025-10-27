@@ -42,14 +42,18 @@ const SalaryView: React.FC<SalaryViewProps> = ({ salaries }) => {
           >
             {/* 좌측: 날짜와 메모 */}
             <div>
-              <div style={{ 
-                fontSize: '14px',
-                color: '#333',
-                marginBottom: '4px',
-                width: '150px',
-              }}>
-                {DateUtil.formatTimestamp(salary.negotiationDate || 0, 'YYYY. MM. DD.') || '기간'}
-              </div>
+              {
+                salary.negotiationDate && (
+                  <div style={{ 
+                    fontSize: '14px',
+                    color: '#333',
+                    marginBottom: '4px',
+                    width: '150px',
+                  }}>
+                    {DateUtil.formatTimestamp(salary.negotiationDate || 0, 'YYYY. MM. DD.')}
+                  </div>
+                )
+              }
               
             </div>
 
@@ -64,14 +68,18 @@ const SalaryView: React.FC<SalaryViewProps> = ({ salaries }) => {
                   fontSize: '13px',
                   color: '#666'
                 }}>
-                  {salary.memo || '메모'}
+                  {salary.memo}
                 </div>
               )}
-              <span style={{ color: (salary.amount && salary.amount > 0) ? '#999' : '#ddd' }}>
-                {(salary.amount && salary.amount > 0) 
-                  ? `연봉 ${salary.amount.toLocaleString('ko-KR')}만 원` 
-                  : '연봉'}
-              </span>
+              {
+                salary.amount && salary.amount > 0 && (
+                  <span style={{ color: (salary.amount && salary.amount > 0) ? '#999' : '#ddd' }}>
+                    {(salary.amount && salary.amount > 0) 
+                      ? `연봉 ${salary.amount.toLocaleString('ko-KR')}만 원` 
+                      : '연봉'}
+                  </span>
+                )
+              }
             </div>
           </div>
         ))}

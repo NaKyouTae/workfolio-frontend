@@ -95,23 +95,31 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills })
               marginBottom: '16px'
             }}
           >
-            <h4 style={{ 
-              fontSize: '16px', 
-              fontWeight: '600', 
-              color: '#333',
-              marginBottom: '8px'
-            }}>
-              {getLanguageLabel(languageSkill.language)}
-            </h4>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{
-                fontSize: '13px',
-                color: '#999',
-                whiteSpace: 'nowrap',                
-              }}>
-                {getLevelLabel(languageSkill.level)}
-              </span>
-            </div>
+            {
+              languageSkill.language && (
+                <h4 style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '600', 
+                  color: '#333', 
+                  marginBottom: '8px'
+                }}>
+                  {getLanguageLabel(languageSkill.language)}
+                </h4>
+              )
+            }
+            {
+              languageSkill.level && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#999',
+                    whiteSpace: 'nowrap',                
+                  }}>
+                    {getLevelLabel(languageSkill.level)}
+                  </span>
+                </div>
+              )
+            }
 
             {/* 어학 시험 */}
             {languageSkill.languageTests && languageSkill.languageTests.length > 0 && (

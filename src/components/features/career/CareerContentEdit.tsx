@@ -275,7 +275,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
               type="text"
               label="제목"
               placeholder="이력서 제목"
-              value={title}
+              value={title || '나만의 이력서'}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
