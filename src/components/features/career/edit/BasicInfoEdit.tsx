@@ -2,9 +2,8 @@ import React from 'react';
 import { Resume_Gender } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import DatePicker from '@/components/ui/DatePicker';
-import { DateUtil } from '@/utils/DateUtil';
-import { compareEnumValue } from '@/utils/commonUtils';
 import styles from '../CareerContentEdit.module.css';
+import { compareEnumValue } from '@/utils/commonUtils';
 
 interface BasicInfoEditProps {
   name: string;
@@ -24,6 +23,35 @@ interface BasicInfoEditProps {
 }
 
 /**
+ * 전화번호 포맷팅 함수
+ */
+const formatPhoneNumber = (phone?: string): string => {
+  if (!phone) return '';
+  
+  // 숫자만 추출
+  const numbers = phone.replace(/[^0-9]/g, '');
+  
+  // 길이에 따라 포맷팅
+  if (numbers.length === 11) {
+    // 010-1234-5678
+    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7)}`;
+  } else if (numbers.length === 10) {
+    // 02-1234-5678 또는 031-123-4567
+    if (numbers.startsWith('02')) {
+      return `${numbers.slice(0, 2)}-${numbers.slice(2, 6)}-${numbers.slice(6)}`;
+    } else {
+      return `${numbers.slice(0, 3)}-${numbers.slice(3, 6)}-${numbers.slice(6)}`;
+    }
+  } else if (numbers.length === 9) {
+    // 02-123-4567
+    return `${numbers.slice(0, 2)}-${numbers.slice(2, 5)}-${numbers.slice(5)}`;
+  }
+  
+  // 그 외의 경우 원본 반환
+  return phone;
+};
+
+/**
  * 기본 정보 섹션을 관리하는 컴포넌트
  * 이름, 생년월일, 성별, 전화번호, 이메일
  */
@@ -35,12 +63,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   phone,
   email,
   description,
-  onNameChange,
   onJobChange,
-  onBirthDateChange,
-  onGenderChange,
-  onPhoneChange,
-  onEmailChange,
   onDescriptionChange,
 }) => {
   return (
@@ -55,9 +78,8 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
           <Input 
             type="text"
             label="이름"
-            placeholder="홍길동"
+            readOnly={true}
             value={name}
-            onChange={(e) => onNameChange(e.target.value)}
           />
         </div>
         <div className={styles.formField}>
@@ -76,7 +98,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
           <DatePicker
             label="생년월일"
             value={birthDate}
-            onChange={(date) => onBirthDateChange(DateUtil.parseToTimestamp(date))}
+            readOnly={true}
             required={false}
           />
         </div>
@@ -89,8 +111,8 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             <label className={styles.radioLabel}>
               <input
                 type="radio"
+                readOnly={true}
                 checked={compareEnumValue(gender, Resume_Gender.MALE, Resume_Gender)}
-                onChange={() => onGenderChange(Resume_Gender.MALE)}
                 className={styles.radio}
               />
               <span className={styles.radioText}>남</span>
@@ -98,8 +120,8 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             <label className={styles.radioLabel}>
               <input
                 type="radio"
+                readOnly={true}
                 checked={compareEnumValue(gender, Resume_Gender.FEMALE, Resume_Gender)}
-                onChange={() => onGenderChange(Resume_Gender.FEMALE)}
                 className={styles.radio}
               />
               <span className={styles.radioText}>여</span>
@@ -111,21 +133,19 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
         {/* 전화번호 */}
         <div className={styles.formField}>
           <Input 
-            type="text"
+            type="tel"
             label="전화번호"
-            placeholder="010-1234-5678"
-            value={phone}
-            onChange={(e) => onPhoneChange(e.target.value)}
+            readOnly={true}
+            value={formatPhoneNumber(phone)}
           />
         </div>
         {/* 이메일 */}
         <div className={styles.formField}>
           <Input 
-            type="text"
+            type="email"
             label="이메일"
-            placeholder="hong@gmail.com"
+            readOnly={true}
             value={email}
-            onChange={(e) => onEmailChange(e.target.value)}
           />
         </div>
       </div>

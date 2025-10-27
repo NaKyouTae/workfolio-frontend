@@ -5,12 +5,13 @@ import DateUtil from '@/utils/DateUtil';
 
 interface DatePickerProps {
     value: number | string | undefined;
-    onChange: (newDate: string) => void;
+    onChange?: (newDate: string) => void;
     label?: string;
     required?: boolean;
+    readOnly?: boolean;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, label, required = false }) => {
+const DatePicker: React.FC<DatePickerProps> = ({ value, onChange = undefined, label, required = false, readOnly = false }) => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const [dateInputValue, setDateInputValue] = useState('');
     const calendarRef = useRef<HTMLDivElement>(null);
@@ -63,7 +64,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, label, require
     const handleDateSelect = (day: DateTime) => {
         const newDate = day.toISO();
         if (newDate) {
-            onChange(newDate);
+            onChange?.(newDate);
         }
         setIsCalendarOpen(false);
     };
@@ -74,7 +75,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, label, require
         
         // 빈 값이거나 "---- -- --"이고 required가 false인 경우 빈 문자열로 설정
         if ((!inputValue.trim() || inputValue === '---- -- --') && !required) {
-            onChange('');
+            onChange?.('');
             return;
         }
         
@@ -83,7 +84,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, label, require
         if (parsedDate.isValid) {
             const newDate = parsedDate.toISO();
             if (newDate) {
-                onChange(newDate);
+                onChange?.(newDate);
             }
         }
     };
@@ -91,13 +92,13 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, label, require
     const handlePrevMonth = () => {
         const newDate = dateTime.minus({ months: 1 });
         const isoString = newDate.toISO() || dateTime.toISO() || DateTime.now().toISO();
-        onChange(isoString);
+        onChange?.(isoString);
     };
     
     const handleNextMonth = () => {
         const newDate = dateTime.plus({ months: 1 });
         const isoString = newDate.toISO() || dateTime.toISO() || DateTime.now().toISO();
-        onChange(isoString);
+        onChange?.(isoString);
     };
     
     return (
@@ -114,8 +115,10 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, label, require
                         type="text"
                         value={dateInputValue}
                         onChange={handleDateInputChange}
-                        onClick={() => setIsCalendarOpen(true)}
+                        onClick={() => !readOnly && setIsCalendarOpen(true)}
                         placeholder="yyyy. MM. dd."
+                        readOnly={readOnly}
+                        className={`date-input ${readOnly ? 'read-only' : ''}`}
                     />
                     {isCalendarOpen && (
                         <div ref={calendarRef} className="date-picker">

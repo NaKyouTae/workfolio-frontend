@@ -204,15 +204,14 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                 {
                   selectedResumeDetail?.birthDate && (
                     <span style={{ color: selectedResumeDetail?.birthDate ? 'inherit' : '#ddd' }}>
-                    {formatBirthDate(selectedResumeDetail.birthDate)}
-                  </span>
+                      {formatBirthDate(selectedResumeDetail.birthDate)}
+                    </span>
                   )
                 }
-                
                 {
                   selectedResumeDetail?.gender && (
                     <>
-                      <span>|</span>
+                      {selectedResumeDetail?.birthDate && <span>|</span>}
                       <span style={{ color: selectedResumeDetail?.gender ? 'inherit' : '#ddd' }}>
                         {getGenderLabel(selectedResumeDetail.gender)}
                       </span>
@@ -222,7 +221,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                 {
                   selectedResumeDetail?.phone && (
                     <>
-                      <span>|</span>
+                      {selectedResumeDetail?.gender && <span>|</span>}
                       <span style={{ color: selectedResumeDetail?.phone ? 'inherit' : '#ddd' }}>
                         {formatPhoneNumber(selectedResumeDetail.phone)}
                       </span>
@@ -232,7 +231,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                 {
                   selectedResumeDetail?.email && (
                     <>
-                      <span>|</span>
+                      {selectedResumeDetail?.phone && <span>|</span>}
                       <span style={{ color: selectedResumeDetail?.email ? 'inherit' : '#ddd' }}>
                         {selectedResumeDetail?.email}
                       </span>

@@ -14,6 +14,8 @@ import {
 import { DateUtil } from '@/utils/DateUtil';
 import { useResumeDetails } from '@/hooks/useResumeDetails';
 import CareerContentForm from './CareerContentForm';
+import { useUser } from '@/hooks/useUser';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 interface CareerContentCreateProps {
   onCancel?: () => void;
@@ -24,17 +26,20 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
   onCancel,
   onSuccess
 }) => {
+
+  const { user } = useUser();
+
   // 기본 정보
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(`${user?.nickName}님의 이력서`);
   const [isDefault, setIsDefault] = useState(false);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(user?.nickName || '');
   const [birthDate, setBirthDate] = useState<number | undefined>(() => {
-    const normalized = DateUtil.normalizeTimestamp(undefined);
+    const normalized = DateUtil.normalizeTimestamp(user?.brithDate);
     return normalized === 0 ? undefined : normalized;
   });
-  const [gender, setGender] = useState<Resume_Gender | undefined>(undefined);
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [gender, setGender] = useState<Resume_Gender | undefined>(normalizeEnumValue<Resume_Gender>(user?.gender, Resume_Gender));
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phone || '');
   const [job, setJob] = useState('');
   const [description, setDescription] = useState('');
   // 각 섹션 데이터
