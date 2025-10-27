@@ -136,7 +136,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
                   }}
                 >
                 <div style={{ fontWeight: resumeDetail.isDefault ? '600' : '400' }}>
-                  {resumeDetail.title || '제목 없음'}
+                  {resumeDetail.title}
                   {resumeDetail.isDefault && (
                     <span style={{ 
                       marginLeft: '6px', 

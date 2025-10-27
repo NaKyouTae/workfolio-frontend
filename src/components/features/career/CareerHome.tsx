@@ -226,7 +226,7 @@ const CareerHome: React.FC<CareerHomeProps> = ({
                       color: resume.title ? '#000' : '#ddd',
                       margin: 0
                     }}>
-                      {resume.title || '제목 없음'}
+                      {resume.title}
                     </h3>
                   </div>
                   <div style={{
