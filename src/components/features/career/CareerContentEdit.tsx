@@ -18,10 +18,10 @@ import {
   ResumeUpdateRequest_AttachmentRequest,
   ResumeUpdateRequest_ProjectRequest
 } from '@/generated/resume';
-import HttpMethod from '@/enums/HttpMethod';
 import { DateUtil } from '@/utils/DateUtil';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import CareerContentForm from './CareerContentForm';
+import { useResumeDetails } from '@/hooks/useResumeDetails';
 
 interface CareerContentEditProps {
   selectedResumeDetail: ResumeDetail | null;
@@ -54,6 +54,8 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   const [activities, setActivities] = useState<ResumeUpdateRequest_ActivityRequest[]>([]);
   const [languages, setLanguages] = useState<ResumeUpdateRequest_LanguageSkillRequest[]>([]);
   const [attachments, setAttachments] = useState<ResumeUpdateRequest_AttachmentRequest[]>([]);
+
+  const { updateResume } = useResumeDetails();
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -208,25 +210,12 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         attachments,
       };
 
-      const response = await fetch('/api/resumes', {
-        method: HttpMethod.PUT,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateRequest),
-      });
+      const result = await updateResume(updateRequest);
 
-      if (response.ok) {
+      if (result) {
         onSave?.();
       } else {
-        const errorText = await response.text();
-        
-        try {
-          const error = JSON.parse(errorText);
-          alert(`이력서 수정 실패: ${error.error || error.message || JSON.stringify(error)}`);
-        } catch {
-          alert(`이력서 수정 실패: ${errorText}`);
-        }
+        alert('이력서 수정 중 오류가 발생했습니다.');
       }
     } catch (error) {
       console.error('Error updating resume:', error);

@@ -272,12 +272,106 @@ export const useResumeDetails = () => {
   // 이력서 업데이트 (PUT /api/resumes)
   const updateResume = useCallback(async (data: ResumeUpdateRequest): Promise<ResumeDetail | null> => {
     try {
+      // 데이터 필터링: 기본값만 있는 항목 제거
+      const filteredData: ResumeUpdateRequest = { ...data };
+      
+      // Helper function to check if a string has meaningful content
+      const hasContent = (value: string | undefined): boolean => {
+        return value !== undefined && value !== null && value.trim() !== '';
+      };
+
+      // Helper function to check if a number has meaningful value
+      const hasValue = (value: number | undefined): boolean => {
+        return value !== undefined && value !== null && value > 0;
+      };
+
+      // Career 필터링
+      if (filteredData.careers) {
+        filteredData.careers = filteredData.careers.filter(career => {
+          // career 기본 정보가 있는지 확인
+          const hasCareerInfo = career.career && (
+            hasContent(career.career.name) ||
+            hasContent(career.career.position) ||
+            hasContent(career.career.department) ||
+            hasContent(career.career.jobGrade) ||
+            hasContent(career.career.job) ||
+            hasValue(career.career.salary)
+          );
+          
+          // salaries 필터링
+          const hasValidSalaries = career.salaries && career.salaries.some(salary => 
+            hasValue(salary.amount) || hasContent(salary.memo) || hasValue(salary.negotiationDate)
+          );
+          
+          return hasCareerInfo || hasValidSalaries;
+        });
+        
+        // 각 career의 salaries도 필터링
+        filteredData.careers = filteredData.careers.map(career => ({
+          ...career,
+          salaries: career.salaries?.filter(salary => 
+            hasValue(salary.amount) || hasContent(salary.memo) || hasValue(salary.negotiationDate)
+          ) || []
+        }));
+      }
+      
+      // Project 필터링
+      if (filteredData.projects) {
+        filteredData.projects = filteredData.projects.filter(project => 
+          hasContent(project.title) || 
+          hasContent(project.affiliation) || 
+          hasContent(project.role) || 
+          hasContent(project.description)
+        );
+      }
+      
+      // Education 필터링
+      if (filteredData.educations) {
+        filteredData.educations = filteredData.educations.filter(education => 
+          hasContent(education.name) || 
+          hasContent(education.major) || 
+          hasContent(education.description)
+        );
+      }
+      
+      // Activity 필터링
+      if (filteredData.activities) {
+        filteredData.activities = filteredData.activities.filter(activity => 
+          hasContent(activity.name) || 
+          hasContent(activity.organization) || 
+          hasContent(activity.certificateNumber) || 
+          hasContent(activity.description)
+        );
+      }
+      
+      // LanguageSkill 필터링
+      if (filteredData.languages) {
+        filteredData.languages = filteredData.languages.filter(language => 
+          language.language !== undefined || language.level !== undefined
+        );
+        
+        // 각 language의 languageTests도 필터링
+        filteredData.languages = filteredData.languages.map(language => ({
+          ...language,
+          languageTests: language.languageTests?.filter(test => 
+            hasContent(test.name) || hasContent(test.score)
+          ) || []
+        }));
+      }
+      
+      // Attachment 필터링
+      if (filteredData.attachments) {
+        filteredData.attachments = filteredData.attachments.filter(attachment => 
+          hasContent(attachment.fileName) || hasContent(attachment.fileUrl)
+        );
+      }
+      
       const response = await fetch(`/api/resumes`, {
         method: HttpMethod.PUT,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(filteredData),
       });
 
       if (response.ok) {

@@ -13,6 +13,9 @@ import {
   Attachment_AttachmentType,
   attachment_AttachmentTypeFromJSON,
   attachment_AttachmentTypeToJSON,
+  Career_EmploymentType,
+  career_EmploymentTypeFromJSON,
+  career_EmploymentTypeToJSON,
   Education_EducationStatus,
   education_EducationStatusFromJSON,
   education_EducationStatusToJSON,
@@ -65,18 +68,18 @@ export interface ResumeUpdateRequest {
 }
 
 export interface ResumeUpdateRequest_CareerRequest {
-  career?: ResumeUpdateRequest_CareerRequest_Career | undefined;
+  career?: ResumeUpdateRequest_CareerRequest_CareerItem | undefined;
   salaries: ResumeUpdateRequest_CareerRequest_Salary[];
 }
 
-export interface ResumeUpdateRequest_CareerRequest_Career {
+export interface ResumeUpdateRequest_CareerRequest_CareerItem {
   id?: string | undefined;
   name: string;
   startedAt?: number | undefined;
   endedAt?: number | undefined;
   isWorking?: boolean | undefined;
   position: string;
-  employmentType?: ResumeUpdateRequest_CareerRequest_Career_EmploymentType | undefined;
+  employmentType?: Career_EmploymentType | undefined;
   department: string;
   jobGrade: string;
   job: string;
@@ -84,55 +87,6 @@ export interface ResumeUpdateRequest_CareerRequest_Career {
   description: string;
   isVisible: boolean;
   priority: number;
-}
-
-export enum ResumeUpdateRequest_CareerRequest_Career_EmploymentType {
-  FULL_TIME = 0,
-  CONTRACT = 1,
-  INTERN = 2,
-  FREELANCER = 3,
-  UNRECOGNIZED = -1,
-}
-
-export function resumeUpdateRequest_CareerRequest_Career_EmploymentTypeFromJSON(
-  object: any,
-): ResumeUpdateRequest_CareerRequest_Career_EmploymentType {
-  switch (object) {
-    case 0:
-    case "FULL_TIME":
-      return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FULL_TIME;
-    case 1:
-    case "CONTRACT":
-      return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.CONTRACT;
-    case 2:
-    case "INTERN":
-      return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.INTERN;
-    case 3:
-    case "FREELANCER":
-      return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FREELANCER;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return ResumeUpdateRequest_CareerRequest_Career_EmploymentType.UNRECOGNIZED;
-  }
-}
-
-export function resumeUpdateRequest_CareerRequest_Career_EmploymentTypeToJSON(
-  object: ResumeUpdateRequest_CareerRequest_Career_EmploymentType,
-): string {
-  switch (object) {
-    case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FULL_TIME:
-      return "FULL_TIME";
-    case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.CONTRACT:
-      return "CONTRACT";
-    case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.INTERN:
-      return "INTERN";
-    case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FREELANCER:
-      return "FREELANCER";
-    case ResumeUpdateRequest_CareerRequest_Career_EmploymentType.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
 }
 
 export interface ResumeUpdateRequest_CareerRequest_Salary {
@@ -788,7 +742,7 @@ function createBaseResumeUpdateRequest_CareerRequest(): ResumeUpdateRequest_Care
 export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_CareerRequest> = {
   encode(message: ResumeUpdateRequest_CareerRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.career !== undefined) {
-      ResumeUpdateRequest_CareerRequest_Career.encode(message.career, writer.uint32(10).fork()).join();
+      ResumeUpdateRequest_CareerRequest_CareerItem.encode(message.career, writer.uint32(10).fork()).join();
     }
     for (const v of message.salaries) {
       ResumeUpdateRequest_CareerRequest_Salary.encode(v!, writer.uint32(26).fork()).join();
@@ -808,7 +762,7 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
             break;
           }
 
-          message.career = ResumeUpdateRequest_CareerRequest_Career.decode(reader, reader.uint32());
+          message.career = ResumeUpdateRequest_CareerRequest_CareerItem.decode(reader, reader.uint32());
           continue;
         }
         case 3: {
@@ -830,7 +784,7 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
 
   fromJSON(object: any): ResumeUpdateRequest_CareerRequest {
     return {
-      career: isSet(object.career) ? ResumeUpdateRequest_CareerRequest_Career.fromJSON(object.career) : undefined,
+      career: isSet(object.career) ? ResumeUpdateRequest_CareerRequest_CareerItem.fromJSON(object.career) : undefined,
       salaries: globalThis.Array.isArray(object?.salaries)
         ? object.salaries.map((e: any) => ResumeUpdateRequest_CareerRequest_Salary.fromJSON(e))
         : [],
@@ -840,7 +794,7 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
   toJSON(message: ResumeUpdateRequest_CareerRequest): unknown {
     const obj: any = {};
     if (message.career !== undefined) {
-      obj.career = ResumeUpdateRequest_CareerRequest_Career.toJSON(message.career);
+      obj.career = ResumeUpdateRequest_CareerRequest_CareerItem.toJSON(message.career);
     }
     if (message.salaries?.length) {
       obj.salaries = message.salaries.map((e) => ResumeUpdateRequest_CareerRequest_Salary.toJSON(e));
@@ -858,14 +812,14 @@ export const ResumeUpdateRequest_CareerRequest: MessageFns<ResumeUpdateRequest_C
   ): ResumeUpdateRequest_CareerRequest {
     const message = createBaseResumeUpdateRequest_CareerRequest();
     message.career = (object.career !== undefined && object.career !== null)
-      ? ResumeUpdateRequest_CareerRequest_Career.fromPartial(object.career)
+      ? ResumeUpdateRequest_CareerRequest_CareerItem.fromPartial(object.career)
       : undefined;
     message.salaries = object.salaries?.map((e) => ResumeUpdateRequest_CareerRequest_Salary.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseResumeUpdateRequest_CareerRequest_Career(): ResumeUpdateRequest_CareerRequest_Career {
+function createBaseResumeUpdateRequest_CareerRequest_CareerItem(): ResumeUpdateRequest_CareerRequest_CareerItem {
   return {
     id: undefined,
     name: "",
@@ -884,8 +838,11 @@ function createBaseResumeUpdateRequest_CareerRequest_Career(): ResumeUpdateReque
   };
 }
 
-export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRequest_CareerRequest_Career> = {
-  encode(message: ResumeUpdateRequest_CareerRequest_Career, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const ResumeUpdateRequest_CareerRequest_CareerItem: MessageFns<ResumeUpdateRequest_CareerRequest_CareerItem> = {
+  encode(
+    message: ResumeUpdateRequest_CareerRequest_CareerItem,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.id !== undefined) {
       writer.uint32(10).string(message.id);
     }
@@ -931,10 +888,10 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): ResumeUpdateRequest_CareerRequest_Career {
+  decode(input: BinaryReader | Uint8Array, length?: number): ResumeUpdateRequest_CareerRequest_CareerItem {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseResumeUpdateRequest_CareerRequest_Career();
+    const message = createBaseResumeUpdateRequest_CareerRequest_CareerItem();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1059,7 +1016,7 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     return message;
   },
 
-  fromJSON(object: any): ResumeUpdateRequest_CareerRequest_Career {
+  fromJSON(object: any): ResumeUpdateRequest_CareerRequest_CareerItem {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       name: isSet(object.name) ? globalThis.String(object.name) : "",
@@ -1067,9 +1024,7 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       isWorking: isSet(object.isWorking) ? globalThis.Boolean(object.isWorking) : undefined,
       position: isSet(object.position) ? globalThis.String(object.position) : "",
-      employmentType: isSet(object.employmentType)
-        ? resumeUpdateRequest_CareerRequest_Career_EmploymentTypeFromJSON(object.employmentType)
-        : undefined,
+      employmentType: isSet(object.employmentType) ? career_EmploymentTypeFromJSON(object.employmentType) : undefined,
       department: isSet(object.department) ? globalThis.String(object.department) : "",
       jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
       job: isSet(object.job) ? globalThis.String(object.job) : "",
@@ -1080,7 +1035,7 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     };
   },
 
-  toJSON(message: ResumeUpdateRequest_CareerRequest_Career): unknown {
+  toJSON(message: ResumeUpdateRequest_CareerRequest_CareerItem): unknown {
     const obj: any = {};
     if (message.id !== undefined) {
       obj.id = message.id;
@@ -1101,7 +1056,7 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
       obj.position = message.position;
     }
     if (message.employmentType !== undefined) {
-      obj.employmentType = resumeUpdateRequest_CareerRequest_Career_EmploymentTypeToJSON(message.employmentType);
+      obj.employmentType = career_EmploymentTypeToJSON(message.employmentType);
     }
     if (message.department !== "") {
       obj.department = message.department;
@@ -1127,15 +1082,15 @@ export const ResumeUpdateRequest_CareerRequest_Career: MessageFns<ResumeUpdateRe
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_Career>, I>>(
+  create<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_CareerItem>, I>>(
     base?: I,
-  ): ResumeUpdateRequest_CareerRequest_Career {
-    return ResumeUpdateRequest_CareerRequest_Career.fromPartial(base ?? ({} as any));
+  ): ResumeUpdateRequest_CareerRequest_CareerItem {
+    return ResumeUpdateRequest_CareerRequest_CareerItem.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_Career>, I>>(
+  fromPartial<I extends Exact<DeepPartial<ResumeUpdateRequest_CareerRequest_CareerItem>, I>>(
     object: I,
-  ): ResumeUpdateRequest_CareerRequest_Career {
-    const message = createBaseResumeUpdateRequest_CareerRequest_Career();
+  ): ResumeUpdateRequest_CareerRequest_CareerItem {
+    const message = createBaseResumeUpdateRequest_CareerRequest_CareerItem();
     message.id = object.id ?? undefined;
     message.name = object.name ?? "";
     message.startedAt = object.startedAt ?? undefined;

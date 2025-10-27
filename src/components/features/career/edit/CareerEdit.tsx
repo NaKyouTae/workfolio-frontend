@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { ResumeUpdateRequest_CareerRequest, ResumeUpdateRequest_CareerRequest_Career_EmploymentType, ResumeUpdateRequest_CareerRequest_Salary } from '@/generated/resume';
+import { ResumeUpdateRequest_CareerRequest, ResumeUpdateRequest_CareerRequest_Salary } from '@/generated/resume';
+import { Career_EmploymentType } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
 import DatePicker from '@/components/ui/DatePicker';
@@ -188,14 +189,14 @@ const CareerItem: React.FC<CareerItemProps> = ({
             <div className={styles.formField}>
               <Dropdown
                 label="재직 형태"
-                selectedOption={normalizeEnumValue(careerRequest.career.employmentType, ResumeUpdateRequest_CareerRequest_Career_EmploymentType)}
+                selectedOption={normalizeEnumValue(careerRequest.career.employmentType, Career_EmploymentType)}
                 options={[
-                  { value: ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FULL_TIME, label: '정규직' },
-                  { value: ResumeUpdateRequest_CareerRequest_Career_EmploymentType.CONTRACT, label: '계약직' },
-                  { value: ResumeUpdateRequest_CareerRequest_Career_EmploymentType.INTERN, label: '인턴' },
-                  { value: ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FREELANCER, label: '프리랜서' },
+                  { value: Career_EmploymentType.FULL_TIME, label: '정규직' },
+                  { value: Career_EmploymentType.CONTRACT, label: '계약직' },
+                  { value: Career_EmploymentType.INTERN, label: '인턴' },
+                  { value: Career_EmploymentType.FREELANCER, label: '프리랜서' },
                 ]}
-                setValue={(value) => handleCareerChange(index, 'employmentType', normalizeEnumValue(value, ResumeUpdateRequest_CareerRequest_Career_EmploymentType))}
+                setValue={(value) => handleCareerChange(index, 'employmentType', normalizeEnumValue(value, Career_EmploymentType))}
               />
             </div>
           </div>
@@ -304,11 +305,11 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
   const createEmptyCareer = (priority: number = 0): ResumeUpdateRequest_CareerRequest => ({
     career: {
       name: '',
-      startedAt: DateTime.now().toMillis(),
+      startedAt: undefined,
       endedAt: undefined,
       isWorking: true,
       position: '',
-      employmentType: ResumeUpdateRequest_CareerRequest_Career_EmploymentType.FULL_TIME,
+      employmentType: undefined,
       department: '',
       jobGrade: '',
       job: '',

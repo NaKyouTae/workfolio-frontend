@@ -23,21 +23,14 @@ message ResumeCreateRequest {
 
 message ResumeUpdateRequest {
   message CareerRequest {
-    message Career {
-      enum EmploymentType {
-        FULL_TIME = 0;
-        CONTRACT = 1;
-        INTERN = 2;
-        FREELANCER = 3;
-      }
-
+    message CareerItem {
       optional string id = 1;
       string name = 2;
       optional uint64 started_at = 3;
       optional uint64 ended_at = 4;
       optional bool is_working = 5;
       string position = 6;
-      optional EmploymentType employmentType = 7;
+      optional Career.EmploymentType employmentType = 7;
       string department = 8;
       string job_grade = 9;
       string job = 10;
@@ -58,7 +51,7 @@ message ResumeUpdateRequest {
       uint32 priority = 31;
     }
 
-    CareerRequest.Career career = 1;
+    CareerRequest.CareerItem career = 1;
     repeated CareerRequest.Salary salaries = 3;
   }
 

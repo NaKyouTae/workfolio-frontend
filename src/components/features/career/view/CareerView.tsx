@@ -36,9 +36,10 @@ const CareerView: React.FC<CareerViewProps> = ({
   // 근무 기간 표시 (날짜 + 기간 계산)
   const formatCareerPeriod = (startedAt?: number, endedAt?: number, isWorking?: boolean) => {
     const startDate = DateUtil.formatTimestamp(startedAt || 0, 'YYYY. MM.');
-    const endDate = isWorking ? '재직중' : DateUtil.formatTimestamp(endedAt || 0, 'YYYY. MM.');
+    const endDate = isWorking ? ' - 재직중' : ` - ${DateUtil.formatTimestamp(endedAt || 0, 'YYYY. MM.')}`;
     
-    let result = `${startDate} - ${endDate}`;
+
+    let result = `${startDate}${endedAt ? endDate : ''}`;
     
     if (startedAt) {
       const start = dayjs(DateUtil.normalizeTimestamp(startedAt));
@@ -194,21 +195,9 @@ const CareerView: React.FC<CareerViewProps> = ({
                 color: '#999'
               }}>
                 <div>
-                  {
-                    career.startedAt && (
-                      <>
-                        {`${DateUtil.formatTimestamp(career.startedAt || 0, "YYYY. MM.")}`}
-                      </>
-                    )
-                  }
-                  {
-                    career.endedAt && (
-                      <>
-                        {`- ${DateUtil.formatTimestamp(career.endedAt || 0, "YYYY. MM.")} (${totalPeriod}123)`}
-                      </>
-                    )
-                  }
-                  {career.isWorking && (
+                  {formatCareerPeriod(career.startedAt, career.endedAt, career.isWorking)}
+                  
+                  {career.employmentType && (
                     <>
                       {' | '}
                       {getEmploymentTypeLabel(career.employmentType)}
