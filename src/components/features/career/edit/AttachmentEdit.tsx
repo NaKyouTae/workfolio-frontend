@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ResumeUpdateRequest_AttachmentRequest } from '@/generated/resume';
 import { Attachment_AttachmentType } from '@/generated/common';
 import Input from '@/components/ui/Input';
@@ -13,6 +13,17 @@ import EmptyState from '@/components/ui/EmptyState';
 // 모드 정보를 포함한 확장된 Attachment 타입
 type AttachmentWithMode = ResumeUpdateRequest_AttachmentRequest & {
   _isFileDownloadMode?: boolean; // 파일 모드 여부를 추적하는 임시 속성
+  _file?: File; // 선택된 파일 객체 (UI 표시용)
+};
+
+// Uint8Array를 base64 문자열로 변환
+const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
+  let binary = '';
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
 };
 
 interface AttachmentEditProps {
@@ -27,6 +38,7 @@ interface AttachmentItemProps {
   handleAttachmentChange: (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => void;
   toggleVisible: (index: number) => void;
   handleDeleteAttachment: (index: number) => void;
+  handleFileUpload: (index: number, file: File) => Promise<void>;
 }
 
 const AttachmentItem: React.FC<AttachmentItemProps> = ({
@@ -36,7 +48,17 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
   handleAttachmentChange,
   toggleVisible,
   handleDeleteAttachment,
+  handleFileUpload,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await handleFileUpload(index, file);
+    }
+  };
+
   return (
     <DraggableItem 
       id={attachment.id || `attachment-${index}`}
@@ -60,17 +82,52 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
           />
         </div>
 
-        {/* 파일 이름 (파일 모드일 때만) */}
+        {/* 파일 업로드 (파일 모드일 때) */}
         {isFileDownloadMode && (
-          <div className={styles.formField}>
-            <Input 
-              type="text"
-              label="파일 이름"
-              placeholder="portfolio.pdf"
-              value={attachment.fileName || ''}
-              onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
-            />
-          </div>
+          <>
+            <div className={styles.formField}>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>
+                파일 선택
+              </label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={onFileChange}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '14px'
+                }}
+              />
+              {attachment._file && (
+                <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                  선택된 파일: {attachment._file.name} ({(attachment._file.size / 1024 / 1024).toFixed(2)} MB)
+                </p>
+              )}
+            </div>
+            <div className={styles.formField}>
+              <Input 
+                type="text"
+                label="파일 이름"
+                placeholder="portfolio.pdf"
+                value={attachment.fileName || ''}
+                onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
+              />
+            </div>
+            {attachment.fileName && attachment.fileUrl && (
+              <div className={styles.formField}>
+                <Input 
+                  type="text"
+                  label="파일 URL (자동 생성)"
+                  value={attachment.fileName}
+                  readOnly={true}
+                />
+              </div>
+            )}
+          </>
         )}
 
         {/* 파일 URL (URL 모드일 때만) */}
@@ -107,6 +164,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     type: undefined,
     fileName: '',
     fileUrl: '',
+    fileData: undefined,
     isVisible: false,
     priority,
     _isFileDownloadMode: true, // 파일 모드 표시
@@ -117,6 +175,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     type: undefined,
     fileName: '',
     fileUrl: '',
+    fileData: undefined,
     isVisible: false,
     priority,
     _isFileDownloadMode: false, // URL 모드 표시
@@ -191,6 +250,51 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     onUpdate(updatedAttachments);
   };
 
+  const handleFileUpload = async (index: number, file: File) => {
+    try {
+      // 파일을 attachments에 포함
+      const newAttachments = [...attachments];
+      const attachment = newAttachments[index] as AttachmentWithMode;
+      
+      // 파일 데이터를 Uint8Array로 변환
+      const uint8Array = await new Promise<Uint8Array>((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = () => {
+          const arrayBuffer = reader.result as ArrayBuffer;
+          const bytes = new Uint8Array(arrayBuffer);
+          resolve(bytes);
+        };
+        
+        reader.onerror = () => {
+          reject(new Error('파일 읽기 실패'));
+        };
+        
+        // ArrayBuffer로 읽기
+        reader.readAsArrayBuffer(file);
+      });
+      
+      // Uint8Array를 base64로 변환하여 저장 (JSON 직렬화 가능)
+      const base64String = uint8ArrayToBase64(uint8Array);
+      
+      // fileData를 base64 문자열로 저장 (proto bytes 타입은 JSON에서 base64로 직렬화됨)
+      Object.assign(attachment, { fileData: base64String });
+      
+      // 파일명이 비어있으면 자동으로 설정
+      if (!attachment.fileName) {
+        attachment.fileName = file.name;
+      }
+      
+      // UI 표시를 위해 파일 객체도 임시로 저장
+      attachment._file = file;
+      
+      onUpdate(newAttachments);
+    } catch (error) {
+      console.error('파일 읽기 오류:', error);
+      alert('파일을 읽는 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
@@ -231,6 +335,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
                 handleAttachmentChange={handleAttachmentChange}
                 toggleVisible={toggleVisible}
                 handleDeleteAttachment={handleDeleteAttachment}
+                handleFileUpload={handleFileUpload}
               />
             );
           }}

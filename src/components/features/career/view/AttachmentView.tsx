@@ -33,13 +33,64 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
     }
   };
 
+  /**
+   * 파일 다운로드 핸들러
+   * Supabase Storage에서 파일을 다운로드합니다.
+   * 브라우저 새 탭 없이 바로 다운로드만 실행됩니다.
+   */
+  const handleFileDownload = async (fileUrl: string, fileName: string) => {
+    try {
+      // fileUrl에서 파일 가져오기
+      const response = await fetch(fileUrl, {
+        method: 'GET',
+        mode: 'cors',
+      });
+      
+      if (!response.ok) {
+        throw new Error('파일 다운로드 실패');
+      }
+
+      // Blob으로 변환
+      const blob = await response.blob();
+      
+      // Blob URL 생성
+      const blobUrl = URL.createObjectURL(blob);
+      
+      // 임시 a 태그 생성 (새 탭 절대 열리지 않음)
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName; // download 속성으로 다운로드 강제
+      link.style.display = 'none';
+      // target 속성을 설정하지 않음 (기본값이 현재 페이지)
+      
+      document.body.appendChild(link);
+      
+      // 클릭 이벤트 직접 생성 및 디스패치
+      const clickEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+      });
+      link.dispatchEvent(clickEvent);
+      
+      // 정리 (다운로드가 시작된 후)
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      }, 100);
+    } catch (error) {
+      console.error('파일 다운로드 오류:', error);
+      alert('파일 다운로드에 실패했습니다.');
+    }
+  };
+
   const getAttachmentTypeIcon = (attachment: Attachment) => {
-    if(attachment.fileUrl == "" && attachment.fileName != "") {
-      return <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => {
-        // TODO: 파일 다운로드
-        window.open(attachment.fileUrl, '_blank');
-      }}>
-        <Image src="/assets/img/ico/ic-download.png" alt="etc" width={16} height={16} />
+    if(attachment.fileUrl != "" && attachment.fileName != "") {
+      return <div 
+        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} 
+        onClick={() => handleFileDownload(attachment.fileUrl, attachment.fileName)}
+      >
+        <Image src="/assets/img/ico/ic-download.png" alt="download" width={16} height={16} />
         {attachment.fileName && <span>{attachment.fileName}</span>}
       </div>
     }

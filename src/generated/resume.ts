@@ -146,6 +146,7 @@ export interface ResumeUpdateRequest_AttachmentRequest {
   type?: Attachment_AttachmentType | undefined;
   fileName: string;
   fileUrl: string;
+  fileData?: Uint8Array | undefined;
   isVisible: boolean;
   priority: number;
 }
@@ -1979,7 +1980,15 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
 };
 
 function createBaseResumeUpdateRequest_AttachmentRequest(): ResumeUpdateRequest_AttachmentRequest {
-  return { id: undefined, type: undefined, fileName: "", fileUrl: "", isVisible: false, priority: 0 };
+  return {
+    id: undefined,
+    type: undefined,
+    fileName: "",
+    fileUrl: "",
+    fileData: undefined,
+    isVisible: false,
+    priority: 0,
+  };
 }
 
 export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateRequest_AttachmentRequest> = {
@@ -1995,6 +2004,9 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     }
     if (message.fileUrl !== "") {
       writer.uint32(34).string(message.fileUrl);
+    }
+    if (message.fileData !== undefined) {
+      writer.uint32(42).bytes(message.fileData);
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
@@ -2044,6 +2056,14 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
           message.fileUrl = reader.string();
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fileData = reader.bytes();
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -2075,6 +2095,7 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
       type: isSet(object.type) ? attachment_AttachmentTypeFromJSON(object.type) : undefined,
       fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
       fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
+      fileData: isSet(object.fileData) ? bytesFromBase64(object.fileData) : undefined,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
@@ -2093,6 +2114,9 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     }
     if (message.fileUrl !== "") {
       obj.fileUrl = message.fileUrl;
+    }
+    if (message.fileData !== undefined) {
+      obj.fileData = base64FromBytes(message.fileData);
     }
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
@@ -2116,6 +2140,7 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     message.type = object.type ?? undefined;
     message.fileName = object.fileName ?? "";
     message.fileUrl = object.fileUrl ?? "";
+    message.fileData = object.fileData ?? undefined;
     message.isVisible = object.isVisible ?? false;
     message.priority = object.priority ?? 0;
     return message;
@@ -2505,6 +2530,31 @@ export const ResumeResponse: MessageFns<ResumeResponse> = {
     return message;
   },
 };
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if ((globalThis as any).Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if ((globalThis as any).Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
