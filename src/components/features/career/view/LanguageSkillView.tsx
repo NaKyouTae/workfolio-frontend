@@ -71,6 +71,9 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills, s
     }
   };
 
+  // 필터링된 어학 목록 (한 번만 필터링)
+  const filteredLanguageSkills = languageSkills.filter(l => showHidden ? true : l.isVisible !== false);
+
   return (
     <div>
       <h3 style={{ 
@@ -82,12 +85,12 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills, s
         언어
       </h3>
       
-      {(!languageSkills || languageSkills.length === 0) ? (
+      {(!languageSkills || filteredLanguageSkills.length === 0) ? (
         <EmptyState text="등록된 어학 정보가 없습니다." />
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {languageSkills.filter(l => showHidden ? true : l.isVisible !== false).map((languageSkill) => (
+        {filteredLanguageSkills.map((languageSkill) => (
           <div 
             key={languageSkill.id}
             style={{

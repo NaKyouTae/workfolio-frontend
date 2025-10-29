@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Attachment, Attachment_AttachmentType } from '@/generated/common';
+import { Attachment, Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import EmptyState from '@/components/ui/EmptyState';
 
@@ -85,7 +85,9 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
   };
 
   const getAttachmentTypeIcon = (attachment: Attachment) => {
-    if(attachment.fileUrl != "" && attachment.fileName != "") {
+    const normalizedCategory = normalizeEnumValue(attachment.category, Attachment_AttachmentCategory);
+    
+    if(normalizedCategory === Attachment_AttachmentCategory.FILE) {
       return <div 
         style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} 
         onClick={() => handleFileDownload(attachment.fileUrl, attachment.fileName)}
@@ -95,15 +97,18 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
       </div>
     }
 
-    if(attachment.fileUrl != "" && attachment.fileName == "") {
+    if(normalizedCategory === Attachment_AttachmentCategory.URL) {
       return <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => {
-        window.open(attachment.fileUrl, '_blank');
+        window.open(attachment.url, '_blank');
       }}>
         <Image src="/assets/img/ico/ic-open.png" alt="etc" width={16} height={16} />
         {attachment.fileUrl && <span>{attachment.fileUrl}</span>}
       </div>
     }
   };
+
+  // 필터링된 첨부파일 목록 (한 번만 필터링)
+  const filteredAttachments = attachments.filter(a => showHidden ? true : a.isVisible !== false);
 
   return (
     <div>
@@ -116,11 +121,11 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
         첨부
       </h3>
       
-      {(!attachments || attachments.length === 0) ? (
+      {(!attachments || filteredAttachments.length === 0) ? (
         <EmptyState text="등록된 첨부 정보가 없습니다." />
       ) : (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {attachments.filter(a => showHidden ? true : a.isVisible !== false).map((attachment) => (
+        {filteredAttachments.map((attachment) => (
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 

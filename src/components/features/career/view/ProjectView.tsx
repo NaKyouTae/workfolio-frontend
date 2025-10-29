@@ -12,6 +12,9 @@ interface ProjectViewProps {
  * 프로젝트 정보 읽기 전용 컴포넌트
  */
 const ProjectView: React.FC<ProjectViewProps> = ({ projects, showHidden = false }) => {
+  // 필터링된 프로젝트 목록 (한 번만 필터링)
+  const filteredProjects = projects.filter(p => showHidden ? true : p.isVisible !== false);
+
   return (
     <div>
       <h3 style={{ 
@@ -23,12 +26,12 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects, showHidden = false 
         프로젝트
       </h3>
       
-      {(!projects || projects.length === 0) ? (
+      {(!projects || filteredProjects.length === 0) ? (
         <EmptyState text="등록된 프로젝트 정보가 없습니다." />
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {projects.filter(p => showHidden ? true : p.isVisible !== false).map((project) => (
+        {filteredProjects.map((project) => (
           <div 
             key={project.id}
             style={{

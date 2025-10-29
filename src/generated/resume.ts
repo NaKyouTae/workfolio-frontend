@@ -10,6 +10,9 @@ import {
   Activity_ActivityType,
   activity_ActivityTypeFromJSON,
   activity_ActivityTypeToJSON,
+  Attachment_AttachmentCategory,
+  attachment_AttachmentCategoryFromJSON,
+  attachment_AttachmentCategoryToJSON,
   Attachment_AttachmentType,
   attachment_AttachmentTypeFromJSON,
   attachment_AttachmentTypeToJSON,
@@ -144,6 +147,8 @@ export interface ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
 export interface ResumeUpdateRequest_AttachmentRequest {
   id?: string | undefined;
   type?: Attachment_AttachmentType | undefined;
+  category: Attachment_AttachmentCategory;
+  url: string;
   fileName: string;
   fileUrl: string;
   fileData?: Uint8Array | undefined;
@@ -1983,6 +1988,8 @@ function createBaseResumeUpdateRequest_AttachmentRequest(): ResumeUpdateRequest_
   return {
     id: undefined,
     type: undefined,
+    category: 0,
+    url: "",
     fileName: "",
     fileUrl: "",
     fileData: undefined,
@@ -1999,14 +2006,20 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     if (message.type !== undefined) {
       writer.uint32(16).int32(message.type);
     }
+    if (message.category !== 0) {
+      writer.uint32(24).int32(message.category);
+    }
+    if (message.url !== "") {
+      writer.uint32(34).string(message.url);
+    }
     if (message.fileName !== "") {
-      writer.uint32(26).string(message.fileName);
+      writer.uint32(42).string(message.fileName);
     }
     if (message.fileUrl !== "") {
-      writer.uint32(34).string(message.fileUrl);
+      writer.uint32(50).string(message.fileUrl);
     }
     if (message.fileData !== undefined) {
-      writer.uint32(42).bytes(message.fileData);
+      writer.uint32(58).bytes(message.fileData);
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
@@ -2041,11 +2054,11 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
           continue;
         }
         case 3: {
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.fileName = reader.string();
+          message.category = reader.int32() as any;
           continue;
         }
         case 4: {
@@ -2053,11 +2066,27 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
             break;
           }
 
-          message.fileUrl = reader.string();
+          message.url = reader.string();
           continue;
         }
         case 5: {
           if (tag !== 42) {
+            break;
+          }
+
+          message.fileName = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.fileUrl = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
             break;
           }
 
@@ -2093,6 +2122,8 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       type: isSet(object.type) ? attachment_AttachmentTypeFromJSON(object.type) : undefined,
+      category: isSet(object.category) ? attachment_AttachmentCategoryFromJSON(object.category) : 0,
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
       fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
       fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
       fileData: isSet(object.fileData) ? bytesFromBase64(object.fileData) : undefined,
@@ -2108,6 +2139,12 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     }
     if (message.type !== undefined) {
       obj.type = attachment_AttachmentTypeToJSON(message.type);
+    }
+    if (message.category !== 0) {
+      obj.category = attachment_AttachmentCategoryToJSON(message.category);
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
     }
     if (message.fileName !== "") {
       obj.fileName = message.fileName;
@@ -2138,6 +2175,8 @@ export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateReque
     const message = createBaseResumeUpdateRequest_AttachmentRequest();
     message.id = object.id ?? undefined;
     message.type = object.type ?? undefined;
+    message.category = object.category ?? 0;
+    message.url = object.url ?? "";
     message.fileName = object.fileName ?? "";
     message.fileUrl = object.fileUrl ?? "";
     message.fileData = object.fileData ?? undefined;

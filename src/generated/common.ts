@@ -653,6 +653,8 @@ export interface LanguageTest {
 export interface Attachment {
   id: string;
   type?: Attachment_AttachmentType | undefined;
+  category: Attachment_AttachmentCategory;
+  url: string;
   fileName: string;
   fileUrl: string;
   isVisible: boolean;
@@ -663,7 +665,7 @@ export interface Attachment {
 }
 
 export enum Attachment_AttachmentType {
-  UNKNOWN = 0,
+  TYPE_UNKNOWN = 0,
   RESUME = 1,
   PORTFOLIO = 2,
   CERTIFICATE = 3,
@@ -675,8 +677,8 @@ export enum Attachment_AttachmentType {
 export function attachment_AttachmentTypeFromJSON(object: any): Attachment_AttachmentType {
   switch (object) {
     case 0:
-    case "UNKNOWN":
-      return Attachment_AttachmentType.UNKNOWN;
+    case "TYPE_UNKNOWN":
+      return Attachment_AttachmentType.TYPE_UNKNOWN;
     case 1:
     case "RESUME":
       return Attachment_AttachmentType.RESUME;
@@ -701,8 +703,8 @@ export function attachment_AttachmentTypeFromJSON(object: any): Attachment_Attac
 
 export function attachment_AttachmentTypeToJSON(object: Attachment_AttachmentType): string {
   switch (object) {
-    case Attachment_AttachmentType.UNKNOWN:
-      return "UNKNOWN";
+    case Attachment_AttachmentType.TYPE_UNKNOWN:
+      return "TYPE_UNKNOWN";
     case Attachment_AttachmentType.RESUME:
       return "RESUME";
     case Attachment_AttachmentType.PORTFOLIO:
@@ -714,6 +716,45 @@ export function attachment_AttachmentTypeToJSON(object: Attachment_AttachmentTyp
     case Attachment_AttachmentType.ETC:
       return "ETC";
     case Attachment_AttachmentType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum Attachment_AttachmentCategory {
+  CATEGORY_UNKNOWN = 0,
+  FILE = 1,
+  URL = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function attachment_AttachmentCategoryFromJSON(object: any): Attachment_AttachmentCategory {
+  switch (object) {
+    case 0:
+    case "CATEGORY_UNKNOWN":
+      return Attachment_AttachmentCategory.CATEGORY_UNKNOWN;
+    case 1:
+    case "FILE":
+      return Attachment_AttachmentCategory.FILE;
+    case 2:
+    case "URL":
+      return Attachment_AttachmentCategory.URL;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Attachment_AttachmentCategory.UNRECOGNIZED;
+  }
+}
+
+export function attachment_AttachmentCategoryToJSON(object: Attachment_AttachmentCategory): string {
+  switch (object) {
+    case Attachment_AttachmentCategory.CATEGORY_UNKNOWN:
+      return "CATEGORY_UNKNOWN";
+    case Attachment_AttachmentCategory.FILE:
+      return "FILE";
+    case Attachment_AttachmentCategory.URL:
+      return "URL";
+    case Attachment_AttachmentCategory.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -4033,6 +4074,8 @@ function createBaseAttachment(): Attachment {
   return {
     id: "",
     type: undefined,
+    category: 0,
+    url: "",
     fileName: "",
     fileUrl: "",
     isVisible: false,
@@ -4051,11 +4094,17 @@ export const Attachment: MessageFns<Attachment> = {
     if (message.type !== undefined) {
       writer.uint32(16).int32(message.type);
     }
+    if (message.category !== 0) {
+      writer.uint32(24).int32(message.category);
+    }
+    if (message.url !== "") {
+      writer.uint32(34).string(message.url);
+    }
     if (message.fileName !== "") {
-      writer.uint32(26).string(message.fileName);
+      writer.uint32(42).string(message.fileName);
     }
     if (message.fileUrl !== "") {
-      writer.uint32(34).string(message.fileUrl);
+      writer.uint32(50).string(message.fileUrl);
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
@@ -4099,15 +4148,31 @@ export const Attachment: MessageFns<Attachment> = {
           continue;
         }
         case 3: {
-          if (tag !== 26) {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.category = reader.int32() as any;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.url = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
             break;
           }
 
           message.fileName = reader.string();
           continue;
         }
-        case 4: {
-          if (tag !== 34) {
+        case 6: {
+          if (tag !== 50) {
             break;
           }
 
@@ -4167,6 +4232,8 @@ export const Attachment: MessageFns<Attachment> = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       type: isSet(object.type) ? attachment_AttachmentTypeFromJSON(object.type) : undefined,
+      category: isSet(object.category) ? attachment_AttachmentCategoryFromJSON(object.category) : 0,
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
       fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
       fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
@@ -4184,6 +4251,12 @@ export const Attachment: MessageFns<Attachment> = {
     }
     if (message.type !== undefined) {
       obj.type = attachment_AttachmentTypeToJSON(message.type);
+    }
+    if (message.category !== 0) {
+      obj.category = attachment_AttachmentCategoryToJSON(message.category);
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
     }
     if (message.fileName !== "") {
       obj.fileName = message.fileName;
@@ -4216,6 +4289,8 @@ export const Attachment: MessageFns<Attachment> = {
     const message = createBaseAttachment();
     message.id = object.id ?? "";
     message.type = object.type ?? undefined;
+    message.category = object.category ?? 0;
+    message.url = object.url ?? "";
     message.fileName = object.fileName ?? "";
     message.fileUrl = object.fileUrl ?? "";
     message.isVisible = object.isVisible ?? false;

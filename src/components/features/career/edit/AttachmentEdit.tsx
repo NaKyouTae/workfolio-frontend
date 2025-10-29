@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { ResumeUpdateRequest_AttachmentRequest } from '@/generated/resume';
-import { Attachment_AttachmentType } from '@/generated/common';
+import { Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
 import styles from '../CareerContentEdit.module.css';
@@ -117,12 +117,12 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                 onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
               />
             </div>
-            {attachment.fileName && attachment.fileUrl && (
+            {attachment.fileUrl && (
               <div className={styles.formField}>
                 <Input 
                   type="text"
                   label="파일 URL (자동 생성)"
-                  value={attachment.fileName}
+                  value={attachment.fileUrl}
                   readOnly={true}
                 />
               </div>
@@ -135,15 +135,15 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
           <div className={styles.formField}>
             <Input 
               type="url"
-              label="파일 URL"
-              placeholder="https://example.com/portfolio.pdf"
-              value={attachment.fileUrl || ''}
-              onChange={(e) => handleAttachmentChange(index, 'fileUrl', e.target.value)}
+              label="URL"
+              placeholder="https://example.com"
+              value={attachment.url || ''}
+              onChange={(e) => handleAttachmentChange(index, 'url', e.target.value)}
             />
           </div>
         )}
       </div>
-      </div>
+    </div>
       
       <CardActions
         isVisible={attachment.isVisible ?? true}
@@ -162,6 +162,8 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
   // 파일 모드로 attachment 생성 (fileName 필드 사용)
   const createFileAttachment = (priority: number = 0): AttachmentWithMode => ({
     type: undefined,
+    category: Attachment_AttachmentCategory.FILE,
+    url: '',
     fileName: '',
     fileUrl: '',
     fileData: undefined,
@@ -173,6 +175,8 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
   // URL 모드로 attachment 생성 (fileUrl 필드 사용)
   const createUrlAttachment = (priority: number = 0): AttachmentWithMode => ({
     type: undefined,
+    category: Attachment_AttachmentCategory.URL,
+    url: '',
     fileName: '',
     fileUrl: '',
     fileData: undefined,

@@ -37,6 +37,9 @@ const EducationView: React.FC<EducationViewProps> = ({
     }
   };
 
+  // 필터링된 학력 목록 (한 번만 필터링)
+  const filteredEducations = educations.filter(e => showHidden ? true : e.isVisible !== false);
+
   return (
     <div>
       <h3 style={{ 
@@ -48,12 +51,12 @@ const EducationView: React.FC<EducationViewProps> = ({
         학력
       </h3>
       
-      {(!educations || educations.length === 0) ? (
+      {(!educations || filteredEducations.length === 0) ? (
         <EmptyState text="등록된 학력 정보가 없습니다." />
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {educations.filter(e => showHidden ? true : e.isVisible !== false).map((education) => (
+        {filteredEducations.map((education) => (
           <div 
             key={education.id}
             style={{

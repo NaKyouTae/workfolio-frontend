@@ -136,12 +136,16 @@ const CareerView: React.FC<CareerViewProps> = ({
         )}
       </h3>
       
-      {(!careers || careers.length === 0) ? (
-        <EmptyState text="등록된 경력 정보가 없습니다." />
-      ) : (
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {careers.filter(c => showHidden ? true : c.isVisible !== false).map((career) => (
+      {/* 필터링된 경력 목록 (한 번만 필터링) */}
+      {(() => {
+        const filteredCareers = careers.filter(c => showHidden ? true : c.isVisible !== false);
+        
+        return (!careers || filteredCareers.length === 0) ? (
+          <EmptyState text="등록된 경력 정보가 없습니다." />
+        ) : (
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+          {filteredCareers.map((career) => (
           <div 
             key={career.id}
             style={{
@@ -260,9 +264,10 @@ const CareerView: React.FC<CareerViewProps> = ({
             {/* 급여 이력 */}
             <SalaryView salaries={career.salaries || []} showHidden={showHidden} />
           </div>
-        ))}
-      </div>
-      )}
+          ))}
+        </div>
+        );
+      })()}
     </div>
   );
 };

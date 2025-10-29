@@ -70,6 +70,9 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities, showHidden = fa
     return `${startDate} - ${endDate}`;
   };
 
+  // 필터링된 활동 목록 (한 번만 필터링)
+  const filteredActivities = activities.filter(a => showHidden ? true : a.isVisible !== false);
+
   return (
     <div>
       <h3 style={{ 
@@ -81,12 +84,12 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities, showHidden = fa
         활동
       </h3>
       
-      {(!activities || activities.length === 0) ? (
+      {(!activities || filteredActivities.length === 0) ? (
         <EmptyState text="등록된 활동 정보가 없습니다." />
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {activities.filter(a => showHidden ? true : a.isVisible !== false).map((activity) => (
+        {filteredActivities.map((activity) => (
           <div 
             key={activity.id}
             style={{
