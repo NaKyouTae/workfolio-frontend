@@ -7,12 +7,13 @@ import EmptyState from '@/components/ui/EmptyState';
 
 interface ActivityViewProps {
   activities: ResumeUpdateRequest_ActivityRequest[];
+  showHidden?: boolean;
 }
 
 /**
  * 활동 정보 읽기 전용 컴포넌트
  */
-const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
+const ActivityView: React.FC<ActivityViewProps> = ({ activities, showHidden = false }) => {
   const getActivityTypeLabel = (type?: Activity_ActivityType) => {
     const normalizedType = normalizeEnumValue(type, Activity_ActivityType);
     switch (normalizedType) {
@@ -85,7 +86,7 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities }) => {
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {activities.filter(a => a.isVisible !== false).map((activity) => (
+        {activities.filter(a => showHidden ? true : a.isVisible !== false).map((activity) => (
           <div 
             key={activity.id}
             style={{

@@ -2,11 +2,15 @@ import React from 'react';
 import styles from './CareerContentView.module.css';
 
 interface ViewFloatingNavigationProps {
+  showHidden: boolean;
+  onTogglePrivateInfo: () => void;
   onExportPDF: () => void;
   onCopyURL: () => void;
 }
 
 const ViewFloatingNavigation: React.FC<ViewFloatingNavigationProps> = ({
+  showHidden,
+  onTogglePrivateInfo,
   onExportPDF,
   onCopyURL
 }) => {
@@ -68,6 +72,12 @@ const ViewFloatingNavigation: React.FC<ViewFloatingNavigationProps> = ({
       </div>
       {/* PDF 내보내기 / URL 복사 버튼 */}
       <div className={styles.floatingActions}>
+        <button
+          onClick={onTogglePrivateInfo}
+          className={styles.floatingSaveButton}
+        >
+          {showHidden ? '비공개 정보 숨기기' : '비공개 정보 보기'}
+        </button>
         <button
           onClick={onExportPDF}
           className={styles.floatingSaveButton}

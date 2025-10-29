@@ -6,12 +6,13 @@ import EmptyState from '@/components/ui/EmptyState';
 
 interface AttachmentViewProps {
   attachments: Attachment[];
+  showHidden?: boolean;
 }
 
 /**
  * 첨부파일 정보 읽기 전용 컴포넌트
  */
-const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments }) => {
+const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden = false }) => {
   const getAttachmentTypeLabel = (type?: Attachment_AttachmentType) => {
     const normalizedType = normalizeEnumValue(type, Attachment_AttachmentType);
     switch (normalizedType) {
@@ -68,7 +69,7 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments }) => {
         <EmptyState text="등록된 첨부 정보가 없습니다." />
       ) : (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {attachments.map((attachment) => (
+        {attachments.filter(a => showHidden ? true : a.isVisible !== false).map((attachment) => (
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 

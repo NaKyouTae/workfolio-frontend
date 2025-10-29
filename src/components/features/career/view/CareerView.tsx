@@ -8,13 +8,15 @@ import EmptyState from '@/components/ui/EmptyState';
 
 interface CareerViewProps {
   careers?: Career[];
+  showHidden?: boolean;
 }
 
 /**
  * 경력 정보 읽기 전용 컴포넌트
  */
 const CareerView: React.FC<CareerViewProps> = ({ 
-  careers = []
+  careers = [],
+  showHidden = false
 }) => {
   // 고용 형태 한글 변환
   const getEmploymentTypeLabel = (type?: Career_EmploymentType) => {
@@ -139,7 +141,7 @@ const CareerView: React.FC<CareerViewProps> = ({
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {careers.filter(c => c.isVisible !== false).map((career) => (
+        {careers.filter(c => showHidden ? true : c.isVisible !== false).map((career) => (
           <div 
             key={career.id}
             style={{
@@ -256,7 +258,7 @@ const CareerView: React.FC<CareerViewProps> = ({
               )
             }
             {/* 급여 이력 */}
-            <SalaryView salaries={career.salaries || []} />
+            <SalaryView salaries={career.salaries || []} showHidden={showHidden} />
           </div>
         ))}
       </div>

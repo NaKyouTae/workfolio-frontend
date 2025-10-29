@@ -6,13 +6,15 @@ import EmptyState from '@/components/ui/EmptyState';
 
 interface EducationViewProps {
   educations?: Education[];
+  showHidden?: boolean;
 }
 
 /**
  * 학력 정보 읽기 전용 컴포넌트
  */
 const EducationView: React.FC<EducationViewProps> = ({ 
-  educations = []
+  educations = [],
+  showHidden = false
 }) => {
   // 학력 상태 한글 변환
   const getStatusLabel = (status?: Education_EducationStatus) => {
@@ -51,7 +53,7 @@ const EducationView: React.FC<EducationViewProps> = ({
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {educations.filter(e => e.isVisible !== false).map((education) => (
+        {educations.filter(e => showHidden ? true : e.isVisible !== false).map((education) => (
           <div 
             key={education.id}
             style={{

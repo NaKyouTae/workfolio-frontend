@@ -6,12 +6,13 @@ import EmptyState from '@/components/ui/EmptyState';
 
 interface LanguageSkillViewProps {
   languageSkills: LanguageSkill[];
+  showHidden?: boolean;
 }
 
 /**
  * 어학 능력 읽기 전용 컴포넌트
  */
-const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills }) => {
+const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills, showHidden = false }) => {
   const getLanguageLabel = (language?: LanguageSkill_Language) => {
     const normalizedLanguage = normalizeEnumValue(language, LanguageSkill_Language);
     switch (normalizedLanguage) {
@@ -86,7 +87,7 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills })
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {languageSkills.filter(l => l.isVisible !== false).map((languageSkill) => (
+        {languageSkills.filter(l => showHidden ? true : l.isVisible !== false).map((languageSkill) => (
           <div 
             key={languageSkill.id}
             style={{
@@ -123,7 +124,7 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills })
 
             {/* 어학 시험 */}
             {languageSkill.languageTests && languageSkill.languageTests.length > 0 && (
-              <LanguageTestView languageTests={languageSkill.languageTests} />
+              <LanguageTestView languageTests={languageSkill.languageTests} showHidden={showHidden} />
             )}
           </div>
         ))}

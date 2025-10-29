@@ -4,12 +4,13 @@ import { DateUtil } from '@/utils/DateUtil';
 
 interface LanguageTestViewProps {
   languageTests: LanguageTest[];
+  showHidden?: boolean;
 }
 
 /**
  * 어학 시험 읽기 전용 컴포넌트
  */
-const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests }) => {
+const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests, showHidden = false }) => {
   if (!languageTests || languageTests.length === 0) {
     return null;
   }
@@ -21,6 +22,7 @@ const LanguageTestView: React.FC<LanguageTestViewProps> = ({ languageTests }) =>
       padding: '16px'
     }}>
       {languageTests
+        .filter(t => showHidden ? true : t.isVisible !== false)
         .sort((a, b) => (b.acquiredAt || 0) - (a.acquiredAt || 0))
         .map((languageTest, index) => (
           <div 

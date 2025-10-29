@@ -5,12 +5,13 @@ import EmptyState from '@/components/ui/EmptyState';
 
 interface ProjectViewProps {
   projects: Project[];
+  showHidden?: boolean;
 }
 
 /**
  * 프로젝트 정보 읽기 전용 컴포넌트
  */
-const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
+const ProjectView: React.FC<ProjectViewProps> = ({ projects, showHidden = false }) => {
   return (
     <div>
       <h3 style={{ 
@@ -27,7 +28,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects }) => {
       ) : (
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {projects.filter(p => p.isVisible !== false).map((project) => (
+        {projects.filter(p => showHidden ? true : p.isVisible !== false).map((project) => (
           <div 
             key={project.id}
             style={{

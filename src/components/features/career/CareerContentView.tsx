@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ResumeDetail, Resume_Gender } from '@/generated/common';
 import CareerView from './view/CareerView';
 import ProjectView from './view/ProjectView';
@@ -32,6 +32,9 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   exportPDF,
   copyURL,
 }) => {
+  // 비공개 정보 보기 상태
+  const [showHidden, setShowHidden] = useState(false);
+
   // 복제 핸들러
   const handleDuplicateResume = () => {
     if (duplicateResume) {
@@ -58,6 +61,11 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
     if (copyURL) {
       copyURL(selectedResumeDetail?.publicId);
     }
+  };
+
+  // 비공개 정보 토글 핸들러
+  const handleTogglePrivateInfo = () => {
+    setShowHidden(prev => !prev);
   };
 
   // 성별 표시
@@ -257,36 +265,38 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
 
             {/* 학력 섹션 */}
             <div id="education" className={styles.section}>
-              <EducationView educations={selectedResumeDetail?.educations || []} />
+              <EducationView educations={selectedResumeDetail?.educations || []} showHidden={showHidden} />
             </div>
 
             {/* 경력 섹션 */}
             <div id="career" className={styles.section}>
-              <CareerView careers={selectedResumeDetail?.careers || []} />
+              <CareerView careers={selectedResumeDetail?.careers || []} showHidden={showHidden} />
             </div>
 
             {/* 프로젝트 섹션 */}
             <div id="project" className={styles.section}>
-              <ProjectView projects={selectedResumeDetail?.projects || []} />
+              <ProjectView projects={selectedResumeDetail?.projects || []} showHidden={showHidden} />
             </div>
 
             {/* 활동 섹션 */}
             <div id="activity" className={styles.section}>
-              <ActivityView activities={selectedResumeDetail?.activities || []} />
+              <ActivityView activities={selectedResumeDetail?.activities || []} showHidden={showHidden} />
             </div>
 
             {/* 언어 섹션 */}
             <div id="language" className={styles.section}>
-              <LanguageSkillView languageSkills={selectedResumeDetail?.languageSkills || []} />
+              <LanguageSkillView languageSkills={selectedResumeDetail?.languageSkills || []} showHidden={showHidden} />
             </div>
 
             {/* 첨부 섹션 */}
             <div id="attachment" className={styles.section}>
-              <AttachmentView attachments={selectedResumeDetail?.attachments || []} />
+              <AttachmentView attachments={selectedResumeDetail?.attachments || []} showHidden={showHidden} />
             </div>
           </div>
           {/* 플로팅 네비게이션 */}
           <ViewFloatingNavigation 
+            showHidden={showHidden}
+            onTogglePrivateInfo={handleTogglePrivateInfo}
             onExportPDF={handleExportPDF}
             onCopyURL={handleCopyURL}
           />

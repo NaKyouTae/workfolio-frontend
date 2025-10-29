@@ -4,19 +4,18 @@ import { DateUtil } from '@/utils/DateUtil';
 
 interface SalaryViewProps {
   salaries: Salary[];
+  showHidden?: boolean;
 }
 
 /**
  * 급여 이력 읽기 전용 컴포넌트
  */
-const SalaryView: React.FC<SalaryViewProps> = ({ salaries }) => {
+const SalaryView: React.FC<SalaryViewProps> = ({ salaries, showHidden = false }) => {
   if (!salaries || salaries.length === 0) {
     return null;
   }
 
-  // 임시: 모든 salaries 표시 (디버깅용)
-  // TODO: isVisible 필터링 다시 활성화
-  const visibleSalaries = salaries; 
+  const visibleSalaries = salaries.filter(s => showHidden ? true : s.isVisible !== false); 
 
   if (visibleSalaries.length === 0) {
     return null;
