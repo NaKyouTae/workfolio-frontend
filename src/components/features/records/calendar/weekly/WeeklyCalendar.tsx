@@ -325,7 +325,16 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                             const isToday = dayInfo?.isToday || false
                             const className = `record${isToday ? ' today' : ''}`
                             return (
-                                <td key={`empty-${j}`} className={className}></td>
+                                <td 
+                                    key={`empty-${j}`} 
+                                    className={className}
+                                    onClick={() => {
+                                        // 빈 행 클릭 시 09:00 기본 시간으로 레코드 생성
+                                        // slotIndex = 9 (09:00), subIndex = 0 (정각)
+                                        handleSubSlotClick(j, 9, 0)
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                ></td>
                             )
                         })}
                     </tr>
@@ -358,8 +367,19 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                         const dayInfo = weekDays[currentDay]
                         const isToday = dayInfo?.isToday || false
                         const className = `record${isToday ? ' today' : ''}`
+                        const dayIndex = currentDay
                         
-                        cells.push(<td key={currentDay} className={className}></td>)
+                        cells.push(
+                            <td 
+                                key={currentDay} 
+                                className={className}
+                                onClick={() => {
+                                    // 빈 셀 클릭 시 09:00 기본 시간으로 레코드 생성
+                                    handleSubSlotClick(dayIndex, 9, 0)
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            ></td>
+                        )
                         currentDay++
                     }
                 }
