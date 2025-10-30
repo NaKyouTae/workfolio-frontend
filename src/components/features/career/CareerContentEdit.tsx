@@ -7,7 +7,7 @@ import {
   Activity_ActivityType,
   LanguageSkill_Language,
   LanguageSkill_LanguageLevel,
-  Attachment_AttachmentType
+  Attachment_AttachmentType,
 } from '@/generated/common';
 import { 
   ResumeUpdateRequest, 
@@ -177,13 +177,19 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         priority: languageSkill.priority || 0
       })));
       
+      console.log('======================');
+      console.log(selectedResumeDetail.attachments);
+      console.log('======================');
+
       setAttachments((selectedResumeDetail.attachments || []).map(attachment => ({
-        id: attachment.id,
+        id: attachment.id || '',
         type: normalizeEnumValue(attachment.type, Attachment_AttachmentType),
+        category: attachment.category,
+        url: attachment.url || '',
         fileName: attachment.fileName || '',
         fileUrl: attachment.fileUrl || '',
         isVisible: attachment.isVisible ?? false,
-        priority: attachment.priority || 0
+        priority: attachment.priority || 0,
       })));
     }
   }, [selectedResumeDetail]);

@@ -12,7 +12,6 @@ import EmptyState from '@/components/ui/EmptyState';
 
 // 모드 정보를 포함한 확장된 Attachment 타입
 type AttachmentWithMode = ResumeUpdateRequest_AttachmentRequest & {
-  _isFileDownloadMode?: boolean; // 파일 모드 여부를 추적하는 임시 속성
   _file?: File; // 선택된 파일 객체 (UI 표시용)
 };
 
@@ -34,7 +33,6 @@ interface AttachmentEditProps {
 interface AttachmentItemProps {
   attachment: AttachmentWithMode;
   index: number;
-  isFileDownloadMode: boolean; // props로 모드를 전달
   handleAttachmentChange: (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => void;
   toggleVisible: (index: number) => void;
   handleDeleteAttachment: (index: number) => void;
@@ -44,7 +42,6 @@ interface AttachmentItemProps {
 const AttachmentItem: React.FC<AttachmentItemProps> = ({
   attachment,
   index,
-  isFileDownloadMode, // props로 받은 모드 사용
   handleAttachmentChange,
   toggleVisible,
   handleDeleteAttachment,
@@ -66,84 +63,80 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
     >
       <div className={styles.card}>
         <div className={styles.gridContainer2}>
-        {/* 종류 */}
-        <div className={styles.formField}>
-          <Dropdown
-            label="종류"
-            selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
-            options={[
-              { value: Attachment_AttachmentType.RESUME, label: '이력서' },
-              { value: Attachment_AttachmentType.PORTFOLIO, label: '포트폴리오' },
-              { value: Attachment_AttachmentType.CAREER_STATEMENT, label: '경력기술서' },
-              { value: Attachment_AttachmentType.CERTIFICATE, label: '증명서' },
-              { value: Attachment_AttachmentType.ETC, label: '기타' },
-            ]}
-            setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
-          />
-        </div>
+          {/* 종류 */}
+          <div className={styles.formField}>
+            <Dropdown
+              label="종류"
+              selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
+              options={[
+                { value: Attachment_AttachmentType.RESUME, label: '이력서' },
+                { value: Attachment_AttachmentType.PORTFOLIO, label: '포트폴리오' },
+                { value: Attachment_AttachmentType.CAREER_STATEMENT, label: '경력기술서' },
+                { value: Attachment_AttachmentType.CERTIFICATE, label: '증명서' },
+                { value: Attachment_AttachmentType.ETC, label: '기타' },
+              ]}
+              setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
+            />
+          </div>
 
-        {/* 파일 업로드 (파일 모드일 때) */}
-        {isFileDownloadMode && (
-          <>
-            <div className={styles.formField}>
-              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>
-                파일 선택
-              </label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                onChange={onFileChange}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '14px'
-                }}
-              />
-              {attachment._file && (
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                  선택된 파일: {attachment._file.name} ({(attachment._file.size / 1024 / 1024).toFixed(2)} MB)
-                </p>
-              )}
-            </div>
-            <div className={styles.formField}>
-              <Input 
-                type="text"
-                label="파일 이름"
-                placeholder="portfolio.pdf"
-                value={attachment.fileName || ''}
-                onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
-              />
-            </div>
-            {attachment.fileUrl && (
+          {/* 파일 업로드 (파일 모드일 때) */}
+          {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
+            <div className={styles.gridContainer2}>
               <div className={styles.formField}>
                 <Input 
                   type="text"
-                  label="파일 URL (자동 생성)"
-                  value={attachment.fileUrl}
-                  readOnly={true}
+                  label="파일 이름"
+                  placeholder="portfolio.pdf"
+                  readOnly
+                  value={attachment.fileName || ''}
+                  onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
                 />
               </div>
-            )}
-          </>
-        )}
+              <div className={styles.formField}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={onFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      padding: '8px 16px',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      backgroundColor: '#fff',
+                      color: '#333',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      height: '32px',
+                      width: '100px',
+                    }}
+                  >
+                    파일 찾기
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
-        {/* 파일 URL (URL 모드일 때만) */}
-        {!isFileDownloadMode && (
-          <div className={styles.formField}>
-            <Input 
-              type="url"
-              label="URL"
-              placeholder="https://example.com"
-              value={attachment.url || ''}
-              onChange={(e) => handleAttachmentChange(index, 'url', e.target.value)}
-            />
-          </div>
-        )}
+          {/* 파일 URL (URL 모드일 때만) */}
+          {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
+            <div className={styles.formField}>
+              <Input 
+                type="url"
+                label="URL"
+                placeholder="https://example.com"
+                value={attachment.url || ''}
+                onChange={(e) => handleAttachmentChange(index, 'url', e.target.value)}
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
       
       <CardActions
         isVisible={attachment.isVisible ?? true}
@@ -167,9 +160,8 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     fileName: '',
     fileUrl: '',
     fileData: undefined,
-    isVisible: false,
+    isVisible: true,
     priority,
-    _isFileDownloadMode: true, // 파일 모드 표시
   });
 
   // URL 모드로 attachment 생성 (fileUrl 필드 사용)
@@ -180,9 +172,8 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     fileName: '',
     fileUrl: '',
     fileData: undefined,
-    isVisible: false,
+    isVisible: true,
     priority,
-    _isFileDownloadMode: false, // URL 모드 표시
   });
 
   // 빈 배열일 때 자동으로 항목 하나 추가 (URL 모드로 기본 설정)
@@ -335,7 +326,6 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
                 key={attachment.id || `attachment-${index}`}
                 attachment={attachmentWithMode}
                 index={index}
-                isFileDownloadMode={attachmentWithMode._isFileDownloadMode ?? false} // props로 모드 전달
                 handleAttachmentChange={handleAttachmentChange}
                 toggleVisible={toggleVisible}
                 handleDeleteAttachment={handleDeleteAttachment}

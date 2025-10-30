@@ -87,7 +87,7 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
   const getAttachmentTypeIcon = (attachment: Attachment) => {
     const normalizedCategory = normalizeEnumValue(attachment.category, Attachment_AttachmentCategory);
     
-    if(normalizedCategory === Attachment_AttachmentCategory.FILE) {
+    if(normalizedCategory == Attachment_AttachmentCategory.FILE) {
       return <div 
         style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} 
         onClick={() => handleFileDownload(attachment.fileUrl, attachment.fileName)}
@@ -97,12 +97,12 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
       </div>
     }
 
-    if(normalizedCategory === Attachment_AttachmentCategory.URL) {
+    if(normalizedCategory == Attachment_AttachmentCategory.URL) {
       return <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => {
         window.open(attachment.url, '_blank');
       }}>
         <Image src="/assets/img/ico/ic-open.png" alt="etc" width={16} height={16} />
-        {attachment.fileUrl && <span>{attachment.fileUrl}</span>}
+        {attachment.url && <span>{attachment.url}</span>}
       </div>
     }
   };

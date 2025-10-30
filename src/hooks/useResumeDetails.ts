@@ -53,6 +53,7 @@ const createSampleResumeDetails = (): ResumeDetail[] => {
   return [
     {
       ...resume,
+      publicId: '',
       careers,
       educations,
       projects,
@@ -62,6 +63,7 @@ const createSampleResumeDetails = (): ResumeDetail[] => {
     },
     {
       ...emptyResume,
+      publicId: '',
       careers: emptyCareers,
       educations: emptyEducations,
       projects: emptyProjects,
@@ -385,7 +387,7 @@ export const useResumeDetails = () => {
       // Attachment 필터링
       if (filteredData.attachments) {
         filteredData.attachments = filteredData.attachments.filter(attachment => 
-          hasContent(attachment.fileName) || hasContent(attachment.fileUrl)
+          hasContent(attachment.fileName) || hasContent(attachment.fileUrl) || hasContent(attachment.url)
         );
       }
       
