@@ -20,17 +20,23 @@ import {
   JobSearchCompany_Status,
   Interview_Type,
   Activity_ActivityType,
-  Attachment_AttachmentType
+  Attachment_AttachmentType,
+  Attachment_AttachmentCategory,
+  Worker_Gender
 } from '@/generated/common';
 
 // 샘플 Worker 데이터
 export const createSampleWorker = (): Worker => {
+  const now = Date.now();
   return {
     id: 'worker-1',
-    name: '홍길동',
+    phone: '010-1234-5678',
+    email: 'hong@example.com',
+    brithDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.MALE,
     nickName: '홍길동',
-    createdAt: Date.now() - 365 * 24 * 60 * 60 * 1000,
-    updatedAt: Date.now()
+    createdAt: now - 365 * 24 * 60 * 60 * 1000,
+    updatedAt: now
   };
 };
 
@@ -50,7 +56,6 @@ export const createSampleResume = (): Resume => {
     job: '풀스택 개발자',
     description: '10년차 풀스택 개발자입니다. React, Node.js, Spring Boot 등 다양한 기술 스택을 다룹니다.',
     isDefault: true,
-    publicId: 'hong-resume-public',
     worker,
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -487,6 +492,8 @@ export const createSampleAttachments = (): Attachment[] => {
   return [
     {
       id: 'attach-1',
+      category: Attachment_AttachmentCategory.FILE,
+      url: '',
       fileName: '',
       fileUrl: 'https://example.com/files/portfolio.pdf',
       isVisible: true,
@@ -498,6 +505,8 @@ export const createSampleAttachments = (): Attachment[] => {
     },
     {
       id: 'attach-2',
+      category: Attachment_AttachmentCategory.FILE,
+      url: '',
       fileName: '자기소개서.pdf',
       fileUrl: '',
       isVisible: true,
@@ -509,6 +518,8 @@ export const createSampleAttachments = (): Attachment[] => {
     },
     {
       id: 'attach-3',
+      category: Attachment_AttachmentCategory.URL,
+      url: '',
       fileName: '',
       fileUrl: 'https://github.com/honggildong',
       isVisible: true,
@@ -520,6 +531,8 @@ export const createSampleAttachments = (): Attachment[] => {
     },
     {
       id: 'attach-4',
+      category: Attachment_AttachmentCategory.URL,
+      url: '',
       fileName: '',
       fileUrl: 'https://blog.honggildong.com',
       isVisible: true,
@@ -789,8 +802,11 @@ export const createSampleResume2 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-2',
-    name: '김민준',
     nickName: '김민준',
+    phone: '010-2345-6789',
+    email: 'minjun.kim@example.com',
+    brithDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.MALE,
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
   };
@@ -806,7 +822,6 @@ export const createSampleResume2 = () => {
     job: '백엔드 개발자',
     description: 'Spring Boot와 MSA 아키텍처에 능숙한 5년차 백엔드 개발자입니다.',
     isDefault: false,
-    publicId: 'minjun-backend',
     worker,
     createdAt: now - 180 * 24 * 60 * 60 * 1000,
     updatedAt: now - 10 * 24 * 60 * 60 * 1000
@@ -912,7 +927,10 @@ export const createSampleResume3 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-3',
-    name: '이지은',
+    phone: '010-3456-7890',
+    email: 'jieun.lee@example.com',
+    brithDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.FEMALE,
     nickName: '이지은',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -929,7 +947,6 @@ export const createSampleResume3 = () => {
     job: '프론트엔드 개발자',
     description: 'React와 Next.js를 주력으로 사용하는 3년차 프론트엔드 개발자입니다.',
     isDefault: false,
-    publicId: 'jieun-frontend',
     worker,
     createdAt: now - 150 * 24 * 60 * 60 * 1000,
     updatedAt: now - 5 * 24 * 60 * 60 * 1000
@@ -1017,7 +1034,10 @@ export const createSampleResume4 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-4',
-    name: '박서연',
+    phone: '010-4567-8901',
+    email: 'seoyeon.park@example.com',
+    brithDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.FEMALE,
     nickName: '박서연',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1034,7 +1054,6 @@ export const createSampleResume4 = () => {
     job: 'UX/UI 디자이너',
     description: '사용자 중심의 디자인을 추구하는 7년차 UX 디자이너입니다.',
     isDefault: false,
-    publicId: 'seoyeon-designer',
     worker,
     createdAt: now - 200 * 24 * 60 * 60 * 1000,
     updatedAt: now - 15 * 24 * 60 * 60 * 1000
@@ -1170,6 +1189,8 @@ export const createSampleResume4 = () => {
   const attachments: Attachment[] = [
     {
       id: 'attachment-4-1',
+      category: Attachment_AttachmentCategory.FILE,
+      url: '',
       fileName: 'portfolio.pdf',
       fileUrl: 'https://example.com/portfolio.pdf',
       type: Attachment_AttachmentType.RESUME,
@@ -1189,7 +1210,10 @@ export const createSampleResume5 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-5',
-    name: '최준호',
+    phone: '010-5678-9012',
+    email: 'junho.choi@example.com',
+    brithDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.MALE,
     nickName: '최준호',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1206,7 +1230,6 @@ export const createSampleResume5 = () => {
     job: '프로덕트 매니저',
     description: '데이터 기반 의사결정을 중시하는 8년차 PM입니다.',
     isDefault: false,
-    publicId: 'junho-pm',
     worker,
     createdAt: now - 220 * 24 * 60 * 60 * 1000,
     updatedAt: now - 20 * 24 * 60 * 60 * 1000
@@ -1355,7 +1378,10 @@ export const createSampleResume6 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-6',
-    name: '정수빈',
+    phone: '010-6789-0123',
+    email: 'subin.jung@example.com',
+    brithDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.FEMALE,
     nickName: '정수빈',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1372,7 +1398,6 @@ export const createSampleResume6 = () => {
     job: '데이터 분석가',
     description: 'Python과 SQL을 활용한 데이터 분석 전문가입니다.',
     isDefault: false,
-    publicId: 'subin-analyst',
     worker,
     createdAt: now - 170 * 24 * 60 * 60 * 1000,
     updatedAt: now - 8 * 24 * 60 * 60 * 1000
@@ -1467,7 +1492,10 @@ export const createSampleResume7 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-7',
-    name: '강동우',
+    phone: '010-7890-1234',
+    email: 'dongwoo.kang@example.com',
+    brithDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.MALE,
     nickName: '강동우',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1484,7 +1512,6 @@ export const createSampleResume7 = () => {
     job: 'DevOps 엔지니어',
     description: 'Kubernetes와 AWS에 능숙한 인프라 전문가입니다.',
     isDefault: false,
-    publicId: 'dongwoo-devops',
     worker,
     createdAt: now - 190 * 24 * 60 * 60 * 1000,
     updatedAt: now - 12 * 24 * 60 * 60 * 1000
@@ -1579,7 +1606,10 @@ export const createSampleResume8 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-8',
-    name: '윤서아',
+    phone: '010-8901-2345',
+    email: 'seoa.yoon@example.com',
+    brithDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.FEMALE,
     nickName: '윤서아',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1596,7 +1626,6 @@ export const createSampleResume8 = () => {
     job: '퍼포먼스 마케터',
     description: '데이터 기반 마케팅 전략 수립 및 실행 전문가입니다.',
     isDefault: false,
-    publicId: 'seoa-marketer',
     worker,
     createdAt: now - 160 * 24 * 60 * 60 * 1000,
     updatedAt: now - 7 * 24 * 60 * 60 * 1000
@@ -1691,7 +1720,10 @@ export const createSampleResume9 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-9',
-    name: '조현우',
+    phone: '010-9012-3456',
+    email: 'hyunwoo.cho@example.com',
+    brithDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.MALE,
     nickName: '조현우',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1708,7 +1740,6 @@ export const createSampleResume9 = () => {
     job: 'QA 엔지니어',
     description: '자동화 테스트에 능숙한 6년차 QA 엔지니어입니다.',
     isDefault: false,
-    publicId: 'hyunwoo-qa',
     worker,
     createdAt: now - 180 * 24 * 60 * 60 * 1000,
     updatedAt: now - 9 * 24 * 60 * 60 * 1000
@@ -1803,7 +1834,10 @@ export const createSampleResume10 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-10',
-    name: '송민지',
+    phone: '010-0123-4567',
+    email: 'minji.song@example.com',
+    brithDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.FEMALE,
     nickName: '송민지',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1820,7 +1854,6 @@ export const createSampleResume10 = () => {
     job: 'iOS 개발자',
     description: 'Swift와 SwiftUI를 전문으로 하는 iOS 개발자입니다.',
     isDefault: false,
-    publicId: 'minji-ios',
     worker,
     createdAt: now - 140 * 24 * 60 * 60 * 1000,
     updatedAt: now - 6 * 24 * 60 * 60 * 1000
@@ -1915,7 +1948,10 @@ export const createSampleResume11 = () => {
   const now = Date.now();
   const worker: Worker = {
     id: 'worker-11',
-    name: '한지훈',
+    phone: '010-1357-2468',
+    email: 'jihoon.han@example.com',
+    brithDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
+    gender: Worker_Gender.MALE,
     nickName: '한지훈',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
     updatedAt: now
@@ -1932,7 +1968,6 @@ export const createSampleResume11 = () => {
     job: 'AI 엔지니어',
     description: '딥러닝과 NLP 전문 AI 엔지니어입니다.',
     isDefault: false,
-    publicId: 'jihoon-ai',
     worker,
     createdAt: now - 210 * 24 * 60 * 60 * 1000,
     updatedAt: now - 14 * 24 * 60 * 60 * 1000
@@ -2092,7 +2127,6 @@ export const createEmptySampleResume = (): Resume => {
     job: '',
     description: '',
     isDefault: false,
-    publicId: '',
     worker,
     createdAt: now,
     updatedAt: now
@@ -2253,6 +2287,8 @@ export const createEmptySampleAttachments = (): Attachment[] => {
       type: undefined,
       fileName: '',
       fileUrl: '',
+      category: Attachment_AttachmentCategory.FILE,
+      url: '',
       isVisible: true,
       priority: 0,
       resume,
