@@ -176,10 +176,6 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         })),
         priority: languageSkill.priority || 0
       })));
-      
-      console.log('======================');
-      console.log(selectedResumeDetail.attachments);
-      console.log('======================');
 
       setAttachments((selectedResumeDetail.attachments || []).map(attachment => ({
         id: attachment.id || '',

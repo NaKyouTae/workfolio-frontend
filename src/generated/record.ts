@@ -15,7 +15,13 @@ export interface RecordCreateRequest {
   description: string;
   startedAt: number;
   endedAt: number;
+  attachments: RecordCreateRequest_Attachment[];
   recordGroupId: string;
+}
+
+export interface RecordCreateRequest_Attachment {
+  fileName: string;
+  fileData: Uint8Array;
 }
 
 export interface RecordUpdateRequest {
@@ -23,7 +29,13 @@ export interface RecordUpdateRequest {
   description: string;
   startedAt: number;
   endedAt: number;
+  attachments: RecordUpdateRequest_Attachment[];
   id: string;
+}
+
+export interface RecordUpdateRequest_Attachment {
+  fileName: string;
+  fileData: Uint8Array;
 }
 
 export interface ListRecordRequest {
@@ -41,7 +53,7 @@ export interface RecordResponse {
 }
 
 function createBaseRecordCreateRequest(): RecordCreateRequest {
-  return { title: "", description: "", startedAt: 0, endedAt: 0, recordGroupId: "" };
+  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], recordGroupId: "" };
 }
 
 export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
@@ -57,6 +69,9 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     }
     if (message.endedAt !== 0) {
       writer.uint32(32).int64(message.endedAt);
+    }
+    for (const v of message.attachments) {
+      RecordCreateRequest_Attachment.encode(v!, writer.uint32(42).fork()).join();
     }
     if (message.recordGroupId !== "") {
       writer.uint32(794).string(message.recordGroupId);
@@ -103,6 +118,14 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
           message.endedAt = longToNumber(reader.int64());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.attachments.push(RecordCreateRequest_Attachment.decode(reader, reader.uint32()));
+          continue;
+        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -126,6 +149,9 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
+      attachments: globalThis.Array.isArray(object?.attachments)
+        ? object.attachments.map((e: any) => RecordCreateRequest_Attachment.fromJSON(e))
+        : [],
       recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
     };
   },
@@ -144,6 +170,9 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
+    if (message.attachments?.length) {
+      obj.attachments = message.attachments.map((e) => RecordCreateRequest_Attachment.toJSON(e));
+    }
     if (message.recordGroupId !== "") {
       obj.recordGroupId = message.recordGroupId;
     }
@@ -159,13 +188,92 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
+    message.attachments = object.attachments?.map((e) => RecordCreateRequest_Attachment.fromPartial(e)) || [];
     message.recordGroupId = object.recordGroupId ?? "";
     return message;
   },
 };
 
+function createBaseRecordCreateRequest_Attachment(): RecordCreateRequest_Attachment {
+  return { fileName: "", fileData: new Uint8Array(0) };
+}
+
+export const RecordCreateRequest_Attachment: MessageFns<RecordCreateRequest_Attachment> = {
+  encode(message: RecordCreateRequest_Attachment, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.fileName !== "") {
+      writer.uint32(10).string(message.fileName);
+    }
+    if (message.fileData.length !== 0) {
+      writer.uint32(18).bytes(message.fileData);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordCreateRequest_Attachment {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecordCreateRequest_Attachment();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fileName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fileData = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RecordCreateRequest_Attachment {
+    return {
+      fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
+      fileData: isSet(object.fileData) ? bytesFromBase64(object.fileData) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: RecordCreateRequest_Attachment): unknown {
+    const obj: any = {};
+    if (message.fileName !== "") {
+      obj.fileName = message.fileName;
+    }
+    if (message.fileData.length !== 0) {
+      obj.fileData = base64FromBytes(message.fileData);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RecordCreateRequest_Attachment>, I>>(base?: I): RecordCreateRequest_Attachment {
+    return RecordCreateRequest_Attachment.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RecordCreateRequest_Attachment>, I>>(
+    object: I,
+  ): RecordCreateRequest_Attachment {
+    const message = createBaseRecordCreateRequest_Attachment();
+    message.fileName = object.fileName ?? "";
+    message.fileData = object.fileData ?? new Uint8Array(0);
+    return message;
+  },
+};
+
 function createBaseRecordUpdateRequest(): RecordUpdateRequest {
-  return { title: "", description: "", startedAt: 0, endedAt: 0, id: "" };
+  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], id: "" };
 }
 
 export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
@@ -181,6 +289,9 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     }
     if (message.endedAt !== 0) {
       writer.uint32(32).int64(message.endedAt);
+    }
+    for (const v of message.attachments) {
+      RecordUpdateRequest_Attachment.encode(v!, writer.uint32(42).fork()).join();
     }
     if (message.id !== "") {
       writer.uint32(794).string(message.id);
@@ -227,6 +338,14 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
           message.endedAt = longToNumber(reader.int64());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.attachments.push(RecordUpdateRequest_Attachment.decode(reader, reader.uint32()));
+          continue;
+        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -250,6 +369,9 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : 0,
+      attachments: globalThis.Array.isArray(object?.attachments)
+        ? object.attachments.map((e: any) => RecordUpdateRequest_Attachment.fromJSON(e))
+        : [],
       id: isSet(object.id) ? globalThis.String(object.id) : "",
     };
   },
@@ -268,6 +390,9 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
+    if (message.attachments?.length) {
+      obj.attachments = message.attachments.map((e) => RecordUpdateRequest_Attachment.toJSON(e));
+    }
     if (message.id !== "") {
       obj.id = message.id;
     }
@@ -283,7 +408,86 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
+    message.attachments = object.attachments?.map((e) => RecordUpdateRequest_Attachment.fromPartial(e)) || [];
     message.id = object.id ?? "";
+    return message;
+  },
+};
+
+function createBaseRecordUpdateRequest_Attachment(): RecordUpdateRequest_Attachment {
+  return { fileName: "", fileData: new Uint8Array(0) };
+}
+
+export const RecordUpdateRequest_Attachment: MessageFns<RecordUpdateRequest_Attachment> = {
+  encode(message: RecordUpdateRequest_Attachment, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.fileName !== "") {
+      writer.uint32(10).string(message.fileName);
+    }
+    if (message.fileData.length !== 0) {
+      writer.uint32(18).bytes(message.fileData);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordUpdateRequest_Attachment {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecordUpdateRequest_Attachment();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fileName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fileData = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RecordUpdateRequest_Attachment {
+    return {
+      fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
+      fileData: isSet(object.fileData) ? bytesFromBase64(object.fileData) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: RecordUpdateRequest_Attachment): unknown {
+    const obj: any = {};
+    if (message.fileName !== "") {
+      obj.fileName = message.fileName;
+    }
+    if (message.fileData.length !== 0) {
+      obj.fileData = base64FromBytes(message.fileData);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RecordUpdateRequest_Attachment>, I>>(base?: I): RecordUpdateRequest_Attachment {
+    return RecordUpdateRequest_Attachment.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RecordUpdateRequest_Attachment>, I>>(
+    object: I,
+  ): RecordUpdateRequest_Attachment {
+    const message = createBaseRecordUpdateRequest_Attachment();
+    message.fileName = object.fileName ?? "";
+    message.fileData = object.fileData ?? new Uint8Array(0);
     return message;
   },
 };
@@ -501,6 +705,31 @@ export const RecordResponse: MessageFns<RecordResponse> = {
     return message;
   },
 };
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if ((globalThis as any).Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if ((globalThis as any).Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
