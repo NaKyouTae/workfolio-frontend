@@ -3,7 +3,7 @@ import { AttachmentRequest } from '@/generated/attachment';
 import { Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
-import styles from '../CareerContentEdit.module.css';
+import styles from './AttachmentEdit.module.css';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';

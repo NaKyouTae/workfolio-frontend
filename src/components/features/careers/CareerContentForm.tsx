@@ -18,7 +18,7 @@ import ProjectEdit from './edit/ProjectEdit';
 import EducationEdit from './edit/EducationEdit';
 import ActivityEdit from './edit/ActivityEdit';
 import LanguageSkillEdit from './edit/LanguageSkillEdit';
-import AttachmentEdit from './edit/AttachmentEdit';
+import AttachmentEdit from '@/components/features/common/AttachmentEdit';
 import EditFloatingNavigation from './EditFloatingNavigation';
 import Input from '@/components/ui/Input';
 import { AttachmentRequest } from '@/generated/attachment';

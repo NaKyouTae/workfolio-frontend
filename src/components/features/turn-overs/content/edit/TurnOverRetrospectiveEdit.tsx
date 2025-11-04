@@ -1,37 +1,111 @@
-import React, { useState } from 'react';
-import { TurnOverRetrospectiveDetail } from '@/generated/common';
+import React, { useState, useEffect } from 'react';
 import styles from './TurnOverRetrospectiveEdit.module.css';
 import { DateUtil } from '@/utils/DateUtil';
-import { TurnOverUpsertRequest_MemoRequest } from '@/generated/turn_over';
+import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
-import MemoEdit from './common/MemoEdit';
-import AttachmentEdit from './common/AttachmentEdit';
+import MemoEdit from '@/components/features/turn-overs/content/edit/common/MemoEdit';
+import AttachmentEdit from '@/components/features/common/AttachmentEdit';
+import EditFloatingActions, { FloatingNavigationItem } from '../EditFloatingActions';
+import { TurnOverRetrospective_EmploymentType } from '@/generated/common';
 
 interface TurnOverRetrospectiveEditProps {
-  turnOverRetrospective: TurnOverRetrospectiveDetail | null;
-  onSave?: (data: TurnOverRetrospectiveDetail) => void;
+  turnOverRequest: TurnOverUpsertRequest | null;
+  onSave?: (data: TurnOverUpsertRequest) => void;
+  onCancel?: () => void;
 }
 
 const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
-  turnOverRetrospective,
+  turnOverRequest,
+  onSave,
+  onCancel,
 }) => {
-  const [companyName, setCompanyName] = useState(turnOverRetrospective?.name || '');
-  const [position, setPosition] = useState(turnOverRetrospective?.position || '');
-  const [reason, setReason] = useState(turnOverRetrospective?.reason || '');
-  const [joinDate, setJoinDate] = useState(turnOverRetrospective?.joinedAt ? DateUtil.normalizeTimestamp(turnOverRetrospective.joinedAt) : undefined);
-  const [employmentType, setEmploymentType] = useState('선택');
-  const [department, setDepartment] = useState(turnOverRetrospective?.department || '');
-  const [jobTitle, setJobTitle] = useState(turnOverRetrospective?.jobTitle || '');
-  const [rank, setRank] = useState(turnOverRetrospective?.rank || '');
-  const [workType, setWorkType] = useState(turnOverRetrospective?.workType || '');
-  const [score, setScore] = useState(turnOverRetrospective?.score || 5);
-  const [reviewSummary, setReviewSummary] = useState(turnOverRetrospective?.reviewSummary || '');
-  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>(
-    turnOverRetrospective?.memos || []
-  );
-  const [attachments, setAttachments] = useState<AttachmentRequest[]>(
-    turnOverRetrospective?.attachments || []
-  );
+  const [activeSection, setActiveSection] = useState<string>('basic');
+  const [companyName, setCompanyName] = useState('');
+  const [position, setPosition] = useState('');
+  const [reason, setReason] = useState('');
+  const [salary, setSalary] = useState(0);
+  const [joinDate, setJoinDate] = useState<number | undefined>(undefined);
+  const [employmentType, setEmploymentType] = useState<TurnOverRetrospective_EmploymentType>(TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN);
+  const [department, setDepartment] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
+  const [rank, setRank] = useState('');
+  const [workType, setWorkType] = useState('');
+  const [score, setScore] = useState(5);
+  const [reviewSummary, setReviewSummary] = useState('');
+  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
+  const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
+
+  // 네비게이션 항목 정의 (각 탭에 따라 다른 네비게이션 표시 가능)
+  const getNavigationItems = (): FloatingNavigationItem[] => {
+    return [
+      {
+        id: 'basic',
+        label: '기본 정보',
+        isActive: activeSection === 'basic',
+        onClick: () => setActiveSection('basic'),
+      },
+      {
+        id: 'memo',
+        label: '메모',
+        isActive: activeSection === 'memo',
+        onClick: () => setActiveSection('memo'),
+      },
+      {
+        id: 'attachment',
+        label: '첨부',
+        isActive: activeSection === 'attachment',
+        onClick: () => setActiveSection('attachment'),
+      },
+    ];
+  };
+
+  // turnOverRetrospective가 변경될 때마다 state 업데이트
+  useEffect(() => {
+    if (turnOverRequest) {
+      setCompanyName(turnOverRequest.turnOverRetrospective?.name || '');
+      setPosition(turnOverRequest.turnOverRetrospective?.position || '');
+      setReason(turnOverRequest.turnOverRetrospective?.reason || '');
+      setSalary(turnOverRequest.turnOverRetrospective?.salary || 0);
+      setJoinDate(turnOverRequest.turnOverRetrospective?.joinedAt ? DateUtil.normalizeTimestamp(turnOverRequest.turnOverRetrospective.joinedAt) : undefined);
+      setDepartment(turnOverRequest.turnOverRetrospective?.department || '');
+      setJobTitle(turnOverRequest.turnOverRetrospective?.jobTitle || '');
+      setRank(turnOverRequest.turnOverRetrospective?.rank || '');
+      setWorkType(turnOverRequest.turnOverRetrospective?.workType || '');
+      setScore(turnOverRequest.turnOverRetrospective?.score || 5);
+      setReviewSummary(turnOverRequest.turnOverRetrospective?.reviewSummary || '');
+      setMemos(turnOverRequest.turnOverRetrospective?.memos || []);
+      setAttachments(turnOverRequest.turnOverRetrospective?.attachments || []);
+    }
+  }, [turnOverRequest]);
+
+  const handleUpdateAttachments = (attachments: AttachmentRequest[]) => {
+    setAttachments(attachments);
+  };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave({
+        ...turnOverRequest,
+        turnOverRetrospective: {
+          id: turnOverRequest?.turnOverRetrospective?.id || undefined,
+          name: companyName,
+          position: position,
+          reason: reason,
+          salary: salary,
+          joinedAt: joinDate,
+          employmentType: employmentType,
+          department: department,
+          jobTitle: jobTitle,
+          rank: rank,
+          workType: workType,
+          score: score,
+          reviewSummary: reviewSummary,
+          memos: memos,
+          attachments: attachments,
+        } as TurnOverUpsertRequest_TurnOverRetrospectiveRequest,
+      } as TurnOverUpsertRequest);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -72,7 +146,7 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
         </div>
       </div>
 
-      {/* 자우 협의 */}
+      {/* 처우 협의 */}
       <div className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>자우 협의</h2>
@@ -91,12 +165,12 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
             </div>
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel}>재직 형태</label>
-              <select className={styles.select} value={employmentType} onChange={(e) => setEmploymentType(e.target.value)}>
-                <option value="선택">선택</option>
-                <option value="정규직">정규직</option>
-                <option value="계약직">계약직</option>
-                <option value="프리랜서">프리랜서</option>
-                <option value="인턴">인턴</option>
+              <select className={styles.select} value={employmentType} onChange={(e) => setEmploymentType(e.target.value as unknown as TurnOverRetrospective_EmploymentType)}>
+                <option value={TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN.toString()}>선택</option>
+                <option value={TurnOverRetrospective_EmploymentType.FULL_TIME.toString()}>정규직</option>
+                <option value={TurnOverRetrospective_EmploymentType.CONTRACT.toString()}>계약직</option>
+                <option value={TurnOverRetrospective_EmploymentType.FREELANCER.toString()}>프리랜서</option>
+                <option value={TurnOverRetrospective_EmploymentType.INTERN.toString()}>인턴</option>
               </select>
             </div>
           </div>
@@ -197,7 +271,14 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
       <MemoEdit memos={memos} onMemosChange={setMemos} />
 
       {/* 첨부 */}
-      <AttachmentEdit attachments={attachments} onAttachmentsChange={setAttachments} />
+      <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+
+      {/* Floating Action Buttons */}
+      <EditFloatingActions 
+        navigationItems={getNavigationItems()}
+        onSave={handleSave}
+        onCancel={() => onCancel?.()}
+      />
     </div>
   );
 };

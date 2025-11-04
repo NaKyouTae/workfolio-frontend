@@ -3,7 +3,7 @@ import { TurnOverRetrospectiveDetail, TurnOverRetrospectiveDetail_EmploymentType
 import DateUtil from '@/utils/DateUtil';
 import styles from './TurnOverRetrospectiveView.module.css';
 import MemoView from './common/MemoView';
-import AttachmentView from './common/AttachmentView';
+import AttachmentView from '@/components/features/common/AttachmentView';
 
 interface TurnOverRetrospectiveViewProps {
   turnOverRetrospective: TurnOverRetrospectiveDetail | null;

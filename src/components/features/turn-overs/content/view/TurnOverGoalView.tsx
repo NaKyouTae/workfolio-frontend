@@ -3,7 +3,7 @@ import { TurnOverGoalDetail } from '@/generated/common';
 import EmptyState from '@/components/ui/EmptyState';
 import styles from './TurnOverGoalView.module.css';
 import MemoView from './common/MemoView';
-import AttachmentView from './common/AttachmentView';
+import AttachmentView from '@/components/features/common/AttachmentView';
 
 interface TurnOverGoalViewProps {
   turnOverGoal: TurnOverGoalDetail | null;

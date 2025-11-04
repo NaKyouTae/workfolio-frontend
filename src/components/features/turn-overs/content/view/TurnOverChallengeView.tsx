@@ -4,7 +4,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import DateUtil from '@/utils/DateUtil';
 import styles from './TurnOverChallengeView.module.css';
 import MemoView from './common/MemoView';
-import AttachmentView from './common/AttachmentView';
+import AttachmentView from '@/components/features/common/AttachmentView';
 
 interface TurnOverChallengeViewProps {
   turnOverChallenge: TurnOverChallengeDetail | null;
@@ -46,8 +46,8 @@ const TurnOverChallengeView: React.FC<TurnOverChallengeViewProps> = ({ turnOverC
         <div className={styles.sectionContent}>
           {turnOverChallenge.jobApplications && turnOverChallenge.jobApplications.length > 0 ? (
             <div className={styles.applicationsList}>
-              {turnOverChallenge.jobApplications.map((app) => (
-                <div key={app.id} className={styles.applicationCard}>
+              {turnOverChallenge.jobApplications.map((app, appIndex) => (
+                <div key={app.id || `app-${appIndex}`} className={styles.applicationCard}>
                   {/* 카드 헤더 */}
                   <div className={styles.cardHeader}>
                     <div className={styles.companyInfo}>
@@ -80,10 +80,10 @@ const TurnOverChallengeView: React.FC<TurnOverChallengeViewProps> = ({ turnOverC
                       {app.applicationStages.map((stage, index) => {
                         const statusInfo = getStatusLabel(stage.status);
                         return (
-                          <div key={stage.id} className={styles.timelineItem}>
+                          <div key={stage.id || `stage-${app.id}-${index}`} className={styles.timelineItem}>
                             <div className={styles.timelineNode}>
                               <div className={`${styles.timelineDot} ${statusInfo.className}`} />
-                              {index < app.applicationStages.length - 1 && (
+                              {index < (app.applicationStages?.length || 0) - 1 && (
                                 <div className={styles.timelineLine} />
                               )}
                             </div>

@@ -9,21 +9,19 @@ interface MemoViewProps {
 
 const MemoView: React.FC<MemoViewProps> = ({ memos }) => {
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>메모</h2>
-      </div>
-      <div className={styles.sectionContent}>
-        {memos && memos.length > 0 ? (
-          <div className={styles.memoList}>
-            {memos.map((memo, index) => (
-              <div className={styles.memoItem} key={memo.id || index}>
-                <p className={styles.memoText}>{memo.content}</p>
+    <div className={styles.container}>
+      <h3 className={styles.title}>
+        메모
+      </h3>
+      <div className={styles.listContainer}>
+        {!(memos && memos.length > 0) ? (<EmptyState text="등록된 메모가 없습니다." />): (
+          <div className={styles.item}>
+            {memos.map((memo) => (
+              <div className={styles.item} key={memo.id}>
+                <p className={styles.text}>{memo.content}</p>
               </div>
             ))}
           </div>
-        ) : (
-          <EmptyState text="등록된 메모가 없습니다." />
         )}
       </div>
     </div>

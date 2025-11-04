@@ -74,88 +74,7 @@
   background: #f9fafb;
 }
 
-/* Floating Actions */
-.floatingActions {
-  position: fixed;
-  top: 120px;
-  right: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 100;
-}
-
-.saveButton {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  background: #3b3f45;
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.saveButton:hover {
-  background: #2a2d31;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.saveButton:active {
-  transform: translateY(0);
-}
-
-.cancelButton {
-  padding: 12px 24px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: white;
-  color: #6b7280;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.cancelButton:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
-  color: #374151;
-}
-
-.cancelButton:active {
-  transform: scale(0.98);
-}
-
 /* 반응형 */
-@media (max-width: 1200px) {
-  .floatingActions {
-    position: sticky;
-    top: auto;
-    right: auto;
-    bottom: 0;
-    left: 0;
-    flex-direction: row;
-    justify-content: center;
-    padding: 16px;
-    background: white;
-    border-top: 1px solid #e5e7eb;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .saveButton,
-  .cancelButton {
-    flex: 1;
-    max-width: 200px;
-  }
-}
-
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -178,16 +97,6 @@
 
   .tabContent {
     padding: 24px 20px;
-  }
-
-  .floatingActions {
-    padding: 12px;
-  }
-
-  .saveButton,
-  .cancelButton {
-    max-width: none;
-    font-size: 13px;
   }
 }
 

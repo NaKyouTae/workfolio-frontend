@@ -6,12 +6,13 @@ interface TurnOversSidebarProps {
   onGoHome: () => void;
   refreshTurnOvers: () => void;
   onTurnOverSelect: (turnOver: TurnOver) => void;
+  onTurnOverCreated: () => void;
 }
 
-const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, onGoHome, refreshTurnOvers, onTurnOverSelect }) => {
+const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, onGoHome, refreshTurnOvers, onTurnOverSelect, onTurnOverCreated }) => {
 
   const handleTurnOverCreated = () => {
-    console.log('turn over created');
+    onTurnOverCreated();
   };
 
   useEffect(() => {

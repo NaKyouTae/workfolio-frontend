@@ -98,12 +98,166 @@ export function useTurnOver() {
                 return false
             }
 
+            // 데이터 필터링: 기본값만 있는 항목 제거
+            const filteredRequest: TurnOverUpsertRequest = { ...request };
+
+            // Helper function to check if a string has meaningful content
+            const hasContent = (value: string | undefined): boolean => {
+                return value !== undefined && value !== null && value.trim() !== '';
+            };
+
+            // Helper function to check if a number has meaningful value
+            const hasValue = (value: number | undefined): boolean => {
+                return value !== undefined && value !== null && value > 0;
+            };
+
+            // TurnOverGoal 필터링
+            if (filteredRequest.turnOverGoal) {
+                const goal = filteredRequest.turnOverGoal;
+
+                // SelfIntroductions 필터링
+                if (goal.selfIntroductions) {
+                    goal.selfIntroductions = goal.selfIntroductions.filter(item =>
+                        hasContent(item.question) || hasContent(item.content)
+                    );
+                }
+
+                // InterviewQuestions 필터링
+                if (goal.interviewQuestions) {
+                    goal.interviewQuestions = goal.interviewQuestions.filter(item =>
+                        hasContent(item.question) || hasContent(item.answer)
+                    );
+                }
+
+                // CheckList 필터링
+                if (goal.checkList) {
+                    goal.checkList = goal.checkList.filter(item =>
+                        hasContent(item.content)
+                    );
+                }
+
+                // Memos 필터링
+                if (goal.memos) {
+                    goal.memos = goal.memos.filter(memo =>
+                        hasContent(memo.content)
+                    );
+                }
+
+                // Attachments 필터링
+                if (goal.attachments) {
+                    goal.attachments = goal.attachments.filter(attachment =>
+                        hasContent(attachment.fileName) || hasContent(attachment.fileUrl) || hasContent(attachment.url)
+                    );
+                }
+
+                // Goal 전체가 비어있으면 undefined로 설정
+                if (
+                    !hasContent(goal.reason) &&
+                    !hasContent(goal.goal) &&
+                    (!goal.selfIntroductions || goal.selfIntroductions.length === 0) &&
+                    (!goal.interviewQuestions || goal.interviewQuestions.length === 0) &&
+                    (!goal.checkList || goal.checkList.length === 0) &&
+                    (!goal.memos || goal.memos.length === 0) &&
+                    (!goal.attachments || goal.attachments.length === 0)
+                ) {
+                    filteredRequest.turnOverGoal = undefined;
+                }
+            }
+
+            // TurnOverChallenge 필터링
+            if (filteredRequest.turnOverChallenge) {
+                const challenge = filteredRequest.turnOverChallenge;
+
+                // JobApplications 필터링
+                if (challenge.jobApplications) {
+                    challenge.jobApplications = challenge.jobApplications.filter(jobApp => {
+                        // ApplicationStages 필터링
+                        if (jobApp.applicationStages) {
+                            jobApp.applicationStages = jobApp.applicationStages.filter(stage =>
+                                hasContent(stage.name) || hasContent(stage.memo)
+                            );
+                        }
+
+                        // JobApplication이 의미있는 데이터를 가지고 있는지 확인
+                        return (
+                            hasContent(jobApp.name) ||
+                            hasContent(jobApp.position) ||
+                            hasContent(jobApp.jobPostingTitle) ||
+                            hasContent(jobApp.jobPostingUrl) ||
+                            hasContent(jobApp.applicationSource) ||
+                            hasContent(jobApp.memo) ||
+                            (jobApp.applicationStages && jobApp.applicationStages.length > 0)
+                        );
+                    });
+                }
+
+                // Memos 필터링
+                if (challenge.memos) {
+                    challenge.memos = challenge.memos.filter(memo =>
+                        hasContent(memo.content)
+                    );
+                }
+
+                // Attachments 필터링
+                if (challenge.attachments) {
+                    challenge.attachments = challenge.attachments.filter(attachment =>
+                        hasContent(attachment.fileName) || hasContent(attachment.fileUrl) || hasContent(attachment.url)
+                    );
+                }
+
+                // Challenge 전체가 비어있으면 undefined로 설정
+                if (
+                    (!challenge.jobApplications || challenge.jobApplications.length === 0) &&
+                    (!challenge.memos || challenge.memos.length === 0) &&
+                    (!challenge.attachments || challenge.attachments.length === 0)
+                ) {
+                    filteredRequest.turnOverChallenge = undefined;
+                }
+            }
+
+            // TurnOverRetrospective 필터링
+            if (filteredRequest.turnOverRetrospective) {
+                const retrospective = filteredRequest.turnOverRetrospective;
+
+                // Memos 필터링
+                if (retrospective.memos) {
+                    retrospective.memos = retrospective.memos.filter(memo =>
+                        hasContent(memo.content)
+                    );
+                }
+
+                // Attachments 필터링
+                if (retrospective.attachments) {
+                    retrospective.attachments = retrospective.attachments.filter(attachment =>
+                        hasContent(attachment.fileName) || hasContent(attachment.fileUrl) || hasContent(attachment.url)
+                    );
+                }
+
+                // Retrospective 전체가 비어있으면 undefined로 설정
+                if (
+                    !hasContent(retrospective.name) &&
+                    !hasValue(retrospective.salary) &&
+                    !hasContent(retrospective.position) &&
+                    !hasContent(retrospective.jobTitle) &&
+                    !hasContent(retrospective.rank) &&
+                    !hasContent(retrospective.department) &&
+                    !hasContent(retrospective.reason) &&
+                    !hasValue(retrospective.score) &&
+                    !hasContent(retrospective.reviewSummary) &&
+                    !hasContent(retrospective.workType) &&
+                    (!retrospective.memos || retrospective.memos.length === 0) &&
+                    (!retrospective.attachments || retrospective.attachments.length === 0)
+                ) {
+                    filteredRequest.turnOverRetrospective = undefined;
+                }
+            }
+
             const response = await fetch('/api/turn-over', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(request),
+                body: JSON.stringify(filteredRequest),
             })
 
             if (response.ok) {

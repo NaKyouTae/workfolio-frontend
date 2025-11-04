@@ -14,15 +14,11 @@ import {
   LanguageSkill_Language,
   LanguageSkill_LanguageLevel,
   Worker,
-  JobSearch,
-  JobSearchCompany,
-  Interview,
-  JobSearchCompany_Status,
-  Interview_Type,
   Activity_ActivityType,
   Attachment_AttachmentType,
   Attachment_AttachmentCategory,
-  Worker_Gender
+  Worker_Gender,
+  Attachment_AttachmentTargetType
 } from '@/generated/common';
 
 // 샘플 Worker 데이터
@@ -53,7 +49,7 @@ export const createSampleResume = (): Resume => {
     email: 'hong@example.com',
     birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000, // 30년 전
     gender: Resume_Gender.MALE,
-    job: '풀스택 개발자',
+    position: '풀스택 개발자',
     description: '10년차 풀스택 개발자입니다. React, Node.js, Spring Boot 등 다양한 기술 스택을 다룹니다.',
     isDefault: true,
     worker,
@@ -74,8 +70,8 @@ export const createSampleCareers = (): Career[] => {
       position: '시니어 백엔드 개발자',
       department: '개발팀',
       employmentType: Career_EmploymentType.FULL_TIME,
-      jobGrade: '책임',
-      job: '백엔드 개발자',
+      rank: '책임',
+      jobTitle: '백엔드 개발자',
       salary: 6000,
       description: 'Spring Boot 기반 마이크로서비스 아키텍처 설계 및 개발\n- RESTful API 설계 및 구현\n- AWS 인프라 구축 및 운영\n- CI/CD 파이프라인 구축',
       isVisible: true,
@@ -84,7 +80,6 @@ export const createSampleCareers = (): Career[] => {
       endedAt: now - 1 * 365 * 24 * 60 * 60 * 1000, // 1년 전
       isWorking: false,
       resume,
-      achievements: [],
       salaries: [],
       createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
       updatedAt: now - 1 * 365 * 24 * 60 * 60 * 1000
@@ -95,8 +90,8 @@ export const createSampleCareers = (): Career[] => {
       position: '리드 풀스택 개발자',
       department: '플랫폼개발본부',
       employmentType: Career_EmploymentType.FULL_TIME,
-      jobGrade: '선임',
-      job: '풀스택 개발자',
+      jobTitle: '선임',
+      rank: '풀스택 개발자',
       salary: 8200,
       description: 'React/Node.js 기반 서비스 개발 및 팀 리딩\n- 프론트엔드 아키텍처 설계\n- 백엔드 API 개발\n- 주니어 개발자 멘토링',
       isVisible: true,
@@ -105,7 +100,6 @@ export const createSampleCareers = (): Career[] => {
       endedAt: 0, // 현재 재직 중
       isWorking: true,
       resume,
-      achievements: [],
       salaries: [],
       createdAt: now - 1 * 365 * 24 * 60 * 60 * 1000,
       updatedAt: now
@@ -116,8 +110,8 @@ export const createSampleCareers = (): Career[] => {
       position: '주니어 웹 개발자',
       department: '웹개발팀',
       employmentType: Career_EmploymentType.FULL_TIME,
-      jobGrade: '사원',
-      job: '웹 개발자',
+      jobTitle: '사원',
+      rank: '웹 개발자',
       salary: 4500,
       description: '웹 서비스 유지보수 및 신규 기능 개발\n- jQuery, JSP 기반 레거시 시스템 유지보수\n- Vue.js로 프론트엔드 마이그레이션',
       isVisible: true,
@@ -126,7 +120,6 @@ export const createSampleCareers = (): Career[] => {
       endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000, // 2년 전
       isWorking: false,
       resume,
-      achievements: [],
       salaries: [],
       createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
       updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000
@@ -487,7 +480,6 @@ export const createSampleLanguageTests = (): LanguageTest[] => {
 // 샘플 Attachment 데이터
 export const createSampleAttachments = (): Attachment[] => {
   const now = Date.now();
-  const resume = createSampleResume();
   
   return [
     {
@@ -499,7 +491,8 @@ export const createSampleAttachments = (): Attachment[] => {
       isVisible: true,
       priority: 1,
       type: Attachment_AttachmentType.RESUME,
-      resume,
+      targetId: '',
+      targetType: Attachment_AttachmentTargetType.ENTITY_RESUME,
       createdAt: now - 30 * 24 * 60 * 60 * 1000,
       updatedAt: now - 30 * 24 * 60 * 60 * 1000
     },
@@ -512,7 +505,8 @@ export const createSampleAttachments = (): Attachment[] => {
       isVisible: true,
       priority: 2,
       type: Attachment_AttachmentType.CERTIFICATE,
-      resume,
+      targetId: '',
+      targetType: Attachment_AttachmentTargetType.ENTITY_RESUME,
       createdAt: now - 20 * 24 * 60 * 60 * 1000,
       updatedAt: now - 20 * 24 * 60 * 60 * 1000
     },
@@ -525,7 +519,8 @@ export const createSampleAttachments = (): Attachment[] => {
       isVisible: true,
       priority: 3,
       type: Attachment_AttachmentType.PORTFOLIO,
-      resume,
+      targetId: '',
+      targetType: Attachment_AttachmentTargetType.ENTITY_RESUME,
       createdAt: now - 10 * 24 * 60 * 60 * 1000,
       updatedAt: now - 10 * 24 * 60 * 60 * 1000
     },
@@ -538,259 +533,10 @@ export const createSampleAttachments = (): Attachment[] => {
       isVisible: true,
       priority: 4,
       type: Attachment_AttachmentType.PORTFOLIO,
-      resume,
+      targetId: '',
+      targetType: Attachment_AttachmentTargetType.ENTITY_RESUME,
       createdAt: now - 5 * 24 * 60 * 60 * 1000,
       updatedAt: now - 5 * 24 * 60 * 60 * 1000
-    }
-  ];
-};
-
-// 샘플 이직 데이터
-export const createSampleJobSearches = (): JobSearch[] => {
-  const now = Date.now();
-  const worker = createSampleWorker();
-  const careers = createSampleCareers();
-
-  return [
-    {
-      id: 'jobsearch-1',
-      title: '2024년 상반기 이직 활동',
-      startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000, // 6개월 전
-      endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
-      memo: '대기업 중심으로 이직 활동을 진행했습니다. 총 15개 회사에 지원하여 3개 회사에서 최종 면접까지 진행했습니다.',
-      worker,
-      prevCareer: careers[0], // 테크스타트업
-      nextCareer: careers[1], // 글로벌 IT 기업
-      createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-    },
-    {
-      id: 'jobsearch-2',
-      title: '2023년 하반기 이직 활동',
-      startedAt: now - 12 * 30 * 24 * 60 * 60 * 1000, // 12개월 전
-      endedAt: now - 8 * 30 * 24 * 60 * 60 * 1000, // 8개월 전
-      memo: '스타트업과 중견기업을 중심으로 이직 활동을 진행했습니다. 개발자 커뮤니티를 통해 많은 기회를 얻을 수 있었습니다.',
-      worker,
-      prevCareer: careers[2], // 중견 소프트웨어 회사
-      nextCareer: careers[0], // 테크스타트업
-      createdAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 8 * 30 * 24 * 60 * 60 * 1000
-    }
-  ];
-};
-
-// 샘플 이직 회사 데이터
-export const createSampleJobSearchCompanies = (jobSearchId: string): JobSearchCompany[] => {
-  const now = Date.now();
-  const worker = createSampleWorker();
-  
-  return [
-    {
-      id: 'jobsearchcompany-1',
-      name: '네이버',
-      status: JobSearchCompany_Status.REJECTED,
-      appliedAt: now - 5 * 30 * 24 * 60 * 60 * 1000, // 5개월 전
-      closedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
-      endedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-      link: 'https://careers.naver.com',
-      jobSearch: {
-        id: jobSearchId,
-        title: '2024년 상반기 이직 활동',
-        startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-        memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-        worker,
-        createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 5 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 4 * 30 * 24 * 60 * 60 * 1000
-    },
-    {
-      id: 'jobsearchcompany-2',
-      name: '카카오',
-      status: JobSearchCompany_Status.PASSED,
-      appliedAt: now - 5 * 30 * 24 * 60 * 60 * 1000, // 5개월 전
-      closedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
-      endedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-      link: 'https://careers.kakao.com',
-      jobSearch: {
-        id: jobSearchId,
-        title: '2024년 상반기 이직 활동',
-        startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-        memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-        worker,
-        createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 5 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 4 * 30 * 24 * 60 * 60 * 1000
-    },
-    {
-      id: 'jobsearchcompany-3',
-      name: '당근마켓',
-      status: JobSearchCompany_Status.INTERVIEWING,
-      appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000, // 4개월 전
-      closedAt: 0, // 아직 마감되지 않음
-      endedAt: undefined,
-      link: 'https://about.daangn.com/careers',
-      jobSearch: {
-        id: jobSearchId,
-        title: '2024년 상반기 이직 활동',
-        startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-        memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-        worker,
-        createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
-    },
-    {
-      id: 'jobsearchcompany-4',
-      name: '토스',
-      status: JobSearchCompany_Status.APPLIED,
-      appliedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
-      closedAt: 0, // 아직 마감되지 않음
-      endedAt: undefined,
-      link: 'https://toss.im/careers',
-      jobSearch: {
-        id: jobSearchId,
-        title: '2024년 상반기 이직 활동',
-        startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-        memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-        worker,
-        createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-    },
-    {
-      id: 'jobsearchcompany-5',
-      name: '쿠팡',
-      status: JobSearchCompany_Status.INTERESTED,
-      appliedAt: now - 2 * 30 * 24 * 60 * 60 * 1000, // 2개월 전
-      closedAt: 0, // 아직 마감되지 않음
-      endedAt: undefined,
-      link: 'https://www.coupang.jobs',
-      jobSearch: {
-        id: jobSearchId,
-        title: '2024년 상반기 이직 활동',
-        startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-        memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-        worker,
-        createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 2 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 2 * 30 * 24 * 60 * 60 * 1000
-    }
-  ];
-};
-
-// 샘플 면접 데이터
-export const createSampleInterviews = (jobSearchCompanyId: string, jobSearchId: string): Interview[] => {
-  const now = Date.now();
-  const worker = createSampleWorker();
-  
-  return [
-    {
-      id: 'interview-1',
-      title: '1차 기술 면접',
-      type: Interview_Type.OFFLINE,
-      startedAt: now - 3 * 30 * 24 * 60 * 60 * 1000, // 3개월 전
-      endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000, // 2시간 후
-      memo: '알고리즘 문제 해결과 시스템 설계에 대한 질문이 주를 이뤘습니다. 코딩 테스트는 중간 수준이었고, 시스템 설계는 대용량 트래픽 처리에 대한 질문이 나왔습니다.',
-      jobSearchCompany: {
-        id: jobSearchCompanyId,
-        name: '당근마켓',
-        status: JobSearchCompany_Status.INTERVIEWING,
-        appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-        closedAt: 0,
-        endedAt: undefined,
-        link: 'https://about.daangn.com/careers',
-        jobSearch: {
-          id: jobSearchId,
-          title: '2024년 상반기 이직 활동',
-          startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-          endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-          memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-          worker,
-          createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-        },
-        createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-    },
-    {
-      id: 'interview-2',
-      title: '2차 문화 적합성 면접',
-      type: Interview_Type.OFFLINE,
-      startedAt: now - 2 * 30 * 24 * 60 * 60 * 1000, // 2개월 전
-      endedAt: now - 2 * 30 * 24 * 60 * 60 * 1000 + 1.5 * 60 * 60 * 1000, // 1.5시간 후
-      memo: '팀워크, 커뮤니케이션 스타일, 회사 문화에 대한 질문이 많았습니다. 이전 프로젝트에서의 협업 경험과 갈등 해결 방법에 대해 자세히 이야기했습니다.',
-      jobSearchCompany: {
-        id: jobSearchCompanyId,
-        name: '당근마켓',
-        status: JobSearchCompany_Status.INTERVIEWING,
-        appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-        closedAt: 0,
-        endedAt: undefined,
-        link: 'https://about.daangn.com/careers',
-        jobSearch: {
-          id: jobSearchId,
-          title: '2024년 상반기 이직 활동',
-          startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-          endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-          memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-          worker,
-          createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-        },
-        createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 2 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 2 * 30 * 24 * 60 * 60 * 1000
-    },
-    {
-      id: 'interview-3',
-      title: '최종 면접',
-      type: Interview_Type.OFFLINE,
-      startedAt: now - 1 * 30 * 24 * 60 * 60 * 1000, // 1개월 전
-      endedAt: now - 1 * 30 * 24 * 60 * 60 * 1000 + 2.5 * 60 * 60 * 1000, // 2.5시간 후
-      memo: 'CTO와의 최종 면접이었습니다. 기술적 역량과 리더십, 회사 비전에 대한 질문이 주를 이뤘습니다. 결과는 아직 기다리고 있는 상태입니다.',
-      jobSearchCompany: {
-        id: jobSearchCompanyId,
-        name: '당근마켓',
-        status: JobSearchCompany_Status.INTERVIEWING,
-        appliedAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-        closedAt: 0,
-        endedAt: undefined,
-        link: 'https://about.daangn.com/careers',
-        jobSearch: {
-          id: jobSearchId,
-          title: '2024년 상반기 이직 활동',
-          startedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-          endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
-          memo: '대기업 중심으로 이직 활동을 진행했습니다.',
-          worker,
-          createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 3 * 30 * 24 * 60 * 60 * 1000
-        },
-        createdAt: now - 4 * 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
-      },
-      createdAt: now - 1 * 30 * 24 * 60 * 60 * 1000,
-      updatedAt: now - 1 * 30 * 24 * 60 * 60 * 1000
     }
   ];
 };
@@ -819,7 +565,7 @@ export const createSampleResume2 = () => {
     email: 'minjun.kim@example.com',
     birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.MALE,
-    job: '백엔드 개발자',
+    position: '백엔드 개발자',
     description: 'Spring Boot와 MSA 아키텍처에 능숙한 5년차 백엔드 개발자입니다.',
     isDefault: false,
     worker,
@@ -834,8 +580,8 @@ export const createSampleResume2 = () => {
       position: '백엔드 개발자',
       department: '검색서비스팀',
       employmentType: Career_EmploymentType.FULL_TIME,
-      jobGrade: '시니어',
-      job: '백엔드 개발자',
+      rank: '시니어',
+      jobTitle: '백엔드 개발자',
       salary: 8500,
       description: '검색 API 개발 및 최적화\n- Elasticsearch 기반 검색 엔진 구축\n- Redis 캐싱 시스템 도입',
       isVisible: true,
@@ -844,7 +590,6 @@ export const createSampleResume2 = () => {
       endedAt: 0,
       isWorking: true,
       resume,
-      achievements: [],
       salaries: [],
       createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
       updatedAt: now
@@ -944,7 +689,7 @@ export const createSampleResume3 = () => {
     email: 'jieun.lee@example.com',
     birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.FEMALE,
-    job: '프론트엔드 개발자',
+    position: '프론트엔드 개발자',
     description: 'React와 Next.js를 주력으로 사용하는 3년차 프론트엔드 개발자입니다.',
     isDefault: false,
     worker,
@@ -959,8 +704,8 @@ export const createSampleResume3 = () => {
       position: '프론트엔드 개발자',
       department: 'Core팀',
       employmentType: Career_EmploymentType.FULL_TIME,
-      jobGrade: '주니어',
-      job: '프론트엔드 개발자',
+      rank: '주니어',
+      jobTitle: '프론트엔드 개발자',
       salary: 7000,
       description: 'React 기반 웹 앱 개발\n- 컴포넌트 라이브러리 구축\n- Lighthouse 성능 점수 90점 달성',
       isVisible: true,
@@ -969,7 +714,6 @@ export const createSampleResume3 = () => {
       endedAt: 0,
       isWorking: true,
       resume,
-      achievements: [],
       salaries: [],
       createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
       updatedAt: now
@@ -1051,7 +795,7 @@ export const createSampleResume4 = () => {
     email: 'seoyeon.park@example.com',
     birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.FEMALE,
-    job: 'UX/UI 디자이너',
+    position: 'UX/UI 디자이너',
     description: '사용자 중심의 디자인을 추구하는 7년차 UX 디자이너입니다.',
     isDefault: false,
     worker,
@@ -1063,7 +807,6 @@ export const createSampleResume4 = () => {
     {
       id: 'career-4-1',
       name: '카카오',
-      job: 'UX 디자이너',
       position: 'UX 디자이너',
       startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1071,29 +814,10 @@ export const createSampleResume4 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 68000000,
       department: '카카오페이팀',
-      jobGrade: '시니어',
+      jobTitle: 'UX 디자이너',
+      rank: '시니어',
       description: '카카오페이 앱 UX 개선',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-4-1',
-          title: 'MAU 20% 증가',
-          role: 'UX 디자이너',
-          description: 'MAU 20% 증가',
-          isVisible: true,
-          createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 4 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-4-2',
-          title: '사용성 테스트 프로세스 구축',
-          role: 'UX 디자이너',
-          description: '사용성 테스트 프로세스 구축',
-          isVisible: true,
-          createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 4 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1103,7 +827,6 @@ export const createSampleResume4 = () => {
     {
       id: 'career-4-2',
       name: '우아한형제들',
-      job: 'UI 디자이너',
       position: 'UI 디자이너',
       startedAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
       endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
@@ -1111,20 +834,10 @@ export const createSampleResume4 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 55000000,
       department: '배민앱팀',
-      jobGrade: '주니어',
+      jobTitle: 'UI 디자이너',
+      rank: '주니어',
       description: '배민 앱 UI 디자인',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-4-1',
-          title: '리브랜딩 프로젝트 참여',
-          role: 'UI 디자이너',
-          description: '리브랜딩 프로젝트 참여',
-          isVisible: true,
-          createdAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 7 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1196,7 +909,8 @@ export const createSampleResume4 = () => {
       type: Attachment_AttachmentType.RESUME,
       isVisible: true,
       priority: 1,
-      resume,
+      targetId: '',
+      targetType: Attachment_AttachmentTargetType.ENTITY_RESUME,
       createdAt: now - 200 * 24 * 60 * 60 * 1000,
       updatedAt: now
     }
@@ -1227,7 +941,7 @@ export const createSampleResume5 = () => {
     email: 'junho.choi@example.com',
     birthDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.MALE,
-    job: '프로덕트 매니저',
+    position: '프로덕트 매니저',
     description: '데이터 기반 의사결정을 중시하는 8년차 PM입니다.',
     isDefault: false,
     worker,
@@ -1239,7 +953,6 @@ export const createSampleResume5 = () => {
     {
       id: 'career-5-1',
       name: '쿠팡',
-      job: 'Product Manager',
       position: 'Product Manager',
       startedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1247,29 +960,10 @@ export const createSampleResume5 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 95000000,
       department: '로켓배송팀',
-      jobGrade: '시니어',
+      jobTitle: 'Product Manager',
+      rank: '시니어',
       description: '로켓배송 서비스 기획 및 개선',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-5-1',
-          title: '배송 만족도 15% 상승',
-          role: 'Product Manager',
-          description: '배송 만족도 15% 상승',
-          isVisible: true,
-          createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 5 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-5-2',
-          title: '신규 기능 론칭 10+',
-          role: 'Product Manager',
-          description: '신규 기능 론칭 10+',
-          isVisible: true,
-          createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 5 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1279,7 +973,6 @@ export const createSampleResume5 = () => {
     {
       id: 'career-5-2',
       name: '라인',
-      job: 'Product Manager',
       position: 'Associate PM',
       startedAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
       endedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
@@ -1287,20 +980,10 @@ export const createSampleResume5 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 65000000,
       department: '메신저팀',
-      jobGrade: '주니어',
+      jobTitle: 'Product Manager',
+      rank: '주니어',
       description: '라인 메신저 신규 기능 기획',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-5-1',
-          title: '스티커 구매율 25% 증가',
-          role: 'Product Manager',
-          description: '스티커 구매율 25% 증가',
-          isVisible: true,
-          createdAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 8 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1395,7 +1078,7 @@ export const createSampleResume6 = () => {
     email: 'subin.jung@example.com',
     birthDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.FEMALE,
-    job: '데이터 분석가',
+    position: '데이터 분석가',
     description: 'Python과 SQL을 활용한 데이터 분석 전문가입니다.',
     isDefault: false,
     worker,
@@ -1407,7 +1090,6 @@ export const createSampleResume6 = () => {
     {
       id: 'career-6-1',
       name: '넷플릭스',
-      job: 'Data Analyst',
       position: 'Data Analyst',
       startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1415,29 +1097,10 @@ export const createSampleResume6 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 78000000,
       department: 'Growth팀',
-      jobGrade: '미드',
+      jobTitle: 'Data Analyst',
+      rank: '미드',
       description: '사용자 행동 데이터 분석',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-6-1',
-          title: 'A/B 테스트로 전환율 18% 개선',
-          role: 'Data Analyst',
-          description: 'A/B 테스트로 전환율 18% 개선',
-          isVisible: true,
-          createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 4 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-6-2',
-          title: '대시보드 자동화',
-          role: 'Data Analyst',
-          description: '대시보드 자동화',
-          isVisible: true,
-          createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 4 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1509,7 +1172,7 @@ export const createSampleResume7 = () => {
     email: 'dongwoo.kang@example.com',
     birthDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.MALE,
-    job: 'DevOps 엔지니어',
+    position: 'DevOps 엔지니어',
     description: 'Kubernetes와 AWS에 능숙한 인프라 전문가입니다.',
     isDefault: false,
     worker,
@@ -1521,7 +1184,6 @@ export const createSampleResume7 = () => {
     {
       id: 'career-7-1',
       name: '삼성전자',
-      job: 'DevOps Engineer',
       position: 'DevOps Engineer',
       startedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1529,29 +1191,10 @@ export const createSampleResume7 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 88000000,
       department: '클라우드플랫폼팀',
-      jobGrade: '시니어',
+      jobTitle: 'DevOps Engineer',
+      rank: '시니어',
       description: 'CI/CD 파이프라인 구축 및 운영',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-7-1',
-          title: '배포 시간 70% 단축',
-          role: 'DevOps Engineer',
-          description: '배포 시간 70% 단축',
-          isVisible: true,
-          createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 6 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-7-2',
-          title: 'Kubernetes 클러스터 관리',
-          role: 'DevOps Engineer',
-          description: 'Kubernetes 클러스터 관리',
-          isVisible: true,
-          createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 6 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1623,7 +1266,7 @@ export const createSampleResume8 = () => {
     email: 'seoa.yoon@example.com',
     birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.FEMALE,
-    job: '퍼포먼스 마케터',
+    position: '퍼포먼스 마케터',
     description: '데이터 기반 마케팅 전략 수립 및 실행 전문가입니다.',
     isDefault: false,
     worker,
@@ -1635,7 +1278,6 @@ export const createSampleResume8 = () => {
     {
       id: 'career-8-1',
       name: '당근마켓',
-      job: 'Performance Marketer',
       position: 'Performance Marketer',
       startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1643,32 +1285,13 @@ export const createSampleResume8 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 65000000,
       department: '그로스팀',
-      jobGrade: '미드',
+      jobTitle: 'Performance Marketer',
+      rank: '미드',
       description: 'UA 광고 운영 및 최적화',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-8-1',
-          title: 'CPA 30% 절감',
-          role: 'Performance Marketer',
-          description: 'CPA 30% 절감',
-          isVisible: true,
-          createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 4 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-8-2',
-          title: 'ROAS 200% 달성',
-          role: 'Performance Marketer',
-          description: 'ROAS 200% 달성',
-          isVisible: true,
-          createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 4 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
-      salaries: [],
       priority: 1,
       resume,
+      salaries: [],
       createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
       updatedAt: now
     }
@@ -1737,7 +1360,7 @@ export const createSampleResume9 = () => {
     email: 'hyunwoo.jo@example.com',
     birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.MALE,
-    job: 'QA 엔지니어',
+    position: 'QA 엔지니어',
     description: '자동화 테스트에 능숙한 6년차 QA 엔지니어입니다.',
     isDefault: false,
     worker,
@@ -1749,7 +1372,6 @@ export const createSampleResume9 = () => {
     {
       id: 'career-9-1',
       name: 'NHN',
-      job: 'QA Engineer',
       position: 'QA Engineer',
       startedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1757,29 +1379,10 @@ export const createSampleResume9 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 72000000,
       department: '품질관리팀',
-      jobGrade: '시니어',
+      jobTitle: 'QA Engineer',
+      rank: '시니어',
       description: '자동화 테스트 구축 및 운영',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-9-1',
-          title: '테스트 커버리지 85% 달성',
-          role: 'QA Engineer',
-          description: '테스트 커버리지 85% 달성',
-          isVisible: true,
-          createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 6 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-9-2',
-          title: 'Selenium Grid 구축',
-          role: 'QA Engineer',
-          description: 'Selenium Grid 구축',
-          isVisible: true,
-          createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 6 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1851,7 +1454,7 @@ export const createSampleResume10 = () => {
     email: 'minji.song@example.com',
     birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.FEMALE,
-    job: 'iOS 개발자',
+    position: 'iOS 개발자',
     description: 'Swift와 SwiftUI를 전문으로 하는 iOS 개발자입니다.',
     isDefault: false,
     worker,
@@ -1863,7 +1466,6 @@ export const createSampleResume10 = () => {
     {
       id: 'career-10-1',
       name: '야놀자',
-      job: 'iOS Developer',
       position: 'iOS Developer',
       startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1871,29 +1473,10 @@ export const createSampleResume10 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 68000000,
       department: '앱개발팀',
-      jobGrade: '주니어',
+      jobTitle: 'iOS Developer',
+      rank: '주니어',
       description: 'iOS 앱 개발 및 유지보수',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-10-1',
-          title: '앱 크래시율 50% 감소',
-          role: 'iOS Developer',
-          description: '앱 크래시율 50% 감소',
-          isVisible: true,
-          createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 3 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-10-2',
-          title: 'SwiftUI 마이그레이션',
-          role: 'iOS Developer',
-          description: 'SwiftUI 마이그레이션',
-          isVisible: true,
-          createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 3 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
       salaries: [],
       priority: 1,
       resume,
@@ -1965,7 +1548,7 @@ export const createSampleResume11 = () => {
     email: 'jihoon.han@example.com',
     birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
     gender: Resume_Gender.MALE,
-    job: 'AI 엔지니어',
+    position: 'AI 엔지니어',
     description: '딥러닝과 NLP 전문 AI 엔지니어입니다.',
     isDefault: false,
     worker,
@@ -1977,7 +1560,6 @@ export const createSampleResume11 = () => {
     {
       id: 'career-11-1',
       name: '네이버 클로바',
-      job: 'AI Researcher',
       position: 'AI Researcher',
       startedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
       endedAt: 0,
@@ -1985,31 +1567,12 @@ export const createSampleResume11 = () => {
       employmentType: Career_EmploymentType.FULL_TIME,
       salary: 95000000,
       department: 'AI Lab',
-      jobGrade: '시니어',
+      jobTitle: 'AI Researcher',
+      rank: '시니어',
       description: 'NLP 모델 개발 및 최적화',
       isVisible: true,
-      achievements: [
-        {
-          id: 'achievement-11-1',
-          title: '한국어 LLM 성능 12% 향상',
-          role: 'AI Researcher',
-          description: '한국어 LLM 성능 12% 향상',
-          isVisible: true,
-          createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 5 * 365 * 24 * 60 * 60 * 1000
-        },
-        {
-          id: 'achievement-11-2',
-          title: '논문 3편 발표',
-          role: 'AI Researcher',
-          description: '논문 3편 발표',
-          isVisible: true,
-          createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-          updatedAt: now - 5 * 365 * 24 * 60 * 60 * 1000
-        }
-      ],
-      salaries: [],
       priority: 1,
+      salaries: [],
       resume,
       createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
       updatedAt: now
@@ -2124,7 +1687,7 @@ export const createEmptySampleResume = (): Resume => {
     email: '',
     birthDate: undefined,
     gender: undefined,
-    job: '',
+    position: '',
     description: '',
     isDefault: false,
     worker,
@@ -2145,8 +1708,8 @@ export const createEmptySampleCareers = (): Career[] => {
       position: '',
       department: '',
       employmentType: undefined,
-      jobGrade: '',
-      job: '',
+      jobTitle: '',
+      rank: '',
       salary: 0,
       description: '',
       isVisible: true,
@@ -2155,7 +1718,6 @@ export const createEmptySampleCareers = (): Career[] => {
       endedAt: undefined,
       isWorking: false,
       resume,
-      achievements: [],
       salaries: [
         {
           id: 'salary-empty',
@@ -2279,7 +1841,6 @@ export const createEmptySampleLanguageSkills = (): LanguageSkill[] => {
 // 빈 샘플 Attachment 데이터
 export const createEmptySampleAttachments = (): Attachment[] => {
   const now = Date.now();
-  const resume = createEmptySampleResume();
   
   return [
     {
@@ -2291,7 +1852,8 @@ export const createEmptySampleAttachments = (): Attachment[] => {
       url: '',
       isVisible: true,
       priority: 0,
-      resume,
+      targetId: '',
+      targetType: Attachment_AttachmentTargetType.ENTITY_RESUME,
       createdAt: now,
       updatedAt: now
     }

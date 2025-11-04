@@ -32,9 +32,11 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
           </span>
         </div>
         <div className={styles.actions}>
-          <button className={styles.actionButton} onClick={onEdit}>편집</button>
-          <button className={styles.actionButton} onClick={onDuplicate}>복제</button>
-          <button className={styles.actionButton} onClick={onDelete}>삭제</button>
+          <a className={styles.actionButton} onClick={onEdit}>편집</a>
+          <span className={styles.divider}>|</span>
+          <a className={styles.actionButton} onClick={onDuplicate}>복제</a>
+          <span className={styles.divider}>|</span>
+          <a className={styles.actionButton} onClick={onDelete}>삭제</a>
         </div>
       </div>
 

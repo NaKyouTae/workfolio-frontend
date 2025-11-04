@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Attachment, Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import EmptyState from '@/components/ui/EmptyState';
+import styles from './AttachmentView.module.css';
 
 interface AttachmentViewProps {
   attachments: Attachment[];
@@ -88,22 +89,29 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
     const normalizedCategory = normalizeEnumValue(attachment.category, Attachment_AttachmentCategory);
     
     if(normalizedCategory == Attachment_AttachmentCategory.FILE) {
-      return <div 
-        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} 
-        onClick={() => handleFileDownload(attachment.fileUrl, attachment.fileName)}
-      >
-        <Image src="/assets/img/ico/ic-download.png" alt="download" width={16} height={16} />
-        {attachment.fileName && <span>{attachment.fileName}</span>}
-      </div>
+      return (
+        <div 
+          className={styles.iconWrapper}
+          onClick={() => handleFileDownload(attachment.fileUrl, attachment.fileName)}
+        >
+          <Image src="/assets/img/ico/ic-download.png" alt="download" width={16} height={16} />
+          {attachment.fileName && <span>{attachment.fileName}</span>}
+        </div>
+      );
     }
 
     if(normalizedCategory == Attachment_AttachmentCategory.URL) {
-      return <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => {
-        window.open(attachment.url, '_blank');
-      }}>
-        <Image src="/assets/img/ico/ic-open.png" alt="etc" width={16} height={16} />
-        {attachment.url && <span>{attachment.url}</span>}
-      </div>
+      return (
+        <div 
+          className={styles.iconWrapper}
+          onClick={() => {
+            window.open(attachment.url, '_blank');
+          }}
+        >
+          <Image src="/assets/img/ico/ic-open.png" alt="etc" width={16} height={16} />
+          {attachment.url && <span>{attachment.url}</span>}
+        </div>
+      );
     }
   };
 
@@ -111,67 +119,39 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
   const filteredAttachments = attachments.filter(a => showHidden ? true : a.isVisible !== false);
 
   return (
-    <div>
-      <h3 style={{ 
-        fontSize: '16px', 
-        fontWeight: '700', 
-        color: '#000',
-        marginBottom: '20px'
-      }}>
+    <div className={styles.container}>
+      <h3 className={styles.title}>
         첨부
       </h3>
       
       {(!attachments || filteredAttachments.length === 0) ? (
         <EmptyState text="등록된 첨부 정보가 없습니다." />
       ) : (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {filteredAttachments.map((attachment) => (
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            border: '1px solid #e0e0e0',  
-            borderRadius: '4px',
-            padding: '16px',
-            marginBottom: '16px',
-          }} key={attachment.id}>
-            <div>
-              <a
-                href={attachment.fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '14px',
-                  color: '#2196f3',
-                  textDecoration: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.textDecoration = 'underline';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.textDecoration = 'none';
-                }}
-              >
-                <span style={{ fontSize: '16px' }}>
-                  {getAttachmentTypeIcon(attachment)}
-                </span>
-              </a>
-            </div>
-            <div>
-              {
-                attachment.type && (
-                  <span style={{ fontSize: '13px', color: '#999' }}>
+        <div className={styles.listContainer}>
+          {filteredAttachments.map((attachment) => (
+            <div className={styles.item} key={attachment.id}>
+              <div className={styles.itemContent}>
+                <a
+                  href={attachment.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  <span className={styles.iconContainer}>
+                    {getAttachmentTypeIcon(attachment)}
+                  </span>
+                </a>
+              </div>
+              <div>
+                {attachment.type && (
+                  <span className={styles.typeLabel}>
                     {getAttachmentTypeLabel(attachment.type)}
                   </span>
-                )
-              }
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
       )}
     </div>
   );

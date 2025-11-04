@@ -5,7 +5,7 @@ import ProjectView from './view/ProjectView';
 import EducationView from './view/EducationView';
 import ActivityView from './view/ActivityView';
 import LanguageSkillView from './view/LanguageSkillView';
-import AttachmentView from './view/AttachmentView';
+import AttachmentView from '@/components/features/common/AttachmentView';
 import ViewFloatingNavigation from './ViewFloatingNavigation';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import styles from './CareerContentView.module.css';

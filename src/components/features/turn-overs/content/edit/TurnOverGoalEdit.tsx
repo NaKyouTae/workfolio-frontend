@@ -1,63 +1,87 @@
-import React, { useState } from 'react';
-import { TurnOverGoalDetail } from '@/generated/common';
+import React, { useState, useEffect } from 'react';
 import styles from './TurnOverGoalEdit.module.css';
-import { TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest, TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest, TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
+import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest, TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest, TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from './common/MemoEdit';
-import AttachmentEdit from './common/AttachmentEdit';
+import AttachmentEdit from '@/components/features/common/AttachmentEdit';
+import EditFloatingActions, { FloatingNavigationItem } from '../EditFloatingActions';
+import SelfIntroductionEdit from './common/SelfIntroductionEdit';
+import InterviewQuestionEdit from './common/InterviewQuestionEdit';
+import CheckListEdit from './common/CheckListEdit';
 
 interface TurnOverGoalEditProps {
-  turnOverGoal: TurnOverGoalDetail | null;
-  onSave?: (data: TurnOverGoalDetail) => void;
+  turnOverRequest: TurnOverUpsertRequest | null;
+  onSave?: (data: TurnOverUpsertRequest) => void;
+  onCancel?: () => void;
 }
 
-const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverGoal }) => {
-  const [reason, setReason] = useState(turnOverGoal?.reason || '');
-  const [goal, setGoal] = useState(turnOverGoal?.goal || '');
-  const [selfIntroductions, setSelfIntroductions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]>(
-    turnOverGoal?.selfIntroductions || []
-  );
-  const [interviewQuestions, setInterviewQuestions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest[]>(
-    turnOverGoal?.interviewQuestions || []
-  );
-  const [checkList, setCheckList] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]>(
-    turnOverGoal?.checkList || []
-  );
-  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>(
-    turnOverGoal?.memos || []
-  );
-  const [attachments, setAttachments] = useState<AttachmentRequest[]>(
-    turnOverGoal?.attachments || []
-  );
+const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, onSave, onCancel }) => {
+  const [activeSection, setActiveSection] = useState<string>('basic');
+  const [reason, setReason] = useState('');
+  const [goal, setGoal] = useState('');
+  const [selfIntroductions, setSelfIntroductions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]>([]);
+  const [interviewQuestions, setInterviewQuestions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest[]>([]);
+  const [checkList, setCheckList] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]>([]);
+  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
+  const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
 
-  // 자기소개서 추가
-  const addSelfIntroduction = () => {
-    setSelfIntroductions([...selfIntroductions, { question: '', content: '' }]);
+  // turnOverRequest가 변경될 때마다 state 업데이트
+  useEffect(() => {
+    if (turnOverRequest?.turnOverGoal) {
+      setReason(turnOverRequest.turnOverGoal.reason || '');
+      setGoal(turnOverRequest.turnOverGoal.goal || '');
+      setSelfIntroductions(turnOverRequest.turnOverGoal.selfIntroductions || []);
+      setInterviewQuestions(turnOverRequest.turnOverGoal.interviewQuestions || []);
+      setCheckList(turnOverRequest.turnOverGoal.checkList || []);
+      setMemos(turnOverRequest.turnOverGoal.memos || []);
+      setAttachments(turnOverRequest.turnOverGoal.attachments || []);
+    }
+  }, [turnOverRequest]);
+
+  // 네비게이션 항목 정의 (각 탭에 따라 다른 네비게이션 표시 가능)
+  const getNavigationItems = (): FloatingNavigationItem[] => {
+    return [
+      {
+        id: 'basic',
+        label: '기본 정보',
+        isActive: activeSection === 'basic',
+        onClick: () => setActiveSection('basic'),
+      },
+      {
+        id: 'memo',
+        label: '메모',
+        isActive: activeSection === 'memo',
+        onClick: () => setActiveSection('memo'),
+      },
+      {
+        id: 'attachment',
+        label: '첨부',
+        isActive: activeSection === 'attachment',
+        onClick: () => setActiveSection('attachment'),
+      },
+    ];
   };
 
-  // 자기소개서 삭제
-  const removeSelfIntroduction = (index: number) => {
-    setSelfIntroductions(selfIntroductions.filter((_, i) => i !== index));
+  const handleSave = () => {
+    if (onSave) {
+      onSave({
+        ...turnOverRequest,
+        turnOverGoal: {
+          id: turnOverRequest?.turnOverGoal?.id || undefined,
+          reason: reason,
+          goal: goal,
+          selfIntroductions: selfIntroductions,
+          interviewQuestions: interviewQuestions,
+          checkList: checkList,
+          memos: memos,
+          attachments: attachments,
+        },
+      } as TurnOverUpsertRequest);
+    }
   };
 
-  // 면접 질문 추가
-  const addInterviewQuestion = () => {
-    setInterviewQuestions([...interviewQuestions, { question: '', answer: '' }]);
-  };
-
-  // 면접 질문 삭제
-  const removeInterviewQuestion = (index: number) => {
-    setInterviewQuestions(interviewQuestions.filter((_, i) => i !== index));
-  };
-
-  // 체크리스트 추가
-  const addCheckListItem = () => {
-    setCheckList([...checkList, { checked: false, content: '' }]);
-  };
-
-  // 체크리스트 삭제
-  const removeCheckListItem = (index: number) => {
-    setCheckList(checkList.filter((_, i) => i !== index));
+  const handleUpdateAttachments = (attachments: AttachmentRequest[]) => {
+    setAttachments(attachments);
   };
 
   return (
@@ -95,181 +119,35 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverGoal }) => 
       </div>
 
       {/* 공통 자기소개서 */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>공통 자기소개서</h2>
-          <button className={styles.addButton} onClick={addSelfIntroduction}>
-            + 문항 추가
-          </button>
-        </div>
-        <div className={styles.sectionContent}>
-          {selfIntroductions.length === 0 ? (
-            <div className={styles.emptyContent}>
-              <p>문항을 추가해 주세요.</p>
-            </div>
-          ) : (
-            selfIntroductions.map((item, index) => (
-              <div key={index} className={styles.qaItem}>
-                <div className={styles.qaHeader}>
-                  <div className={styles.dragHandle}>⋮⋮</div>
-                  <div className={styles.qaInputs}>
-                    <div className={styles.inputGroup}>
-                      <label className={styles.inputLabel}>문항</label>
-                      <input
-                        type="text"
-                        className={styles.input}
-                        placeholder="문항을 입력해 주세요."
-                        value={item.question}
-                        onChange={(e) => {
-                          const updated = [...selfIntroductions];
-                          updated[index].question = e.target.value;
-                          setSelfIntroductions(updated);
-                        }}
-                      />
-                    </div>
-                    <div className={styles.inputGroup}>
-                      <label className={styles.inputLabel}>내용</label>
-                      <textarea
-                        className={styles.textarea}
-                        placeholder="내용을 입력해 주세요."
-                        value={item.content}
-                        onChange={(e) => {
-                          const updated = [...selfIntroductions];
-                          updated[index].content = e.target.value;
-                          setSelfIntroductions(updated);
-                        }}
-                        rows={4}
-                      />
-                    </div>
-                  </div>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => removeSelfIntroduction(index)}
-                  >
-                    −
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <SelfIntroductionEdit 
+        selfIntroductions={selfIntroductions}
+        onUpdate={setSelfIntroductions}
+      />
 
       {/* 면접 예상 질문 */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>면접 예상 질문</h2>
-          <button className={styles.addButton} onClick={addInterviewQuestion}>
-            + 질문 추가
-          </button>
-        </div>
-        <div className={styles.sectionContent}>
-          {interviewQuestions.length === 0 ? (
-            <div className={styles.emptyContent}>
-              <p>질문을 추가해 주세요.</p>
-            </div>
-          ) : (
-            interviewQuestions.map((item, index) => (
-              <div key={index} className={styles.qaItem}>
-                <div className={styles.qaHeader}>
-                  <div className={styles.dragHandle}>⋮⋮</div>
-                  <div className={styles.qaInputs}>
-                    <div className={styles.inputGroup}>
-                      <label className={styles.inputLabel}>질문</label>
-                      <input
-                        type="text"
-                        className={styles.input}
-                        placeholder="질문을 입력해 주세요."
-                        value={item.question}
-                        onChange={(e) => {
-                          const updated = [...interviewQuestions];
-                          updated[index].question = e.target.value;
-                          setInterviewQuestions(updated);
-                        }}
-                      />
-                    </div>
-                    <div className={styles.inputGroup}>
-                      <label className={styles.inputLabel}>답변</label>
-                      <textarea
-                        className={styles.textarea}
-                        placeholder="답변을 입력해 주세요."
-                        value={item.answer}
-                        onChange={(e) => {
-                          const updated = [...interviewQuestions];
-                          updated[index].answer = e.target.value;
-                          setInterviewQuestions(updated);
-                        }}
-                        rows={4}
-                      />
-                    </div>
-                  </div>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => removeInterviewQuestion(index)}
-                  >
-                    −
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <InterviewQuestionEdit
+        interviewQuestions={interviewQuestions}
+        onUpdate={setInterviewQuestions}
+      />
 
       {/* 메모 */}
       <MemoEdit memos={memos} onMemosChange={setMemos} />
 
       {/* 체크리스트 */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>체크리스트</h2>
-          <button className={styles.addButton} onClick={addCheckListItem}>
-            + 추가
-          </button>
-        </div>
-        <div className={styles.sectionContent}>
-          {checkList.length === 0 ? (
-            <div className={styles.emptyContent}>
-              <p>체크리스트를 추가해 주세요.</p>
-            </div>
-          ) : (
-            checkList.map((item, index) => (
-              <div key={index} className={styles.checkItem}>
-                <input
-                  type="checkbox"
-                  className={styles.checkbox}
-                  checked={item.checked}
-                  onChange={(e) => {
-                    const updated = [...checkList];
-                    updated[index].checked = e.target.checked;
-                    setCheckList(updated);
-                  }}
-                />
-                <input
-                  type="text"
-                  className={styles.checkInput}
-                  placeholder="내용을 입력해 주세요."
-                  value={item.content}
-                  onChange={(e) => {
-                    const updated = [...checkList];
-                    updated[index].content = e.target.value;
-                    setCheckList(updated);
-                  }}
-                />
-                <button
-                  className={styles.deleteButton}
-                  onClick={() => removeCheckListItem(index)}
-                >
-                  −
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <CheckListEdit
+        checkList={checkList}
+        onUpdate={setCheckList}
+      />
 
       {/* 첨부 */}
-      <AttachmentEdit attachments={attachments} onAttachmentsChange={setAttachments} />
+      <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+
+      {/* Floating Action Buttons */}
+      <EditFloatingActions 
+        navigationItems={getNavigationItems()}
+        onSave={handleSave}
+        onCancel={() => onCancel?.()}
+      />
     </div>
   );
 };

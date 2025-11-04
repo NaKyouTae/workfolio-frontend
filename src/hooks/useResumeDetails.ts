@@ -318,8 +318,8 @@ export const useResumeDetails = () => {
             hasContent(career.career.name) ||
             hasContent(career.career.position) ||
             hasContent(career.career.department) ||
-            hasContent(career.career.jobGrade) ||
-            hasContent(career.career.job) ||
+            hasContent(career.career.jobTitle) ||
+            hasContent(career.career.rank) ||
             hasValue(career.career.salary)
           );
           
