@@ -7,7 +7,6 @@ import {
   ResumeUpdateRequest_EducationRequest,
   ResumeUpdateRequest_ActivityRequest,
   ResumeUpdateRequest_LanguageSkillRequest,
-  ResumeUpdateRequest_AttachmentRequest,
   ResumeUpdateRequest_ProjectRequest,
 } from '@/generated/resume';
 import styles from './CareerContentForm.module.css';
@@ -22,6 +21,7 @@ import LanguageSkillEdit from './edit/LanguageSkillEdit';
 import AttachmentEdit from './edit/AttachmentEdit';
 import EditFloatingNavigation from './EditFloatingNavigation';
 import Input from '@/components/ui/Input';
+import { AttachmentRequest } from '@/generated/attachment';
 
 interface CareerContentFormProps {
   // 기본 정보
@@ -32,7 +32,7 @@ interface CareerContentFormProps {
   gender: Resume_Gender | undefined;
   phone: string;
   email: string;
-  job: string;
+  position: string;
   description: string;
   
   // 각 섹션 데이터
@@ -41,7 +41,7 @@ interface CareerContentFormProps {
   educations: ResumeUpdateRequest_EducationRequest[];
   activities: ResumeUpdateRequest_ActivityRequest[];
   languages: ResumeUpdateRequest_LanguageSkillRequest[];
-  attachments: ResumeUpdateRequest_AttachmentRequest[];
+  attachments: AttachmentRequest[];
   
   // 핸들러
   onTitleChange: (title: string) => void;
@@ -51,14 +51,14 @@ interface CareerContentFormProps {
   onGenderChange: (gender: Resume_Gender | undefined) => void;
   onPhoneChange: (phone: string) => void;
   onEmailChange: (email: string) => void;
-  onJobChange: (job: string) => void;
+  onPositionChange: (position: string) => void;
   onDescriptionChange: (description: string) => void;
   onCareersChange: (careers: ResumeUpdateRequest_CareerRequest[]) => void;
   onProjectsChange: (projects: ResumeUpdateRequest_ProjectRequest[]) => void;
   onEducationsChange: (educations: ResumeUpdateRequest_EducationRequest[]) => void;
   onActivitiesChange: (activities: ResumeUpdateRequest_ActivityRequest[]) => void;
   onLanguagesChange: (languages: ResumeUpdateRequest_LanguageSkillRequest[]) => void;
-  onAttachmentsChange: (attachments: ResumeUpdateRequest_AttachmentRequest[]) => void;
+  onAttachmentsChange: (attachments: AttachmentRequest[]) => void;
   
   // 저장/취소 핸들러
   onSave: () => void;
@@ -73,7 +73,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
   gender,
   phone,
   email,
-  job,
+  position,
   description,
   careers,
   projects,
@@ -88,7 +88,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
   onGenderChange,
   onPhoneChange,
   onEmailChange,
-  onJobChange,
+  onPositionChange,
   onDescriptionChange,
   onCareersChange,
   onProjectsChange,
@@ -141,14 +141,14 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
               gender={gender}
               phone={phone}
               email={email}
-              job={job}
+              position={position}
               description={description}
               onNameChange={onNameChange}
               onBirthDateChange={onBirthDateChange}
               onGenderChange={onGenderChange}
               onPhoneChange={onPhoneChange}
               onEmailChange={onEmailChange}
-              onJobChange={onJobChange}
+              onPositionChange={onPositionChange}
               onDescriptionChange={onDescriptionChange}
             />
           </div>

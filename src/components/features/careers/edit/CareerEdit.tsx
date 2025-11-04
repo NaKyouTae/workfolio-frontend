@@ -215,8 +215,8 @@ const CareerItem: React.FC<CareerItemProps> = ({
                 type="text"
                 label="직급"
                 placeholder="책임 솔루션 아키텍트"
-                value={careerRequest.career.jobGrade || ''}
-                onChange={(e) => handleCareerChange(index, 'jobGrade', e.target.value)}
+                value={careerRequest.career.rank || ''}
+                onChange={(e) => handleCareerChange(index, 'rank', e.target.value)}
               />
             </div>
           </div>
@@ -235,8 +235,8 @@ const CareerItem: React.FC<CareerItemProps> = ({
                 type="text"
                 label="직무"
                 placeholder="백엔드 개발자"
-                value={careerRequest.career.job || ''}
-                onChange={(e) => handleCareerChange(index, 'job', e.target.value)}
+                value={careerRequest.career.jobTitle || ''}
+                onChange={(e) => handleCareerChange(index, 'jobTitle', e.target.value)}
               />
             </div>
           </div>
@@ -311,8 +311,8 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
       position: '',
       employmentType: undefined,
       department: '',
-      jobGrade: '',
-      job: '',
+      jobTitle: '',
+      rank: '',
       description: '',
       salary: 0,
       isVisible: true,

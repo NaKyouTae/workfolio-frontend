@@ -821,7 +821,7 @@ export interface TurnOverDetail {
   worker?: Worker | undefined;
   turnOverGoal?: TurnOverGoalDetail | undefined;
   turnOverChallenge?: TurnOverChallengeDetail | undefined;
-  turnOverRetrospective?: TurnOverRetrospective | undefined;
+  turnOverRetrospective?: TurnOverRetrospectiveDetail | undefined;
   createdAt: number;
   updatedAt: number;
 }
@@ -842,6 +842,8 @@ export interface TurnOverGoalDetail {
   selfIntroductions: SelfIntroduction[];
   interviewQuestions: InterviewQuestion[];
   checkList: CheckList[];
+  memos: Memo[];
+  attachments: Attachment[];
   createdAt: number;
   updatedAt: number;
 }
@@ -883,6 +885,8 @@ export interface TurnOverChallenge {
 export interface TurnOverChallengeDetail {
   id: string;
   jobApplications: JobApplicationDetail[];
+  memos: Memo[];
+  attachments: Attachment[];
   createdAt: number;
   updatedAt: number;
 }
@@ -999,7 +1003,6 @@ export interface TurnOverRetrospective {
   joinedAt?: number | undefined;
   workType: string;
   employmentType?: TurnOverRetrospective_EmploymentType | undefined;
-  turnOver?: TurnOver | undefined;
   createdAt: number;
   updatedAt: number;
 }
@@ -1050,6 +1053,81 @@ export function turnOverRetrospective_EmploymentTypeToJSON(object: TurnOverRetro
     case TurnOverRetrospective_EmploymentType.INTERN:
       return "INTERN";
     case TurnOverRetrospective_EmploymentType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export interface TurnOverRetrospectiveDetail {
+  id: string;
+  name: string;
+  salary: number;
+  position: string;
+  jobTitle: string;
+  rank: string;
+  department: string;
+  reason: string;
+  score: number;
+  reviewSummary: string;
+  joinedAt?: number | undefined;
+  workType: string;
+  employmentType?: TurnOverRetrospectiveDetail_EmploymentType | undefined;
+  memos: Memo[];
+  attachments: Attachment[];
+  createdAt: number;
+  updatedAt: number;
+}
+
+export enum TurnOverRetrospectiveDetail_EmploymentType {
+  EMPLOYMENT_TYPE_UNKNOWN = 0,
+  FULL_TIME = 1,
+  CONTRACT = 2,
+  FREELANCER = 3,
+  INTERN = 4,
+  UNRECOGNIZED = -1,
+}
+
+export function turnOverRetrospectiveDetail_EmploymentTypeFromJSON(
+  object: any,
+): TurnOverRetrospectiveDetail_EmploymentType {
+  switch (object) {
+    case 0:
+    case "EMPLOYMENT_TYPE_UNKNOWN":
+      return TurnOverRetrospectiveDetail_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN;
+    case 1:
+    case "FULL_TIME":
+      return TurnOverRetrospectiveDetail_EmploymentType.FULL_TIME;
+    case 2:
+    case "CONTRACT":
+      return TurnOverRetrospectiveDetail_EmploymentType.CONTRACT;
+    case 3:
+    case "FREELANCER":
+      return TurnOverRetrospectiveDetail_EmploymentType.FREELANCER;
+    case 4:
+    case "INTERN":
+      return TurnOverRetrospectiveDetail_EmploymentType.INTERN;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return TurnOverRetrospectiveDetail_EmploymentType.UNRECOGNIZED;
+  }
+}
+
+export function turnOverRetrospectiveDetail_EmploymentTypeToJSON(
+  object: TurnOverRetrospectiveDetail_EmploymentType,
+): string {
+  switch (object) {
+    case TurnOverRetrospectiveDetail_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN:
+      return "EMPLOYMENT_TYPE_UNKNOWN";
+    case TurnOverRetrospectiveDetail_EmploymentType.FULL_TIME:
+      return "FULL_TIME";
+    case TurnOverRetrospectiveDetail_EmploymentType.CONTRACT:
+      return "CONTRACT";
+    case TurnOverRetrospectiveDetail_EmploymentType.FREELANCER:
+      return "FREELANCER";
+    case TurnOverRetrospectiveDetail_EmploymentType.INTERN:
+      return "INTERN";
+    case TurnOverRetrospectiveDetail_EmploymentType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -4966,7 +5044,7 @@ export const TurnOverDetail: MessageFns<TurnOverDetail> = {
       TurnOverChallengeDetail.encode(message.turnOverChallenge, writer.uint32(418).fork()).join();
     }
     if (message.turnOverRetrospective !== undefined) {
-      TurnOverRetrospective.encode(message.turnOverRetrospective, writer.uint32(426).fork()).join();
+      TurnOverRetrospectiveDetail.encode(message.turnOverRetrospective, writer.uint32(426).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -5029,7 +5107,7 @@ export const TurnOverDetail: MessageFns<TurnOverDetail> = {
             break;
           }
 
-          message.turnOverRetrospective = TurnOverRetrospective.decode(reader, reader.uint32());
+          message.turnOverRetrospective = TurnOverRetrospectiveDetail.decode(reader, reader.uint32());
           continue;
         }
         case 98: {
@@ -5067,7 +5145,7 @@ export const TurnOverDetail: MessageFns<TurnOverDetail> = {
         ? TurnOverChallengeDetail.fromJSON(object.turnOverChallenge)
         : undefined,
       turnOverRetrospective: isSet(object.turnOverRetrospective)
-        ? TurnOverRetrospective.fromJSON(object.turnOverRetrospective)
+        ? TurnOverRetrospectiveDetail.fromJSON(object.turnOverRetrospective)
         : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -5092,7 +5170,7 @@ export const TurnOverDetail: MessageFns<TurnOverDetail> = {
       obj.turnOverChallenge = TurnOverChallengeDetail.toJSON(message.turnOverChallenge);
     }
     if (message.turnOverRetrospective !== undefined) {
-      obj.turnOverRetrospective = TurnOverRetrospective.toJSON(message.turnOverRetrospective);
+      obj.turnOverRetrospective = TurnOverRetrospectiveDetail.toJSON(message.turnOverRetrospective);
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -5121,7 +5199,7 @@ export const TurnOverDetail: MessageFns<TurnOverDetail> = {
       : undefined;
     message.turnOverRetrospective =
       (object.turnOverRetrospective !== undefined && object.turnOverRetrospective !== null)
-        ? TurnOverRetrospective.fromPartial(object.turnOverRetrospective)
+        ? TurnOverRetrospectiveDetail.fromPartial(object.turnOverRetrospective)
         : undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
@@ -5279,6 +5357,8 @@ function createBaseTurnOverGoalDetail(): TurnOverGoalDetail {
     selfIntroductions: [],
     interviewQuestions: [],
     checkList: [],
+    memos: [],
+    attachments: [],
     createdAt: 0,
     updatedAt: 0,
   };
@@ -5303,6 +5383,12 @@ export const TurnOverGoalDetail: MessageFns<TurnOverGoalDetail> = {
     }
     for (const v of message.checkList) {
       CheckList.encode(v!, writer.uint32(418).fork()).join();
+    }
+    for (const v of message.memos) {
+      Memo.encode(v!, writer.uint32(426).fork()).join();
+    }
+    for (const v of message.attachments) {
+      Attachment.encode(v!, writer.uint32(434).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -5368,6 +5454,22 @@ export const TurnOverGoalDetail: MessageFns<TurnOverGoalDetail> = {
           message.checkList.push(CheckList.decode(reader, reader.uint32()));
           continue;
         }
+        case 53: {
+          if (tag !== 426) {
+            break;
+          }
+
+          message.memos.push(Memo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 54: {
+          if (tag !== 434) {
+            break;
+          }
+
+          message.attachments.push(Attachment.decode(reader, reader.uint32()));
+          continue;
+        }
         case 98: {
           if (tag !== 784) {
             break;
@@ -5407,6 +5509,10 @@ export const TurnOverGoalDetail: MessageFns<TurnOverGoalDetail> = {
       checkList: globalThis.Array.isArray(object?.checkList)
         ? object.checkList.map((e: any) => CheckList.fromJSON(e))
         : [],
+      memos: globalThis.Array.isArray(object?.memos) ? object.memos.map((e: any) => Memo.fromJSON(e)) : [],
+      attachments: globalThis.Array.isArray(object?.attachments)
+        ? object.attachments.map((e: any) => Attachment.fromJSON(e))
+        : [],
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -5432,6 +5538,12 @@ export const TurnOverGoalDetail: MessageFns<TurnOverGoalDetail> = {
     if (message.checkList?.length) {
       obj.checkList = message.checkList.map((e) => CheckList.toJSON(e));
     }
+    if (message.memos?.length) {
+      obj.memos = message.memos.map((e) => Memo.toJSON(e));
+    }
+    if (message.attachments?.length) {
+      obj.attachments = message.attachments.map((e) => Attachment.toJSON(e));
+    }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
     }
@@ -5452,6 +5564,8 @@ export const TurnOverGoalDetail: MessageFns<TurnOverGoalDetail> = {
     message.selfIntroductions = object.selfIntroductions?.map((e) => SelfIntroduction.fromPartial(e)) || [];
     message.interviewQuestions = object.interviewQuestions?.map((e) => InterviewQuestion.fromPartial(e)) || [];
     message.checkList = object.checkList?.map((e) => CheckList.fromPartial(e)) || [];
+    message.memos = object.memos?.map((e) => Memo.fromPartial(e)) || [];
+    message.attachments = object.attachments?.map((e) => Attachment.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;
@@ -5995,7 +6109,7 @@ export const TurnOverChallenge: MessageFns<TurnOverChallenge> = {
 };
 
 function createBaseTurnOverChallengeDetail(): TurnOverChallengeDetail {
-  return { id: "", jobApplications: [], createdAt: 0, updatedAt: 0 };
+  return { id: "", jobApplications: [], memos: [], attachments: [], createdAt: 0, updatedAt: 0 };
 }
 
 export const TurnOverChallengeDetail: MessageFns<TurnOverChallengeDetail> = {
@@ -6005,6 +6119,12 @@ export const TurnOverChallengeDetail: MessageFns<TurnOverChallengeDetail> = {
     }
     for (const v of message.jobApplications) {
       JobApplicationDetail.encode(v!, writer.uint32(402).fork()).join();
+    }
+    for (const v of message.memos) {
+      Memo.encode(v!, writer.uint32(410).fork()).join();
+    }
+    for (const v of message.attachments) {
+      Attachment.encode(v!, writer.uint32(418).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -6038,6 +6158,22 @@ export const TurnOverChallengeDetail: MessageFns<TurnOverChallengeDetail> = {
           message.jobApplications.push(JobApplicationDetail.decode(reader, reader.uint32()));
           continue;
         }
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.memos.push(Memo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.attachments.push(Attachment.decode(reader, reader.uint32()));
+          continue;
+        }
         case 98: {
           if (tag !== 784) {
             break;
@@ -6069,6 +6205,10 @@ export const TurnOverChallengeDetail: MessageFns<TurnOverChallengeDetail> = {
       jobApplications: globalThis.Array.isArray(object?.jobApplications)
         ? object.jobApplications.map((e: any) => JobApplicationDetail.fromJSON(e))
         : [],
+      memos: globalThis.Array.isArray(object?.memos) ? object.memos.map((e: any) => Memo.fromJSON(e)) : [],
+      attachments: globalThis.Array.isArray(object?.attachments)
+        ? object.attachments.map((e: any) => Attachment.fromJSON(e))
+        : [],
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -6081,6 +6221,12 @@ export const TurnOverChallengeDetail: MessageFns<TurnOverChallengeDetail> = {
     }
     if (message.jobApplications?.length) {
       obj.jobApplications = message.jobApplications.map((e) => JobApplicationDetail.toJSON(e));
+    }
+    if (message.memos?.length) {
+      obj.memos = message.memos.map((e) => Memo.toJSON(e));
+    }
+    if (message.attachments?.length) {
+      obj.attachments = message.attachments.map((e) => Attachment.toJSON(e));
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -6098,6 +6244,8 @@ export const TurnOverChallengeDetail: MessageFns<TurnOverChallengeDetail> = {
     const message = createBaseTurnOverChallengeDetail();
     message.id = object.id ?? "";
     message.jobApplications = object.jobApplications?.map((e) => JobApplicationDetail.fromPartial(e)) || [];
+    message.memos = object.memos?.map((e) => Memo.fromPartial(e)) || [];
+    message.attachments = object.attachments?.map((e) => Attachment.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;
@@ -6806,7 +6954,6 @@ function createBaseTurnOverRetrospective(): TurnOverRetrospective {
     joinedAt: undefined,
     workType: "",
     employmentType: undefined,
-    turnOver: undefined,
     createdAt: 0,
     updatedAt: 0,
   };
@@ -6852,9 +6999,6 @@ export const TurnOverRetrospective: MessageFns<TurnOverRetrospective> = {
     }
     if (message.employmentType !== undefined) {
       writer.uint32(104).int32(message.employmentType);
-    }
-    if (message.turnOver !== undefined) {
-      TurnOver.encode(message.turnOver, writer.uint32(402).fork()).join();
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -6976,14 +7120,6 @@ export const TurnOverRetrospective: MessageFns<TurnOverRetrospective> = {
           message.employmentType = reader.int32() as any;
           continue;
         }
-        case 50: {
-          if (tag !== 402) {
-            break;
-          }
-
-          message.turnOver = TurnOver.decode(reader, reader.uint32());
-          continue;
-        }
         case 98: {
           if (tag !== 784) {
             break;
@@ -7026,7 +7162,6 @@ export const TurnOverRetrospective: MessageFns<TurnOverRetrospective> = {
       employmentType: isSet(object.employmentType)
         ? turnOverRetrospective_EmploymentTypeFromJSON(object.employmentType)
         : undefined,
-      turnOver: isSet(object.turnOver) ? TurnOver.fromJSON(object.turnOver) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -7073,9 +7208,6 @@ export const TurnOverRetrospective: MessageFns<TurnOverRetrospective> = {
     if (message.employmentType !== undefined) {
       obj.employmentType = turnOverRetrospective_EmploymentTypeToJSON(message.employmentType);
     }
-    if (message.turnOver !== undefined) {
-      obj.turnOver = TurnOver.toJSON(message.turnOver);
-    }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
     }
@@ -7103,9 +7235,344 @@ export const TurnOverRetrospective: MessageFns<TurnOverRetrospective> = {
     message.joinedAt = object.joinedAt ?? undefined;
     message.workType = object.workType ?? "";
     message.employmentType = object.employmentType ?? undefined;
-    message.turnOver = (object.turnOver !== undefined && object.turnOver !== null)
-      ? TurnOver.fromPartial(object.turnOver)
-      : undefined;
+    message.createdAt = object.createdAt ?? 0;
+    message.updatedAt = object.updatedAt ?? 0;
+    return message;
+  },
+};
+
+function createBaseTurnOverRetrospectiveDetail(): TurnOverRetrospectiveDetail {
+  return {
+    id: "",
+    name: "",
+    salary: 0,
+    position: "",
+    jobTitle: "",
+    rank: "",
+    department: "",
+    reason: "",
+    score: 0,
+    reviewSummary: "",
+    joinedAt: undefined,
+    workType: "",
+    employmentType: undefined,
+    memos: [],
+    attachments: [],
+    createdAt: 0,
+    updatedAt: 0,
+  };
+}
+
+export const TurnOverRetrospectiveDetail: MessageFns<TurnOverRetrospectiveDetail> = {
+  encode(message: TurnOverRetrospectiveDetail, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.salary !== 0) {
+      writer.uint32(24).uint32(message.salary);
+    }
+    if (message.position !== "") {
+      writer.uint32(34).string(message.position);
+    }
+    if (message.jobTitle !== "") {
+      writer.uint32(42).string(message.jobTitle);
+    }
+    if (message.rank !== "") {
+      writer.uint32(50).string(message.rank);
+    }
+    if (message.department !== "") {
+      writer.uint32(58).string(message.department);
+    }
+    if (message.reason !== "") {
+      writer.uint32(66).string(message.reason);
+    }
+    if (message.score !== 0) {
+      writer.uint32(72).uint32(message.score);
+    }
+    if (message.reviewSummary !== "") {
+      writer.uint32(82).string(message.reviewSummary);
+    }
+    if (message.joinedAt !== undefined) {
+      writer.uint32(88).uint64(message.joinedAt);
+    }
+    if (message.workType !== "") {
+      writer.uint32(98).string(message.workType);
+    }
+    if (message.employmentType !== undefined) {
+      writer.uint32(104).int32(message.employmentType);
+    }
+    for (const v of message.memos) {
+      Memo.encode(v!, writer.uint32(410).fork()).join();
+    }
+    for (const v of message.attachments) {
+      Attachment.encode(v!, writer.uint32(418).fork()).join();
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(784).uint64(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      writer.uint32(792).uint64(message.updatedAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TurnOverRetrospectiveDetail {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTurnOverRetrospectiveDetail();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.salary = reader.uint32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.position = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.jobTitle = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.rank = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.department = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.reason = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.score = reader.uint32();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.reviewSummary = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.joinedAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.workType = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.employmentType = reader.int32() as any;
+          continue;
+        }
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.memos.push(Memo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.attachments.push(Attachment.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 98: {
+          if (tag !== 784) {
+            break;
+          }
+
+          message.createdAt = longToNumber(reader.uint64());
+          continue;
+        }
+        case 99: {
+          if (tag !== 792) {
+            break;
+          }
+
+          message.updatedAt = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TurnOverRetrospectiveDetail {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
+      position: isSet(object.position) ? globalThis.String(object.position) : "",
+      jobTitle: isSet(object.jobTitle) ? globalThis.String(object.jobTitle) : "",
+      rank: isSet(object.rank) ? globalThis.String(object.rank) : "",
+      department: isSet(object.department) ? globalThis.String(object.department) : "",
+      reason: isSet(object.reason) ? globalThis.String(object.reason) : "",
+      score: isSet(object.score) ? globalThis.Number(object.score) : 0,
+      reviewSummary: isSet(object.reviewSummary) ? globalThis.String(object.reviewSummary) : "",
+      joinedAt: isSet(object.joinedAt) ? globalThis.Number(object.joinedAt) : undefined,
+      workType: isSet(object.workType) ? globalThis.String(object.workType) : "",
+      employmentType: isSet(object.employmentType)
+        ? turnOverRetrospectiveDetail_EmploymentTypeFromJSON(object.employmentType)
+        : undefined,
+      memos: globalThis.Array.isArray(object?.memos) ? object.memos.map((e: any) => Memo.fromJSON(e)) : [],
+      attachments: globalThis.Array.isArray(object?.attachments)
+        ? object.attachments.map((e: any) => Attachment.fromJSON(e))
+        : [],
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
+    };
+  },
+
+  toJSON(message: TurnOverRetrospectiveDetail): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.salary !== 0) {
+      obj.salary = Math.round(message.salary);
+    }
+    if (message.position !== "") {
+      obj.position = message.position;
+    }
+    if (message.jobTitle !== "") {
+      obj.jobTitle = message.jobTitle;
+    }
+    if (message.rank !== "") {
+      obj.rank = message.rank;
+    }
+    if (message.department !== "") {
+      obj.department = message.department;
+    }
+    if (message.reason !== "") {
+      obj.reason = message.reason;
+    }
+    if (message.score !== 0) {
+      obj.score = Math.round(message.score);
+    }
+    if (message.reviewSummary !== "") {
+      obj.reviewSummary = message.reviewSummary;
+    }
+    if (message.joinedAt !== undefined) {
+      obj.joinedAt = Math.round(message.joinedAt);
+    }
+    if (message.workType !== "") {
+      obj.workType = message.workType;
+    }
+    if (message.employmentType !== undefined) {
+      obj.employmentType = turnOverRetrospectiveDetail_EmploymentTypeToJSON(message.employmentType);
+    }
+    if (message.memos?.length) {
+      obj.memos = message.memos.map((e) => Memo.toJSON(e));
+    }
+    if (message.attachments?.length) {
+      obj.attachments = message.attachments.map((e) => Attachment.toJSON(e));
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TurnOverRetrospectiveDetail>, I>>(base?: I): TurnOverRetrospectiveDetail {
+    return TurnOverRetrospectiveDetail.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<TurnOverRetrospectiveDetail>, I>>(object: I): TurnOverRetrospectiveDetail {
+    const message = createBaseTurnOverRetrospectiveDetail();
+    message.id = object.id ?? "";
+    message.name = object.name ?? "";
+    message.salary = object.salary ?? 0;
+    message.position = object.position ?? "";
+    message.jobTitle = object.jobTitle ?? "";
+    message.rank = object.rank ?? "";
+    message.department = object.department ?? "";
+    message.reason = object.reason ?? "";
+    message.score = object.score ?? 0;
+    message.reviewSummary = object.reviewSummary ?? "";
+    message.joinedAt = object.joinedAt ?? undefined;
+    message.workType = object.workType ?? "";
+    message.employmentType = object.employmentType ?? undefined;
+    message.memos = object.memos?.map((e) => Memo.fromPartial(e)) || [];
+    message.attachments = object.attachments?.map((e) => Attachment.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;

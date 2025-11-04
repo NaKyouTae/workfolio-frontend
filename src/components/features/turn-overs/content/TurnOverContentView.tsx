@@ -1,38 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { TurnOverDetail } from '@/generated/common';
 import TurnOverGoalView from './view/TurnOverGoalView';
 import TurnOverRetrospectiveView from './view/TurnOverRetrospectiveView';
 import TurnOverChallengeView from './view/TurnOverChallengeView';
 import styles from './TurnOverContentView.module.css';
 import DateUtil from '@/utils/DateUtil';
-import { useTurnOver } from '@/hooks/useTurnOver';
 
 interface TurnOversContentViewProps {
-  selectedTurnOverId: string;
+  selectedTurnOver: TurnOverDetail | null;
+
   onEdit?: () => void;
+  onDuplicate?: () => void;
+  onDelete?: () => void;
 }
 
-const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOverId }) => {
+const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete }) => {
   const [activeTab, setActiveTab] = useState<'goal' | 'challenge' | 'retrospective'>('goal');
-  const [selectedTurnOver, setSelectedTurnOver] = useState<TurnOverDetail | null>(null);
-
-  const { getTurnOverDetail } = useTurnOver();
 
   const changeActiveTab = async (tab: 'goal' | 'challenge' | 'retrospective') => {
     setActiveTab(tab);
-    const turnOverDetail = await getTurnOverDetail(selectedTurnOverId);
-    if (turnOverDetail) {
-      setSelectedTurnOver(turnOverDetail);
-    }
   };
-
-  useEffect(() => {
-    getTurnOverDetail(selectedTurnOverId).then(turnOverDetail => {
-      if (turnOverDetail) {
-        setSelectedTurnOver(turnOverDetail);
-      }
-    });
-  }, [selectedTurnOverId]);
     
   return (
     <div className={styles.container}>
@@ -45,9 +32,9 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
           </span>
         </div>
         <div className={styles.actions}>
-          <button className={styles.actionButton}>편집</button>
-          <button className={styles.actionButton}>복제</button>
-          <button className={styles.actionButton}>삭제</button>
+          <button className={styles.actionButton} onClick={onEdit}>편집</button>
+          <button className={styles.actionButton} onClick={onDuplicate}>복제</button>
+          <button className={styles.actionButton} onClick={onDelete}>삭제</button>
         </div>
       </div>
 

@@ -15,13 +15,13 @@ import {
   ResumeUpdateRequest_EducationRequest,
   ResumeUpdateRequest_ActivityRequest,
   ResumeUpdateRequest_LanguageSkillRequest,
-  ResumeUpdateRequest_AttachmentRequest,
   ResumeUpdateRequest_ProjectRequest
 } from '@/generated/resume';
 import { DateUtil } from '@/utils/DateUtil';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import CareerContentForm from './CareerContentForm';
 import { useResumeDetails } from '@/hooks/useResumeDetails';
+import { AttachmentRequest } from '@/generated/attachment';
 
 interface CareerContentEditProps {
   selectedResumeDetail: ResumeDetail | null;
@@ -45,7 +45,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   const [gender, setGender] = useState<Resume_Gender | undefined>(normalizeEnumValue<Resume_Gender>(selectedResumeDetail?.gender, Resume_Gender));
   const [email, setEmail] = useState(selectedResumeDetail?.email || '');
   const [phone, setPhone] = useState(selectedResumeDetail?.phone || '');
-  const [job, setJob] = useState(selectedResumeDetail?.job || '');
+  const [position, setPosition] = useState(selectedResumeDetail?.position || '');
   const [description, setDescription] = useState(selectedResumeDetail?.description || '');
   // 각 섹션 데이터
   const [careers, setCareers] = useState<ResumeUpdateRequest_CareerRequest[]>([]);
@@ -53,7 +53,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   const [educations, setEducations] = useState<ResumeUpdateRequest_EducationRequest[]>([]);
   const [activities, setActivities] = useState<ResumeUpdateRequest_ActivityRequest[]>([]);
   const [languages, setLanguages] = useState<ResumeUpdateRequest_LanguageSkillRequest[]>([]);
-  const [attachments, setAttachments] = useState<ResumeUpdateRequest_AttachmentRequest[]>([]);
+  const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
 
   const { updateResume } = useResumeDetails();
 
@@ -68,7 +68,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
       setGender(normalizeEnumValue<Resume_Gender>(selectedResumeDetail.gender, Resume_Gender));
       setEmail(selectedResumeDetail.email || '');
       setPhone(selectedResumeDetail.phone || '');
-      setJob(selectedResumeDetail.job || '');
+      setPosition(selectedResumeDetail.position || '');
       setDescription(selectedResumeDetail.description || '');
       // 데이터가 없으면 빈 배열로 초기화 (각 컴포넌트가 자동으로 항목 추가)
       // enum 필드들을 모두 숫자로 변환하여 저장
@@ -101,8 +101,8 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
           position: career.position || '',
           employmentType: normalizeEnumValue(career.employmentType, Career_EmploymentType),
           department: career.department || '',
-          jobGrade: career.jobGrade || '',
-          job: career.job || '',
+          jobTitle: career.jobTitle || '',
+          rank: career.rank || '',
           salary: career.salary || 0,
           description: career.description || '',
           isVisible: career.isVisible ?? false,
@@ -200,7 +200,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         email,
         birthDate,
         gender,
-        job,
+        position,
         description,
         isPublic: selectedResumeDetail?.isPublic || false,
         isDefault,
@@ -223,7 +223,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
       console.error('Error updating resume:', error);
       alert('이력서 수정 중 오류가 발생했습니다.');
     }
-  }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, job, description, isDefault, careers, projects, educations, activities, languages, attachments, onSave]);
+  }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, position, description, isDefault, careers, projects, educations, activities, languages, attachments, onSave]);
 
   return (
     <CareerContentForm
@@ -234,7 +234,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
       gender={gender}
       phone={phone}
       email={email}
-      job={job}
+      position={position}
       description={description}
       careers={careers}
       projects={projects}
@@ -249,7 +249,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
       onGenderChange={setGender}
       onPhoneChange={setPhone}
       onEmailChange={setEmail}
-      onJobChange={setJob}
+      onPositionChange={setPosition}
       onDescriptionChange={setDescription}
       onCareersChange={setCareers}
       onProjectsChange={setProjects}

@@ -238,11 +238,11 @@ const CareerView: React.FC<CareerViewProps> = ({
                 )
               }
               {
-                career.department && (
+                career.jobTitle && (
                   <>
                     <span style={{ color: '#666' }}>|</span>
-                    <span style={{ color: career.jobGrade ? '#666' : '#ddd' }}>
-                      {career.jobGrade}
+                    <span style={{ color: career.jobTitle ? '#666' : '#ddd' }}>
+                      {career.jobTitle}
                     </span>
                   </>
                 )

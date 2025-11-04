@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { TurnOverDetail } from '@/generated/common'
-import { TurnOverDetailResponse } from '@/generated/turn_over'
+import { TurnOverDetailResponse, TurnOverUpsertRequest } from '@/generated/turn_over'
 
 export function useTurnOver() {
     const [turnOvers, setTurnOvers] = useState<TurnOverDetail[]>([])
@@ -85,11 +85,117 @@ export function useTurnOver() {
         }
     }, [])
 
+    // 이직 활동 생성/수정
+    const upsertTurnOver = useCallback(async (request: TurnOverUpsertRequest): Promise<boolean> => {
+        try {
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                console.error('No access token found')
+                return false
+            }
+
+            const response = await fetch('/api/turn-over', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            })
+
+            if (response.ok) {
+                // 목록 새로고침
+                await fetchTurnOvers()
+                return true
+            } else {
+                console.error('Failed to upsert turn over')
+                return false
+            }
+        } catch (error) {
+            console.error('Error upserting turn over:', error)
+            return false
+        }
+    }, [fetchTurnOvers])
+
+    // 이직 활동 복제
+    const duplicateTurnOver = useCallback(async (id: string): Promise<boolean> => {
+        try {
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                console.error('No access token found')
+                return false
+            }
+
+            const response = await fetch(`/api/turn-over/${id}/duplicate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+
+            if (response.ok) {
+                // 목록 새로고침
+                await fetchTurnOvers()
+                return true
+            } else {
+                console.error('Failed to duplicate turn over')
+                return false
+            }
+        } catch (error) {
+            console.error('Error duplicating turn over:', error)
+            return false
+        }
+    }, [fetchTurnOvers])
+
+    // 이직 활동 삭제
+    const deleteTurnOver = useCallback(async (id: string): Promise<boolean> => {
+        try {
+            const accessToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('accessToken='))
+                ?.split('=')[1];
+            
+            if (!accessToken) {
+                console.error('No access token found')
+                return false
+            }
+
+            const response = await fetch(`/api/turn-over/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+
+            if (response.ok) {
+                // 목록 새로고침
+                await fetchTurnOvers()
+                return true
+            } else {
+                console.error('Failed to delete turn over')
+                return false
+            }
+        } catch (error) {
+            console.error('Error deleting turn over:', error)
+            return false
+        }
+    }, [fetchTurnOvers])
+
     // 반환 객체를 메모이제이션하여 불필요한 리렌더링 방지
     return useMemo(() => ({
         turnOvers,
         isLoading,
         refreshTurnOvers,
-        getTurnOverDetail
-    }), [turnOvers, isLoading, refreshTurnOvers, getTurnOverDetail])
+        getTurnOverDetail,
+        upsertTurnOver,
+        duplicateTurnOver,
+        deleteTurnOver
+    }), [turnOvers, isLoading, refreshTurnOvers, getTurnOverDetail, upsertTurnOver, duplicateTurnOver, deleteTurnOver])
 }

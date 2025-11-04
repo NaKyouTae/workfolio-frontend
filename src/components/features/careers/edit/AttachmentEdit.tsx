@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { ResumeUpdateRequest_AttachmentRequest } from '@/generated/resume';
+import { AttachmentRequest } from '@/generated/attachment';
 import { Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
@@ -11,7 +11,7 @@ import CardActions from '@/components/ui/CardActions';
 import EmptyState from '@/components/ui/EmptyState';
 
 // 모드 정보를 포함한 확장된 Attachment 타입
-type AttachmentWithMode = ResumeUpdateRequest_AttachmentRequest & {
+type AttachmentWithMode = AttachmentRequest & {
   _file?: File; // 선택된 파일 객체 (UI 표시용)
 };
 
@@ -26,14 +26,14 @@ const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
 };
 
 interface AttachmentEditProps {
-  attachments: ResumeUpdateRequest_AttachmentRequest[];
-  onUpdate: (attachments: ResumeUpdateRequest_AttachmentRequest[]) => void;
+  attachments: AttachmentRequest[];
+  onUpdate: (attachments: AttachmentRequest[]) => void;
 }
 
 interface AttachmentItemProps {
   attachment: AttachmentWithMode;
   index: number;
-  handleAttachmentChange: (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => void;
+  handleAttachmentChange: (index: number, field: keyof AttachmentRequest, value: string | number | boolean | undefined) => void;
   toggleVisible: (index: number) => void;
   handleDeleteAttachment: (index: number) => void;
   handleFileUpload: (index: number, file: File) => Promise<void>;
@@ -154,26 +154,28 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
 const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }) => {
   // 파일 모드로 attachment 생성 (fileName 필드 사용)
   const createFileAttachment = (priority: number = 0): AttachmentWithMode => ({
+    id: undefined,
     type: undefined,
     category: Attachment_AttachmentCategory.FILE,
-    url: '',
+    url: '',    
     fileName: '',
     fileUrl: '',
-    fileData: undefined,
-    isVisible: true,
+    fileData: undefined,    
     priority,
+    isVisible: true,
   });
 
   // URL 모드로 attachment 생성 (fileUrl 필드 사용)
   const createUrlAttachment = (priority: number = 0): AttachmentWithMode => ({
+    id: undefined,
     type: undefined,
     category: Attachment_AttachmentCategory.URL,
-    url: '',
+    url: '',    
     fileName: '',
     fileUrl: '',
-    fileData: undefined,
-    isVisible: true,
+    fileData: undefined,    
     priority,
+    isVisible: true,
   });
 
   // 빈 배열일 때 자동으로 항목 하나 추가 (URL 모드로 기본 설정)
@@ -217,7 +219,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     onUpdate(updated);
   };
 
-  const handleAttachmentChange = (index: number, field: keyof ResumeUpdateRequest_AttachmentRequest, value: string | number | boolean | undefined) => {
+  const handleAttachmentChange = (index: number, field: keyof AttachmentRequest, value: string | number | boolean | undefined) => {
     const newAttachments = [...attachments];
     newAttachments[index] = {
       ...newAttachments[index],
@@ -237,7 +239,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     handleAttachmentChange(index, 'isVisible', !attachments[index].isVisible);
   };
 
-  const handleReorder = (reorderedAttachments: ResumeUpdateRequest_AttachmentRequest[]) => {
+  const handleReorder = (reorderedAttachments: AttachmentRequest[]) => {
     const updatedAttachments = reorderedAttachments.map((attachment, idx) => ({
       ...attachment,
       priority: idx

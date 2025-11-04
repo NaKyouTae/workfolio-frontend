@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { 
+  Attachment_AttachmentCategory,
   Resume_Gender, 
 } from '@/generated/common';
 import { 
@@ -7,10 +8,10 @@ import {
   ResumeUpdateRequest_EducationRequest,
   ResumeUpdateRequest_ActivityRequest,
   ResumeUpdateRequest_LanguageSkillRequest,
-  ResumeUpdateRequest_AttachmentRequest,
   ResumeUpdateRequest_ProjectRequest,
   ResumeUpdateRequest
 } from '@/generated/resume';
+import { AttachmentRequest } from '@/generated/attachment';
 import { DateUtil } from '@/utils/DateUtil';
 import { useResumeDetails } from '@/hooks/useResumeDetails';
 import CareerContentForm from './CareerContentForm';
@@ -40,7 +41,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
   const [gender, setGender] = useState<Resume_Gender | undefined>(normalizeEnumValue<Resume_Gender>(user?.gender, Resume_Gender));
   const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState(user?.phone || '');
-  const [job, setJob] = useState('');
+  const [position, setPosition] = useState('');
   const [description, setDescription] = useState('');
   // 각 섹션 데이터
   const [careers, setCareers] = useState<ResumeUpdateRequest_CareerRequest[]>([
@@ -49,8 +50,8 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
         name: '',
         position: '',
         department: '',
-        jobGrade: '',
-        job: '',
+        jobTitle: '',
+        rank: '',
         salary: 0,
         priority: 0,
         description: '',
@@ -121,14 +122,17 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
       ],
     }
   ]);
-  const [attachments, setAttachments] = useState<ResumeUpdateRequest_AttachmentRequest[]>([
+  const [attachments, setAttachments] = useState<AttachmentRequest[]>([
     {
       type: undefined,
+      category: Attachment_AttachmentCategory.FILE,
+      url: '',
       fileName: '',
       fileUrl: '',
+      fileData: undefined,
       isVisible: true,
       priority: 0,
-    }
+    },
   ]);
 
   const { updateResume } = useResumeDetails();
@@ -142,7 +146,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
       email,
       birthDate,
       gender,
-      job,
+      position,
       description,
       isPublic: false,
       isDefault,
@@ -159,7 +163,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
     if (result) {
       onSuccess?.();
     }
-  }, [activities, attachments, birthDate, careers, description, educations, email, gender, isDefault, job, languages, name, onSuccess, phone, projects, title, updateResume]);
+  }, [activities, attachments, birthDate, careers, description, educations, email, gender, isDefault, position, languages, name, onSuccess, phone, projects, title, updateResume]);
 
   return (
     <CareerContentForm
@@ -170,7 +174,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
       gender={gender}
       phone={phone}
       email={email}
-      job={job}
+      position={position}
       description={description}
       careers={careers}
       projects={projects}
@@ -185,7 +189,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
       onGenderChange={setGender}
       onPhoneChange={setPhone}
       onEmailChange={setEmail}
-      onJobChange={setJob}
+      onPositionChange={setPosition}
       onDescriptionChange={setDescription}
       onCareersChange={setCareers}
       onProjectsChange={setProjects}

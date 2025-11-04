@@ -1,5 +1,10 @@
 import React from 'react';
-import { TurnOverChallengeDetail } from '@/generated/common';
+import { TurnOverChallengeDetail, ApplicationStage_ApplicationStageStatus } from '@/generated/common';
+import EmptyState from '@/components/ui/EmptyState';
+import DateUtil from '@/utils/DateUtil';
+import styles from './TurnOverChallengeView.module.css';
+import MemoView from './common/MemoView';
+import AttachmentView from './common/AttachmentView';
 
 interface TurnOverChallengeViewProps {
   turnOverChallenge: TurnOverChallengeDetail | null;
@@ -8,18 +13,141 @@ interface TurnOverChallengeViewProps {
 const TurnOverChallengeView: React.FC<TurnOverChallengeViewProps> = ({ turnOverChallenge }) => {
   if (!turnOverChallenge) {
     return (
-      <div style={{ textAlign: 'center', padding: '60px 20px', color: '#9ca3af' }}>
+      <div className={styles.emptyState}>
         <p>도전 정보가 없습니다.</p>
       </div>
     );
   }
-    
+
+  const getStatusLabel = (status: ApplicationStage_ApplicationStageStatus) => {
+    switch (status) {
+      case ApplicationStage_ApplicationStageStatus.PASSED:
+        return { label: '합격', className: styles.statusPassed };
+      case ApplicationStage_ApplicationStageStatus.FAILED:
+        return { label: '불합격', className: styles.statusFailed };
+      case ApplicationStage_ApplicationStageStatus.PENDING:
+        return { label: '대기', className: styles.statusPending };
+      case ApplicationStage_ApplicationStageStatus.SCHEDULED:
+        return { label: '예정', className: styles.statusScheduled };
+      case ApplicationStage_ApplicationStageStatus.CANCELLED:
+        return { label: '취소', className: styles.statusCancelled };
+      default:
+        return { label: '-', className: '' };
+    }
+  };
+
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-      <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: '700', margin: '0 0 20px 0' }}>도전 활동</h2>
-        <p style={{ color: '#6b7280', fontSize: '14px' }}>도전 활동 정보를 여기에 표시합니다.</p>
+    <div className={styles.container}>
+      {/* 지원 기록 */}
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>지원 기록</h2>
+        </div>
+        <div className={styles.sectionContent}>
+          {turnOverChallenge.jobApplications && turnOverChallenge.jobApplications.length > 0 ? (
+            <div className={styles.applicationsList}>
+              {turnOverChallenge.jobApplications.map((app) => (
+                <div key={app.id} className={styles.applicationCard}>
+                  {/* 카드 헤더 */}
+                  <div className={styles.cardHeader}>
+                    <div className={styles.companyInfo}>
+                      <h3 className={styles.companyName}>{app.name}</h3>
+                      <div className={styles.positionInfo}>
+                        <span className={styles.position}>{app.position}</span>
+                        <button className={styles.detailButton}>상세보기 ↗</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 직무 정보 */}
+                  <div className={styles.jobInfo}>
+                    <span className={styles.jobTitle}>{app.jobPostingTitle}</span>
+                    {app.jobPostingUrl && (
+                      <a 
+                        href={app.jobPostingUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={styles.jobLink}
+                      >
+                        🔗
+                      </a>
+                    )}
+                  </div>
+
+                  {/* 지원 단계 타임라인 */}
+                  {app.applicationStages && app.applicationStages.length > 0 && (
+                    <div className={styles.timeline}>
+                      {app.applicationStages.map((stage, index) => {
+                        const statusInfo = getStatusLabel(stage.status);
+                        return (
+                          <div key={stage.id} className={styles.timelineItem}>
+                            <div className={styles.timelineNode}>
+                              <div className={`${styles.timelineDot} ${statusInfo.className}`} />
+                              {index < app.applicationStages.length - 1 && (
+                                <div className={styles.timelineLine} />
+                              )}
+                            </div>
+                            <div className={styles.timelineContent}>
+                              <div className={styles.stageName}>{stage.name}</div>
+                              <div className={styles.stageInfo}>
+                                <span className={`${styles.statusBadge} ${statusInfo.className}`}>
+                                  {statusInfo.label}
+                                </span>
+                                {stage.startedAt && (
+                                  <span className={styles.stageDate}>
+                                    {DateUtil.formatTimestamp(stage.startedAt, 'MM.DD')}
+                                  </span>
+                                )}
+                              </div>
+                              {stage.memo && (
+                                <div className={styles.stageMemo}>{stage.memo}</div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* 추가 정보 */}
+                  <div className={styles.additionalInfo}>
+                    {(app.startedAt || app.endedAt) && (
+                      <div className={styles.infoRow}>
+                        <span className={styles.infoLabel}>모집 기간</span>
+                        <span className={styles.infoValue}>
+                          {app.startedAt && DateUtil.formatTimestamp(app.startedAt, 'YY.MM.DD')}
+                          {app.startedAt && app.endedAt && ' - '}
+                          {app.endedAt && DateUtil.formatTimestamp(app.endedAt, 'YY.MM.DD')}
+                        </span>
+                      </div>
+                    )}
+                    {app.applicationSource && (
+                      <div className={styles.infoRow}>
+                        <span className={styles.infoLabel}>지원 경로</span>
+                        <span className={styles.infoValue}>{app.applicationSource}</span>
+                      </div>
+                    )}
+                    {app.memo && (
+                      <div className={styles.infoRow}>
+                        <span className={styles.infoLabel}>메모</span>
+                        <span className={styles.infoValue}>{app.memo}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState text="등록된 지원 기록이 없습니다." />
+          )}
+        </div>
       </div>
+
+      {/* 메모 */}
+      <MemoView memos={turnOverChallenge.memos || []} />
+
+      {/* 첨부 */}
+      <AttachmentView attachments={turnOverChallenge.attachments || []} />
     </div>
   );
 };

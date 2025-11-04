@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
 import { TurnOver } from '@/generated/common';
-import { useTurnOver } from '@/hooks/useTurnOver';
 
 interface TurnOversSidebarProps {
-  selectedTurnOver: TurnOver | null;
+  turnOvers: TurnOver[];
   onGoHome: () => void;
+  refreshTurnOvers: () => void;
   onTurnOverSelect: (turnOver: TurnOver) => void;
 }
 
-const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ selectedTurnOver, onGoHome, onTurnOverSelect }) => {
-  const { turnOvers, refreshTurnOvers } = useTurnOver();
+const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, onGoHome, refreshTurnOvers, onTurnOverSelect }) => {
 
   const handleTurnOverCreated = () => {
     console.log('turn over created');
@@ -105,7 +104,6 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ selectedTurnOver, o
         {turnOvers.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {turnOvers.map((turnOver) => {
-              const isSelected = selectedTurnOver?.id === turnOver.id;
               return (
                 <div
                   key={turnOver.id}
@@ -115,25 +113,14 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ selectedTurnOver, o
                     borderRadius: '6px',
                     fontSize: '13px',
                     color: '#333',
-                    backgroundColor: isSelected ? '#e3f2fd' : '#f5f5f5',
-                    borderTop: isSelected ? '2px solid #2196f3' : '1px solid transparent',
-                    borderRight: isSelected ? '2px solid #2196f3' : '1px solid transparent',
-                    borderBottom: isSelected ? '2px solid #2196f3' : '1px solid transparent',
-                    borderLeft: isSelected ? '2px solid #2196f3' : '1px solid transparent',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.backgroundColor = '#e0e0e0';
-                    }
+                    e.currentTarget.style.backgroundColor = '#e0e0e0';
                   }}
                   onMouseLeave={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.backgroundColor = '#f5f5f5';
-                    } else {
-                      e.currentTarget.style.backgroundColor = '#e3f2fd';
-                    }
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
                   }}
                 >
                 <div style={{ fontWeight: '600' }}>

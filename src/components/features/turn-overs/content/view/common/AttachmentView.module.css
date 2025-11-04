@@ -1,0 +1,116 @@
+/* Section */
+.section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.sectionContent {
+  padding: 24px;
+}
+
+/* Attachment List */
+.attachmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attachmentItem {
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.attachmentItem:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.attachmentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachmentType {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.typeLabel {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #f59e0b;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.fileName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.attachmentLink {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  font-size: 13px;
+  color: #3b82f6;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .sectionHeader {
+    padding: 16px 20px;
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+  }
+
+  .sectionContent {
+    padding: 20px;
+  }
+
+  .attachmentItem {
+    padding: 12px;
+  }
+}
+

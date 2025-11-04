@@ -203,8 +203,8 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                   )
                 }
                 {
-                  selectedResumeDetail?.job && (
-                    <span style={{ color: selectedResumeDetail?.job ? 'inherit' : '#ddd' }}>{selectedResumeDetail?.job}</span>
+                  selectedResumeDetail?.position && (
+                    <span style={{ color: selectedResumeDetail?.position ? 'inherit' : '#ddd' }}>{selectedResumeDetail?.position}</span>
                   )
                 }                
               </h2>

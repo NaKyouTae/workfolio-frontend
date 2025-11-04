@@ -6,16 +6,11 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { AttachmentRequest } from "./attachment";
 import {
   Activity_ActivityType,
   activity_ActivityTypeFromJSON,
   activity_ActivityTypeToJSON,
-  Attachment_AttachmentCategory,
-  attachment_AttachmentCategoryFromJSON,
-  attachment_AttachmentCategoryToJSON,
-  Attachment_AttachmentType,
-  attachment_AttachmentTypeFromJSON,
-  attachment_AttachmentTypeToJSON,
   Career_EmploymentType,
   career_EmploymentTypeFromJSON,
   career_EmploymentTypeToJSON,
@@ -67,7 +62,7 @@ export interface ResumeUpdateRequest {
   educations: ResumeUpdateRequest_EducationRequest[];
   activities: ResumeUpdateRequest_ActivityRequest[];
   languages: ResumeUpdateRequest_LanguageSkillRequest[];
-  attachments: ResumeUpdateRequest_AttachmentRequest[];
+  attachments: AttachmentRequest[];
 }
 
 export interface ResumeUpdateRequest_CareerRequest {
@@ -140,18 +135,6 @@ export interface ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest {
   name: string;
   score: string;
   acquiredAt?: number | undefined;
-  isVisible: boolean;
-  priority: number;
-}
-
-export interface ResumeUpdateRequest_AttachmentRequest {
-  id?: string | undefined;
-  type?: Attachment_AttachmentType | undefined;
-  category: Attachment_AttachmentCategory;
-  url: string;
-  fileName: string;
-  fileUrl: string;
-  fileData?: Uint8Array | undefined;
   isVisible: boolean;
   priority: number;
 }
@@ -468,7 +451,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
       ResumeUpdateRequest_LanguageSkillRequest.encode(v!, writer.uint32(442).fork()).join();
     }
     for (const v of message.attachments) {
-      ResumeUpdateRequest_AttachmentRequest.encode(v!, writer.uint32(450).fork()).join();
+      AttachmentRequest.encode(v!, writer.uint32(450).fork()).join();
     }
     return writer;
   },
@@ -613,7 +596,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
             break;
           }
 
-          message.attachments.push(ResumeUpdateRequest_AttachmentRequest.decode(reader, reader.uint32()));
+          message.attachments.push(AttachmentRequest.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -654,7 +637,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
         ? object.languages.map((e: any) => ResumeUpdateRequest_LanguageSkillRequest.fromJSON(e))
         : [],
       attachments: globalThis.Array.isArray(object?.attachments)
-        ? object.attachments.map((e: any) => ResumeUpdateRequest_AttachmentRequest.fromJSON(e))
+        ? object.attachments.map((e: any) => AttachmentRequest.fromJSON(e))
         : [],
     };
   },
@@ -710,7 +693,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
       obj.languages = message.languages.map((e) => ResumeUpdateRequest_LanguageSkillRequest.toJSON(e));
     }
     if (message.attachments?.length) {
-      obj.attachments = message.attachments.map((e) => ResumeUpdateRequest_AttachmentRequest.toJSON(e));
+      obj.attachments = message.attachments.map((e) => AttachmentRequest.toJSON(e));
     }
     return obj;
   },
@@ -736,7 +719,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     message.educations = object.educations?.map((e) => ResumeUpdateRequest_EducationRequest.fromPartial(e)) || [];
     message.activities = object.activities?.map((e) => ResumeUpdateRequest_ActivityRequest.fromPartial(e)) || [];
     message.languages = object.languages?.map((e) => ResumeUpdateRequest_LanguageSkillRequest.fromPartial(e)) || [];
-    message.attachments = object.attachments?.map((e) => ResumeUpdateRequest_AttachmentRequest.fromPartial(e)) || [];
+    message.attachments = object.attachments?.map((e) => AttachmentRequest.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1984,208 +1967,6 @@ export const ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest: Messa
   },
 };
 
-function createBaseResumeUpdateRequest_AttachmentRequest(): ResumeUpdateRequest_AttachmentRequest {
-  return {
-    id: undefined,
-    type: undefined,
-    category: 0,
-    url: "",
-    fileName: "",
-    fileUrl: "",
-    fileData: undefined,
-    isVisible: false,
-    priority: 0,
-  };
-}
-
-export const ResumeUpdateRequest_AttachmentRequest: MessageFns<ResumeUpdateRequest_AttachmentRequest> = {
-  encode(message: ResumeUpdateRequest_AttachmentRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== undefined) {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.type !== undefined) {
-      writer.uint32(16).int32(message.type);
-    }
-    if (message.category !== 0) {
-      writer.uint32(24).int32(message.category);
-    }
-    if (message.url !== "") {
-      writer.uint32(34).string(message.url);
-    }
-    if (message.fileName !== "") {
-      writer.uint32(42).string(message.fileName);
-    }
-    if (message.fileUrl !== "") {
-      writer.uint32(50).string(message.fileUrl);
-    }
-    if (message.fileData !== undefined) {
-      writer.uint32(58).bytes(message.fileData);
-    }
-    if (message.isVisible !== false) {
-      writer.uint32(240).bool(message.isVisible);
-    }
-    if (message.priority !== 0) {
-      writer.uint32(248).uint32(message.priority);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): ResumeUpdateRequest_AttachmentRequest {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseResumeUpdateRequest_AttachmentRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.type = reader.int32() as any;
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.category = reader.int32() as any;
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.url = reader.string();
-          continue;
-        }
-        case 5: {
-          if (tag !== 42) {
-            break;
-          }
-
-          message.fileName = reader.string();
-          continue;
-        }
-        case 6: {
-          if (tag !== 50) {
-            break;
-          }
-
-          message.fileUrl = reader.string();
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.fileData = reader.bytes();
-          continue;
-        }
-        case 30: {
-          if (tag !== 240) {
-            break;
-          }
-
-          message.isVisible = reader.bool();
-          continue;
-        }
-        case 31: {
-          if (tag !== 248) {
-            break;
-          }
-
-          message.priority = reader.uint32();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ResumeUpdateRequest_AttachmentRequest {
-    return {
-      id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-      type: isSet(object.type) ? attachment_AttachmentTypeFromJSON(object.type) : undefined,
-      category: isSet(object.category) ? attachment_AttachmentCategoryFromJSON(object.category) : 0,
-      url: isSet(object.url) ? globalThis.String(object.url) : "",
-      fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
-      fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
-      fileData: isSet(object.fileData) ? bytesFromBase64(object.fileData) : undefined,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
-      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
-    };
-  },
-
-  toJSON(message: ResumeUpdateRequest_AttachmentRequest): unknown {
-    const obj: any = {};
-    if (message.id !== undefined) {
-      obj.id = message.id;
-    }
-    if (message.type !== undefined) {
-      obj.type = attachment_AttachmentTypeToJSON(message.type);
-    }
-    if (message.category !== 0) {
-      obj.category = attachment_AttachmentCategoryToJSON(message.category);
-    }
-    if (message.url !== "") {
-      obj.url = message.url;
-    }
-    if (message.fileName !== "") {
-      obj.fileName = message.fileName;
-    }
-    if (message.fileUrl !== "") {
-      obj.fileUrl = message.fileUrl;
-    }
-    if (message.fileData !== undefined) {
-      obj.fileData = base64FromBytes(message.fileData);
-    }
-    if (message.isVisible !== false) {
-      obj.isVisible = message.isVisible;
-    }
-    if (message.priority !== 0) {
-      obj.priority = Math.round(message.priority);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<ResumeUpdateRequest_AttachmentRequest>, I>>(
-    base?: I,
-  ): ResumeUpdateRequest_AttachmentRequest {
-    return ResumeUpdateRequest_AttachmentRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<ResumeUpdateRequest_AttachmentRequest>, I>>(
-    object: I,
-  ): ResumeUpdateRequest_AttachmentRequest {
-    const message = createBaseResumeUpdateRequest_AttachmentRequest();
-    message.id = object.id ?? undefined;
-    message.type = object.type ?? undefined;
-    message.category = object.category ?? 0;
-    message.url = object.url ?? "";
-    message.fileName = object.fileName ?? "";
-    message.fileUrl = object.fileUrl ?? "";
-    message.fileData = object.fileData ?? undefined;
-    message.isVisible = object.isVisible ?? false;
-    message.priority = object.priority ?? 0;
-    return message;
-  },
-};
-
 function createBaseResumeUpdateRequest_ProjectRequest(): ResumeUpdateRequest_ProjectRequest {
   return {
     id: undefined,
@@ -2569,31 +2350,6 @@ export const ResumeResponse: MessageFns<ResumeResponse> = {
     return message;
   },
 };
-
-function bytesFromBase64(b64: string): Uint8Array {
-  if ((globalThis as any).Buffer) {
-    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
-  } else {
-    const bin = globalThis.atob(b64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; ++i) {
-      arr[i] = bin.charCodeAt(i);
-    }
-    return arr;
-  }
-}
-
-function base64FromBytes(arr: Uint8Array): string {
-  if ((globalThis as any).Buffer) {
-    return globalThis.Buffer.from(arr).toString("base64");
-  } else {
-    const bin: string[] = [];
-    arr.forEach((byte) => {
-      bin.push(globalThis.String.fromCharCode(byte));
-    });
-    return globalThis.btoa(bin.join(""));
-  }
-}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

@@ -1,0 +1,337 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+/* Section */
+.section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.sectionContent {
+  padding: 24px;
+}
+
+/* Applications List */
+.applicationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Application Card */
+.applicationCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  background: #fafafa;
+}
+
+.cardHeader {
+  margin-bottom: 16px;
+}
+
+.companyInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.companyName {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.positionInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.position {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.detailButton {
+  padding: 4px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: white;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.detailButton:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+/* Job Info */
+.jobInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.jobTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.jobLink {
+  font-size: 16px;
+  text-decoration: none;
+  color: #6b7280;
+  transition: color 0.15s ease;
+}
+
+.jobLink:hover {
+  color: #f59e0b;
+}
+
+/* Timeline */
+.timeline {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 16px;
+  position: relative;
+}
+
+.timelineItem:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.timelineNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.timelineDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.timelineLine {
+  width: 2px;
+  flex: 1;
+  background: #e5e7eb;
+  margin-top: 4px;
+  min-height: 30px;
+}
+
+.timelineContent {
+  flex: 1;
+  padding-top: 2px;
+}
+
+.stageName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.stageInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.statusBadge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.statusPassed {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.statusPassed.timelineDot {
+  background-color: #1e40af;
+}
+
+.statusFailed {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.statusFailed.timelineDot {
+  background-color: #dc2626;
+}
+
+.statusPending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.statusPending.timelineDot {
+  background-color: #d97706;
+}
+
+.statusScheduled {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+
+.statusScheduled.timelineDot {
+  background-color: #4f46e5;
+}
+
+.statusCancelled {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.statusCancelled.timelineDot {
+  background-color: #6b7280;
+}
+
+.stageDate {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.stageMemo {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* Additional Info */
+.additionalInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.infoLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 80px;
+}
+
+.infoValue {
+  font-size: 13px;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+/* Memo */
+.memoContent {
+  min-height: 100px;
+  padding: 16px;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.emptyText {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+  }
+
+  .sectionHeader {
+    padding: 16px 20px;
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+  }
+
+  .sectionContent {
+    padding: 20px;
+  }
+
+  .applicationCard {
+    padding: 16px;
+  }
+
+  .companyName {
+    font-size: 16px;
+  }
+
+  .timeline {
+    padding: 12px;
+  }
+
+  .infoLabel {
+    min-width: 70px;
+    font-size: 12px;
+  }
+
+  .infoValue {
+    font-size: 12px;
+  }
+}
+

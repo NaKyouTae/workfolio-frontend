@@ -6,19 +6,11 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { AttachmentRequest } from "./attachment";
 import {
   ApplicationStage_ApplicationStageStatus,
   applicationStage_ApplicationStageStatusFromJSON,
   applicationStage_ApplicationStageStatusToJSON,
-  Attachment_AttachmentCategory,
-  attachment_AttachmentCategoryFromJSON,
-  attachment_AttachmentCategoryToJSON,
-  Attachment_AttachmentTargetType,
-  attachment_AttachmentTargetTypeFromJSON,
-  attachment_AttachmentTargetTypeToJSON,
-  Attachment_AttachmentType,
-  attachment_AttachmentTypeFromJSON,
-  attachment_AttachmentTypeToJSON,
   TurnOver,
   TurnOverDetail,
   TurnOverRetrospective_EmploymentType,
@@ -36,19 +28,6 @@ export interface TurnOverUpsertRequest {
   turnOverRetrospective?: TurnOverUpsertRequest_TurnOverRetrospectiveRequest | undefined;
 }
 
-export interface TurnOverUpsertRequest_AttachmentRequest {
-  id?: string | undefined;
-  type?: Attachment_AttachmentType | undefined;
-  category: Attachment_AttachmentCategory;
-  url: string;
-  fileName: string;
-  fileUrl: string;
-  targetId: string;
-  targetType: Attachment_AttachmentTargetType;
-  isVisible: boolean;
-  priority: number;
-}
-
 export interface TurnOverUpsertRequest_MemoRequest {
   id?: string | undefined;
   content: string;
@@ -62,7 +41,7 @@ export interface TurnOverUpsertRequest_TurnOverGoalRequest {
   interviewQuestions: TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest[];
   checkList: TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[];
   memos: TurnOverUpsertRequest_MemoRequest[];
-  attachments: TurnOverUpsertRequest_AttachmentRequest[];
+  attachments: AttachmentRequest[];
 }
 
 export interface TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest {
@@ -87,7 +66,7 @@ export interface TurnOverUpsertRequest_TurnOverChallengeRequest {
   id?: string | undefined;
   jobApplications: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[];
   memos: TurnOverUpsertRequest_MemoRequest[];
-  attachments: TurnOverUpsertRequest_AttachmentRequest[];
+  attachments: AttachmentRequest[];
 }
 
 export interface TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest {
@@ -126,7 +105,7 @@ export interface TurnOverUpsertRequest_TurnOverRetrospectiveRequest {
   workType: string;
   employmentType: TurnOverRetrospective_EmploymentType;
   memos: TurnOverUpsertRequest_MemoRequest[];
-  attachments: TurnOverUpsertRequest_AttachmentRequest[];
+  attachments: AttachmentRequest[];
 }
 
 export interface TurnOverListResponse {
@@ -294,225 +273,6 @@ export const TurnOverUpsertRequest: MessageFns<TurnOverUpsertRequest> = {
   },
 };
 
-function createBaseTurnOverUpsertRequest_AttachmentRequest(): TurnOverUpsertRequest_AttachmentRequest {
-  return {
-    id: undefined,
-    type: undefined,
-    category: 0,
-    url: "",
-    fileName: "",
-    fileUrl: "",
-    targetId: "",
-    targetType: 0,
-    isVisible: false,
-    priority: 0,
-  };
-}
-
-export const TurnOverUpsertRequest_AttachmentRequest: MessageFns<TurnOverUpsertRequest_AttachmentRequest> = {
-  encode(message: TurnOverUpsertRequest_AttachmentRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== undefined) {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.type !== undefined) {
-      writer.uint32(16).int32(message.type);
-    }
-    if (message.category !== 0) {
-      writer.uint32(24).int32(message.category);
-    }
-    if (message.url !== "") {
-      writer.uint32(34).string(message.url);
-    }
-    if (message.fileName !== "") {
-      writer.uint32(42).string(message.fileName);
-    }
-    if (message.fileUrl !== "") {
-      writer.uint32(50).string(message.fileUrl);
-    }
-    if (message.targetId !== "") {
-      writer.uint32(58).string(message.targetId);
-    }
-    if (message.targetType !== 0) {
-      writer.uint32(64).int32(message.targetType);
-    }
-    if (message.isVisible !== false) {
-      writer.uint32(240).bool(message.isVisible);
-    }
-    if (message.priority !== 0) {
-      writer.uint32(248).uint32(message.priority);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): TurnOverUpsertRequest_AttachmentRequest {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTurnOverUpsertRequest_AttachmentRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.type = reader.int32() as any;
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.category = reader.int32() as any;
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.url = reader.string();
-          continue;
-        }
-        case 5: {
-          if (tag !== 42) {
-            break;
-          }
-
-          message.fileName = reader.string();
-          continue;
-        }
-        case 6: {
-          if (tag !== 50) {
-            break;
-          }
-
-          message.fileUrl = reader.string();
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.targetId = reader.string();
-          continue;
-        }
-        case 8: {
-          if (tag !== 64) {
-            break;
-          }
-
-          message.targetType = reader.int32() as any;
-          continue;
-        }
-        case 30: {
-          if (tag !== 240) {
-            break;
-          }
-
-          message.isVisible = reader.bool();
-          continue;
-        }
-        case 31: {
-          if (tag !== 248) {
-            break;
-          }
-
-          message.priority = reader.uint32();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): TurnOverUpsertRequest_AttachmentRequest {
-    return {
-      id: isSet(object.id) ? globalThis.String(object.id) : undefined,
-      type: isSet(object.type) ? attachment_AttachmentTypeFromJSON(object.type) : undefined,
-      category: isSet(object.category) ? attachment_AttachmentCategoryFromJSON(object.category) : 0,
-      url: isSet(object.url) ? globalThis.String(object.url) : "",
-      fileName: isSet(object.fileName) ? globalThis.String(object.fileName) : "",
-      fileUrl: isSet(object.fileUrl) ? globalThis.String(object.fileUrl) : "",
-      targetId: isSet(object.targetId) ? globalThis.String(object.targetId) : "",
-      targetType: isSet(object.targetType) ? attachment_AttachmentTargetTypeFromJSON(object.targetType) : 0,
-      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
-      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
-    };
-  },
-
-  toJSON(message: TurnOverUpsertRequest_AttachmentRequest): unknown {
-    const obj: any = {};
-    if (message.id !== undefined) {
-      obj.id = message.id;
-    }
-    if (message.type !== undefined) {
-      obj.type = attachment_AttachmentTypeToJSON(message.type);
-    }
-    if (message.category !== 0) {
-      obj.category = attachment_AttachmentCategoryToJSON(message.category);
-    }
-    if (message.url !== "") {
-      obj.url = message.url;
-    }
-    if (message.fileName !== "") {
-      obj.fileName = message.fileName;
-    }
-    if (message.fileUrl !== "") {
-      obj.fileUrl = message.fileUrl;
-    }
-    if (message.targetId !== "") {
-      obj.targetId = message.targetId;
-    }
-    if (message.targetType !== 0) {
-      obj.targetType = attachment_AttachmentTargetTypeToJSON(message.targetType);
-    }
-    if (message.isVisible !== false) {
-      obj.isVisible = message.isVisible;
-    }
-    if (message.priority !== 0) {
-      obj.priority = Math.round(message.priority);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<TurnOverUpsertRequest_AttachmentRequest>, I>>(
-    base?: I,
-  ): TurnOverUpsertRequest_AttachmentRequest {
-    return TurnOverUpsertRequest_AttachmentRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<TurnOverUpsertRequest_AttachmentRequest>, I>>(
-    object: I,
-  ): TurnOverUpsertRequest_AttachmentRequest {
-    const message = createBaseTurnOverUpsertRequest_AttachmentRequest();
-    message.id = object.id ?? undefined;
-    message.type = object.type ?? undefined;
-    message.category = object.category ?? 0;
-    message.url = object.url ?? "";
-    message.fileName = object.fileName ?? "";
-    message.fileUrl = object.fileUrl ?? "";
-    message.targetId = object.targetId ?? "";
-    message.targetType = object.targetType ?? 0;
-    message.isVisible = object.isVisible ?? false;
-    message.priority = object.priority ?? 0;
-    return message;
-  },
-};
-
 function createBaseTurnOverUpsertRequest_MemoRequest(): TurnOverUpsertRequest_MemoRequest {
   return { id: undefined, content: "" };
 }
@@ -630,7 +390,7 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest: MessageFns<TurnOverUpser
       TurnOverUpsertRequest_MemoRequest.encode(v!, writer.uint32(58).fork()).join();
     }
     for (const v of message.attachments) {
-      TurnOverUpsertRequest_AttachmentRequest.encode(v!, writer.uint32(66).fork()).join();
+      AttachmentRequest.encode(v!, writer.uint32(66).fork()).join();
     }
     return writer;
   },
@@ -709,7 +469,7 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest: MessageFns<TurnOverUpser
             break;
           }
 
-          message.attachments.push(TurnOverUpsertRequest_AttachmentRequest.decode(reader, reader.uint32()));
+          message.attachments.push(AttachmentRequest.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -743,7 +503,7 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest: MessageFns<TurnOverUpser
         ? object.memos.map((e: any) => TurnOverUpsertRequest_MemoRequest.fromJSON(e))
         : [],
       attachments: globalThis.Array.isArray(object?.attachments)
-        ? object.attachments.map((e: any) => TurnOverUpsertRequest_AttachmentRequest.fromJSON(e))
+        ? object.attachments.map((e: any) => AttachmentRequest.fromJSON(e))
         : [],
     };
   },
@@ -778,7 +538,7 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest: MessageFns<TurnOverUpser
       obj.memos = message.memos.map((e) => TurnOverUpsertRequest_MemoRequest.toJSON(e));
     }
     if (message.attachments?.length) {
-      obj.attachments = message.attachments.map((e) => TurnOverUpsertRequest_AttachmentRequest.toJSON(e));
+      obj.attachments = message.attachments.map((e) => AttachmentRequest.toJSON(e));
     }
     return obj;
   },
@@ -806,7 +566,7 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest: MessageFns<TurnOverUpser
     message.checkList =
       object.checkList?.map((e) => TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest.fromPartial(e)) || [];
     message.memos = object.memos?.map((e) => TurnOverUpsertRequest_MemoRequest.fromPartial(e)) || [];
-    message.attachments = object.attachments?.map((e) => TurnOverUpsertRequest_AttachmentRequest.fromPartial(e)) || [];
+    message.attachments = object.attachments?.map((e) => AttachmentRequest.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1144,7 +904,7 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest: MessageFns<
       TurnOverUpsertRequest_MemoRequest.encode(v!, writer.uint32(26).fork()).join();
     }
     for (const v of message.attachments) {
-      TurnOverUpsertRequest_AttachmentRequest.encode(v!, writer.uint32(34).fork()).join();
+      AttachmentRequest.encode(v!, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -1187,7 +947,7 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest: MessageFns<
             break;
           }
 
-          message.attachments.push(TurnOverUpsertRequest_AttachmentRequest.decode(reader, reader.uint32()));
+          message.attachments.push(AttachmentRequest.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -1211,7 +971,7 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest: MessageFns<
         ? object.memos.map((e: any) => TurnOverUpsertRequest_MemoRequest.fromJSON(e))
         : [],
       attachments: globalThis.Array.isArray(object?.attachments)
-        ? object.attachments.map((e: any) => TurnOverUpsertRequest_AttachmentRequest.fromJSON(e))
+        ? object.attachments.map((e: any) => AttachmentRequest.fromJSON(e))
         : [],
     };
   },
@@ -1230,7 +990,7 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest: MessageFns<
       obj.memos = message.memos.map((e) => TurnOverUpsertRequest_MemoRequest.toJSON(e));
     }
     if (message.attachments?.length) {
-      obj.attachments = message.attachments.map((e) => TurnOverUpsertRequest_AttachmentRequest.toJSON(e));
+      obj.attachments = message.attachments.map((e) => AttachmentRequest.toJSON(e));
     }
     return obj;
   },
@@ -1250,7 +1010,7 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest: MessageFns<
         TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest.fromPartial(e)
       ) || [];
     message.memos = object.memos?.map((e) => TurnOverUpsertRequest_MemoRequest.fromPartial(e)) || [];
-    message.attachments = object.attachments?.map((e) => TurnOverUpsertRequest_AttachmentRequest.fromPartial(e)) || [];
+    message.attachments = object.attachments?.map((e) => AttachmentRequest.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1717,7 +1477,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
       TurnOverUpsertRequest_MemoRequest.encode(v!, writer.uint32(114).fork()).join();
     }
     for (const v of message.attachments) {
-      TurnOverUpsertRequest_AttachmentRequest.encode(v!, writer.uint32(122).fork()).join();
+      AttachmentRequest.encode(v!, writer.uint32(122).fork()).join();
     }
     return writer;
   },
@@ -1846,7 +1606,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
             break;
           }
 
-          message.attachments.push(TurnOverUpsertRequest_AttachmentRequest.decode(reader, reader.uint32()));
+          message.attachments.push(AttachmentRequest.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -1879,7 +1639,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
         ? object.memos.map((e: any) => TurnOverUpsertRequest_MemoRequest.fromJSON(e))
         : [],
       attachments: globalThis.Array.isArray(object?.attachments)
-        ? object.attachments.map((e: any) => TurnOverUpsertRequest_AttachmentRequest.fromJSON(e))
+        ? object.attachments.map((e: any) => AttachmentRequest.fromJSON(e))
         : [],
     };
   },
@@ -1929,7 +1689,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
       obj.memos = message.memos.map((e) => TurnOverUpsertRequest_MemoRequest.toJSON(e));
     }
     if (message.attachments?.length) {
-      obj.attachments = message.attachments.map((e) => TurnOverUpsertRequest_AttachmentRequest.toJSON(e));
+      obj.attachments = message.attachments.map((e) => AttachmentRequest.toJSON(e));
     }
     return obj;
   },
@@ -1957,7 +1717,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
     message.workType = object.workType ?? "";
     message.employmentType = object.employmentType ?? 0;
     message.memos = object.memos?.map((e) => TurnOverUpsertRequest_MemoRequest.fromPartial(e)) || [];
-    message.attachments = object.attachments?.map((e) => TurnOverUpsertRequest_AttachmentRequest.fromPartial(e)) || [];
+    message.attachments = object.attachments?.map((e) => AttachmentRequest.fromPartial(e)) || [];
     return message;
   },
 };

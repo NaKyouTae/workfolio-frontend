@@ -1,15 +1,15 @@
 import React from 'react';
 import { TurnOverGoalDetail } from '@/generated/common';
+import EmptyState from '@/components/ui/EmptyState';
 import styles from './TurnOverGoalView.module.css';
+import MemoView from './common/MemoView';
+import AttachmentView from './common/AttachmentView';
 
 interface TurnOverGoalViewProps {
   turnOverGoal: TurnOverGoalDetail | null;
 }
 
 const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => {
-  console.log('=================');
-  console.log('turnOverGoal', turnOverGoal);
-  console.log('=================');
   if (!turnOverGoal) {
     return (
       <div className={styles.emptyState}>
@@ -21,7 +21,7 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
   return (
     <div className={styles.container}>
       {/* 이직 방향 설정 */}
-      <section className={styles.section}>
+      <div className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
             이직 방향 설정
@@ -42,11 +42,13 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* 공통 자기소개서 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>공통 자기소개서</h2>
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>공통 자기소개서</h2>
+        </div>
         <div className={styles.sectionContent}>
           {turnOverGoal.selfIntroductions && turnOverGoal.selfIntroductions.length > 0 ? (
             turnOverGoal.selfIntroductions.map((item, index) => (
@@ -64,16 +66,16 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
               </div>
             ))
           ) : (
-            <div className={styles.emptyContent}>
-              <p>등록된 자기소개서가 없습니다.</p>
-            </div>
+            <EmptyState text="등록된 자기소개서가 없습니다." />
           )}
         </div>
-      </section>
+      </div>
 
       {/* 면접 예상 질문 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>면접 예상 질문</h2>
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>면접 예상 질문</h2>
+        </div>
         <div className={styles.sectionContent}>
           {turnOverGoal.interviewQuestions && turnOverGoal.interviewQuestions.length > 0 ? (
             turnOverGoal.interviewQuestions.map((item, index) => (
@@ -91,27 +93,19 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
               </div>
             ))
           ) : (
-            <div className={styles.emptyContent}>
-              <p>등록된 면접 예상 질문이 없습니다.</p>
-            </div>
+            <EmptyState text="등록된 면접 예상 질문이 없습니다." />
           )}
         </div>
-      </section>
+      </div>
 
       {/* 메모 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>메모</h2>
-        <div className={styles.sectionContent}>
-          <div className={styles.memoContent}>
-            {/* 메모는 TurnOverGoal에 직접 포함되지 않은 것 같아 나중에 추가 */}
-            <p className={styles.emptyText}>등록된 메모가 없습니다.</p>
-          </div>
-        </div>
-      </section>
+      <MemoView memos={turnOverGoal.memos || []} />
 
       {/* 체크리스트 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>체크리스트</h2>
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>체크리스트</h2>
+        </div>
         <div className={styles.sectionContent}>
           {turnOverGoal.checkList && turnOverGoal.checkList.length > 0 ? (
             <div className={styles.checkList}>
@@ -130,25 +124,13 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
               ))}
             </div>
           ) : (
-            <div className={styles.emptyContent}>
-              <p>등록된 체크리스트가 없습니다.</p>
-            </div>
+            <EmptyState text="등록된 체크리스트가 없습니다." />
           )}
         </div>
-      </section>
+      </div>
 
       {/* 첨부 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>첨부</h2>
-        <div className={styles.sectionContent}>
-          <div className={styles.attachments}>
-            {/* 첨부파일도 나중에 추가 */}
-            <div className={styles.emptyContent}>
-              <p>등록된 첨부파일이 없습니다.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AttachmentView attachments={turnOverGoal.attachments || []} />
     </div>
   );
 };

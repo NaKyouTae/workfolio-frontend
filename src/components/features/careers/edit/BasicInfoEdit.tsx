@@ -11,12 +11,12 @@ interface BasicInfoEditProps {
   gender: Resume_Gender | undefined;
   phone: string;
   email: string;
-  job: string;
+  position: string;
   description: string;
   onNameChange: (name: string) => void;
   onBirthDateChange: (birthDate: number) => void;
   onGenderChange: (gender: Resume_Gender | undefined) => void;
-  onJobChange: (job: string) => void;
+  onPositionChange: (position: string) => void;
   onPhoneChange: (phone: string) => void;
   onEmailChange: (email: string) => void;
   onDescriptionChange: (description: string) => void;
@@ -57,13 +57,13 @@ const formatPhoneNumber = (phone?: string): string => {
  */
 const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   name,
-  job,
+  position,
   birthDate,
   gender,
   phone,
   email,
   description,
-  onJobChange,
+  onPositionChange,
   onDescriptionChange,
 }) => {
   return (
@@ -87,8 +87,8 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             type="text"
             label="직무"
             placeholder="백엔드 개발자"
-            value={job}
-            onChange={(e) => onJobChange(e.target.value)}
+            value={position}
+            onChange={(e) => onPositionChange(e.target.value)}
           />
         </div>
       </div>

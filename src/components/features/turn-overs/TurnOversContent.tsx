@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import TurnOversContentView from './content/TurnOverContentView';
-import TurnOversContentEdit from './content/TurnOverContentEdit';
 import { TurnOverDetail } from '@/generated/common';
 import TurnOversIntegrationPage from './content/TurnOversIntegrationPage';
+import TurnOverContentEdit from './content/TurnOverContentEdit';
 
 type ViewMode = 'home' | 'view' | 'edit';
 
 interface TurnOversContentProps {
   selectedTurnOver: TurnOverDetail | null;
+  onDuplicate?: () => void;
+  onDelete?: () => void;
 }
 
-const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver }) => {
+const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver, onDuplicate, onDelete }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('home');
 
   // selectedTurnOver 변경 시 모드 자동 업데이트
@@ -26,19 +28,34 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver 
     setViewMode(mode);
   };
 
+  const handleDuplicate = () => {
+    if (onDuplicate) {
+      onDuplicate();
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete();
+    }
+  };
+
   return (
     <div style={{ width: '100%' }}>
       {viewMode === 'home' && <TurnOversIntegrationPage onSelectTurnOver={() => handleModeChange('view')} />}
       {viewMode === 'view' && selectedTurnOver && (
         <TurnOversContentView 
-          selectedTurnOverId={selectedTurnOver.id} 
+          selectedTurnOver={selectedTurnOver} 
           onEdit={() => handleModeChange('edit')}
+          onDuplicate={handleDuplicate}
+          onDelete={handleDelete}
         />
       )}
       {viewMode === 'edit' && selectedTurnOver && (
-        <TurnOversContentEdit 
-          selectedTurnOver={selectedTurnOver}
+        <TurnOverContentEdit 
+          selectedTurnOverId={selectedTurnOver.id}
           onCancel={() => handleModeChange('view')}
+          onSave={() => handleModeChange('view')}
         />
       )}
     </div>
