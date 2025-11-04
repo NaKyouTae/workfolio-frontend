@@ -1,0 +1,288 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+/* Section */
+.section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.helpIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: #e5e7eb;
+  color: #6b7280;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: help;
+}
+
+.sectionContent {
+  padding: 24px;
+}
+
+/* 이직 방향 설정 */
+.field {
+  margin-bottom: 20px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.textContent {
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Q&A 아이템 (자기소개서, 면접 질문) */
+.qaItem {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.qaItem:last-child {
+  margin-bottom: 0;
+}
+
+.qaHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.qaNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #f59e0b;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.qaQuestion {
+  flex: 1;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.qaContent {
+  padding: 16px;
+}
+
+.question {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.answer {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.7;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 체크리스트 */
+.checkList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fafafa;
+  transition: all 0.15s ease;
+}
+
+.checkItem:hover {
+  background: #f5f5f5;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkLabel {
+  flex: 1;
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+/* 메모 */
+.memoContent {
+  min-height: 100px;
+  padding: 16px;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 첨부파일 */
+.attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fafafa;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.attachmentItem:hover {
+  background: #f5f5f5;
+  border-color: #d1d5db;
+}
+
+.attachmentIcon {
+  width: 24px;
+  height: 24px;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.attachmentInfo {
+  flex: 1;
+}
+
+.attachmentName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.attachmentSize {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Empty States */
+.emptyContent {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.emptyText {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+  }
+
+  .sectionHeader {
+    padding: 16px 20px;
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+  }
+
+  .sectionContent {
+    padding: 20px;
+  }
+
+  .qaHeader {
+    padding: 10px 12px;
+  }
+
+  .qaContent {
+    padding: 12px;
+  }
+
+  .question,
+  .answer,
+  .textContent {
+    font-size: 13px;
+  }
+}
+

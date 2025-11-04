@@ -44,7 +44,7 @@ export interface ResumeCreateRequest {
   email: string;
   birthDate?: number | undefined;
   gender?: Resume_Gender | undefined;
-  job: string;
+  position: string;
   isPublic?: boolean | undefined;
   isDefault?: boolean | undefined;
   description: string;
@@ -58,7 +58,7 @@ export interface ResumeUpdateRequest {
   email: string;
   birthDate?: number | undefined;
   gender?: Resume_Gender | undefined;
-  job: string;
+  position: string;
   isPublic?: boolean | undefined;
   isDefault?: boolean | undefined;
   description: string;
@@ -84,8 +84,8 @@ export interface ResumeUpdateRequest_CareerRequest_CareerItem {
   position: string;
   employmentType?: Career_EmploymentType | undefined;
   department: string;
-  jobGrade: string;
-  job: string;
+  jobTitle: string;
+  rank: string;
   salary: number;
   description: string;
   isVisible: boolean;
@@ -188,7 +188,7 @@ function createBaseResumeCreateRequest(): ResumeCreateRequest {
     email: "",
     birthDate: undefined,
     gender: undefined,
-    job: "",
+    position: "",
     isPublic: undefined,
     isDefault: undefined,
     description: "",
@@ -215,8 +215,8 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
     if (message.gender !== undefined) {
       writer.uint32(56).int32(message.gender);
     }
-    if (message.job !== "") {
-      writer.uint32(66).string(message.job);
+    if (message.position !== "") {
+      writer.uint32(66).string(message.position);
     }
     if (message.isPublic !== undefined) {
       writer.uint32(72).bool(message.isPublic);
@@ -290,7 +290,7 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
             break;
           }
 
-          message.job = reader.string();
+          message.position = reader.string();
           continue;
         }
         case 9: {
@@ -334,7 +334,7 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
       email: isSet(object.email) ? globalThis.String(object.email) : "",
       birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : undefined,
       gender: isSet(object.gender) ? resume_GenderFromJSON(object.gender) : undefined,
-      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      position: isSet(object.position) ? globalThis.String(object.position) : "",
       isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : undefined,
       isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : undefined,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
@@ -361,8 +361,8 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
     if (message.gender !== undefined) {
       obj.gender = resume_GenderToJSON(message.gender);
     }
-    if (message.job !== "") {
-      obj.job = message.job;
+    if (message.position !== "") {
+      obj.position = message.position;
     }
     if (message.isPublic !== undefined) {
       obj.isPublic = message.isPublic;
@@ -387,7 +387,7 @@ export const ResumeCreateRequest: MessageFns<ResumeCreateRequest> = {
     message.email = object.email ?? "";
     message.birthDate = object.birthDate ?? undefined;
     message.gender = object.gender ?? undefined;
-    message.job = object.job ?? "";
+    message.position = object.position ?? "";
     message.isPublic = object.isPublic ?? undefined;
     message.isDefault = object.isDefault ?? undefined;
     message.description = object.description ?? "";
@@ -404,7 +404,7 @@ function createBaseResumeUpdateRequest(): ResumeUpdateRequest {
     email: "",
     birthDate: undefined,
     gender: undefined,
-    job: "",
+    position: "",
     isPublic: undefined,
     isDefault: undefined,
     description: "",
@@ -440,8 +440,8 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     if (message.gender !== undefined) {
       writer.uint32(56).int32(message.gender);
     }
-    if (message.job !== "") {
-      writer.uint32(66).string(message.job);
+    if (message.position !== "") {
+      writer.uint32(66).string(message.position);
     }
     if (message.isPublic !== undefined) {
       writer.uint32(72).bool(message.isPublic);
@@ -541,7 +541,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
             break;
           }
 
-          message.job = reader.string();
+          message.position = reader.string();
           continue;
         }
         case 9: {
@@ -634,7 +634,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
       email: isSet(object.email) ? globalThis.String(object.email) : "",
       birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : undefined,
       gender: isSet(object.gender) ? resume_GenderFromJSON(object.gender) : undefined,
-      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      position: isSet(object.position) ? globalThis.String(object.position) : "",
       isPublic: isSet(object.isPublic) ? globalThis.Boolean(object.isPublic) : undefined,
       isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : undefined,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
@@ -682,8 +682,8 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     if (message.gender !== undefined) {
       obj.gender = resume_GenderToJSON(message.gender);
     }
-    if (message.job !== "") {
-      obj.job = message.job;
+    if (message.position !== "") {
+      obj.position = message.position;
     }
     if (message.isPublic !== undefined) {
       obj.isPublic = message.isPublic;
@@ -727,7 +727,7 @@ export const ResumeUpdateRequest: MessageFns<ResumeUpdateRequest> = {
     message.email = object.email ?? "";
     message.birthDate = object.birthDate ?? undefined;
     message.gender = object.gender ?? undefined;
-    message.job = object.job ?? "";
+    message.position = object.position ?? "";
     message.isPublic = object.isPublic ?? undefined;
     message.isDefault = object.isDefault ?? undefined;
     message.description = object.description ?? "";
@@ -835,8 +835,8 @@ function createBaseResumeUpdateRequest_CareerRequest_CareerItem(): ResumeUpdateR
     position: "",
     employmentType: undefined,
     department: "",
-    jobGrade: "",
-    job: "",
+    jobTitle: "",
+    rank: "",
     salary: 0,
     description: "",
     isVisible: false,
@@ -873,11 +873,11 @@ export const ResumeUpdateRequest_CareerRequest_CareerItem: MessageFns<ResumeUpda
     if (message.department !== "") {
       writer.uint32(66).string(message.department);
     }
-    if (message.jobGrade !== "") {
-      writer.uint32(74).string(message.jobGrade);
+    if (message.jobTitle !== "") {
+      writer.uint32(74).string(message.jobTitle);
     }
-    if (message.job !== "") {
-      writer.uint32(82).string(message.job);
+    if (message.rank !== "") {
+      writer.uint32(82).string(message.rank);
     }
     if (message.salary !== 0) {
       writer.uint32(88).uint32(message.salary);
@@ -970,7 +970,7 @@ export const ResumeUpdateRequest_CareerRequest_CareerItem: MessageFns<ResumeUpda
             break;
           }
 
-          message.jobGrade = reader.string();
+          message.jobTitle = reader.string();
           continue;
         }
         case 10: {
@@ -978,7 +978,7 @@ export const ResumeUpdateRequest_CareerRequest_CareerItem: MessageFns<ResumeUpda
             break;
           }
 
-          message.job = reader.string();
+          message.rank = reader.string();
           continue;
         }
         case 11: {
@@ -1032,8 +1032,8 @@ export const ResumeUpdateRequest_CareerRequest_CareerItem: MessageFns<ResumeUpda
       position: isSet(object.position) ? globalThis.String(object.position) : "",
       employmentType: isSet(object.employmentType) ? career_EmploymentTypeFromJSON(object.employmentType) : undefined,
       department: isSet(object.department) ? globalThis.String(object.department) : "",
-      jobGrade: isSet(object.jobGrade) ? globalThis.String(object.jobGrade) : "",
-      job: isSet(object.job) ? globalThis.String(object.job) : "",
+      jobTitle: isSet(object.jobTitle) ? globalThis.String(object.jobTitle) : "",
+      rank: isSet(object.rank) ? globalThis.String(object.rank) : "",
       salary: isSet(object.salary) ? globalThis.Number(object.salary) : 0,
       description: isSet(object.description) ? globalThis.String(object.description) : "",
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
@@ -1067,11 +1067,11 @@ export const ResumeUpdateRequest_CareerRequest_CareerItem: MessageFns<ResumeUpda
     if (message.department !== "") {
       obj.department = message.department;
     }
-    if (message.jobGrade !== "") {
-      obj.jobGrade = message.jobGrade;
+    if (message.jobTitle !== "") {
+      obj.jobTitle = message.jobTitle;
     }
-    if (message.job !== "") {
-      obj.job = message.job;
+    if (message.rank !== "") {
+      obj.rank = message.rank;
     }
     if (message.salary !== 0) {
       obj.salary = Math.round(message.salary);
@@ -1105,8 +1105,8 @@ export const ResumeUpdateRequest_CareerRequest_CareerItem: MessageFns<ResumeUpda
     message.position = object.position ?? "";
     message.employmentType = object.employmentType ?? undefined;
     message.department = object.department ?? "";
-    message.jobGrade = object.jobGrade ?? "";
-    message.job = object.job ?? "";
+    message.jobTitle = object.jobTitle ?? "";
+    message.rank = object.rank ?? "";
     message.salary = object.salary ?? 0;
     message.description = object.description ?? "";
     message.isVisible = object.isVisible ?? false;

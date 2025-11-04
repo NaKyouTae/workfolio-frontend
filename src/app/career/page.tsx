@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Header from "@/components/layouts/Header";
-import CareerPage from '@/components/features/career/CareerPage';
+import CareerPage from '@/components/features/careers/CareerPage';
 
 const Career = () => {
   return (
