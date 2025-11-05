@@ -1,0 +1,64 @@
+/* View Component Common Styles */
+
+/* Container */
+.view-container {
+  margin-bottom: 24px;
+}
+
+/* Title */
+.view-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+/* List Container */
+.view-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Item */
+.view-item {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  background: white;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.view-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Item Content */
+.view-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .view-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+  }
+
+  .view-list-container {
+    gap: 12px;
+  }
+
+  .view-item {
+    padding: 16px;
+  }
+}
+

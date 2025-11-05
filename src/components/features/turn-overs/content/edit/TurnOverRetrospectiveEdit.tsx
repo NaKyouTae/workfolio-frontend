@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './TurnOverRetrospectiveEdit.module.css';
 import { DateUtil } from '@/utils/DateUtil';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from '@/components/features/turn-overs/content/edit/common/MemoEdit';
 import AttachmentEdit from '@/components/features/common/AttachmentEdit';
-import EditFloatingActions, { FloatingNavigationItem } from '../EditFloatingActions';
+import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import { TurnOverRetrospective_EmploymentType } from '@/generated/common';
 
 interface TurnOverRetrospectiveEditProps {
@@ -19,7 +19,14 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
   onSave,
   onCancel,
 }) => {
-  const [activeSection, setActiveSection] = useState<string>('basic');
+  const [activeSection, setActiveSection] = useState<string>('finalChoice');
+  
+  // 각 섹션에 대한 ref
+  const finalChoiceRef = useRef<HTMLDivElement>(null);
+  const negotiationRef = useRef<HTMLDivElement>(null);
+  const satisfactionRef = useRef<HTMLDivElement>(null);
+  const memoRef = useRef<HTMLDivElement>(null);
+  const attachmentRef = useRef<HTMLDivElement>(null);
   const [companyName, setCompanyName] = useState('');
   const [position, setPosition] = useState('');
   const [reason, setReason] = useState('');
@@ -36,25 +43,54 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
   const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
 
   // 네비게이션 항목 정의 (각 탭에 따라 다른 네비게이션 표시 가능)
+  // 섹션으로 스크롤하는 함수
+  const scrollToSection = (sectionId: string) => {
+    const refMap: { [key: string]: React.RefObject<HTMLDivElement | null> } = {
+      finalChoice: finalChoiceRef,
+      negotiation: negotiationRef,
+      satisfaction: satisfactionRef,
+      memo: memoRef,
+      attachment: attachmentRef,
+    };
+
+    const ref = refMap[sectionId];
+    if (ref?.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(sectionId);
+    }
+  };
+
   const getNavigationItems = (): FloatingNavigationItem[] => {
     return [
       {
-        id: 'basic',
-        label: '기본 정보',
-        isActive: activeSection === 'basic',
-        onClick: () => setActiveSection('basic'),
+        id: 'finalChoice',
+        label: '최종 선택',
+        isActive: activeSection === 'finalChoice',
+        onClick: () => scrollToSection('finalChoice'),
+      },
+      {
+        id: 'negotiation',
+        label: '처우 협의',
+        isActive: activeSection === 'negotiation',
+        onClick: () => scrollToSection('negotiation'),
+      },
+      {
+        id: 'satisfaction',
+        label: '만족도 평가',
+        isActive: activeSection === 'satisfaction',
+        onClick: () => scrollToSection('satisfaction'),
       },
       {
         id: 'memo',
         label: '메모',
         isActive: activeSection === 'memo',
-        onClick: () => setActiveSection('memo'),
+        onClick: () => scrollToSection('memo'),
       },
       {
         id: 'attachment',
         label: '첨부',
         isActive: activeSection === 'attachment',
-        onClick: () => setActiveSection('attachment'),
+        onClick: () => scrollToSection('attachment'),
       },
     ];
   };
@@ -109,8 +145,9 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
 
   return (
     <div className={styles.container}>
+      <div className={styles.contentInner}>
       {/* 최종 선택 */}
-      <div className={styles.section}>
+      <div ref={finalChoiceRef} className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>최종 선택</h2>
         </div>
@@ -147,7 +184,7 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
       </div>
 
       {/* 처우 협의 */}
-      <div className={styles.section}>
+      <div ref={negotiationRef} className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>자우 협의</h2>
         </div>
@@ -244,7 +281,7 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
       </div>
 
       {/* 만족도 평가 */}
-      <div className={styles.section}>
+      <div ref={satisfactionRef} className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>만족도 평가</h2>
         </div>
@@ -280,13 +317,18 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
       </div>
 
       {/* 메모 */}
-      <MemoEdit memos={memos} onMemosChange={setMemos} />
+      <div ref={memoRef}>
+        <MemoEdit memos={memos} onMemosChange={setMemos} />
+      </div>
 
       {/* 첨부 */}
-      <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+      <div ref={attachmentRef}>
+        <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+      </div>
+      </div>
 
       {/* Floating Action Buttons */}
-      <EditFloatingActions 
+      <TurnOverFloatingActions 
         navigationItems={getNavigationItems()}
         onSave={handleSave}
         onCancel={() => onCancel?.()}

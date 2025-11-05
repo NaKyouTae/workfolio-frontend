@@ -1,0 +1,223 @@
+/* ===== Edit Component Common Styles ===== */
+
+/* 섹션 공통 */
+.edit-section {
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px dashed darkgray;
+}
+
+.edit-section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.edit-section-title-counter {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  width: 60%;
+  flex-shrink: 0;
+}
+
+.edit-add-button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 40%;
+  flex-shrink: 0;
+}
+
+.edit-add-button {
+  background: none;
+  border: none;
+  color: #2196f3;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 0;
+  text-decoration: none;
+  white-space: nowrap;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.edit-add-button:hover {
+  text-decoration: underline;
+}
+
+/* 카드 래퍼 - card와 버튼 영역을 포함 */
+.edit-card-wrapper {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* 카드 */
+.edit-card {
+  padding: 10px;
+  border-radius: 8px;
+  position: relative;
+  border: 1.5px dashed #E5E5E5;
+  flex: 1;
+  width: 95%;
+}
+
+/* 그리드 레이아웃 */
+.edit-grid-container-1 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 16px 12px;
+  background-color: #fff;
+}
+
+.edit-grid-container-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 12px;
+  background-color: #fff;
+}
+
+.edit-grid-container-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 12px;
+  background-color: #fff;
+}
+
+/* 폼 필드 */
+.edit-form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-form-field-span2 {
+  grid-column: span 2;
+}
+
+.edit-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  box-sizing: border-box;
+  background-color: #fff;
+  height: 32px;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #2196f3;
+}
+
+.edit-textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  box-sizing: border-box;
+  background-color: #fff;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.edit-textarea:focus {
+  outline: none;
+  border-color: #2196f3;
+}
+
+/* 체크박스 */
+.edit-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.edit-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.edit-checkbox-text {
+  font-size: 13px;
+  color: #333;
+}
+
+/* 라디오 버튼 */
+.edit-radio-group {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.edit-radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+}
+
+.edit-radio-label input[type="radio"] {
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+/* 날짜 범위 */
+.edit-date-range {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-date-separator {
+  color: #666;
+}
+
+/* Empty State */
+.edit-empty-content {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .edit-grid-container-2,
+  .edit-grid-container-3 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .edit-section-title-counter {
+    font-size: 14px;
+    width: 50%;
+  }
+
+  .edit-add-button-container {
+    width: 50%;
+  }
+
+  .edit-card {
+    width: 100%;
+  }
+}
+

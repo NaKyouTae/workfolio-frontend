@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './TurnOverChallengeEdit.module.css';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from '@/components/features/turn-overs/content/edit/common/MemoEdit';
 import AttachmentEdit from '@/components/features/common/AttachmentEdit';
-import EditFloatingActions, { FloatingNavigationItem } from '../EditFloatingActions';
+import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import JobApplicationEdit from './common/JobApplicationEdit';
 
 interface TurnOverChallengeEditProps {
@@ -15,10 +15,15 @@ interface TurnOverChallengeEditProps {
 
 
 const TurnOverChallengeEdit: React.FC<TurnOverChallengeEditProps> = ({ turnOverRequest, onSave, onCancel }) => {
-  const [activeSection, setActiveSection] = useState<string>('basic');
+  const [activeSection, setActiveSection] = useState<string>('jobApplication');
   const [jobApplications, setJobApplications] = useState<TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[]>([]);
   const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
   const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
+
+  // 각 섹션에 대한 ref
+  const jobApplicationRef = useRef<HTMLDivElement>(null);
+  const memoRef = useRef<HTMLDivElement>(null);
+  const attachmentRef = useRef<HTMLDivElement>(null);
 
   // turnOverChallenge가 변경될 때마다 state 업데이트
   useEffect(() => {
@@ -29,26 +34,41 @@ const TurnOverChallengeEdit: React.FC<TurnOverChallengeEditProps> = ({ turnOverR
     }
   }, [turnOverRequest]);
 
-  // 네비게이션 항목 정의 (각 탭에 따라 다른 네비게이션 표시 가능)
+  // 섹션으로 스크롤하는 함수
+  const scrollToSection = (sectionId: string) => {
+    const refMap: { [key: string]: React.RefObject<HTMLDivElement | null> } = {
+      jobApplication: jobApplicationRef,
+      memo: memoRef,
+      attachment: attachmentRef,
+    };
+
+    const ref = refMap[sectionId];
+    if (ref?.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(sectionId);
+    }
+  };
+
+  // 네비게이션 항목 정의
   const getNavigationItems = (): FloatingNavigationItem[] => {
     return [
       {
-        id: 'basic',
-        label: '기본 정보',
-        isActive: activeSection === 'basic',
-        onClick: () => setActiveSection('basic'),
+        id: 'jobApplication',
+        label: '지원 기록',
+        isActive: activeSection === 'jobApplication',
+        onClick: () => scrollToSection('jobApplication'),
       },
       {
         id: 'memo',
         label: '메모',
         isActive: activeSection === 'memo',
-        onClick: () => setActiveSection('memo'),
+        onClick: () => scrollToSection('memo'),
       },
       {
         id: 'attachment',
         label: '첨부',
         isActive: activeSection === 'attachment',
-        onClick: () => setActiveSection('attachment'),
+        onClick: () => scrollToSection('attachment'),
       },
     ];
   };
@@ -73,19 +93,27 @@ const TurnOverChallengeEdit: React.FC<TurnOverChallengeEditProps> = ({ turnOverR
 
   return (
     <div className={styles.container}>
+      <div className={styles.contentInner}>
       {/* 지원 기록 (채용 절차 포함) */}
-      <JobApplicationEdit
-        jobApplications={jobApplications}
-        onUpdate={setJobApplications}
-      />
+      <div ref={jobApplicationRef}>
+        <JobApplicationEdit
+          jobApplications={jobApplications}
+          onUpdate={setJobApplications}
+        />
+      </div>
 
       {/* 메모 */}
-      <MemoEdit memos={memos} onMemosChange={setMemos} />
+      <div ref={memoRef}>
+        <MemoEdit memos={memos} onMemosChange={setMemos} />
+      </div>
 
       {/* 첨부 */}
-      <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+      <div ref={attachmentRef}>
+        <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+      </div>
+      </div>
 
-      <EditFloatingActions 
+      <TurnOverFloatingActions 
         navigationItems={getNavigationItems()}
         onSave={handleSave}
         onCancel={() => onCancel?.()}

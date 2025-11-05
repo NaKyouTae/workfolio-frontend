@@ -1,15 +1,27 @@
-import React from 'react';
-import { TurnOverRetrospectiveDetail, TurnOverRetrospectiveDetail_EmploymentType } from '@/generated/common';
-import DateUtil from '@/utils/DateUtil';
+import React, { useState, useRef } from 'react';
+import { TurnOverRetrospectiveDetail } from '@/generated/common';
 import styles from './TurnOverRetrospectiveView.module.css';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/features/common/AttachmentView';
+import FinalChoiceView from './common/FinalChoiceView';
+import NegotiationView from './common/NegotiationView';
+import SatisfactionView from './common/SatisfactionView';
+import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
 
 interface TurnOverRetrospectiveViewProps {
   turnOverRetrospective: TurnOverRetrospectiveDetail | null;
 }
 
 const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ turnOverRetrospective }) => {
+  const [activeSection, setActiveSection] = useState<string>('finalChoice');
+  
+  // 각 섹션에 대한 ref
+  const finalChoiceRef = useRef<HTMLDivElement>(null);
+  const negotiationRef = useRef<HTMLDivElement>(null);
+  const satisfactionRef = useRef<HTMLDivElement>(null);
+  const memoRef = useRef<HTMLDivElement>(null);
+  const attachmentRef = useRef<HTMLDivElement>(null);
+
   if (!turnOverRetrospective) {
     return (
       <div className={styles.emptyState}>
@@ -18,163 +30,105 @@ const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ t
     );
   }
 
-  const getEmploymentTypeLabel = (type?: TurnOverRetrospectiveDetail_EmploymentType) => {
-    switch (type) {
-      case TurnOverRetrospectiveDetail_EmploymentType.FULL_TIME:
-        return '정규직';
-      case TurnOverRetrospectiveDetail_EmploymentType.CONTRACT:
-        return '계약직';
-      case TurnOverRetrospectiveDetail_EmploymentType.FREELANCER:
-        return '프리랜서';
-      case TurnOverRetrospectiveDetail_EmploymentType.INTERN:
-        return '인턴';
-      default:
-        return '-';
+  // 섹션으로 스크롤하는 함수
+  const scrollToSection = (sectionId: string) => {
+    const refMap: { [key: string]: React.RefObject<HTMLDivElement | null> } = {
+      finalChoice: finalChoiceRef,
+      negotiation: negotiationRef,
+      satisfaction: satisfactionRef,
+      memo: memoRef,
+      attachment: attachmentRef,
+    };
+
+    const ref = refMap[sectionId];
+    if (ref?.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(sectionId);
     }
   };
 
-  const formatSalary = (amount: number) => {
-    if (amount >= 10000) {
-      const billions = Math.floor(amount / 10000);
-      const remainder = amount % 10000;
-      if (remainder === 0) {
-        return `${billions}억 원`;
-      }
-      return `${billions}억 ${remainder.toLocaleString()}만 원`;
-    }
-    return `${amount.toLocaleString()}만 원`;
-  };
-
-  const renderStars = (score: number) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <span key={index} className={index < score ? styles.starFilled : styles.starEmpty}>
-        ★
-      </span>
-    ));
+  const getNavigationItems = (): FloatingNavigationItem[] => {
+    return [
+      {
+        id: 'finalChoice',
+        label: '최종 선택',
+        isActive: activeSection === 'finalChoice',
+        onClick: () => scrollToSection('finalChoice'),
+      },
+      {
+        id: 'negotiation',
+        label: '처우 협의',
+        isActive: activeSection === 'negotiation',
+        onClick: () => scrollToSection('negotiation'),
+      },
+      {
+        id: 'satisfaction',
+        label: '만족도 평가',
+        isActive: activeSection === 'satisfaction',
+        onClick: () => scrollToSection('satisfaction'),
+      },
+      {
+        id: 'memo',
+        label: '메모',
+        isActive: activeSection === 'memo',
+        onClick: () => scrollToSection('memo'),
+      },
+      {
+        id: 'attachment',
+        label: '첨부',
+        isActive: activeSection === 'attachment',
+        onClick: () => scrollToSection('attachment'),
+      },
+    ];
   };
 
   return (
     <div className={styles.container}>
-      {/* 최종 선택 */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>최종 선택</h2>
+      <div className={styles.contentInner}>
+        {/* 최종 선택 */}
+        <div ref={finalChoiceRef}>
+          <FinalChoiceView
+            name={turnOverRetrospective.name}
+            position={turnOverRetrospective.position}
+            reason={turnOverRetrospective.reason}
+          />
         </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.companyCard}>
-            <div className={styles.companyHeader}>
-              <h3 className={styles.companyName}>{turnOverRetrospective.name}</h3>
-              <span className={styles.positionBadge}>{turnOverRetrospective.position}</span>
-            </div>
-            {turnOverRetrospective.reason && (
-              <div className={styles.reasonContent}>
-                <p>{turnOverRetrospective.reason}</p>
-              </div>
-            )}
-          </div>
+
+        {/* 자우 협의 */}
+        <div ref={negotiationRef}>
+          <NegotiationView
+            position={turnOverRetrospective.position}
+            department={turnOverRetrospective.department}
+            rank={turnOverRetrospective.rank}
+            jobTitle={turnOverRetrospective.jobTitle}
+            salary={turnOverRetrospective.salary}
+            workType={turnOverRetrospective.workType}
+            employmentType={turnOverRetrospective.employmentType}
+            joinedAt={turnOverRetrospective.joinedAt}
+          />
         </div>
-      </div>
 
-      {/* 자우 협의 */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>자우 협의</h2>
+        {/* 만족도 평가 */}
+        <div ref={satisfactionRef}>
+          <SatisfactionView
+            score={turnOverRetrospective.score}
+            reviewSummary={turnOverRetrospective.reviewSummary}
+          />
         </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.negotiationCard}>
-            {/* 직무 정보 */}
-            <div className={styles.jobDetails}>
-              <h4 className={styles.jobPosition}>{turnOverRetrospective.position}</h4>
-              <div className={styles.jobMeta}>
-                {turnOverRetrospective.department && (
-                  <span className={styles.metaItem}>{turnOverRetrospective.department}</span>
-                )}
-                {turnOverRetrospective.rank && (
-                  <>
-                    <span className={styles.metaDivider}>|</span>
-                    <span className={styles.metaItem}>{turnOverRetrospective.rank}</span>
-                  </>
-                )}
-                {turnOverRetrospective.jobTitle && (
-                  <>
-                    <span className={styles.metaDivider}>|</span>
-                    <span className={styles.metaItem}>{turnOverRetrospective.jobTitle}</span>
-                  </>
-                )}
-              </div>
-            </div>
 
-            {/* 연봉 정보 */}
-            {turnOverRetrospective.salary > 0 && (
-              <div className={styles.salaryInfo}>
-                <span className={styles.salaryLabel}>연봉</span>
-                <span className={styles.salaryAmount}>
-                  {formatSalary(turnOverRetrospective.salary)}
-                </span>
-              </div>
-            )}
+        {/* 메모 */}
+        <div ref={memoRef}>
+          <MemoView memos={turnOverRetrospective.memos || []} />
+        </div>
 
-            {/* 추가 정보 */}
-            <div className={styles.additionalDetails}>
-              {turnOverRetrospective.workType && (
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>근무 형태</span>
-                  <span className={styles.detailValue}>{turnOverRetrospective.workType}</span>
-                </div>
-              )}
-              {turnOverRetrospective.employmentType && (
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>고용 형태</span>
-                  <span className={styles.detailValue}>
-                    {getEmploymentTypeLabel(turnOverRetrospective.employmentType)}
-                  </span>
-                </div>
-              )}
-              {turnOverRetrospective.joinedAt && (
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>입사 일자</span>
-                  <span className={styles.detailValue}>
-                    {DateUtil.formatTimestamp(turnOverRetrospective.joinedAt, 'YYYY. MM. DD.')}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
+        {/* 첨부 */}
+        <div ref={attachmentRef}>
+          <AttachmentView attachments={turnOverRetrospective.attachments || []} />
         </div>
       </div>
 
-      {/* 만족도 평가 */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>만족도 평가</h2>
-        </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.satisfactionCard}>
-            {/* 점수 */}
-            <div className={styles.scoreSection}>
-              <span className={styles.scoreLabel}>점수</span>
-              <div className={styles.stars}>
-                {renderStars(turnOverRetrospective.score)}
-              </div>
-              <span className={styles.scoreValue}>{turnOverRetrospective.score}점</span>
-            </div>
-
-            {/* 한 줄 회고 */}
-            {turnOverRetrospective.reviewSummary && (
-              <div className={styles.reviewSection}>
-                <span className={styles.reviewLabel}>한 줄 회고</span>
-                <p className={styles.reviewText}>{turnOverRetrospective.reviewSummary}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 메모 */}
-      <MemoView memos={turnOverRetrospective.memos || []} />
-
-      {/* 첨부 */}
-      <AttachmentView attachments={turnOverRetrospective.attachments || []} />
+      {/* Floating Navigation */}
+      <TurnOverFloatingActions navigationItems={getNavigationItems()} />
     </div>
   );
 };

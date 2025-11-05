@@ -3,12 +3,12 @@ import { AttachmentRequest } from '@/generated/attachment';
 import { Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
-import styles from './AttachmentEdit.module.css';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
 import EmptyState from '@/components/ui/EmptyState';
+import '@/styles/component-edit.css';
 
 // 모드 정보를 포함한 확장된 Attachment 타입
 type AttachmentWithMode = AttachmentRequest & {
@@ -59,12 +59,12 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
   return (
     <DraggableItem 
       id={attachment.id || `attachment-${index}`}
-      className={styles.cardWrapper}
+      className="edit-card-wrapper"
     >
-      <div className={styles.card}>
-        <div className={styles.gridContainer2}>
+      <div className="edit-card">
+        <div className="edit-grid-container-2">
           {/* 종류 */}
-          <div className={styles.formField}>
+          <div className="edit-form-field">
             <Dropdown
               label="종류"
               selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
@@ -81,8 +81,8 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
 
           {/* 파일 업로드 (파일 모드일 때) */}
           {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
-            <div className={styles.gridContainer2}>
-              <div className={styles.formField}>
+            <div className="edit-grid-container-2">
+              <div className="edit-form-field">
                 <Input 
                   type="text"
                   label="파일 이름"
@@ -92,7 +92,7 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                   onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
                 />
               </div>
-              <div className={styles.formField}>
+              <div className="edit-form-field">
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                   <input
                     ref={fileInputRef}
@@ -125,7 +125,7 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
 
           {/* 파일 URL (URL 모드일 때만) */}
           {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
-            <div className={styles.formField}>
+            <div className="edit-form-field">
               <Input 
                 type="url"
                 label="URL"
@@ -293,21 +293,21 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
   };
 
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitleCounter}>
+    <div className="edit-section">
+      <div className="edit-section-header">
+        <h3 className="edit-section-title-counter">
           첨부 | {attachments.length}개
         </h3>
-        <div className={styles.addButtonContainer}>
+        <div className="edit-add-button-container">
           <button
             onClick={handleAddFileAttachment}
-            className={styles.addButton}
+            className="edit-add-button"
           >
             <span>+ 파일 추가</span>
           </button>
           <button
             onClick={handleAddUrlAttachment}
-            className={styles.addButton}
+            className="edit-add-button"
           >
             <span>+ URL 추가</span>
           </button>

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Attachment, Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import EmptyState from '@/components/ui/EmptyState';
-import styles from './AttachmentView.module.css';
+import '@/styles/component-view.css';
 
 interface AttachmentViewProps {
   attachments: Attachment[];
@@ -91,7 +91,7 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
     if(normalizedCategory == Attachment_AttachmentCategory.FILE) {
       return (
         <div 
-          className={styles.iconWrapper}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
           onClick={() => handleFileDownload(attachment.fileUrl, attachment.fileName)}
         >
           <Image src="/assets/img/ico/ic-download.png" alt="download" width={16} height={16} />
@@ -103,7 +103,7 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
     if(normalizedCategory == Attachment_AttachmentCategory.URL) {
       return (
         <div 
-          className={styles.iconWrapper}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
           onClick={() => {
             window.open(attachment.url, '_blank');
           }}
@@ -119,35 +119,41 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
   const filteredAttachments = attachments.filter(a => showHidden ? true : a.isVisible !== false);
 
   return (
-    <div className={styles.container}>
-      <h3 className={styles.title}>
-        첨부
-      </h3>
+    <div className="view-container">
+      <h3 className="view-title">첨부</h3>
       
       {(!attachments || filteredAttachments.length === 0) ? (
         <EmptyState text="등록된 첨부 정보가 없습니다." />
       ) : (
-        <div className={styles.listContainer}>
+        <div className="view-list-container">
           {filteredAttachments.map((attachment) => (
-            <div className={styles.item} key={attachment.id}>
-              <div className={styles.itemContent}>
-                <a
-                  href={attachment.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  <span className={styles.iconContainer}>
-                    {getAttachmentTypeIcon(attachment)}
-                  </span>
-                </a>
-              </div>
-              <div>
-                {attachment.type && (
-                  <span className={styles.typeLabel}>
-                    {getAttachmentTypeLabel(attachment.type)}
-                  </span>
-                )}
+            <div className="view-item" key={attachment.id}>
+              <div className="view-item-content">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <a
+                    href={attachment.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '14px',
+                      color: '#2196f3',
+                      textDecoration: 'none',
+                      flex: 1
+                    }}
+                  >
+                    <span style={{ fontSize: '16px' }}>
+                      {getAttachmentTypeIcon(attachment)}
+                    </span>
+                  </a>
+                  {attachment.type && (
+                    <span style={{ fontSize: '13px', color: '#999' }}>
+                      {getAttachmentTypeLabel(attachment.type)}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           ))}

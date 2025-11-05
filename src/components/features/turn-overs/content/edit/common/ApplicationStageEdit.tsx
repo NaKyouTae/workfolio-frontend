@@ -2,15 +2,143 @@ import React from 'react';
 import { ApplicationStage_ApplicationStageStatus } from '@/generated/common';
 import { TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest } from '@/generated/turn_over';
 import { DateUtil } from '@/utils/DateUtil';
-import styles from '../TurnOverChallengeEdit.module.css';
+import Input from '@/components/ui/Input';
+import DraggableList from '@/components/ui/DraggableList';
+import DraggableItem from '@/components/ui/DraggableItem';
+import EmptyState from '@/components/ui/EmptyState';
+import '@/styles/component-edit.css';
 
 interface ApplicationStageEditProps {
   applicationStages: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[];
   onUpdate: (stages: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[]) => void;
 }
 
+interface ApplicationStageItemProps {
+  stage: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest;
+  index: number;
+  onUpdate: (
+    index: number,
+    field: keyof TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest,
+    value: string | number | undefined
+  ) => void;
+  onRemove: (index: number) => void;
+}
+
+const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
+  stage,
+  index,
+  onUpdate,
+  onRemove,
+}) => {
+  return (
+    <DraggableItem
+      id={stage.id || `applicationStage-${index}`}
+      className="edit-card-wrapper"
+    >
+      <div className="edit-card">
+        <div className="edit-grid-container-1">
+          <div className="edit-grid-container-2">
+            <div className="edit-form-field">
+              <Input
+                type="text"
+                label="절차명"
+                placeholder="예: 서류 전형, 1차 면접 등"
+                value={stage.name || ''}
+                onChange={(e) => onUpdate(index, 'name', e.target.value)}
+              />
+            </div>
+            <div className="edit-form-field">
+              <Input
+                type="text"
+                label="진행 일자"
+                placeholder="YYYY. MM. DD."
+                value={stage.startedAt ? DateUtil.formatTimestamp(stage.startedAt) : ''}
+                onChange={(e) => onUpdate(index, 'startedAt', DateUtil.normalizeTimestamp(e.target.value))}
+              />
+            </div>
+          </div>
+
+          <div className="edit-form-field">
+            <label className="edit-label">진행 상태</label>
+            <div className="edit-radio-group">
+              <label className="edit-radio-label">
+                <input
+                  type="radio"
+                  name={`status-${index}`}
+                  value="pending"
+                  checked={stage.status === ApplicationStage_ApplicationStageStatus.PENDING}
+                  onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.PENDING)}
+                />
+                대기
+              </label>
+              <label className="edit-radio-label">
+                <input
+                  type="radio"
+                  name={`status-${index}`}
+                  value="passed"
+                  checked={stage.status === ApplicationStage_ApplicationStageStatus.PASSED}
+                  onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.PASSED)}
+                />
+                합격
+              </label>
+              <label className="edit-radio-label">
+                <input
+                  type="radio"
+                  name={`status-${index}`}
+                  value="failed"
+                  checked={stage.status === ApplicationStage_ApplicationStageStatus.FAILED}
+                  onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.FAILED)}
+                />
+                불합격
+              </label>
+            </div>
+          </div>
+
+          <div className="edit-form-field">
+            <label className="edit-label">메모</label>
+            <textarea
+              className="edit-textarea"
+              placeholder="예: 채용 서류, 과제 내용, 면접 유형, 면접 질문 등"
+              value={stage.memo || ''}
+              onChange={(e) => onUpdate(index, 'memo', e.target.value)}
+              rows={3}
+            />
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => onRemove(index)}
+        style={{
+          width: '60px',
+          padding: '8px 4px',
+          backgroundColor: '#fff',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          color: '#999',
+          height: 'fit-content',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#ffebee';
+          e.currentTarget.style.borderColor = '#f44336';
+          e.currentTarget.style.color = '#f44336';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#fff';
+          e.currentTarget.style.borderColor = '#ddd';
+          e.currentTarget.style.color = '#999';
+        }}
+      >
+        삭제
+      </button>
+    </DraggableItem>
+  );
+};
+
 /**
- * 채용 절차 편집 컴포넌트
+ * 채용 절차 편집 컴포넌트 (subsection)
  */
 const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
   applicationStages,
@@ -51,102 +179,50 @@ const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
     onUpdate(updated);
   };
 
+  const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[]) => {
+    onUpdate(reordered);
+  };
+
   return (
-    <div className={styles.subsection}>
-      <div className={styles.subsectionHeader}>
-        <h3 className={styles.subsectionTitle}>채용 절차</h3>
-        <button className={styles.addSubButton} onClick={addApplicationStage}>
-          + 절차 추가
-        </button>
+    <div style={{ 
+      marginTop: '20px', 
+      padding: '16px', 
+      backgroundColor: '#f9fafb', 
+      borderRadius: '8px',
+      border: '1px solid #e5e7eb'
+    }}>
+      <div className="edit-section-header">
+        <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#333', margin: 0, width: '60%' }}>
+          채용 절차 | {applicationStages.length}개
+        </h4>
+        <div className="edit-add-button-container">
+          <button
+            onClick={addApplicationStage}
+            className="edit-add-button"
+          >
+            <span>+ 절차 추가</span>
+          </button>
+        </div>
       </div>
-      <div className={styles.subsectionContent}>
+
+      <div style={{ marginTop: '10px' }}>
         {applicationStages.length === 0 ? (
-          <div className={styles.emptySubContent}>
-            <p>채용 절차를 추가해 주세요.</p>
-          </div>
+          <EmptyState text="채용 절차를 추가해 주세요." />
         ) : (
-          applicationStages.map((stage, index) => (
-            <div key={index} className={styles.stageCard}>
-              <div className={styles.cardHeader}>
-                <div className={styles.dragHandle}>⋮⋮</div>
-                <div className={styles.cardInputs}>
-                  <div className={styles.inputRow}>
-                    <div className={styles.inputGroup}>
-                      <label className={styles.inputLabel}>절차명</label>
-                      <input
-                        type="text"
-                        className={styles.input}
-                        placeholder="예: 서류 전형, 1차 면접 등"
-                        value={stage.name}
-                        onChange={(e) => updateStage(index, 'name', e.target.value)}
-                      />
-                    </div>
-                    <div className={styles.inputGroup}>
-                      <label className={styles.inputLabel}>진행 일자</label>
-                      <input
-                        type="text"
-                        className={styles.input}
-                        placeholder="YYYY. MM. DD."
-                        value={stage.startedAt ? DateUtil.formatTimestamp(stage.startedAt) : ''}
-                        onChange={(e) => updateStage(index, 'startedAt', DateUtil.normalizeTimestamp(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.inputLabel}>진행 상태</label>
-                    <div className={styles.radioGroup}>
-                      <label className={styles.radioLabel}>
-                        <input
-                          type="radio"
-                          name={`status-${index}`}
-                          value="pending"
-                          checked={stage.status === ApplicationStage_ApplicationStageStatus.PENDING}
-                          onChange={() => updateStage(index, 'status', ApplicationStage_ApplicationStageStatus.PENDING)}
-                        />
-                        대기
-                      </label>
-                      <label className={styles.radioLabel}>
-                        <input
-                          type="radio"
-                          name={`status-${index}`}
-                          value="passed"
-                          checked={stage.status === ApplicationStage_ApplicationStageStatus.PASSED}
-                          onChange={() => updateStage(index, 'status', ApplicationStage_ApplicationStageStatus.PASSED)}
-                        />
-                        합격
-                      </label>
-                      <label className={styles.radioLabel}>
-                        <input
-                          type="radio"
-                          name={`status-${index}`}
-                          value="failed"
-                          checked={stage.status === ApplicationStage_ApplicationStageStatus.FAILED}
-                          onChange={() => updateStage(index, 'status', ApplicationStage_ApplicationStageStatus.FAILED)}
-                        />
-                        불합격
-                      </label>
-                    </div>
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.inputLabel}>메모</label>
-                    <textarea
-                      className={styles.textarea}
-                      placeholder="예: 채용 서류, 과제 내용, 면접 유형, 면접 질문 등"
-                      value={stage.memo}
-                      onChange={(e) => updateStage(index, 'memo', e.target.value)}
-                      rows={3}
-                    />
-                  </div>
-                </div>
-                <button
-                  className={styles.deleteButton}
-                  onClick={() => removeApplicationStage(index)}
-                >
-                  −
-                </button>
-              </div>
-            </div>
-          ))
+          <DraggableList
+            items={applicationStages}
+            onReorder={handleReorder}
+            getItemId={(stage, idx) => stage.id || `applicationStage-${idx}`}
+            renderItem={(stage, index) => (
+              <ApplicationStageItem
+                key={stage.id || `applicationStage-${index}`}
+                stage={stage}
+                index={index}
+                onUpdate={updateStage}
+                onRemove={removeApplicationStage}
+              />
+            )}
+          />
         )}
       </div>
     </div>
@@ -154,4 +230,3 @@ const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
 };
 
 export default ApplicationStageEdit;
-

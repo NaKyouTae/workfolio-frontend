@@ -6,6 +6,7 @@ import styles from './TurnOverContentEdit.module.css';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverGoalRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@/generated/turn_over';
 import TurnOverChallengeEdit from './edit/TurnOverChallengeEdit';
 import TurnOverRetrospectiveEdit from './edit/TurnOverRetrospectiveEdit';
+import TurnOverContentTab, { TabType } from './TurnOverContentTab';
 
 interface TurnOverContentEditProps {
   selectedTurnOver: TurnOverDetail | null;
@@ -21,9 +22,9 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
   const [name, setName] = useState('');
   const [turnOverRequest, setTurnOverRequest] = useState<TurnOverUpsertRequest | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'goal' | 'challenge' | 'retrospective'>('goal');
+  const [activeTab, setActiveTab] = useState<TabType>('goal');
 
-  const changeActiveTab = async (tab: 'goal' | 'challenge' | 'retrospective') => {
+  const changeActiveTab = async (tab: TabType) => {
     setActiveTab(tab);
   };
 
@@ -110,26 +111,10 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className={styles.tabs}>
-        <button
-          className={`${styles.tab} ${activeTab === 'goal' ? styles.tabActive : ''}`}
-          onClick={() => changeActiveTab('goal')}
-        >
-          목표
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === 'challenge' ? styles.tabActive : ''}`}
-          onClick={() => changeActiveTab('challenge')}
-        >
-          도전
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === 'retrospective' ? styles.tabActive : ''}`}
-          onClick={() => changeActiveTab('retrospective')}
-        >
-          회고
-        </button>
-      </div>
+      <TurnOverContentTab
+        activeTab={activeTab}
+        onTabChange={changeActiveTab}
+      />
 
       {/* Tab Content */}
       <div className={styles.tabContent}>
@@ -160,4 +145,3 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
 };
 
 export default TurnOverContentEdit;
-

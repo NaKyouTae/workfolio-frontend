@@ -1,11 +1,84 @@
 import React from 'react';
 import { TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest } from '@/generated/turn_over';
-import styles from '../TurnOverGoalEdit.module.css';
+import Input from '@/components/ui/Input';
+import DraggableList from '@/components/ui/DraggableList';
+import DraggableItem from '@/components/ui/DraggableItem';
+import EmptyState from '@/components/ui/EmptyState';
+import '@/styles/component-edit.css';
 
 interface CheckListEditProps {
   checkList: TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[];
   onUpdate: (checkList: TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]) => void;
 }
+
+interface CheckListItemProps {
+  item: TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest;
+  index: number;
+  onUpdateChecked: (index: number, checked: boolean) => void;
+  onUpdateContent: (index: number, content: string) => void;
+  onRemove: (index: number) => void;
+}
+
+const CheckListItem: React.FC<CheckListItemProps> = ({
+  item,
+  index,
+  onUpdateChecked,
+  onUpdateContent,
+  onRemove,
+}) => {
+  return (
+    <DraggableItem
+      id={`checkList-${index}`}
+      className="edit-card-wrapper"
+    >
+      <div className="edit-card">
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <input
+            type="checkbox"
+            className="edit-checkbox"
+            checked={item.checked || false}
+            onChange={(e) => onUpdateChecked(index, e.target.checked)}
+          />
+          <div className="edit-form-field" style={{ flex: 1 }}>
+            <Input
+              type="text"
+              placeholder="내용을 입력해 주세요."
+              value={item.content || ''}
+              onChange={(e) => onUpdateContent(index, e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => onRemove(index)}
+        style={{
+          width: '60px',
+          padding: '8px 4px',
+          backgroundColor: '#fff',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          color: '#999',
+          height: 'fit-content',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#ffebee';
+          e.currentTarget.style.borderColor = '#f44336';
+          e.currentTarget.style.color = '#f44336';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#fff';
+          e.currentTarget.style.borderColor = '#ddd';
+          e.currentTarget.style.color = '#999';
+        }}
+      >
+        삭제
+      </button>
+    </DraggableItem>
+  );
+};
 
 /**
  * 체크리스트 편집 컴포넌트
@@ -34,48 +107,47 @@ const CheckListEdit: React.FC<CheckListEditProps> = ({
     onUpdate(updated);
   };
 
+  const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]) => {
+    onUpdate(reordered);
+  };
+
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>체크리스트</h2>
-        <button className={styles.addButton} onClick={addCheckListItem}>
-          + 추가
-        </button>
+    <div className="edit-section">
+      <div className="edit-section-header">
+        <h3 className="edit-section-title-counter">
+          체크리스트 | {checkList.length}개
+        </h3>
+        <div className="edit-add-button-container">
+          <button
+            onClick={addCheckListItem}
+            className="edit-add-button"
+          >
+            <span>+ 추가</span>
+          </button>
+        </div>
       </div>
-      <div className={styles.sectionContent}>
-        {checkList.length === 0 ? (
-          <div className={styles.emptyContent}>
-            <p>체크리스트를 추가해 주세요.</p>
-          </div>
-        ) : (
-          checkList.map((item, index) => (
-            <div key={index} className={styles.checkItem}>
-              <input
-                type="checkbox"
-                className={styles.checkbox}
-                checked={item.checked}
-                onChange={(e) => updateCheckListChecked(index, e.target.checked)}
-              />
-              <input
-                type="text"
-                className={styles.checkInput}
-                placeholder="내용을 입력해 주세요."
-                value={item.content}
-                onChange={(e) => updateCheckListContent(index, e.target.value)}
-              />
-              <button
-                className={styles.deleteButton}
-                onClick={() => removeCheckListItem(index)}
-              >
-                −
-              </button>
-            </div>
-          ))
-        )}
-      </div>
+
+      {checkList.length === 0 ? (
+        <EmptyState text="체크리스트를 추가해 주세요." />
+      ) : (
+        <DraggableList
+          items={checkList}
+          onReorder={handleReorder}
+          getItemId={(_, idx) => `checkList-${idx}`}
+          renderItem={(item, index) => (
+            <CheckListItem
+              key={`checkList-${index}`}
+              item={item}
+              index={index}
+              onUpdateChecked={updateCheckListChecked}
+              onUpdateContent={updateCheckListContent}
+              onRemove={removeCheckListItem}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };
 
 export default CheckListEdit;
-

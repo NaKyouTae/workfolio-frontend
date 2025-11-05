@@ -1,6 +1,14 @@
 .container {
-  max-width: 1000px;
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  position: relative;
+}
+
+.contentInner {
   margin: 0 auto;
+  padding: 20px 40px;
+  flex: 1;
 }
 
 .emptyState {

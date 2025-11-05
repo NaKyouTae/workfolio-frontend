@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './TurnOverGoalEdit.module.css';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest, TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest, TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from './common/MemoEdit';
 import AttachmentEdit from '@/components/features/common/AttachmentEdit';
-import EditFloatingActions, { FloatingNavigationItem } from '../EditFloatingActions';
+import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import SelfIntroductionEdit from './common/SelfIntroductionEdit';
 import InterviewQuestionEdit from './common/InterviewQuestionEdit';
 import CheckListEdit from './common/CheckListEdit';
@@ -16,7 +16,7 @@ interface TurnOverGoalEditProps {
 }
 
 const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, onSave, onCancel }) => {
-  const [activeSection, setActiveSection] = useState<string>('basic');
+  const [activeSection, setActiveSection] = useState<string>('direction');
   const [reason, setReason] = useState('');
   const [goal, setGoal] = useState('');
   const [selfIntroductions, setSelfIntroductions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]>([]);
@@ -24,6 +24,14 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
   const [checkList, setCheckList] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]>([]);
   const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
   const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
+
+  // 각 섹션에 대한 ref
+  const directionRef = useRef<HTMLDivElement>(null);
+  const selfIntroductionRef = useRef<HTMLDivElement>(null);
+  const interviewQuestionRef = useRef<HTMLDivElement>(null);
+  const memoRef = useRef<HTMLDivElement>(null);
+  const checklistRef = useRef<HTMLDivElement>(null);
+  const attachmentRef = useRef<HTMLDivElement>(null);
 
   // turnOverRequest가 변경될 때마다 state 업데이트
   useEffect(() => {
@@ -38,26 +46,62 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
     }
   }, [turnOverRequest]);
 
-  // 네비게이션 항목 정의 (각 탭에 따라 다른 네비게이션 표시 가능)
+  // 섹션으로 스크롤하는 함수
+  const scrollToSection = (sectionId: string) => {
+    const refMap: { [key: string]: React.RefObject<HTMLDivElement | null> } = {
+      direction: directionRef,
+      selfIntroduction: selfIntroductionRef,
+      interviewQuestion: interviewQuestionRef,
+      memo: memoRef,
+      checklist: checklistRef,
+      attachment: attachmentRef,
+    };
+
+    const ref = refMap[sectionId];
+    if (ref?.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(sectionId);
+    }
+  };
+
+  // 네비게이션 항목 정의
   const getNavigationItems = (): FloatingNavigationItem[] => {
     return [
       {
-        id: 'basic',
-        label: '기본 정보',
-        isActive: activeSection === 'basic',
-        onClick: () => setActiveSection('basic'),
+        id: 'direction',
+        label: '이직 방향',
+        isActive: activeSection === 'direction',
+        onClick: () => scrollToSection('direction'),
+      },
+      {
+        id: 'selfIntroduction',
+        label: '자기소개서',
+        isActive: activeSection === 'selfIntroduction',
+        onClick: () => scrollToSection('selfIntroduction'),
+      },
+      {
+        id: 'interviewQuestion',
+        label: '면접 질문',
+        isActive: activeSection === 'interviewQuestion',
+        onClick: () => scrollToSection('interviewQuestion'),
       },
       {
         id: 'memo',
         label: '메모',
         isActive: activeSection === 'memo',
-        onClick: () => setActiveSection('memo'),
+        onClick: () => scrollToSection('memo'),
+      },
+      {
+        id: 'checklist',
+        label: '체크리스트',
+        isActive: activeSection === 'checklist',
+        onClick: () => scrollToSection('checklist'),
       },
       {
         id: 'attachment',
         label: '첨부',
         isActive: activeSection === 'attachment',
-        onClick: () => setActiveSection('attachment'),
+        onClick: () => scrollToSection('attachment'),
       },
     ];
   };
@@ -86,8 +130,9 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
 
   return (
     <div className={styles.container}>
+      <div className={styles.contentInner}>
       {/* 이직 방향 설정 */}
-      <div className={styles.section}>
+      <div ref={directionRef} className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
             이직 방향 설정
@@ -119,31 +164,42 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
       </div>
 
       {/* 공통 자기소개서 */}
-      <SelfIntroductionEdit 
-        selfIntroductions={selfIntroductions}
-        onUpdate={setSelfIntroductions}
-      />
+      <div ref={selfIntroductionRef}>
+        <SelfIntroductionEdit 
+          selfIntroductions={selfIntroductions}
+          onUpdate={setSelfIntroductions}
+        />
+      </div>
 
       {/* 면접 예상 질문 */}
-      <InterviewQuestionEdit
-        interviewQuestions={interviewQuestions}
-        onUpdate={setInterviewQuestions}
-      />
+      <div ref={interviewQuestionRef}>
+        <InterviewQuestionEdit
+          interviewQuestions={interviewQuestions}
+          onUpdate={setInterviewQuestions}
+        />
+      </div>
 
       {/* 메모 */}
-      <MemoEdit memos={memos} onMemosChange={setMemos} />
+      <div ref={memoRef}>
+        <MemoEdit memos={memos} onMemosChange={setMemos} />
+      </div>
 
       {/* 체크리스트 */}
-      <CheckListEdit
-        checkList={checkList}
-        onUpdate={setCheckList}
-      />
+      <div ref={checklistRef}>
+        <CheckListEdit
+          checkList={checkList}
+          onUpdate={setCheckList}
+        />
+      </div>
 
       {/* 첨부 */}
-      <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+      <div ref={attachmentRef}>
+        <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+      </div>
+      </div>
 
       {/* Floating Action Buttons */}
-      <EditFloatingActions 
+      <TurnOverFloatingActions 
         navigationItems={getNavigationItems()}
         onSave={handleSave}
         onCancel={() => onCancel?.()}

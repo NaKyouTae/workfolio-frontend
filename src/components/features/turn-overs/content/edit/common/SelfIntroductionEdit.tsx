@@ -1,11 +1,87 @@
 import React from 'react';
 import { TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
-import styles from '../TurnOverGoalEdit.module.css';
+import Input from '@/components/ui/Input';
+import DraggableList from '@/components/ui/DraggableList';
+import DraggableItem from '@/components/ui/DraggableItem';
+import EmptyState from '@/components/ui/EmptyState';
+import '@/styles/component-edit.css';
 
 interface SelfIntroductionEditProps {
   selfIntroductions: TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[];
   onUpdate: (selfIntroductions: TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]) => void;
 }
+
+interface SelfIntroductionItemProps {
+  item: TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest;
+  index: number;
+  onUpdate: (index: number, field: 'question' | 'content', value: string) => void;
+  onRemove: (index: number) => void;
+}
+
+const SelfIntroductionItem: React.FC<SelfIntroductionItemProps> = ({
+  item,
+  index,
+  onUpdate,
+  onRemove,
+}) => {
+  return (
+    <DraggableItem
+      id={`selfIntroduction-${index}`}
+      className="edit-card-wrapper"
+    >
+      <div className="edit-card">
+        <div className="edit-grid-container-1">
+          <div className="edit-form-field">
+            <Input
+              type="text"
+              label="문항"
+              placeholder="문항을 입력해 주세요."
+              value={item.question || ''}
+              onChange={(e) => onUpdate(index, 'question', e.target.value)}
+            />
+          </div>
+          <div className="edit-form-field">
+            <label className="edit-label">내용</label>
+            <textarea
+              className="edit-textarea"
+              placeholder="내용을 입력해 주세요."
+              value={item.content || ''}
+              onChange={(e) => onUpdate(index, 'content', e.target.value)}
+              rows={4}
+            />
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => onRemove(index)}
+        style={{
+          width: '60px',
+          padding: '8px 4px',
+          backgroundColor: '#fff',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          color: '#999',
+          height: 'fit-content',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#ffebee';
+          e.currentTarget.style.borderColor = '#f44336';
+          e.currentTarget.style.color = '#f44336';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#fff';
+          e.currentTarget.style.borderColor = '#ddd';
+          e.currentTarget.style.color = '#999';
+        }}
+      >
+        삭제
+      </button>
+    </DraggableItem>
+  );
+};
 
 /**
  * 공통 자기소개서 편집 컴포넌트
@@ -28,60 +104,46 @@ const SelfIntroductionEdit: React.FC<SelfIntroductionEditProps> = ({
     onUpdate(updated);
   };
 
+  const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]) => {
+    onUpdate(reordered);
+  };
+
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>공통 자기소개서</h2>
-        <button className={styles.addButton} onClick={addSelfIntroduction}>
-          + 문항 추가
-        </button>
+    <div className="edit-section">
+      <div className="edit-section-header">
+        <h3 className="edit-section-title-counter">
+          공통 자기소개서 | {selfIntroductions.length}개
+        </h3>
+        <div className="edit-add-button-container">
+          <button
+            onClick={addSelfIntroduction}
+            className="edit-add-button"
+          >
+            <span>+ 문항 추가</span>
+          </button>
+        </div>
       </div>
-      <div className={styles.sectionContent}>
-        {selfIntroductions.length === 0 ? (
-          <div className={styles.emptyContent}>
-            <p>문항을 추가해 주세요.</p>
-          </div>
-        ) : (
-          selfIntroductions.map((item, index) => (
-            <div key={index} className={styles.qaItem}>
-              <div className={styles.qaHeader}>
-                <div className={styles.dragHandle}>⋮⋮</div>
-                <div className={styles.qaInputs}>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.inputLabel}>문항</label>
-                    <input
-                      type="text"
-                      className={styles.input}
-                      placeholder="문항을 입력해 주세요."
-                      value={item.question}
-                      onChange={(e) => updateSelfIntroduction(index, 'question', e.target.value)}
-                    />
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.inputLabel}>내용</label>
-                    <textarea
-                      className={styles.textarea}
-                      placeholder="내용을 입력해 주세요."
-                      value={item.content}
-                      onChange={(e) => updateSelfIntroduction(index, 'content', e.target.value)}
-                      rows={4}
-                    />
-                  </div>
-                </div>
-                <button
-                  className={styles.deleteButton}
-                  onClick={() => removeSelfIntroduction(index)}
-                >
-                  −
-                </button>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+
+      {selfIntroductions.length === 0 ? (
+        <EmptyState text="문항을 추가해 주세요." />
+      ) : (
+        <DraggableList
+          items={selfIntroductions}
+          onReorder={handleReorder}
+          getItemId={(_, idx) => `selfIntroduction-${idx}`}
+          renderItem={(item, index) => (
+            <SelfIntroductionItem
+              key={`selfIntroduction-${index}`}
+              item={item}
+              index={index}
+              onUpdate={updateSelfIntroduction}
+              onRemove={removeSelfIntroduction}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };
 
 export default SelfIntroductionEdit;
-

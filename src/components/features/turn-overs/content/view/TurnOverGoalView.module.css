@@ -1,6 +1,14 @@
 .container {
-  max-width: 1000px;
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  position: relative;
+}
+
+.contentInner {
   margin: 0 auto;
+  padding: 20px 40px;
+  flex: 1;
 }
 
 .emptyState {
@@ -30,52 +38,10 @@
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.helpIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  background: #e5e7eb;
-  color: #6b7280;
-  border-radius: 50%;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: help;
 }
 
 .sectionContent {
   padding: 24px;
-}
-
-/* 이직 방향 설정 */
-.field {
-  margin-bottom: 20px;
-}
-
-.field:last-child {
-  margin-bottom: 0;
-}
-
-.label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.textContent {
-  font-size: 14px;
-  color: #1a1a1a;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 
 /* 메모 */
@@ -169,10 +135,6 @@
 
   .sectionContent {
     padding: 20px;
-  }
-
-  .textContent {
-    font-size: 13px;
   }
 }
 
