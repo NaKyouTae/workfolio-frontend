@@ -8,10 +8,9 @@ import DateUtil from '@/utils/DateUtil';
 
 interface TurnOversContentViewProps {
   selectedTurnOver: TurnOverDetail | null;
-
-  onEdit?: () => void;
-  onDuplicate?: () => void;
-  onDelete?: () => void;
+  onEdit?: (id: string) => void;
+  onDuplicate?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete }) => {
@@ -20,6 +19,10 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
   const changeActiveTab = async (tab: 'goal' | 'challenge' | 'retrospective') => {
     setActiveTab(tab);
   };
+
+  if (!selectedTurnOver) {
+    return <div>이직 현황을 선택해주세요.</div>;
+  }
     
   return (
     <div className={styles.container}>
@@ -32,11 +35,11 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
           </span>
         </div>
         <div className={styles.actions}>
-          <a className={styles.actionButton} onClick={onEdit}>편집</a>
+          <a className={styles.actionButton} onClick={() => onEdit?.(selectedTurnOver?.id || '')}>편집</a>
           <span className={styles.divider}>|</span>
-          <a className={styles.actionButton} onClick={onDuplicate}>복제</a>
+          <a className={styles.actionButton} onClick={() => onDuplicate?.(selectedTurnOver?.id || '')}>복제</a>
           <span className={styles.divider}>|</span>
-          <a className={styles.actionButton} onClick={onDelete}>삭제</a>
+          <a className={styles.actionButton} onClick={() => onDelete?.(selectedTurnOver?.id || '')}>삭제</a>
         </div>
       </div>
 

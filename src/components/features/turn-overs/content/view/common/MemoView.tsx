@@ -29,4 +29,3 @@ const MemoView: React.FC<MemoViewProps> = ({ memos }) => {
 };
 
 export default MemoView;
-

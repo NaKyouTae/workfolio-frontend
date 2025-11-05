@@ -1,0 +1,118 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 1.6rem 0;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 1.6rem;
+}
+
+.timelineNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.4rem;
+}
+
+.timelineDot {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: #dee2e6;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.timelineDot.statusPassed {
+  background: #28a745;
+}
+
+.timelineDot.statusFailed {
+  background: #dc3545;
+}
+
+.timelineDot.statusPending {
+  background: #ffc107;
+}
+
+.timelineDot.statusScheduled {
+  background: #17a2b8;
+}
+
+.timelineDot.statusCancelled {
+  background: #6c757d;
+}
+
+.timelineLine {
+  width: 0.2rem;
+  flex: 1;
+  background: #dee2e6;
+  margin-top: 0.4rem;
+}
+
+.timelineContent {
+  flex: 1;
+  padding-bottom: 0.8rem;
+}
+
+.stageName {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.6rem;
+}
+
+.stageInfo {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.statusBadge {
+  padding: 0.4rem 1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border-radius: 1.2rem;
+  color: white;
+}
+
+.statusBadge.statusPassed {
+  background: #28a745;
+}
+
+.statusBadge.statusFailed {
+  background: #dc3545;
+}
+
+.statusBadge.statusPending {
+  background: #ffc107;
+  color: #212529;
+}
+
+.statusBadge.statusScheduled {
+  background: #17a2b8;
+}
+
+.statusBadge.statusCancelled {
+  background: #6c757d;
+}
+
+.stageDate {
+  font-size: 1.4rem;
+  color: #6c757d;
+}
+
+.stageMemo {
+  font-size: 1.4rem;
+  color: #495057;
+  line-height: 1.6;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 0.4rem;
+}
+

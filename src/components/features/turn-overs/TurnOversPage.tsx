@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TurnOversSidebar from './TurnOversSidebar';
 import TurnOversContent from './TurnOversContent';
-import { TurnOver, TurnOverDetail } from '@/generated/common';
+import { TurnOverDetail } from '@/generated/common';
 import { useTurnOver } from '@/hooks/useTurnOver';
 import { TurnOverUpsertRequest } from '@/generated/turn_over';
 
@@ -15,44 +15,46 @@ const TurnOversPage: React.FC = () => {
     setIsNewTurnOver(false);
   };
   
-  const onTurnOverSelect = async (turnOver: TurnOver) => {
-    const turnOverDetail = await getTurnOverDetail(turnOver.id);
+  const onTurnOverSelect = async (id: string) => {
+    const turnOverDetail = await getTurnOverDetail(id);
     if (turnOverDetail) {
       setSelectedTurnOver(turnOverDetail);
       setIsNewTurnOver(false);
     }
   };
 
-  const onSave = (data: TurnOverUpsertRequest) => {
-    upsertTurnOver(data).then((success) => {
+  const onSave = async (data: TurnOverUpsertRequest) => {
+    const savedId = await upsertTurnOver(data);
+    if (savedId) {
+      await refreshTurnOvers();
+      setIsNewTurnOver(false);
+      
+      // 저장된 데이터를 다시 조회하여 갱신
+      const updatedTurnOverDetail = await getTurnOverDetail(savedId);
+      if (updatedTurnOverDetail) {
+        setSelectedTurnOver(updatedTurnOverDetail);
+      }
+    }
+  };
+
+  const onDuplicate = (id: string) => {
+      duplicateTurnOver(id).then((success) => {
       if (success) {
         refreshTurnOvers();
-        setIsNewTurnOver(false);
+        setSelectedTurnOver(null);
+        onGoHome();
       }
     });
   };
 
-  const onDuplicate = () => {
-    if (selectedTurnOver) {
-      duplicateTurnOver(selectedTurnOver.id).then((success) => {
-        if (success) {
-          refreshTurnOvers();
-          setSelectedTurnOver(null);
-        }
-      });
-    }
-  };
-
-  const onDelete = () => {
-    if (selectedTurnOver) {
-      deleteTurnOver(selectedTurnOver.id).then((success) => {
-        if (success) {
-          refreshTurnOvers();
-          setSelectedTurnOver(null);
-          onGoHome();
-        }
-      });
-    }
+  const onDelete = (id: string) => {
+    deleteTurnOver(id).then((success) => {
+      if (success) {
+        refreshTurnOvers();
+        setSelectedTurnOver(null);
+        onGoHome();
+      }
+    });
   };
 
   const onTurnOverCreated = () => {
@@ -83,6 +85,7 @@ const TurnOversPage: React.FC = () => {
       <TurnOversContent 
         selectedTurnOver={selectedTurnOver} 
         isNewTurnOver={isNewTurnOver}
+        onTurnOverSelect={onTurnOverSelect} 
         onSave={onSave} 
         onDuplicate={onDuplicate} 
         onDelete={onDelete} 

@@ -1,0 +1,35 @@
+.checkList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  background: #f8f9fa;
+  border-radius: 0.6rem;
+  transition: background 0.2s;
+}
+
+.checkItem:hover {
+  background: #e9ecef;
+}
+
+.checkbox {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkLabel {
+  flex: 1;
+  font-size: 1.5rem;
+  color: #333;
+  line-height: 1.6;
+  cursor: pointer;
+}
+

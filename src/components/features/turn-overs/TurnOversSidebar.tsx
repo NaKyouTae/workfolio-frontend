@@ -5,7 +5,7 @@ interface TurnOversSidebarProps {
   turnOvers: TurnOver[];
   onGoHome: () => void;
   refreshTurnOvers: () => void;
-  onTurnOverSelect: (turnOver: TurnOver) => void;
+  onTurnOverSelect: (id: string) => void;
   onTurnOverCreated: () => void;
 }
 
@@ -108,7 +108,7 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, onGoHome
               return (
                 <div
                   key={turnOver.id}
-                  onClick={() => onTurnOverSelect(turnOver)}
+                  onClick={() => onTurnOverSelect(turnOver.id)}
                   style={{
                     padding: '8px 12px',
                     borderRadius: '6px',

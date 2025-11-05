@@ -1,9 +1,11 @@
 import React from 'react';
 import { TurnOverGoalDetail } from '@/generated/common';
-import EmptyState from '@/components/ui/EmptyState';
 import styles from './TurnOverGoalView.module.css';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/features/common/AttachmentView';
+import SelfIntroductionView from './common/SelfIntroductionView';
+import InterviewQuestionView from './common/InterviewQuestionView';
+import CheckListView from './common/CheckListView';
 
 interface TurnOverGoalViewProps {
   turnOverGoal: TurnOverGoalDetail | null;
@@ -50,24 +52,7 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
           <h2 className={styles.sectionTitle}>공통 자기소개서</h2>
         </div>
         <div className={styles.sectionContent}>
-          {turnOverGoal.selfIntroductions && turnOverGoal.selfIntroductions.length > 0 ? (
-            turnOverGoal.selfIntroductions.map((item, index) => (
-              <div key={item.id} className={styles.qaItem}>
-                <div className={styles.qaHeader}>
-                  <span className={styles.qaNumber}>{index + 1}</span>
-                  <div className={styles.qaQuestion}>
-                    <strong>문항 제목 들어가는 영역</strong>
-                  </div>
-                </div>
-                <div className={styles.qaContent}>
-                  <p className={styles.question}>{item.question}</p>
-                  <p className={styles.answer}>{item.content}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <EmptyState text="등록된 자기소개서가 없습니다." />
-          )}
+          <SelfIntroductionView selfIntroductions={turnOverGoal.selfIntroductions || []} />
         </div>
       </div>
 
@@ -77,24 +62,7 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
           <h2 className={styles.sectionTitle}>면접 예상 질문</h2>
         </div>
         <div className={styles.sectionContent}>
-          {turnOverGoal.interviewQuestions && turnOverGoal.interviewQuestions.length > 0 ? (
-            turnOverGoal.interviewQuestions.map((item, index) => (
-              <div key={item.id} className={styles.qaItem}>
-                <div className={styles.qaHeader}>
-                  <span className={styles.qaNumber}>{index + 1}</span>
-                  <div className={styles.qaQuestion}>
-                    <strong>질문 제목 들어가는 영역</strong>
-                  </div>
-                </div>
-                <div className={styles.qaContent}>
-                  <p className={styles.question}>{item.question}</p>
-                  <p className={styles.answer}>{item.answer}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <EmptyState text="등록된 면접 예상 질문이 없습니다." />
-          )}
+          <InterviewQuestionView interviewQuestions={turnOverGoal.interviewQuestions || []} />
         </div>
       </div>
 
@@ -107,25 +75,7 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
           <h2 className={styles.sectionTitle}>체크리스트</h2>
         </div>
         <div className={styles.sectionContent}>
-          {turnOverGoal.checkList && turnOverGoal.checkList.length > 0 ? (
-            <div className={styles.checkList}>
-              {turnOverGoal.checkList.map((item) => (
-                <div key={item.id} className={styles.checkItem}>
-                  <input
-                    type="checkbox"
-                    checked={item.checked}
-                    readOnly
-                    className={styles.checkbox}
-                  />
-                  <label className={styles.checkLabel}>
-                    {item.content}
-                  </label>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <EmptyState text="등록된 체크리스트가 없습니다." />
-          )}
+          <CheckListView checkList={turnOverGoal.checkList || []} />
         </div>
       </div>
 

@@ -5,9 +5,12 @@ import styles from './TurnOversIntegrationPage.module.css';
 
 interface TurnOversIntegrationPageProps {
   onSelectTurnOver?: (id: string) => void;
+  onEdit?: (id: string) => void;
+  onDuplicate?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
-const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onSelectTurnOver }) => {
+const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete }) => {
   const { turnOvers, isLoading } = useTurnOver();
 
   // 통계 계산
@@ -122,7 +125,7 @@ const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onS
       </div>
 
       {/* 내 이직 현황 */}
-      <section className={styles.statisticsSection}>
+      <div className={styles.statisticsSection}>
         <h2 className={styles.sectionTitle}>내 이직 현황</h2>
         <div className={styles.statisticsCards}>
           <div className={styles.statCard}>
@@ -149,10 +152,10 @@ const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onS
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* 전체 이직 활동 */}
-      <section className={styles.turnOversSection}>
+      <div className={styles.turnOversSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
             전체 이직 활동 <span className={styles.count}>{turnOvers.length}개</span>
@@ -184,9 +187,33 @@ const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onS
                       </span>
                     </div>
                     <div className={styles.cardActions}>
-                      <button className={styles.actionButton}>편집</button>
-                      <button className={styles.actionButton}>복제</button>
-                      <button className={styles.actionButton}>삭제</button>
+                      <a 
+                        className={styles.actionButton} 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit?.(turnOver.id);
+                        }}
+                      >
+                        편집
+                      </a>
+                      <a 
+                        className={styles.actionButton} 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDuplicate?.(turnOver.id);
+                        }}
+                      >
+                        복제
+                      </a>
+                      <a 
+                        className={styles.actionButton} 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete?.(turnOver.id);
+                        }}
+                      >
+                        삭제
+                      </a>
                     </div>
                   </div>
 
@@ -264,7 +291,7 @@ const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onS
             })}
           </div>
         )}
-      </section>
+      </div>
     </div>
   );
 };

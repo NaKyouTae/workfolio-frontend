@@ -6,7 +6,7 @@ export function useTurnOver() {
     const [turnOvers, setTurnOvers] = useState<TurnOverDetail[]>([])
     const [isLoading, setIsLoading] = useState(false)
 
-    const fetchTurnOvers = useCallback(async () => {
+    const fetchTurnOvers = useCallback(async (): Promise<TurnOverDetail[]> => {
         setIsLoading(true)
         try {
             // 토큰 확인 (useUser 대신 직접 확인하여 불필요한 의존성 제거)
@@ -18,7 +18,7 @@ export function useTurnOver() {
             if (!accessToken) {
                 // 로그인하지 않은 경우 빈 배열 사용
                 setTurnOvers([])
-                return
+                return []
             }
 
             const response = await fetch('/api/turn-over', {
@@ -30,14 +30,18 @@ export function useTurnOver() {
 
             if (response.ok) {
                 const data = await response.json()
-                setTurnOvers(data.turnOvers || [])
+                const fetchedTurnOvers = data.turnOvers || []
+                setTurnOvers(fetchedTurnOvers)
+                return fetchedTurnOvers
             } else {
                 console.error('Failed to fetch turn overs')
                 setTurnOvers([])
+                return []
             }
         } catch (error) {
             console.error('Error fetching turn overs:', error)
             setTurnOvers([])
+            return []
         } finally {
             setIsLoading(false)
         }
@@ -86,7 +90,7 @@ export function useTurnOver() {
     }, [])
 
     // 이직 활동 생성/수정
-    const upsertTurnOver = useCallback(async (request: TurnOverUpsertRequest): Promise<boolean> => {
+    const upsertTurnOver = useCallback(async (request: TurnOverUpsertRequest): Promise<string | null> => {
         try {
             const accessToken = document.cookie
                 .split('; ')
@@ -95,7 +99,7 @@ export function useTurnOver() {
             
             if (!accessToken) {
                 console.error('No access token found')
-                return false
+                return null
             }
 
             // 데이터 필터링: 기본값만 있는 항목 제거
@@ -262,15 +266,22 @@ export function useTurnOver() {
 
             if (response.ok) {
                 // 목록 새로고침
-                await fetchTurnOvers()
-                return true
+                const updatedTurnOvers = await fetchTurnOvers()
+                // 저장된 ID 반환 (새로 생성된 경우 목록에서 가장 최근 항목 찾기)
+                if (filteredRequest.id) {
+                    return filteredRequest.id
+                } else {
+                    // 새로 생성된 경우, 가장 최근 항목의 ID 반환
+                    const latestTurnOver = updatedTurnOvers[0] // 목록이 최신순으로 정렬되어 있다고 가정
+                    return latestTurnOver?.id || null
+                }
             } else {
                 console.error('Failed to upsert turn over')
-                return false
+                return null
             }
         } catch (error) {
             console.error('Error upserting turn over:', error)
-            return false
+            return null
         }
     }, [fetchTurnOvers])
 

@@ -218,15 +218,27 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
               />
             </div>
           </div>
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>근무 형태(연봉)</label>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="(예) 재택, 출퇴근자유 등"
-              value={workType}
-              onChange={(e) => setWorkType(e.target.value)}
-            />
+          <div className={styles.inputRow}>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>계약 연봉(만원)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="(예) 10000"
+                value={salary}
+                onChange={(e) => setSalary(Number(e.target.value))}
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>근무 형태</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="(예) 재택, 출퇴근자유 등"
+                value={workType}
+                onChange={(e) => setWorkType(e.target.value)}
+              />
+            </div>
           </div>
         </div>
       </div>

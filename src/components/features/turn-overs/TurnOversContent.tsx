@@ -10,12 +10,14 @@ type ViewMode = 'home' | 'view' | 'edit';
 interface TurnOversContentProps {
   selectedTurnOver: TurnOverDetail | null;
   isNewTurnOver?: boolean;
+  onTurnOverSelect?: (id: string) => void;
   onSave?: (data: TurnOverUpsertRequest) => void;
-  onDuplicate?: () => void;
-  onDelete?: () => void;
+  onDuplicate?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
-const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver, isNewTurnOver = false, onSave, onDuplicate, onDelete }) => {
+const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver, isNewTurnOver = false, 
+  onTurnOverSelect, onSave, onDuplicate, onDelete }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('home');
 
   // selectedTurnOver 변경 시 모드 자동 업데이트
@@ -32,6 +34,22 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
     setViewMode(mode);
   };
 
+  const handleTurnOverSelect = (id: string) => {
+    console.log('handleTurnOverSelect', id);
+    if (onTurnOverSelect) {
+      onTurnOverSelect(id);
+    }
+    handleModeChange('view');
+  };
+
+  const handleTurnOverEdit = (id: string) => {
+    console.log('handleTurnOverEdit', id);
+    if (onTurnOverSelect) {
+      onTurnOverSelect(id);
+    }
+    handleModeChange('edit');
+  };
+
   const handleSave = (data: TurnOverUpsertRequest) => {
     if (onSave) {
       onSave(data);
@@ -43,25 +61,30 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
     handleModeChange('view');
   };
 
-  const handleDuplicate = () => {
+  const handleDuplicate = (id: string) => {
     if (onDuplicate) {
-      onDuplicate();
+      onDuplicate(id);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (id: string) => {
     if (onDelete) {
-      onDelete();
+      onDelete(id);
     }
   };
 
   return (
     <div style={{ width: '100%' }}>
-      {viewMode === 'home' && <TurnOversIntegrationPage onSelectTurnOver={() => handleModeChange('view')} />}
+      {viewMode === 'home' && <TurnOversIntegrationPage 
+        onSelectTurnOver={handleTurnOverSelect} 
+        onEdit={handleTurnOverEdit} 
+        onDuplicate={handleDuplicate} 
+        onDelete={handleDelete} 
+      />}
       {viewMode === 'view' && selectedTurnOver && (
         <TurnOversContentView 
           selectedTurnOver={selectedTurnOver} 
-          onEdit={() => handleModeChange('edit')}
+          onEdit={handleTurnOverEdit}
           onDuplicate={handleDuplicate}
           onDelete={handleDelete}
         />
