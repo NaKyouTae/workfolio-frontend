@@ -39,7 +39,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
       case ApplicationStage_ApplicationStageStatus.CANCELLED:
         return '취소';
       default:
-        return '-';
+        return '없음';
     }
   };
 
@@ -114,13 +114,9 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                     </td>
                     <td style={{ padding: '12px' }}>
                       {hasStages ? (
-                        <button
+                        <a
                           onClick={() => toggleRow(app.id || `app-${index}`)}
                           style={{
-                            padding: '4px 12px',
-                            background: 'transparent',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '4px',
                             fontSize: '13px',
                             color: '#6b7280',
                             cursor: 'pointer',
@@ -134,7 +130,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                           }}
                         >
                           상세보기 {isExpanded ? '▲' : '▼'}
-                        </button>
+                        </a>
                       ) : (
                         <span style={{ color: '#9ca3af', fontSize: '13px' }}>-</span>
                       )}
@@ -176,13 +172,9 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                     </td>
                     <td style={{ padding: '12px' }}>
                       {app.memo ? (
-                        <button
+                        <a
                           onClick={() => openMemoDetail(app.memo)}
                           style={{
-                            padding: '4px 12px',
-                            background: 'transparent',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '4px',
                             fontSize: '13px',
                             color: '#6b7280',
                             cursor: 'pointer',
@@ -196,7 +188,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                           }}
                         >
                           상세보기
-                        </button>
+                        </a>
                       ) : (
                         <span style={{ color: '#9ca3af', fontSize: '13px' }}>-</span>
                       )}
@@ -228,49 +220,55 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                                 gap: '8px'
                               }}>
                                 <div style={{ 
-                                  fontSize: '14px', 
-                                  fontWeight: 600, 
-                                  color: '#1a1a1a',
-                                  textAlign: 'center',
-                                  whiteSpace: 'nowrap'
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  justifyContent: 'center'
                                 }}>
-                                  {stage.name}
+                                  <div style={{ 
+                                    fontSize: '14px', 
+                                    fontWeight: 600, 
+                                    color: '#1a1a1a',
+                                    whiteSpace: 'nowrap'
+                                  }}>
+                                    {stage.name}
+                                  </div>
+                                  <div style={getStatusBadgeStyle(stage.status)}>
+                                    {getStatusLabel(stage.status)}
+                                  </div>
                                 </div>
-                                <div style={getStatusBadgeStyle(stage.status)}>
-                                  {getStatusLabel(stage.status)}
-                                </div>
-                                {stage.startedAt && (
+                                {(stage.startedAt || stage.memo) && (
                                   <div style={{ 
                                     fontSize: '12px', 
                                     color: '#6b7280',
-                                    whiteSpace: 'nowrap'
+                                    whiteSpace: 'nowrap',
+                                    textAlign: 'center'
                                   }}>
-                                    {DateUtil.formatTimestamp(stage.startedAt, 'YY.MM.DD.')}
+                                    {stage.startedAt && DateUtil.formatTimestamp(stage.startedAt, 'YY.MM.DD.')}
+                                    {stage.startedAt && stage.memo && (
+                                      <span style={{ margin: '0 6px', color: '#d1d5db' }}>|</span>
+                                    )}
+                                    {stage.memo && (
+                                      <a
+                                        onClick={() => openMemoDetail(stage.memo)}
+                                        style={{
+                                          fontSize: '11px',
+                                          color: '#6b7280',
+                                          cursor: 'pointer',
+                                          transition: 'all 0.2s',
+                                          textDecoration: 'underline'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          e.currentTarget.style.color = '#374151';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                          e.currentTarget.style.color = '#6b7280';
+                                        }}
+                                      >
+                                        메모
+                                      </a>
+                                    )}
                                   </div>
-                                )}
-                                {stage.memo && (
-                                  <button
-                                    onClick={() => openMemoDetail(stage.memo)}
-                                    style={{
-                                      padding: '2px 8px',
-                                      background: 'transparent',
-                                      border: '1px solid #e5e7eb',
-                                      borderRadius: '4px',
-                                      fontSize: '11px',
-                                      color: '#6b7280',
-                                      cursor: 'pointer',
-                                      transition: 'all 0.2s',
-                                      marginTop: '4px'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.backgroundColor = '#f9fafb';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.backgroundColor = 'transparent';
-                                    }}
-                                  >
-                                    메모
-                                  </button>
                                 )}
                               </div>
                               {stageIndex < app.applicationStages!.length - 1 && (
