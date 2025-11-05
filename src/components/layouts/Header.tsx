@@ -85,11 +85,11 @@ const Header = () => {
                             이력 관리
                         </Link>
                     </li>
-                    <li className={pathname === '/job-search' ? 'active' : ''}>
+                    <li className={pathname === '/turn-overs' ? 'active' : ''}>
                         <Link 
-                            href="/job-search" 
+                            href="/turn-overs" 
                             prefetch={false}
-                            onClick={(e) => handleMenuClick(e, '/job-search')}
+                            onClick={(e) => handleMenuClick(e, '/turn-overs')}
                         >
                             이직 관리
                         </Link>

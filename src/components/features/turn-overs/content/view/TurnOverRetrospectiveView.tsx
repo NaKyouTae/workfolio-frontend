@@ -1,0 +1,137 @@
+import React, { useState, useRef } from 'react';
+import { TurnOverRetrospectiveDetail } from '@/generated/common';
+import styles from './TurnOverRetrospectiveView.module.css';
+import MemoView from './common/MemoView';
+import AttachmentView from '@/components/features/common/AttachmentView';
+import FinalChoiceView from './common/FinalChoiceView';
+import NegotiationView from './common/NegotiationView';
+import SatisfactionView from './common/SatisfactionView';
+import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
+
+interface TurnOverRetrospectiveViewProps {
+  turnOverRetrospective: TurnOverRetrospectiveDetail | null;
+}
+
+const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ turnOverRetrospective }) => {
+  const [activeSection, setActiveSection] = useState<string>('finalChoice');
+  
+  // 각 섹션에 대한 ref
+  const finalChoiceRef = useRef<HTMLDivElement>(null);
+  const negotiationRef = useRef<HTMLDivElement>(null);
+  const satisfactionRef = useRef<HTMLDivElement>(null);
+  const memoRef = useRef<HTMLDivElement>(null);
+  const attachmentRef = useRef<HTMLDivElement>(null);
+
+  if (!turnOverRetrospective) {
+    return (
+      <div className={styles.emptyState}>
+        <p>회고 정보가 없습니다.</p>
+      </div>
+    );
+  }
+
+  // 섹션으로 스크롤하는 함수
+  const scrollToSection = (sectionId: string) => {
+    const refMap: { [key: string]: React.RefObject<HTMLDivElement | null> } = {
+      finalChoice: finalChoiceRef,
+      negotiation: negotiationRef,
+      satisfaction: satisfactionRef,
+      memo: memoRef,
+      attachment: attachmentRef,
+    };
+
+    const ref = refMap[sectionId];
+    if (ref?.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(sectionId);
+    }
+  };
+
+  const getNavigationItems = (): FloatingNavigationItem[] => {
+    return [
+      {
+        id: 'finalChoice',
+        label: '최종 선택',
+        isActive: activeSection === 'finalChoice',
+        onClick: () => scrollToSection('finalChoice'),
+      },
+      {
+        id: 'negotiation',
+        label: '처우 협의',
+        isActive: activeSection === 'negotiation',
+        onClick: () => scrollToSection('negotiation'),
+      },
+      {
+        id: 'satisfaction',
+        label: '만족도 평가',
+        isActive: activeSection === 'satisfaction',
+        onClick: () => scrollToSection('satisfaction'),
+      },
+      {
+        id: 'memo',
+        label: '메모',
+        isActive: activeSection === 'memo',
+        onClick: () => scrollToSection('memo'),
+      },
+      {
+        id: 'attachment',
+        label: '첨부',
+        isActive: activeSection === 'attachment',
+        onClick: () => scrollToSection('attachment'),
+      },
+    ];
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.contentInner}>
+        {/* 최종 선택 */}
+        <div ref={finalChoiceRef}>
+          <FinalChoiceView
+            name={turnOverRetrospective.name}
+            position={turnOverRetrospective.position}
+            reason={turnOverRetrospective.reason}
+          />
+        </div>
+
+        {/* 자우 협의 */}
+        <div ref={negotiationRef}>
+          <NegotiationView
+            position={turnOverRetrospective.position}
+            department={turnOverRetrospective.department}
+            rank={turnOverRetrospective.rank}
+            jobTitle={turnOverRetrospective.jobTitle}
+            salary={turnOverRetrospective.salary}
+            workType={turnOverRetrospective.workType}
+            employmentType={turnOverRetrospective.employmentType}
+            joinedAt={turnOverRetrospective.joinedAt}
+          />
+        </div>
+
+        {/* 만족도 평가 */}
+        <div ref={satisfactionRef}>
+          <SatisfactionView
+            score={turnOverRetrospective.score}
+            reviewSummary={turnOverRetrospective.reviewSummary}
+          />
+        </div>
+
+        {/* 메모 */}
+        <div ref={memoRef}>
+          <MemoView memos={turnOverRetrospective.memos || []} />
+        </div>
+
+        {/* 첨부 */}
+        <div ref={attachmentRef}>
+          <AttachmentView attachments={turnOverRetrospective.attachments || []} />
+        </div>
+      </div>
+
+      {/* Floating Navigation */}
+      <TurnOverFloatingActions navigationItems={getNavigationItems()} />
+    </div>
+  );
+};
+
+export default TurnOverRetrospectiveView;
+

@@ -1,0 +1,61 @@
+.container {
+  background: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.titleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.date {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Tab Content */
+.tabContent {
+  flex: 1;
+  overflow: hidden;
+  background: #f9fafb;
+  display: flex;
+  position: relative;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 20px 20px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .tabContent {
+    padding: 24px 20px;
+  }
+}
+

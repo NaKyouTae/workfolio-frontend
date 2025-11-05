@@ -1,0 +1,58 @@
+import { NextRequest, NextResponse } from 'next/server';
+import HttpMethod from '@/enums/HttpMethod';
+import { getCookie } from '@/utils/cookie';
+import { apiFetchHandler } from '@/utils/ApiFetchHandler';
+import { TurnOverListResponse, TurnOverUpsertRequest } from '@/generated/turn_over';
+import { SuccessResponse } from '@/generated/common';
+
+export async function GET() {
+  try {
+    const accessToken = await getCookie('accessToken');
+      
+    // accessToken이 없으면 401 응답 반환
+    if (!accessToken) {
+        return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
+    }
+    
+    const res = await apiFetchHandler<TurnOverListResponse>(
+      'http://localhost:8080/api/turn-overs', 
+      HttpMethod.GET, 
+      null, 
+      accessToken,
+    );
+
+    const data = await res.json();
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error fetching turn overs:', error);
+    return NextResponse.json({ error: 'Failed to fetch turn overs' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body: TurnOverUpsertRequest = await request.json();
+    
+    const accessToken = await getCookie('accessToken');
+      
+      // accessToken이 없으면 401 응답 반환
+      if (!accessToken) {
+          return new Response(JSON.stringify({ error: 'Access token not found' }), { status: 401 });
+      }
+    
+    const res = await apiFetchHandler<SuccessResponse>(
+      'http://localhost:8080/api/turn-overs', 
+      HttpMethod.POST, 
+      body, 
+      accessToken,
+    );
+
+    const data = await res.json();
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error creating turn over:', error);
+    return NextResponse.json({ error: 'Failed to create turn over' }, { status: 500 });
+  }
+}

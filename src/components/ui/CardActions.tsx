@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import styles from '../features/career/CareerContentEdit.module.css';
+import styles from './CardActions.module.css';
 
 interface CardActionsProps {
   isVisible: boolean;
@@ -53,4 +53,3 @@ const CardActions: React.FC<CardActionsProps> = ({
 };
 
 export default CardActions;
-
