@@ -106,7 +106,7 @@ const CareerHome: React.FC<CareerHomeProps> = ({
                   <div className="info">
                     <div>
                       <div>
-                        <input type="radio" name="default" id={`resume-${resume.id}`} checked={resume.isDefault} /><label htmlFor="resume1"></label>
+                        <input type="radio" name="default" id={`resume-${resume.id}`} checked={resume.isDefault} readOnly /><label htmlFor="resume1"></label>
                         <p>{resume.title}</p>
                       </div>
                       <ul>

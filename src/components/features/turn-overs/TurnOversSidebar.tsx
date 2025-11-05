@@ -24,7 +24,6 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, onGoHome
       width: '250px', 
       backgroundColor: '#fff', 
       borderRight: '1px solid #e0e0e0',
-      boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden'
