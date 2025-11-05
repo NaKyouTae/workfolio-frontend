@@ -14,7 +14,7 @@ export interface Worker {
   nickName: string;
   phone: string;
   email: string;
-  brithDate: number;
+  birthDate: number;
   gender: Worker_Gender;
   createdAt: number;
   updatedAt: number;
@@ -1370,7 +1370,7 @@ export function memo_MemoTargetTypeToJSON(object: Memo_MemoTargetType): string {
 }
 
 function createBaseWorker(): Worker {
-  return { id: "", nickName: "", phone: "", email: "", brithDate: 0, gender: 0, createdAt: 0, updatedAt: 0 };
+  return { id: "", nickName: "", phone: "", email: "", birthDate: 0, gender: 0, createdAt: 0, updatedAt: 0 };
 }
 
 export const Worker: MessageFns<Worker> = {
@@ -1387,8 +1387,8 @@ export const Worker: MessageFns<Worker> = {
     if (message.email !== "") {
       writer.uint32(34).string(message.email);
     }
-    if (message.brithDate !== 0) {
-      writer.uint32(40).uint64(message.brithDate);
+    if (message.birthDate !== 0) {
+      writer.uint32(40).uint64(message.birthDate);
     }
     if (message.gender !== 0) {
       writer.uint32(48).int32(message.gender);
@@ -1446,7 +1446,7 @@ export const Worker: MessageFns<Worker> = {
             break;
           }
 
-          message.brithDate = longToNumber(reader.uint64());
+          message.birthDate = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -1488,7 +1488,7 @@ export const Worker: MessageFns<Worker> = {
       nickName: isSet(object.nickName) ? globalThis.String(object.nickName) : "",
       phone: isSet(object.phone) ? globalThis.String(object.phone) : "",
       email: isSet(object.email) ? globalThis.String(object.email) : "",
-      brithDate: isSet(object.brithDate) ? globalThis.Number(object.brithDate) : 0,
+      birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : 0,
       gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : 0,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -1509,8 +1509,8 @@ export const Worker: MessageFns<Worker> = {
     if (message.email !== "") {
       obj.email = message.email;
     }
-    if (message.brithDate !== 0) {
-      obj.brithDate = Math.round(message.brithDate);
+    if (message.birthDate !== 0) {
+      obj.birthDate = Math.round(message.birthDate);
     }
     if (message.gender !== 0) {
       obj.gender = worker_GenderToJSON(message.gender);
@@ -1533,7 +1533,7 @@ export const Worker: MessageFns<Worker> = {
     message.nickName = object.nickName ?? "";
     message.phone = object.phone ?? "";
     message.email = object.email ?? "";
-    message.brithDate = object.brithDate ?? 0;
+    message.birthDate = object.birthDate ?? 0;
     message.gender = object.gender ?? 0;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;

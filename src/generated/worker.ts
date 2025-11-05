@@ -6,9 +6,18 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { Worker } from "./common";
+import { Worker, Worker_Gender, worker_GenderFromJSON, worker_GenderToJSON } from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
+
+export interface WorkerUpdateRequest {
+  id: string;
+  nickName: string;
+  phone: string;
+  email: string;
+  birthDate: number;
+  gender: Worker_Gender;
+}
 
 export interface WorkerGetResponse {
   worker?: Worker | undefined;
@@ -21,6 +30,146 @@ export interface WorkerListResponse {
 export interface WorkerUpdateNickNameResponse {
   isSuccess: boolean;
 }
+
+function createBaseWorkerUpdateRequest(): WorkerUpdateRequest {
+  return { id: "", nickName: "", phone: "", email: "", birthDate: 0, gender: 0 };
+}
+
+export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
+  encode(message: WorkerUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.nickName !== "") {
+      writer.uint32(18).string(message.nickName);
+    }
+    if (message.phone !== "") {
+      writer.uint32(26).string(message.phone);
+    }
+    if (message.email !== "") {
+      writer.uint32(34).string(message.email);
+    }
+    if (message.birthDate !== 0) {
+      writer.uint32(40).uint64(message.birthDate);
+    }
+    if (message.gender !== 0) {
+      writer.uint32(48).int32(message.gender);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WorkerUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkerUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.nickName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.phone = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.email = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.birthDate = longToNumber(reader.uint64());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.gender = reader.int32() as any;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkerUpdateRequest {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      nickName: isSet(object.nickName) ? globalThis.String(object.nickName) : "",
+      phone: isSet(object.phone) ? globalThis.String(object.phone) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : "",
+      birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : 0,
+      gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : 0,
+    };
+  },
+
+  toJSON(message: WorkerUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.nickName !== "") {
+      obj.nickName = message.nickName;
+    }
+    if (message.phone !== "") {
+      obj.phone = message.phone;
+    }
+    if (message.email !== "") {
+      obj.email = message.email;
+    }
+    if (message.birthDate !== 0) {
+      obj.birthDate = Math.round(message.birthDate);
+    }
+    if (message.gender !== 0) {
+      obj.gender = worker_GenderToJSON(message.gender);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WorkerUpdateRequest>, I>>(base?: I): WorkerUpdateRequest {
+    return WorkerUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WorkerUpdateRequest>, I>>(object: I): WorkerUpdateRequest {
+    const message = createBaseWorkerUpdateRequest();
+    message.id = object.id ?? "";
+    message.nickName = object.nickName ?? "";
+    message.phone = object.phone ?? "";
+    message.email = object.email ?? "";
+    message.birthDate = object.birthDate ?? 0;
+    message.gender = object.gender ?? 0;
+    return message;
+  },
+};
 
 function createBaseWorkerGetResponse(): WorkerGetResponse {
   return { worker: undefined };
@@ -211,6 +360,17 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(int64: { toString(): string }): number {
+  const num = globalThis.Number(int64.toString());
+  if (num > globalThis.Number.MAX_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  if (num < globalThis.Number.MIN_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
+  }
+  return num;
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

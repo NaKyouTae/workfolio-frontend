@@ -35,7 +35,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
   const [isDefault, setIsDefault] = useState(false);
   const [name, setName] = useState(user?.nickName || '');
   const [birthDate, setBirthDate] = useState<number | undefined>(() => {
-    const normalized = DateUtil.normalizeTimestamp(user?.brithDate);
+    const normalized = DateUtil.normalizeTimestamp(user?.birthDate);
     return normalized === 0 ? undefined : normalized;
   });
   const [gender, setGender] = useState<Resume_Gender | undefined>(normalizeEnumValue<Resume_Gender>(user?.gender, Resume_Gender));

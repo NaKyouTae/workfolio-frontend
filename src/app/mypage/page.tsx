@@ -1,55 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useUser } from '@/hooks/useUser';
 import Header from '@/components/layouts/Header';
+import ProfileManagement from '@/components/features/mypage/ProfileManagement';
 
 const Mypage: React.FC = () => {
-    const { user, updateUserNickname, deleteAccount, isLoading, isLoggedIn } = useUser();
+    const { deleteAccount, isLoading, isLoggedIn } = useUser();
     const [activeMenu, setActiveMenu] = useState('profile');
-    const [nickname, setNickname] = useState('');
-    const [nicknameError, setNicknameError] = useState('');
-    const [isUpdating, setIsUpdating] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    
-    // 유저 정보가 로드되면 닉네임 설정
-    useEffect(() => {
-        if (user) {
-            setNickname(user.nickName);
-        } else if (!isLoggedIn) {
-            // 로그인하지 않은 경우 샘플 닉네임 설정
-            setNickname('샘플 사용자');
-        }
-    }, [user, isLoggedIn]);
-
-    const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNickname(e.target.value);
-        // 닉네임 변경 시 오류 메시지 초기화
-        if (nicknameError) {
-            setNicknameError('');
-        }
-    };
-
-    const handleDuplicateCheck = async () => {
-        if (!nickname || nickname === user?.nickName) {
-            return;
-        }
-        
-        try {
-            setIsUpdating(true);
-            setNicknameError('');
-            
-            await updateUserNickname(nickname);
-            
-            // 성공 시 오류 메시지 초기화
-            setNicknameError('');
-        } catch {
-            // 에러는 updateUserNickname에서 처리됨
-            setNicknameError('이 닉네임은 이미 사용 중이에요.');
-        } finally {
-            setIsUpdating(false);
-        }
-    };
 
     const handleWithdraw = async () => {
         if (!confirm('정말로 회원 탈퇴를 하시겠습니까? 탈퇴 후에는 모든 데이터가 삭제되며 복구할 수 없습니다.')) {
@@ -132,106 +91,7 @@ const Mypage: React.FC = () => {
                     backgroundColor: '#ffffff'
                 }}>
                     {activeMenu === 'profile' && (
-                        <div>
-                            <h2 style={{
-                                fontSize: '24px',
-                                fontWeight: 'bold',
-                                marginBottom: '30px',
-                                color: '#000000'
-                            }}>
-                                프로필 관리
-                            </h2>
-                            
-                            {!isLoggedIn && (
-                                <div style={{
-                                    backgroundColor: '#fff3cd',
-                                    border: '1px solid #ffeaa7',
-                                    borderRadius: '4px',
-                                    padding: '15px',
-                                    marginBottom: '30px',
-                                    color: '#856404'
-                                }}>
-                                    📋 샘플 데이터를 표시하고 있습니다. 로그인하면 실제 프로필을 관리할 수 있습니다.
-                                </div>
-                            )}
-                            
-                            <div style={{ marginBottom: '30px' }}>
-                                <label style={{
-                                    display: 'block',
-                                    fontSize: '14px',
-                                    fontWeight: 'bold',
-                                    marginBottom: '8px',
-                                    color: '#000000'
-                                }}>
-                                    닉네임(필수)
-                                </label>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <div style={{ position: 'relative', flex: 1 }}>
-                                        <input
-                                            type="text"
-                                            value={nickname}
-                                            onChange={handleNicknameChange}
-                                            disabled={!isLoggedIn}
-                                            style={{
-                                                width: '100%',
-                                                padding: '12px 16px',
-                                                border: '1px solid #e9ecef',
-                                                borderRadius: '4px',
-                                                fontSize: '14px',
-                                                outline: 'none',
-                                                backgroundColor: !isLoggedIn ? '#f8f9fa' : '#ffffff',
-                                                color: !isLoggedIn ? '#6c757d' : '#000000'
-                                            }}
-                                        />
-                                        {nickname && (
-                                            <button
-                                                onClick={() => setNickname('')}
-                                                style={{
-                                                    position: 'absolute',
-                                                    right: '12px',
-                                                    top: '50%',
-                                                    transform: 'translateY(-50%)',
-                                                    background: 'none',
-                                                    border: 'none',
-                                                    cursor: 'pointer',
-                                                    fontSize: '16px',
-                                                    color: '#6c757d'
-                                                }}
-                                            >
-                                                ×
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <button 
-                                            onClick={handleDuplicateCheck} 
-                                            disabled={!isLoggedIn || !nickname || nickname === user?.nickName || isUpdating || isLoading}
-                                            style={{ 
-                                                width: '70px', 
-                                                height: '30px', 
-                                                backgroundColor: (!isLoggedIn || !nickname || nickname === user?.nickName || isUpdating || isLoading) ? "#6c757d" : "#007bff", 
-                                                color: 'white', 
-                                                border: 'none', 
-                                                borderRadius: '4px',
-                                                cursor: (!isLoggedIn || !nickname || nickname === user?.nickName || isUpdating || isLoading) ? 'not-allowed' : 'pointer'
-                                            }}
-                                        >
-                                            {isUpdating ? '변경 중...' : '중복 확인'}
-                                        </button>
-                                    </div>
-                                    
-                                </div>
-                                {nicknameError && (
-                                    <div style={{
-                                        color: '#dc3545',
-                                        fontSize: '12px',
-                                        marginTop: '5px'
-                                    }}>
-                                        {nicknameError}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                        <ProfileManagement />
                     )}
                     {activeMenu === 'withdraw' && (
                         <div>

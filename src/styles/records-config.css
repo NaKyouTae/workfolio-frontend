@@ -1,7 +1,7 @@
 /* RecordsConfig 컴포넌트 스타일 */
 .records-config {
     background: white;
-    min-height: 100vh;
+    min-height: calc(100vh - 90px);
     padding: 24px;
     font-family: 'Pretendard', sans-serif;
 }
