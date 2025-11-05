@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { ResumeDetail } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
 
-interface CareerHomeProps {
+interface CareerIntegrationProps {
   resumeDetails: ResumeDetail[];
+  onView: (resume: ResumeDetail) => void;
   onEdit: (resume: ResumeDetail) => void;
   duplicateResume: (resumeId?: string) => Promise<void>;
   deleteResume: (resumeId?: string) => Promise<void>;
@@ -12,8 +13,9 @@ interface CareerHomeProps {
   calculateTotalCareer: (resume: ResumeDetail) => string;
 }
 
-const CareerHome: React.FC<CareerHomeProps> = ({
+const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   resumeDetails,
+  onView,
   onEdit,
   duplicateResume,
   deleteResume,
@@ -23,28 +25,38 @@ const CareerHome: React.FC<CareerHomeProps> = ({
 }) => {
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
 
+  // 이력서 상세보기
+  const handleView = (resume: ResumeDetail) => {
+    onView(resume);
+  };
+
   // 이력서 편집
-  const handleEdit = (resume: ResumeDetail) => {
+  const handleEdit = (e: React.MouseEvent, resume: ResumeDetail) => {
+    e.stopPropagation();
     onEdit(resume);
   };
 
   // 이력서 복제
-  const handleDuplicate = (resume: ResumeDetail) => {
+  const handleDuplicate = (e: React.MouseEvent, resume: ResumeDetail) => {
+    e.stopPropagation();
     duplicateResume(resume.id);
   };
 
   // 이력서 삭제
-  const handleDelete = (resume: ResumeDetail) => {
+  const handleDelete = (e: React.MouseEvent, resume: ResumeDetail) => {
+    e.stopPropagation();
     deleteResume(resume.id);
   };
 
   // PDF 내보내기
-  const handleExportPDF = (resume: ResumeDetail) => {
+  const handleExportPDF = (e: React.MouseEvent, resume: ResumeDetail) => {
+    e.stopPropagation();
     exportPDF(resume.id);
   };
 
   // URL 공유하기
-  const handleCopyURL = (resume: ResumeDetail) => {
+  const handleCopyURL = (e: React.MouseEvent, resume: ResumeDetail) => {
+    e.stopPropagation();
     copyURL(resume.publicId);
   };
 
@@ -102,7 +114,7 @@ const CareerHome: React.FC<CareerHomeProps> = ({
             </div>
             <ul className="summary-list">
               {sortedResumes.map((resume) => (
-                <li key={resume.id}>
+                <li key={resume.id} onClick={() => handleView(resume)} style={{ cursor: 'pointer' }}>
                   <div className="info">
                     <div>
                       <div>
@@ -110,11 +122,11 @@ const CareerHome: React.FC<CareerHomeProps> = ({
                         <p>{resume.title}</p>
                       </div>
                       <ul>
-                        <li onClick={() => handleEdit(resume)}>편집</li>
-                        <li onClick={() => handleDuplicate(resume)}>복제</li>
-                        <li onClick={() => handleDelete(resume)}>삭제</li>
-                        <li className="font-bl" onClick={() => handleExportPDF(resume)}>PDF 내보내기</li>
-                        <li className="font-bl" onClick={() => handleCopyURL(resume)}>URL 공유하기</li>
+                        <li onClick={(e) => handleEdit(e, resume)}>편집</li>
+                        <li onClick={(e) => handleDuplicate(e, resume)}>복제</li>
+                        <li onClick={(e) => handleDelete(e, resume)}>삭제</li>
+                        <li className="font-bl" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li>
+                        <li className="font-bl" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li>
                       </ul>
                     </div>
                     <ul>
@@ -135,5 +147,5 @@ const CareerHome: React.FC<CareerHomeProps> = ({
   );
 };
 
-export default CareerHome;
+export default CareerIntegration;
 

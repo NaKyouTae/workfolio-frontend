@@ -140,7 +140,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
   const handleSaveAll = useCallback(async () => {
     const updateRequest: ResumeUpdateRequest = {
       id: '',
-      title,
+      title: title || '제목없는 이력서',
       name,
       phone,
       email,

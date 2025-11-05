@@ -91,11 +91,23 @@ const InterviewQuestionEdit: React.FC<InterviewQuestionEditProps> = ({
   onUpdate,
 }) => {
   const addInterviewQuestion = () => {
-    onUpdate([...interviewQuestions, { question: '', answer: '' }]);
+    const newItem: TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest = {
+      question: '',
+      answer: '',
+      isVisible: true,
+      priority: interviewQuestions.length,
+    };
+    onUpdate([...interviewQuestions, newItem]);
   };
 
   const removeInterviewQuestion = (index: number) => {
-    onUpdate(interviewQuestions.filter((_, i) => i !== index));
+    const updated = interviewQuestions.filter((_, i) => i !== index);
+    // 재정렬 후 priority 업데이트
+    const reordered = updated.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(reordered);
   };
 
   const updateInterviewQuestion = (index: number, field: 'question' | 'answer', value: string) => {
@@ -105,7 +117,12 @@ const InterviewQuestionEdit: React.FC<InterviewQuestionEditProps> = ({
   };
 
   const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest[]) => {
-    onUpdate(reordered);
+    // 드래그앤드롭 후 priority를 index로 업데이트
+    const updatedWithPriority = reordered.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(updatedWithPriority);
   };
 
   return (

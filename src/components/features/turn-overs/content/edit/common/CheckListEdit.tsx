@@ -4,6 +4,9 @@ import Input from '@/components/ui/Input';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import EmptyState from '@/components/ui/EmptyState';
+import GuideModal from '@/components/ui/GuideModal';
+import { useGuide } from '@/hooks/useGuide';
+import { checkListGuide } from '@/utils/turnOverGuideData';
 import '@/styles/component-edit.css';
 
 interface CheckListEditProps {
@@ -87,12 +90,26 @@ const CheckListEdit: React.FC<CheckListEditProps> = ({
   checkList,
   onUpdate,
 }) => {
+  const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
+
   const addCheckListItem = () => {
-    onUpdate([...checkList, { checked: false, content: '' }]);
+    const newItem: TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest = {
+      checked: false,
+      content: '',
+      isVisible: true,
+      priority: checkList.length,
+    };
+    onUpdate([...checkList, newItem]);
   };
 
   const removeCheckListItem = (index: number) => {
-    onUpdate(checkList.filter((_, i) => i !== index));
+    const updated = checkList.filter((_, i) => i !== index);
+    // 재정렬 후 priority 업데이트
+    const reordered = updated.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(reordered);
   };
 
   const updateCheckListChecked = (index: number, checked: boolean) => {
@@ -108,24 +125,46 @@ const CheckListEdit: React.FC<CheckListEditProps> = ({
   };
 
   const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]) => {
-    onUpdate(reordered);
+    // 드래그앤드롭 후 priority를 index로 업데이트
+    const updatedWithPriority = reordered.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(updatedWithPriority);
   };
 
   return (
-    <div className="edit-section">
-      <div className="edit-section-header">
-        <h3 className="edit-section-title-counter">
-          체크리스트 | {checkList.length}개
-        </h3>
-        <div className="edit-add-button-container">
-          <button
-            onClick={addCheckListItem}
-            className="edit-add-button"
-          >
-            <span>+ 추가</span>
-          </button>
+    <>
+      <div className="edit-section">
+        <div className="edit-section-header">
+          <h3 className="edit-section-title-counter">
+            체크리스트 | {checkList.length}개
+            <span 
+              onClick={openGuide}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '18px',
+                height: '18px',
+                background: '#e5e7eb',
+                color: '#6b7280',
+                borderRadius: '50%',
+                fontSize: '12px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                marginLeft: '8px'
+              }}>?</span>
+          </h3>
+          <div className="edit-add-button-container">
+            <button
+              onClick={addCheckListItem}
+              className="edit-add-button"
+            >
+              <span>+ 추가</span>
+            </button>
+          </div>
         </div>
-      </div>
 
       {checkList.length === 0 ? (
         <EmptyState text="체크리스트를 추가해 주세요." />
@@ -146,7 +185,16 @@ const CheckListEdit: React.FC<CheckListEditProps> = ({
           )}
         />
       )}
-    </div>
+      </div>
+
+      {/* 가이드 모달 */}
+      <GuideModal
+        isOpen={isGuideOpen}
+        onClose={closeGuide}
+        title="체크리스트 가이드"
+        sections={checkListGuide}
+      />
+    </>
   );
 };
 

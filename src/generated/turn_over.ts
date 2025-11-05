@@ -31,6 +31,8 @@ export interface TurnOverUpsertRequest {
 export interface TurnOverUpsertRequest_MemoRequest {
   id?: string | undefined;
   content: string;
+  isVisible: boolean;
+  priority: number;
 }
 
 export interface TurnOverUpsertRequest_TurnOverGoalRequest {
@@ -48,18 +50,24 @@ export interface TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionReque
   id?: string | undefined;
   question: string;
   content: string;
+  isVisible: boolean;
+  priority: number;
 }
 
 export interface TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest {
   id?: string | undefined;
   question: string;
   answer: string;
+  isVisible: boolean;
+  priority: number;
 }
 
 export interface TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest {
   id?: string | undefined;
   checked: boolean;
   content: string;
+  isVisible: boolean;
+  priority: number;
 }
 
 export interface TurnOverUpsertRequest_TurnOverChallengeRequest {
@@ -80,6 +88,8 @@ export interface TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRe
   applicationSource: string;
   memo: string;
   applicationStages: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[];
+  isVisible: boolean;
+  priority: number;
 }
 
 export interface TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest {
@@ -88,6 +98,8 @@ export interface TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRe
   status: ApplicationStage_ApplicationStageStatus;
   startedAt?: number | undefined;
   memo: string;
+  isVisible: boolean;
+  priority: number;
 }
 
 export interface TurnOverUpsertRequest_TurnOverRetrospectiveRequest {
@@ -274,7 +286,7 @@ export const TurnOverUpsertRequest: MessageFns<TurnOverUpsertRequest> = {
 };
 
 function createBaseTurnOverUpsertRequest_MemoRequest(): TurnOverUpsertRequest_MemoRequest {
-  return { id: undefined, content: "" };
+  return { id: undefined, content: "", isVisible: false, priority: 0 };
 }
 
 export const TurnOverUpsertRequest_MemoRequest: MessageFns<TurnOverUpsertRequest_MemoRequest> = {
@@ -284,6 +296,12 @@ export const TurnOverUpsertRequest_MemoRequest: MessageFns<TurnOverUpsertRequest
     }
     if (message.content !== "") {
       writer.uint32(18).string(message.content);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(24).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(32).uint32(message.priority);
     }
     return writer;
   },
@@ -311,6 +329,22 @@ export const TurnOverUpsertRequest_MemoRequest: MessageFns<TurnOverUpsertRequest
           message.content = reader.string();
           continue;
         }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -324,6 +358,8 @@ export const TurnOverUpsertRequest_MemoRequest: MessageFns<TurnOverUpsertRequest
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       content: isSet(object.content) ? globalThis.String(object.content) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -334,6 +370,12 @@ export const TurnOverUpsertRequest_MemoRequest: MessageFns<TurnOverUpsertRequest
     }
     if (message.content !== "") {
       obj.content = message.content;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     return obj;
   },
@@ -349,6 +391,8 @@ export const TurnOverUpsertRequest_MemoRequest: MessageFns<TurnOverUpsertRequest
     const message = createBaseTurnOverUpsertRequest_MemoRequest();
     message.id = object.id ?? undefined;
     message.content = object.content ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
@@ -572,7 +616,7 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest: MessageFns<TurnOverUpser
 };
 
 function createBaseTurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest(): TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest {
-  return { id: undefined, question: "", content: "" };
+  return { id: undefined, question: "", content: "", isVisible: false, priority: 0 };
 }
 
 export const TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest: MessageFns<
@@ -590,6 +634,12 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest: 
     }
     if (message.content !== "") {
       writer.uint32(26).string(message.content);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(32).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(40).uint32(message.priority);
     }
     return writer;
   },
@@ -628,6 +678,22 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest: 
           message.content = reader.string();
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -642,6 +708,8 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest: 
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       question: isSet(object.question) ? globalThis.String(object.question) : "",
       content: isSet(object.content) ? globalThis.String(object.content) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -655,6 +723,12 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest: 
     }
     if (message.content !== "") {
       obj.content = message.content;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     return obj;
   },
@@ -671,12 +745,14 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest: 
     message.id = object.id ?? undefined;
     message.question = object.question ?? "";
     message.content = object.content ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
 
 function createBaseTurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest(): TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest {
-  return { id: undefined, question: "", answer: "" };
+  return { id: undefined, question: "", answer: "", isVisible: false, priority: 0 };
 }
 
 export const TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest: MessageFns<
@@ -694,6 +770,12 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest:
     }
     if (message.answer !== "") {
       writer.uint32(26).string(message.answer);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(32).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(40).uint32(message.priority);
     }
     return writer;
   },
@@ -732,6 +814,22 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest:
           message.answer = reader.string();
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -746,6 +844,8 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest:
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       question: isSet(object.question) ? globalThis.String(object.question) : "",
       answer: isSet(object.answer) ? globalThis.String(object.answer) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -759,6 +859,12 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest:
     }
     if (message.answer !== "") {
       obj.answer = message.answer;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     return obj;
   },
@@ -775,12 +881,14 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest:
     message.id = object.id ?? undefined;
     message.question = object.question ?? "";
     message.answer = object.answer ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
 
 function createBaseTurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest(): TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest {
-  return { id: undefined, checked: false, content: "" };
+  return { id: undefined, checked: false, content: "", isVisible: false, priority: 0 };
 }
 
 export const TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest: MessageFns<
@@ -798,6 +906,12 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest: Message
     }
     if (message.content !== "") {
       writer.uint32(26).string(message.content);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(32).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(40).uint32(message.priority);
     }
     return writer;
   },
@@ -836,6 +950,22 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest: Message
           message.content = reader.string();
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -850,6 +980,8 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest: Message
       id: isSet(object.id) ? globalThis.String(object.id) : undefined,
       checked: isSet(object.checked) ? globalThis.Boolean(object.checked) : false,
       content: isSet(object.content) ? globalThis.String(object.content) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -863,6 +995,12 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest: Message
     }
     if (message.content !== "") {
       obj.content = message.content;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     return obj;
   },
@@ -879,6 +1017,8 @@ export const TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest: Message
     message.id = object.id ?? undefined;
     message.checked = object.checked ?? false;
     message.content = object.content ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
@@ -1027,6 +1167,8 @@ function createBaseTurnOverUpsertRequest_TurnOverChallengeRequest_JobApplication
     applicationSource: "",
     memo: "",
     applicationStages: [],
+    isVisible: false,
+    priority: 0,
   };
 }
 
@@ -1069,6 +1211,12 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
         v!,
         writer.uint32(82).fork(),
       ).join();
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(88).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(96).uint32(message.priority);
     }
     return writer;
   },
@@ -1168,6 +1316,22 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
           );
           continue;
         }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1193,6 +1357,8 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
           TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest.fromJSON(e)
         )
         : [],
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -1230,6 +1396,12 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
         TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest.toJSON(e)
       );
     }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     return obj;
   },
 
@@ -1255,12 +1427,14 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
       object.applicationStages?.map((e) =>
         TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest.fromPartial(e)
       ) || [];
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };
 
 function createBaseTurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest(): TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest {
-  return { id: undefined, name: "", status: 0, startedAt: undefined, memo: "" };
+  return { id: undefined, name: "", status: 0, startedAt: undefined, memo: "", isVisible: false, priority: 0 };
 }
 
 export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest: MessageFns<
@@ -1284,6 +1458,12 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
     }
     if (message.memo !== "") {
       writer.uint32(42).string(message.memo);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(48).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(56).uint32(message.priority);
     }
     return writer;
   },
@@ -1339,6 +1519,22 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
           message.memo = reader.string();
           continue;
         }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1355,6 +1551,8 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
       status: isSet(object.status) ? applicationStage_ApplicationStageStatusFromJSON(object.status) : 0,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
 
@@ -1376,6 +1574,12 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
     }
     if (message.memo !== "") {
       obj.memo = message.memo;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     return obj;
   },
@@ -1403,6 +1607,8 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
     message.status = object.status ?? 0;
     message.startedAt = object.startedAt ?? undefined;
     message.memo = object.memo ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     return message;
   },
 };

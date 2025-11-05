@@ -91,11 +91,23 @@ const SelfIntroductionEdit: React.FC<SelfIntroductionEditProps> = ({
   onUpdate,
 }) => {
   const addSelfIntroduction = () => {
-    onUpdate([...selfIntroductions, { question: '', content: '' }]);
+    const newItem: TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest = {
+      question: '',
+      content: '',
+      isVisible: true,
+      priority: selfIntroductions.length,
+    };
+    onUpdate([...selfIntroductions, newItem]);
   };
 
   const removeSelfIntroduction = (index: number) => {
-    onUpdate(selfIntroductions.filter((_, i) => i !== index));
+    const updated = selfIntroductions.filter((_, i) => i !== index);
+    // 재정렬 후 priority 업데이트
+    const reordered = updated.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(reordered);
   };
 
   const updateSelfIntroduction = (index: number, field: 'question' | 'content', value: string) => {
@@ -105,7 +117,12 @@ const SelfIntroductionEdit: React.FC<SelfIntroductionEditProps> = ({
   };
 
   const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]) => {
-    onUpdate(reordered);
+    // 드래그앤드롭 후 priority를 index로 업데이트
+    const updatedWithPriority = reordered.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(updatedWithPriority);
   };
 
   return (

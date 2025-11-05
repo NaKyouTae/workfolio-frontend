@@ -173,24 +173,30 @@ const JobApplicationEdit: React.FC<JobApplicationEditProps> = ({
   onUpdate,
 }) => {
   const addJobApplication = () => {
-    onUpdate([
-      ...jobApplications,
-      {
-        name: '',
-        position: '',
-        jobPostingTitle: '',
-        jobPostingUrl: '',
-        startedAt: undefined,
-        endedAt: undefined,
-        applicationSource: '',
-        memo: '',
-        applicationStages: [],
-      } as TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest,
-    ]);
+    const newItem: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest = {
+      name: '',
+      position: '',
+      jobPostingTitle: '',
+      jobPostingUrl: '',
+      startedAt: undefined,
+      endedAt: undefined,
+      applicationSource: '',
+      memo: '',
+      applicationStages: [],
+      isVisible: true,
+      priority: jobApplications.length,
+    };
+    onUpdate([...jobApplications, newItem]);
   };
 
   const removeJobApplication = (index: number) => {
-    onUpdate(jobApplications.filter((_, i) => i !== index));
+    const updated = jobApplications.filter((_, i) => i !== index);
+    // 재정렬 후 priority 업데이트
+    const reordered = updated.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(reordered);
   };
 
   const updateJobApplication = (
@@ -232,7 +238,12 @@ const JobApplicationEdit: React.FC<JobApplicationEditProps> = ({
   };
 
   const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[]) => {
-    onUpdate(reordered);
+    // 드래그앤드롭 후 priority를 index로 업데이트
+    const updatedWithPriority = reordered.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(updatedWithPriority);
   };
 
   return (

@@ -8,6 +8,9 @@ import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloa
 import SelfIntroductionEdit from './common/SelfIntroductionEdit';
 import InterviewQuestionEdit from './common/InterviewQuestionEdit';
 import CheckListEdit from './common/CheckListEdit';
+import GuideModal from '@/components/ui/GuideModal';
+import { useGuide } from '@/hooks/useGuide';
+import { turnOverDirectionGuide } from '@/utils/turnOverGuideData';
 
 interface TurnOverGoalEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
@@ -24,6 +27,9 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
   const [checkList, setCheckList] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]>([]);
   const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
   const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
+
+  // 가이드 모달
+  const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
 
   // 각 섹션에 대한 ref
   const directionRef = useRef<HTMLDivElement>(null);
@@ -136,7 +142,7 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
             이직 방향 설정
-            <span className={styles.helpIcon}>?</span>
+            <span className={styles.helpIcon} onClick={openGuide}>?</span>
           </h2>
         </div>
         <div className={styles.sectionContent}>
@@ -203,6 +209,14 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
         navigationItems={getNavigationItems()}
         onSave={handleSave}
         onCancel={() => onCancel?.()}
+      />
+
+      {/* 가이드 모달 */}
+      <GuideModal
+        isOpen={isGuideOpen}
+        onClose={closeGuide}
+        title="이직 방향 설정 가이드"
+        sections={turnOverDirectionGuide}
       />
     </div>
   );

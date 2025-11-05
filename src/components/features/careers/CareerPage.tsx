@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import CareerSidebar from './CareerSidebar';
-import CareerHome from './CareerHome';
+import CareerIntegration from './CareerIntegration';
 import { useUser } from '@/hooks/useUser';
 import { useResumeDetails } from '@/hooks/useResumeDetails';
 import { ResumeDetail } from '@/generated/common';
@@ -161,8 +161,9 @@ const CareerPage: React.FC = () => {
       
       {/* 이력서 홈 (목록) */}
       {!selectedResumeDetail && !isCreateMode && (
-        <CareerHome 
+        <CareerIntegration 
           resumeDetails={resumeDetails}
+          onView={viewResumeDetail}
           onEdit={editResumeDetail}
           duplicateResume={(resumeId) => duplicateResume(resumeId, handleDeleteSuccess)}
           deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}

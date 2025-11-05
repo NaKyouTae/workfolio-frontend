@@ -3,6 +3,9 @@ import { TurnOverUpsertRequest_MemoRequest } from '@/generated/turn_over';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import EmptyState from '@/components/ui/EmptyState';
+import GuideModal from '@/components/ui/GuideModal';
+import { useGuide } from '@/hooks/useGuide';
+import { memoGuide } from '@/utils/turnOverGuideData';
 import '@/styles/component-edit.css';
 
 interface MemoEditProps {
@@ -72,12 +75,25 @@ const MemoItem: React.FC<MemoItemProps> = ({
 };
 
 const MemoEdit: React.FC<MemoEditProps> = ({ memos, onMemosChange }) => {
+  const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
+
   const addMemo = () => {
-    onMemosChange([...memos, { content: '' }]);
+    const newItem: TurnOverUpsertRequest_MemoRequest = {
+      content: '',
+      isVisible: true,
+      priority: memos.length,
+    };
+    onMemosChange([...memos, newItem]);
   };
 
   const removeMemo = (index: number) => {
-    onMemosChange(memos.filter((_, i) => i !== index));
+    const updated = memos.filter((_, i) => i !== index);
+    // 재정렬 후 priority 업데이트
+    const reordered = updated.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onMemosChange(reordered);
   };
 
   const updateMemo = (index: number, content: string) => {
@@ -87,24 +103,46 @@ const MemoEdit: React.FC<MemoEditProps> = ({ memos, onMemosChange }) => {
   };
 
   const handleReorder = (reordered: TurnOverUpsertRequest_MemoRequest[]) => {
-    onMemosChange(reordered);
+    // 드래그앤드롭 후 priority를 index로 업데이트
+    const updatedWithPriority = reordered.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onMemosChange(updatedWithPriority);
   };
 
   return (
-    <div className="edit-section">
-      <div className="edit-section-header">
-        <h3 className="edit-section-title-counter">
-          메모 | {memos.length}개
-        </h3>
-        <div className="edit-add-button-container">
-          <button
-            onClick={addMemo}
-            className="edit-add-button"
-          >
-            <span>+ 추가</span>
-          </button>
+    <>
+      <div className="edit-section">
+        <div className="edit-section-header">
+          <h3 className="edit-section-title-counter">
+            메모 | {memos.length}개
+            <span 
+              onClick={openGuide}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '18px',
+                height: '18px',
+                background: '#e5e7eb',
+                color: '#6b7280',
+                borderRadius: '50%',
+                fontSize: '12px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                marginLeft: '8px'
+              }}>?</span>
+          </h3>
+          <div className="edit-add-button-container">
+            <button
+              onClick={addMemo}
+              className="edit-add-button"
+            >
+              <span>+ 추가</span>
+            </button>
+          </div>
         </div>
-      </div>
 
       {memos.length === 0 ? (
         <EmptyState text="메모를 추가해 주세요." />
@@ -124,7 +162,16 @@ const MemoEdit: React.FC<MemoEditProps> = ({ memos, onMemosChange }) => {
           )}
         />
       )}
-    </div>
+      </div>
+
+      {/* 가이드 모달 */}
+      <GuideModal
+        isOpen={isGuideOpen}
+        onClose={closeGuide}
+        title="메모 가이드"
+        sections={memoGuide}
+      />
+    </>
   );
 };
 

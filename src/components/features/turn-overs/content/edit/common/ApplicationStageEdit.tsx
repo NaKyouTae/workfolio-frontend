@@ -145,19 +145,25 @@ const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
   onUpdate,
 }) => {
   const addApplicationStage = () => {
-    onUpdate([
-      ...applicationStages,
-      {
-        name: '',
-        startedAt: undefined,
-        status: ApplicationStage_ApplicationStageStatus.PENDING,
-        memo: '',
-      } as TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest,
-    ]);
+    const newItem: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest = {
+      name: '',
+      startedAt: undefined,
+      status: ApplicationStage_ApplicationStageStatus.PENDING,
+      memo: '',
+      isVisible: true,
+      priority: applicationStages.length,
+    };
+    onUpdate([...applicationStages, newItem]);
   };
 
   const removeApplicationStage = (index: number) => {
-    onUpdate(applicationStages.filter((_, i) => i !== index));
+    const updated = applicationStages.filter((_, i) => i !== index);
+    // 재정렬 후 priority 업데이트
+    const reordered = updated.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(reordered);
   };
 
   const updateStage = (
@@ -180,7 +186,12 @@ const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
   };
 
   const handleReorder = (reordered: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[]) => {
-    onUpdate(reordered);
+    // 드래그앤드롭 후 priority를 index로 업데이트
+    const updatedWithPriority = reordered.map((item, idx) => ({
+      ...item,
+      priority: idx,
+    }));
+    onUpdate(updatedWithPriority);
   };
 
   return (

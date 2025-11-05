@@ -852,6 +852,8 @@ export interface SelfIntroduction {
   id: string;
   question: string;
   content: string;
+  isVisible: boolean;
+  priority: number;
   turnOverGoal?: TurnOverGoal | undefined;
   createdAt: number;
   updatedAt: number;
@@ -861,6 +863,8 @@ export interface InterviewQuestion {
   id: string;
   question: string;
   answer: string;
+  isVisible: boolean;
+  priority: number;
   turnOverGoal?: TurnOverGoal | undefined;
   createdAt: number;
   updatedAt: number;
@@ -870,6 +874,8 @@ export interface CheckList {
   id: string;
   checked: boolean;
   content: string;
+  isVisible: boolean;
+  priority: number;
   turnOverGoal?: TurnOverGoal | undefined;
   createdAt: number;
   updatedAt: number;
@@ -901,6 +907,8 @@ export interface JobApplication {
   endedAt?: number | undefined;
   applicationSource: string;
   memo: string;
+  isVisible: boolean;
+  priority: number;
   turnOverChallenge?: TurnOverChallenge | undefined;
   createdAt: number;
   updatedAt: number;
@@ -916,6 +924,8 @@ export interface JobApplicationDetail {
   endedAt?: number | undefined;
   applicationSource: string;
   memo: string;
+  isVisible: boolean;
+  priority: number;
   applicationStages: ApplicationStage[];
   createdAt: number;
   updatedAt: number;
@@ -927,6 +937,8 @@ export interface ApplicationStage {
   status: ApplicationStage_ApplicationStageStatus;
   startedAt?: number | undefined;
   memo: string;
+  isVisible: boolean;
+  priority: number;
   jobApplication?: JobApplication | undefined;
   createdAt: number;
   updatedAt: number;
@@ -1306,6 +1318,8 @@ export interface Memo {
   content: string;
   targetId: string;
   targetType: Memo_MemoTargetType;
+  isVisible: boolean;
+  priority: number;
   createdAt: number;
   updatedAt: number;
 }
@@ -5573,7 +5587,16 @@ export const TurnOverGoalDetail: MessageFns<TurnOverGoalDetail> = {
 };
 
 function createBaseSelfIntroduction(): SelfIntroduction {
-  return { id: "", question: "", content: "", turnOverGoal: undefined, createdAt: 0, updatedAt: 0 };
+  return {
+    id: "",
+    question: "",
+    content: "",
+    isVisible: false,
+    priority: 0,
+    turnOverGoal: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
 }
 
 export const SelfIntroduction: MessageFns<SelfIntroduction> = {
@@ -5586,6 +5609,12 @@ export const SelfIntroduction: MessageFns<SelfIntroduction> = {
     }
     if (message.content !== "") {
       writer.uint32(26).string(message.content);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.turnOverGoal !== undefined) {
       TurnOverGoal.encode(message.turnOverGoal, writer.uint32(402).fork()).join();
@@ -5630,6 +5659,22 @@ export const SelfIntroduction: MessageFns<SelfIntroduction> = {
           message.content = reader.string();
           continue;
         }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -5668,6 +5713,8 @@ export const SelfIntroduction: MessageFns<SelfIntroduction> = {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       question: isSet(object.question) ? globalThis.String(object.question) : "",
       content: isSet(object.content) ? globalThis.String(object.content) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       turnOverGoal: isSet(object.turnOverGoal) ? TurnOverGoal.fromJSON(object.turnOverGoal) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -5684,6 +5731,12 @@ export const SelfIntroduction: MessageFns<SelfIntroduction> = {
     }
     if (message.content !== "") {
       obj.content = message.content;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     if (message.turnOverGoal !== undefined) {
       obj.turnOverGoal = TurnOverGoal.toJSON(message.turnOverGoal);
@@ -5705,6 +5758,8 @@ export const SelfIntroduction: MessageFns<SelfIntroduction> = {
     message.id = object.id ?? "";
     message.question = object.question ?? "";
     message.content = object.content ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.turnOverGoal = (object.turnOverGoal !== undefined && object.turnOverGoal !== null)
       ? TurnOverGoal.fromPartial(object.turnOverGoal)
       : undefined;
@@ -5715,7 +5770,16 @@ export const SelfIntroduction: MessageFns<SelfIntroduction> = {
 };
 
 function createBaseInterviewQuestion(): InterviewQuestion {
-  return { id: "", question: "", answer: "", turnOverGoal: undefined, createdAt: 0, updatedAt: 0 };
+  return {
+    id: "",
+    question: "",
+    answer: "",
+    isVisible: false,
+    priority: 0,
+    turnOverGoal: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
 }
 
 export const InterviewQuestion: MessageFns<InterviewQuestion> = {
@@ -5728,6 +5792,12 @@ export const InterviewQuestion: MessageFns<InterviewQuestion> = {
     }
     if (message.answer !== "") {
       writer.uint32(26).string(message.answer);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.turnOverGoal !== undefined) {
       TurnOverGoal.encode(message.turnOverGoal, writer.uint32(402).fork()).join();
@@ -5772,6 +5842,22 @@ export const InterviewQuestion: MessageFns<InterviewQuestion> = {
           message.answer = reader.string();
           continue;
         }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -5810,6 +5896,8 @@ export const InterviewQuestion: MessageFns<InterviewQuestion> = {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       question: isSet(object.question) ? globalThis.String(object.question) : "",
       answer: isSet(object.answer) ? globalThis.String(object.answer) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       turnOverGoal: isSet(object.turnOverGoal) ? TurnOverGoal.fromJSON(object.turnOverGoal) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -5826,6 +5914,12 @@ export const InterviewQuestion: MessageFns<InterviewQuestion> = {
     }
     if (message.answer !== "") {
       obj.answer = message.answer;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     if (message.turnOverGoal !== undefined) {
       obj.turnOverGoal = TurnOverGoal.toJSON(message.turnOverGoal);
@@ -5847,6 +5941,8 @@ export const InterviewQuestion: MessageFns<InterviewQuestion> = {
     message.id = object.id ?? "";
     message.question = object.question ?? "";
     message.answer = object.answer ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.turnOverGoal = (object.turnOverGoal !== undefined && object.turnOverGoal !== null)
       ? TurnOverGoal.fromPartial(object.turnOverGoal)
       : undefined;
@@ -5857,7 +5953,16 @@ export const InterviewQuestion: MessageFns<InterviewQuestion> = {
 };
 
 function createBaseCheckList(): CheckList {
-  return { id: "", checked: false, content: "", turnOverGoal: undefined, createdAt: 0, updatedAt: 0 };
+  return {
+    id: "",
+    checked: false,
+    content: "",
+    isVisible: false,
+    priority: 0,
+    turnOverGoal: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
 }
 
 export const CheckList: MessageFns<CheckList> = {
@@ -5870,6 +5975,12 @@ export const CheckList: MessageFns<CheckList> = {
     }
     if (message.content !== "") {
       writer.uint32(26).string(message.content);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.turnOverGoal !== undefined) {
       TurnOverGoal.encode(message.turnOverGoal, writer.uint32(402).fork()).join();
@@ -5914,6 +6025,22 @@ export const CheckList: MessageFns<CheckList> = {
           message.content = reader.string();
           continue;
         }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -5952,6 +6079,8 @@ export const CheckList: MessageFns<CheckList> = {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       checked: isSet(object.checked) ? globalThis.Boolean(object.checked) : false,
       content: isSet(object.content) ? globalThis.String(object.content) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       turnOverGoal: isSet(object.turnOverGoal) ? TurnOverGoal.fromJSON(object.turnOverGoal) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -5968,6 +6097,12 @@ export const CheckList: MessageFns<CheckList> = {
     }
     if (message.content !== "") {
       obj.content = message.content;
+    }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     if (message.turnOverGoal !== undefined) {
       obj.turnOverGoal = TurnOverGoal.toJSON(message.turnOverGoal);
@@ -5989,6 +6124,8 @@ export const CheckList: MessageFns<CheckList> = {
     message.id = object.id ?? "";
     message.checked = object.checked ?? false;
     message.content = object.content ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.turnOverGoal = (object.turnOverGoal !== undefined && object.turnOverGoal !== null)
       ? TurnOverGoal.fromPartial(object.turnOverGoal)
       : undefined;
@@ -6263,6 +6400,8 @@ function createBaseJobApplication(): JobApplication {
     endedAt: undefined,
     applicationSource: "",
     memo: "",
+    isVisible: false,
+    priority: 0,
     turnOverChallenge: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -6297,6 +6436,12 @@ export const JobApplication: MessageFns<JobApplication> = {
     }
     if (message.memo !== "") {
       writer.uint32(74).string(message.memo);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.turnOverChallenge !== undefined) {
       TurnOverChallenge.encode(message.turnOverChallenge, writer.uint32(402).fork()).join();
@@ -6389,6 +6534,22 @@ export const JobApplication: MessageFns<JobApplication> = {
           message.memo = reader.string();
           continue;
         }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -6433,6 +6594,8 @@ export const JobApplication: MessageFns<JobApplication> = {
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       applicationSource: isSet(object.applicationSource) ? globalThis.String(object.applicationSource) : "",
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       turnOverChallenge: isSet(object.turnOverChallenge)
         ? TurnOverChallenge.fromJSON(object.turnOverChallenge)
         : undefined,
@@ -6470,6 +6633,12 @@ export const JobApplication: MessageFns<JobApplication> = {
     if (message.memo !== "") {
       obj.memo = message.memo;
     }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.turnOverChallenge !== undefined) {
       obj.turnOverChallenge = TurnOverChallenge.toJSON(message.turnOverChallenge);
     }
@@ -6496,6 +6665,8 @@ export const JobApplication: MessageFns<JobApplication> = {
     message.endedAt = object.endedAt ?? undefined;
     message.applicationSource = object.applicationSource ?? "";
     message.memo = object.memo ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.turnOverChallenge = (object.turnOverChallenge !== undefined && object.turnOverChallenge !== null)
       ? TurnOverChallenge.fromPartial(object.turnOverChallenge)
       : undefined;
@@ -6516,6 +6687,8 @@ function createBaseJobApplicationDetail(): JobApplicationDetail {
     endedAt: undefined,
     applicationSource: "",
     memo: "",
+    isVisible: false,
+    priority: 0,
     applicationStages: [],
     createdAt: 0,
     updatedAt: 0,
@@ -6550,6 +6723,12 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
     }
     if (message.memo !== "") {
       writer.uint32(74).string(message.memo);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     for (const v of message.applicationStages) {
       ApplicationStage.encode(v!, writer.uint32(402).fork()).join();
@@ -6642,6 +6821,22 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
           message.memo = reader.string();
           continue;
         }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -6686,6 +6881,8 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       applicationSource: isSet(object.applicationSource) ? globalThis.String(object.applicationSource) : "",
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       applicationStages: globalThis.Array.isArray(object?.applicationStages)
         ? object.applicationStages.map((e: any) => ApplicationStage.fromJSON(e))
         : [],
@@ -6723,6 +6920,12 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
     if (message.memo !== "") {
       obj.memo = message.memo;
     }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.applicationStages?.length) {
       obj.applicationStages = message.applicationStages.map((e) => ApplicationStage.toJSON(e));
     }
@@ -6749,6 +6952,8 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
     message.endedAt = object.endedAt ?? undefined;
     message.applicationSource = object.applicationSource ?? "";
     message.memo = object.memo ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.applicationStages = object.applicationStages?.map((e) => ApplicationStage.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
@@ -6763,6 +6968,8 @@ function createBaseApplicationStage(): ApplicationStage {
     status: 0,
     startedAt: undefined,
     memo: "",
+    isVisible: false,
+    priority: 0,
     jobApplication: undefined,
     createdAt: 0,
     updatedAt: 0,
@@ -6785,6 +6992,12 @@ export const ApplicationStage: MessageFns<ApplicationStage> = {
     }
     if (message.memo !== "") {
       writer.uint32(42).string(message.memo);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.jobApplication !== undefined) {
       JobApplication.encode(message.jobApplication, writer.uint32(402).fork()).join();
@@ -6845,6 +7058,22 @@ export const ApplicationStage: MessageFns<ApplicationStage> = {
           message.memo = reader.string();
           continue;
         }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -6885,6 +7114,8 @@ export const ApplicationStage: MessageFns<ApplicationStage> = {
       status: isSet(object.status) ? applicationStage_ApplicationStageStatusFromJSON(object.status) : 0,
       startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : undefined,
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       jobApplication: isSet(object.jobApplication) ? JobApplication.fromJSON(object.jobApplication) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
@@ -6908,6 +7139,12 @@ export const ApplicationStage: MessageFns<ApplicationStage> = {
     if (message.memo !== "") {
       obj.memo = message.memo;
     }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.jobApplication !== undefined) {
       obj.jobApplication = JobApplication.toJSON(message.jobApplication);
     }
@@ -6930,6 +7167,8 @@ export const ApplicationStage: MessageFns<ApplicationStage> = {
     message.status = object.status ?? 0;
     message.startedAt = object.startedAt ?? undefined;
     message.memo = object.memo ?? "";
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.jobApplication = (object.jobApplication !== undefined && object.jobApplication !== null)
       ? JobApplication.fromPartial(object.jobApplication)
       : undefined;
@@ -7829,7 +8068,16 @@ export const Attachment: MessageFns<Attachment> = {
 };
 
 function createBaseMemo(): Memo {
-  return { id: "", content: "", targetId: "", targetType: 0, createdAt: 0, updatedAt: 0 };
+  return {
+    id: "",
+    content: "",
+    targetId: "",
+    targetType: 0,
+    isVisible: false,
+    priority: 0,
+    createdAt: 0,
+    updatedAt: 0,
+  };
 }
 
 export const Memo: MessageFns<Memo> = {
@@ -7845,6 +8093,12 @@ export const Memo: MessageFns<Memo> = {
     }
     if (message.targetType !== 0) {
       writer.uint32(32).int32(message.targetType);
+    }
+    if (message.isVisible !== false) {
+      writer.uint32(240).bool(message.isVisible);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(248).uint32(message.priority);
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -7894,6 +8148,22 @@ export const Memo: MessageFns<Memo> = {
           message.targetType = reader.int32() as any;
           continue;
         }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.isVisible = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.priority = reader.uint32();
+          continue;
+        }
         case 98: {
           if (tag !== 784) {
             break;
@@ -7925,6 +8195,8 @@ export const Memo: MessageFns<Memo> = {
       content: isSet(object.content) ? globalThis.String(object.content) : "",
       targetId: isSet(object.targetId) ? globalThis.String(object.targetId) : "",
       targetType: isSet(object.targetType) ? memo_MemoTargetTypeFromJSON(object.targetType) : 0,
+      isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -7944,6 +8216,12 @@ export const Memo: MessageFns<Memo> = {
     if (message.targetType !== 0) {
       obj.targetType = memo_MemoTargetTypeToJSON(message.targetType);
     }
+    if (message.isVisible !== false) {
+      obj.isVisible = message.isVisible;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
     }
@@ -7962,6 +8240,8 @@ export const Memo: MessageFns<Memo> = {
     message.content = object.content ?? "";
     message.targetId = object.targetId ?? "";
     message.targetType = object.targetType ?? 0;
+    message.isVisible = object.isVisible ?? false;
+    message.priority = object.priority ?? 0;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;
