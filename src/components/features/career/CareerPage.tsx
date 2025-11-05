@@ -150,7 +150,7 @@ const CareerPage: React.FC = () => {
 
   // 메인 뷰
   return (
-    <main style={{ display: 'flex', height: 'calc(100vh - 6.4rem)', backgroundColor: '#f8f9fa' }}>
+    <main>
       <CareerSidebar 
         resumeDetails={resumeDetails}
         selectedResumeDetail={selectedResumeDetail || null}

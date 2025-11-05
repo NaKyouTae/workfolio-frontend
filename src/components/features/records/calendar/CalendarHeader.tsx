@@ -24,7 +24,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
     onSearchChange,
 }) => {
     return (
-        <div className="calendar-option">
+        <div className="page-title">
             <div className="calendar-nav">
                 <h2>{`${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}`}</h2>
                 <CalendarNavigation 

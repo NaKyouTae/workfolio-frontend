@@ -170,6 +170,8 @@ a:visited, a:hover, a:active, a:focus {
 .text-center {text-align: center!important;}
 .text-right {text-align: right!important;}
 
+.font-bl {color: var(--black)!important;}
+
 /* input : checkbox */
 input {width: 100%; height: 5.2rem; padding: 0 1.6rem; border-radius: .8rem; font-size: 1.6rem; font-weight: 500; background-color: var(--white); border: 1px solid var(--gray003); color: var(--black); cursor: text;}
 input.md {height: 4rem; padding: 0 1.5rem; font-size: 1.4rem; border-radius: .6rem;}
@@ -186,6 +188,12 @@ input[type="checkbox"] + label::before {content: ''; width: 1.6rem; height: 1.6r
 input[type="checkbox"] + label > p {font-size: 1.4rem; color: var(--black);}
 input[type="checkbox"]:checked + label::before {background-image: url(../img/ico/ic-check-ov.svg); background-repeat: no-repeat; background-size: contain; background-position: center;}
 
+input[type="radio"] {display: none;}
+input[type="radio"] + label {display: flex; align-items: center; column-gap: .8rem; cursor: pointer;}
+input[type="radio"] + label::before {content: ''; width: 1.6rem; height: 1.6rem; border-radius: .2rem;}
+input[type="radio"] + label > p {font-size: 1.4rem; color: var(--black);}
+input[type="radio"]:checked + label::before {background-image: url(../img/ico/ic-check-ov.svg); background-repeat: no-repeat; background-size: contain; background-position: center;}
+
 /* input : file */
 .file {display: flex; align-items: center; column-gap: .6rem;}
 .file > input[type="file"] {display: none;}
@@ -201,12 +209,14 @@ input[type="checkbox"]:checked + label::before {background-image: url(../img/ico
 textarea {width: 100%; padding: .8rem 1.2rem; border-radius: .4rem; font-size: 1.2rem; line-height: 1.6; font-weight: 500; background-color: var(--white); border: 1px solid var(--gray003); color: var(--black); cursor: text;}
 
 /* select */
-select {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; -webkit-appearance: none; appearance: none; cursor: pointer;}
+select {height: 3.2rem; padding: 0 3.8rem 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; -webkit-appearance: none; appearance: none; cursor: pointer;}
 select::-ms-expand {display: none;/*for IE10,11*/}
+
+select.sm {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border: 0; background-image: url(../img/ico/ic-select-bl.svg); background-position: center right;}
 
 /* dropdown */
 .dropdown {position: relative;}
-.dropdown > button {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; justify-content: flex-start; background-color: transparent; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; cursor: pointer;}
+.dropdown > button {height: 3.2rem; padding: 0 3.8rem 0 1.2rem; font-size: 1.2rem; justify-content: flex-start; background-color: transparent; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; cursor: pointer;}
 .dropdown > button:has(+ ul) {background-image: url(../img/ico/ic-select-ov.svg);}
 .dropdown > ul {position: absolute; top: 3.4rem; width: 100%; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000;}
 .dropdown > ul > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer;}
