@@ -11,19 +11,13 @@ interface InputProps {
 
 const Input = ({ type = 'text', placeholder, value, onChange, label, readOnly = false }: InputProps) => {
     return (
-        <div className="input-wrapper">
-            {label && <label className="input-label">{label}</label>}
-            <div className="input-field-container">
-                <input
-                    type={type}
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={onChange ? onChange : undefined}
-                    readOnly={readOnly}
-                    className={`input-field ${readOnly ? 'read-only' : ''}`}
-                />
-            </div>
-        </div>
+        <input
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange ? onChange : undefined}
+            readOnly={readOnly}
+        />
     );
 };
 

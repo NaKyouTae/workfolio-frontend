@@ -204,7 +204,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
         <div className="modal">
             <div className="modal-wrap">
                 <div className="modal-tit">
-                    <h2>기록 생성</h2>
+                    <h2>기록 추가</h2>
                     <button onClick={onClose}><i className="ic-close" /></button>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -272,40 +272,20 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                             <li>
                                 <p>첨부파일</p>
                                 <label className="file">
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        onChange={onFileChange}
+                                    />
                                     <Input 
                                         type="text"
                                         label="파일 이름"
-                                        placeholder="portfolio.pdf"
+                                        placeholder="파일을 선택해 주세요."
                                         readOnly
                                         value={selectedAttachment || ''}
                                         onChange={(e) => handleAttachmentChange(e.target.value)}
                                     />
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                        <input
-                                            ref={fileInputRef}
-                                            type="file"
-                                            onChange={onFileChange}
-                                            style={{ display: 'none' }}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => fileInputRef.current?.click()}
-                                            style={{
-                                            padding: '8px 16px',
-                                            border: '1px solid #ddd',
-                                            borderRadius: '4px',
-                                            backgroundColor: '#fff',
-                                            color: '#333',
-                                            fontSize: '14px',
-                                            cursor: 'pointer',
-                                            whiteSpace: 'nowrap',
-                                            height: '32px',
-                                            width: '100px',
-                                            }}
-                                        >
-                                            파일 찾기
-                                        </button>
-                                        </div>
+                                    <button type="button" onClick={() => fileInputRef.current?.click()}>파일 찾기</button>
                                 </label>
                                 {attachments.map((attachment) => (
                                     <ul className="file-list" key={attachment.fileName}>

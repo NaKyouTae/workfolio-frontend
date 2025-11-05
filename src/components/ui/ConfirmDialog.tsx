@@ -34,46 +34,27 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   };
 
   return (
-    <>
-      {/* 배경 오버레이 */}
-      <div className={styles.overlay} onClick={onClose} />
-      
-      {/* 다이얼로그 */}
-      <div className={styles.dialog}>
-        <div className={styles.content}>
-          {/* 아이콘 */}
-          {icon && (
-            <div className={styles.icon}>
-              <Image src={icon} alt="icon" width={32} height={32} />
+    <div className="modal">
+        <div className="modal-wrap sm">
+            <div className="modal-cont">
+                <div className="modal-notice">
+                    {icon && (
+                        <Image src={icon} alt="" width={1} height={1} />
+                    )}
+                    <div>
+                        <h2>{title}</h2>
+                        {description && (
+                            <p>{description}</p>
+                        )}
+                    </div>
+                </div>
             </div>
-          )}
-
-          {/* 제목 */}
-          <h2 className={styles.title}>{title}</h2>
-
-          {/* 설명 */}
-          {description && (
-            <p className={styles.description}>{description}</p>
-          )}
+            <div className="modal-btn half">
+                <button onClick={onClose}>{cancelText}</button>
+                <button onClick={handleConfirm}>{confirmText}</button>
+            </div>
         </div>
-
-        {/* 버튼 영역 */}
-        <div className={styles.buttonGroup}>
-          <button
-            className={styles.cancelButton}
-            onClick={onClose}
-          >
-            {cancelText}
-          </button>
-          <button
-            className={styles.confirmButton}
-            onClick={handleConfirm}
-          >
-            {confirmText}
-          </button>
-        </div>
-      </div>
-    </>
+    </div>
   );
 };
 

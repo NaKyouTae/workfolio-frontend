@@ -168,8 +168,8 @@ export const useResumeDetails = () => {
     // 삭제 확인 다이얼로그
     const result = await confirm({
       icon: '/assets/img/ico/ic-delete.png',
-      title: '이력서를 삭제하시겠습니까?',
-      description: '삭제하면 이력서에 작성된 내용이 모두 사라집니다.\n한 번 삭제하면 되돌릴 수 없습니다.',
+      title: '이력서를 삭제하시겠어요?',
+      description: '삭제하면 이력서에 저장된 내용이 모두 사라져요.\n한 번 삭제하면 되돌릴 수 없어요.',
       confirmText: '삭제하기',
       cancelText: '돌아가기',
     });
