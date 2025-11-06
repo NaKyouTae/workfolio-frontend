@@ -13,6 +13,7 @@ interface CareerIntegrationProps {
   exportPDF: (resumeId?: string) => Promise<void>;
   copyURL: (publicId?: string) => Promise<void>;
   calculateTotalCareer: (resume: ResumeDetail) => string;
+  changeDefault: (resumeId?: string) => Promise<void>;
 }
 
 const CareerIntegration: React.FC<CareerIntegrationProps> = ({
@@ -24,6 +25,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   exportPDF,
   copyURL,
   calculateTotalCareer,
+  changeDefault,
 }) => {
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
 
@@ -62,6 +64,12 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
     copyURL(resume.publicId);
   };
 
+  // 기본 이력서 변경
+  const handleChangeDefault = (e: React.MouseEvent, resume: ResumeDetail) => {
+    e.stopPropagation();
+    changeDefault(resume.id);
+  };
+
   // 정렬된 이력서 목록
   const sortedResumes = [...resumeDetails].sort((a, b) => {
     if (sortOrder === 'recent') {
@@ -76,81 +84,100 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   // 기본 이력서 목록 표시
   return (
     <section>
-      <div className="contents">
-        <div className="page-title">
-          <div>
-            <h2>내 이력 관리</h2>
-          </div>
-        </div>
-        <div className="page-cont">
-          <div className="cont-box">
-            <div className="cont-tit">
-              <div>
-                <h3>내 이력 현황</h3>
-              </div>
+        <div className="contents">
+            <div className="page-title">
+                <div>
+                    <h2>내 이력 관리</h2>
+                </div>
             </div>
-            <ul className="stats-summary">
-              <li>
-                <p>전체 이력서</p>
-                <div>{resumeDetails.length}<span>개</span></div>
-              </li>
-              <li>
-                <p>PDF 변환 이력서</p>
-                <div>0<span>개</span></div>
-              </li>
-              <li>
-                <p>URL 공유 이력서</p>
-                <div>0<span>개</span></div>
-              </li>
-            </ul>
-          </div>
-          <div className="cont-box">
-            <div className="cont-tit">
-              <div>
-                <h3>전체 이력서</h3>
-                <p>{resumeDetails.length}개</p>
-              </div>
-              <select
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value as 'recent' | 'oldest')}
-              >
-                <option value="recent">최근 수정일 순</option>
-                <option value="oldest">오래된 순</option>
-              </select>
-            </div>
-            <ul className="summary-list">
-              {sortedResumes.map((resume) => (
-                <li key={resume.id} onClick={() => handleView(resume)} style={{ cursor: 'pointer' }}>
-                  <div className="info">
-                    <div>
-                      <div>
-                        <input type="radio" className="input-resume" name="default" id={`resume-${resume.id}`} checked={resume.isDefault} readOnly /><label htmlFor="resume1"></label>
-                        <p>{resume.title}</p>
-                      </div>
-                      <ul>
-                        <li onClick={(e) => handleEdit(e, resume)}>편집</li>
-                        <li onClick={(e) => handleDuplicate(e, resume)}>복제</li>
-                        <li onClick={(e) => handleDelete(e, resume)}>삭제</li>
-                        <li className="font-bl" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li>
-                        <li className="font-bl" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li>
-                      </ul>
+            <div className="page-cont">
+                <div className="cont-box">
+                    <div className="cont-tit">
+                        <div>
+                            <h3>내 이력 현황</h3>
+                        </div>
                     </div>
-                    <ul>
-                      <li>{resume.position || '직무'}</li>
-                      <li>{calculateTotalCareer(resume) || '경력 없음'}</li>
+                    <ul className="stats-summary">
+                        <li>
+                            <p>전체 이력서</p>
+                            <div>{resumeDetails.length}<span>개</span></div>
+                        </li>
+                        <li>
+                            <p>PDF 변환 이력서</p>
+                            <div>0<span>개</span></div>
+                        </li>
+                        <li>
+                            <p>URL 공유 이력서</p>
+                            <div>0<span>개</span></div>
+                        </li>
                     </ul>
-                  </div>
-                  <div className="desc">
-                    {/* <p>최종 등록일 : {DateUtil.formatTimestamp(resume.createdAt || 0, 'YYYY. MM. DD.')}</p> */}
-                    <p>최종 수정일 : {DateUtil.formatTimestamp(resume.updatedAt || 0, 'YYYY. MM. DD.')}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+                <div className="cont-box">
+                    <div className="cont-tit">
+                        <div>
+                            <h3>전체 이력서</h3>
+                            <p>{resumeDetails.length}개</p>
+                        </div>
+                        <select
+                            value={sortOrder}
+                            onChange={(e) => setSortOrder(e.target.value as 'recent' | 'oldest')}
+                        >
+                            <option value="recent">최근 수정일 순</option>
+                            <option value="oldest">오래된 순</option>
+                        </select>
+                    </div>
+                    <ul className="summary-list">
+                        {sortedResumes.map((resume) => (
+                        <li key={resume.id} onClick={() => handleView(resume)} style={{ cursor: 'pointer' }}>
+                            <div className="info">
+                                <div>
+                                    <div>
+                                        <input 
+                                            type="radio" 
+                                            name="default" 
+                                            id={`resume-${resume.id}`} 
+                                            checked={resume.isDefault} 
+                                            readOnly 
+                                            onChange={() => {}}
+                                            onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleChangeDefault(e, resume);
+                                            }}
+                                            className="input-resume"
+                                        />
+                                        <label 
+                                            htmlFor={`resume-${resume.id}`}
+                                            onClick={(e) => {
+                                            e.stopPropagation();
+                                            changeDefault(resume.id);
+                                            }}
+                                        ></label>
+                                        <p onClick={() => handleView(resume)}>{resume.title}</p>
+                                    </div>
+                                    <ul>
+                                        <li onClick={(e) => handleEdit(e, resume)}>편집</li>
+                                        <li onClick={(e) => handleDuplicate(e, resume)}>복제</li>
+                                        <li onClick={(e) => handleDelete(e, resume)}>삭제</li>
+                                        <li className="font-bl" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li>
+                                        <li className="font-bl" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li>
+                                    </ul>
+                                </div>
+                                <ul>
+                                    <li>{resume.position || '직무'}</li>
+                                    <li>{calculateTotalCareer(resume) || '경력 없음'}</li>
+                                </ul>
+                            </div>
+                            <div className="desc">
+                                {/* <p>최종 등록일 : {DateUtil.formatTimestamp(resume.createdAt || 0, 'YYYY. MM. DD.')}</p> */}
+                                <p>최종 수정일 : {DateUtil.formatTimestamp(resume.updatedAt || 0, 'YYYY. MM. DD.')}</p>
+                            </div>
+                        </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-      <Footer/>
+        <Footer/>
     </section>
   );
 };

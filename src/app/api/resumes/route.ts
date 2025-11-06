@@ -58,7 +58,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/workers/companies - 회사 수정
 export async function PUT(request: NextRequest) {
   try {
     const body: ResumeUpdateRequest = await request.json();
