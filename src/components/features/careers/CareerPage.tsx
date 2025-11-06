@@ -8,6 +8,8 @@ import CareerContentView from './CareerContentView';
 import CareerContentEdit from './CareerContentEdit';
 import CareerContentCreate from './CareerContentCreate';
 
+import Footer from "@/components/layouts/Footer"
+
 const CareerPage: React.FC = () => {
   // 사용자 인증 상태
   const { user, isLoading: userLoading, fetchUser } = useUser();
@@ -175,15 +177,7 @@ const CareerPage: React.FC = () => {
       
       {/* 이력서 상세 보기 (View 모드) */}
       {selectedResumeDetail && !isEditMode && !isCreateMode && (
-        <div style={{ 
-          flex: 1, 
-          display: 'flex', 
-          flexDirection: 'column',
-          overflow: 'hidden',
-          backgroundColor: '#f8f9fa',
-          height: '100%',
-          width: '100%'
-        }}>
+        <section>
           <CareerContentView 
             selectedResumeDetail={selectedResumeDetail}
             onEdit={toggleEditMode}
@@ -192,7 +186,8 @@ const CareerPage: React.FC = () => {
             exportPDF={exportPDF}
             copyURL={copyURL}
           />
-        </div>
+          <Footer/>
+        </section>
       )}
       
       {/* 이력서 편집 (Edit 모드) */}

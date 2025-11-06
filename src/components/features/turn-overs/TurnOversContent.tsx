@@ -109,7 +109,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
   const handleDelete = async (id: string) => {
     const result = await confirm({
       title: '이직 활동을 삭제하시겠어요?',
-      icon: '/assets/img/ico/ic-delete.png',
+      icon: '/assets/img/ico/ic-delete.svg',
       description: '삭제하면 이직 활동에 저장된 내용이 모두 사라져요.\n한 번 삭제하면 되돌릴 수 없어요.',
       confirmText: '삭제하기',
       cancelText: '돌아가기',

@@ -41,105 +41,70 @@ const EducationView: React.FC<EducationViewProps> = ({
   const filteredEducations = educations.filter(e => showHidden ? true : e.isVisible !== false);
 
   return (
-    <div>
-      <h3 style={{ 
-        fontSize: '16px', 
-        fontWeight: '700', 
-        color: '#000',
-        marginBottom: '20px'
-      }}>
-        학력
-      </h3>
-      
-      {(!educations || filteredEducations.length === 0) ? (
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>학력</h3>
+            </div>
+        </div>
+        
+        {(!educations || filteredEducations.length === 0) ? (
         <EmptyState text="등록된 학력 정보가 없습니다." />
-      ) : (
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+        ) : (
+        
+        <ul className="view-list type1">
         {filteredEducations.map((education) => (
-          <div 
-            key={education.id}
-            style={{
-              padding: '20px',
-              border: '1px solid #e0e0e0',
-              marginBottom: '16px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              gap: '20px'
-            }}
-          >
-            {/* 좌측: Title, Major, Description */}
-            <div style={{ flex: 1 }}>
-              {
-                education.name && (
-                  <h4 style={{ 
-                    fontSize: '16px', 
-                    fontWeight: '600', 
-                    color: '#333', 
-                    marginBottom: '6px'
-                  }}>
-                    {education.name}
-                  </h4>
-                )
-              }
-              {
-                education.major && (
-                  <div style={{ 
-                    fontSize: '14px',
-                    color: education.major ? '#666' : '#ddd',
-                    marginBottom: '4px'
-                  }}>
-                    {education.major}
-                  </div>
-                )
-              }
-              {
-                education.description && (
-                  <div style={{ 
-                    fontSize: '13px',
-                    color: education.description ? '#999' : '#ddd',
-                    marginTop: '8px'
-                  }}>
-                    {education.description}
-                  </div>
-                )
-              }
-            </div>
-
-            {/* 우측: Date Range | Status */}
-            <div style={{ 
-              textAlign: 'right',
-              whiteSpace: 'nowrap',
-              fontSize: '13px',
-              color: '#999'
-            }}>
-              {
-                education.startedAt && education.endedAt && (
-                  <>
-                    {`${DateUtil.formatTimestamp(education.startedAt || 0, "YYYY. MM.")}`}
-                  </>
-                )
-              }
-              {
-                education.startedAt && education.endedAt && (
-                  <>
-                    {`- ${DateUtil.formatTimestamp(education.endedAt || 0, "YYYY. MM.")}`}
-                  </>
-                )
-              }
-              {education.status && (
-                <>
-                  {' | '}
-                  <span>{getStatusLabel(education.status)}</span>
-                </>
-              )}
-            </div>
-          </div>
+            <li 
+                key={education.id}
+            >
+                <div className="info">
+                    <div>
+                        <div>
+                            {
+                            education.name && (
+                                <h4>{education.name}</h4>
+                            )
+                            }
+                        </div>
+                        <ul>
+                            <li className="font-bl">
+                                {
+                                education.startedAt && education.endedAt && (
+                                    <>{`${DateUtil.formatTimestamp(education.startedAt || 0, "YYYY. MM.")}`}</>
+                                )
+                                }
+                                {
+                                education.startedAt && education.endedAt && (
+                                    <>{`- ${DateUtil.formatTimestamp(education.endedAt || 0, "YYYY. MM.")}`}</>
+                                )
+                                }
+                            </li>
+                            {
+                            education.status && (
+                                <li>{getStatusLabel(education.status)}</li>
+                            )}
+                        </ul>
+                    </div>
+                    <ul>
+                        {
+                        education.major && (
+                            <li>{education.major}</li>
+                        )
+                        }
+                    </ul>
+                </div>
+                <div className="desc">
+                    {
+                    education.description && (
+                        <p>{education.description}</p>
+                    )
+                    }
+                </div>
+            </li>
         ))}
-      </div>
-      )}
-    </div>
+        </ul>
+        )}
+    </>
   );
 };
 

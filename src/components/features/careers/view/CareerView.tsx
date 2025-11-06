@@ -114,161 +114,84 @@ const CareerView: React.FC<CareerViewProps> = ({
   const totalPeriod = calculateTotalCareerPeriod();
 
   return (
-    <div>
-      <h3 style={{ 
-        fontSize: '16px', 
-        fontWeight: '700', 
-        color: '#000',
-        marginBottom: '20px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px'
-      }}> 
-        <span>경력</span>
-        {careers && careers.length > 0 && (
-          <span style={{
-            fontSize: '14px',
-            fontWeight: '400',
-            color: '#999'
-          }}>
-            {totalPeriod}
-          </span>
-        )}
-      </h3>
-      
-      {/* 필터링된 경력 목록 (한 번만 필터링) */}
-      {(() => {
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>경력</h3>
+                {careers && careers.length > 0 && (
+                    <p>{totalPeriod}</p>
+                )}
+            </div>
+        </div>
+        
+        {/* 필터링된 경력 목록 (한 번만 필터링) */}
+        {(() => {
         const filteredCareers = careers.filter(c => showHidden ? true : c.isVisible !== false);
         
         return (!careers || filteredCareers.length === 0) ? (
-          <EmptyState text="등록된 경력 정보가 없습니다." />
+            <EmptyState text="등록된 경력 정보가 없습니다." />
         ) : (
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-          {filteredCareers.map((career) => (
-          <div 
-            key={career.id}
-            style={{
-              padding: '20px',
-              border: '1px solid #e0e0e0',
-              marginBottom: '16px'
-            }}
-          >
-            {/* 상단 헤더: 회사명/직책 | 날짜/재직상태/연봉 */}
-            <div style={{ 
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: '12px',
-              gap: '20px'
-            }}>
-              {/* 좌측: 회사명과 직책 */}
-              <div style={{ 
-                flex: 1,
-                display: 'flex',
-                alignItems: 'baseline',
-                gap: '12px'
-              }}>
-                {
-                  career.name && (
-                    <h4 style={{ 
-                      fontSize: '18px', 
-                      fontWeight: '700', 
-                      color: '#000', 
-                      margin: 0
-                    }}>
-                      {career.name}
-                    </h4>
-                  )
-                }
-                {
-                  career.position && (
-                    <div style={{ 
-                      fontSize: '14px',
-                      color: career.position ? '#999' : '#ddd'
-                    }}>
-                      {career.position}
+        <ul className="view-list type1">
+            {filteredCareers.map((career) => (
+            <li 
+                key={career.id}
+            >
+                <div className="info">
+                    <div>
+                        <div>
+                            {
+                                career.name && (
+                                <h4>{career.name}</h4>
+                                )
+                            }
+                            {
+                                career.position && (
+                                <p>{career.position}</p>
+                                )
+                            }
+                        </div>
+                        <ul>
+                            <li className="font-bl">{formatCareerPeriod(career.startedAt, career.endedAt, career.isWorking)}</li>
+                            {
+                            career.employmentType && (
+                                <li>{getEmploymentTypeLabel(career.employmentType)}</li>
+                            )
+                            }
+                            {
+                            career.salary > 0 && (
+                                <li>{(career.salary && career.salary > 0 && `연봉 ${career.salary.toLocaleString('ko-KR')}만 원`)}</li>
+                            )
+                            }
+                        </ul>
                     </div>
-                  )
-                }
-              </div>
-
-              {/* 우측: 날짜, 재직상태, 연봉 */}
-              <div style={{ 
-                textAlign: 'right',
-                whiteSpace: 'nowrap',
-                fontSize: '13px',
-                color: '#999'
-              }}>
-                <div>
-                  {formatCareerPeriod(career.startedAt, career.endedAt, career.isWorking)}
-                  
-                  {career.employmentType && (
-                    <>
-                      {' | '}
-                      {getEmploymentTypeLabel(career.employmentType)}
-                    </>
-                  )} 
-                  {
-                    career.salary > 0 && (
-                      <>
-                        {' | '}
-                        <span style={{ color: (career.salary && career.salary > 0) ? '#999' : '#ddd' }}>
-                          {(career.salary && career.salary > 0 && `연봉 ${career.salary.toLocaleString('ko-KR')}만 원`)}
-                        </span>
-                      </>
+                    <ul>
+                        {
+                        career.department && (
+                            <li>{career.department}</li>
+                        )
+                        }
+                        {
+                        career.jobTitle && (
+                            <li>{career.jobTitle}</li>
+                        )
+                        }
+                    </ul>
+                </div>
+                <div className="desc">
+                    {
+                    career.description && (
+                        <p>{career.description}</p>
                     )
-                  }
+                    }
+                    <SalaryView salaries={career.salaries || []} showHidden={showHidden} />
                 </div>
-              </div>
-            </div>
-
-            {/* 중간: 부서 | 직급 */}
-            <div style={{ 
-              fontSize: '14px',
-              marginBottom: '12px',
-              display: 'flex',
-              gap: '8px'
-            }}>
-              {
-                career.department && (
-                  <span style={{ color: career.department ? '#666' : '#ddd' }}>
-                    {career.department}
-                  </span>
-                )
-              }
-              {
-                career.jobTitle && (
-                  <>
-                    <span style={{ color: '#666' }}>|</span>
-                    <span style={{ color: career.jobTitle ? '#666' : '#ddd' }}>
-                      {career.jobTitle}
-                    </span>
-                  </>
-                )
-              }
-            </div>
-            {
-              career.description && (
-                <div style={{ 
-                  fontSize: '14px',
-                  color: career.description ? '#333' : '#ddd',
-                  lineHeight: '1.6',
-                  whiteSpace: 'pre-wrap',
-                  marginBottom: '16px'
-                }}>
-                  {career.description}
-                </div>
-              )
-            }
-            {/* 급여 이력 */}
-            <SalaryView salaries={career.salaries || []} showHidden={showHidden} />
-          </div>
-          ))}
-        </div>
+            </li>
+            ))}
+        </ul>
         );
-      })()}
-    </div>
+        })()}
+    </>
   );
 };
 

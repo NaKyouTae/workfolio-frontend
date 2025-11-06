@@ -129,179 +129,116 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   };
 
   return (
-    <div className={styles.container}>
-      {/* 메인 컨텐츠 */}
-      <div className={styles.mainContent}>
-        {/* 헤더 */}
-        <div className={styles.header}>
-          <div className={styles.headerContent}>
-            <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <ul>
-                  <li>
-                      <input
-                          type="checkbox"
-                          checked={selectedResumeDetail?.isDefault || false}
-                          readOnly
-                          id="isDefault"
-                      />
-                      <label htmlFor="isDefault"><p>{selectedResumeDetail?.isDefault ? '기본' : ''}</p></label>
-                  </li>
-                </ul>
-                {
-                  selectedResumeDetail?.title && (
-                    <h1 className={styles.title}>
-                      {selectedResumeDetail?.title}
-                    </h1>
-                  )
-                }
+    <div className="contents">
+        <div className="page-title">
+            <div>
+                <div>
+                    <input type="checkbox" className="input-resume" checked={selectedResumeDetail?.isDefault || false} id="isDefault" readOnly />
+                    <label htmlFor="isDefault"></label>
+                    {
+                        selectedResumeDetail?.title && (
+                            <h2>{selectedResumeDetail?.title}</h2>
+                        )
+                    }
+                </div>
                 {selectedResumeDetail?.updatedAt && (
-                  <span style={{ fontSize: '14px', fontWeight: '400', color: '#999' }}>
+                  <p>
                     최종 수정일 : {DateUtil.formatTimestamp(selectedResumeDetail.updatedAt, 'YYYY. MM. DD.')}
-                  </span>
+                  </p>
                 )}
-              </div>
             </div>
+            <ul>
+                <li onClick={onEdit}>편집</li>
+                <li onClick={handleDuplicateResume}>복제</li>
+                <li onClick={handleDeleteResume}>삭제</li>
+            </ul>
+        </div>
+        <div className="page-cont">
+            <article>
+                {/* 기본 정보 섹션 */}
+                <div id="basic-info" className="cont-box resume-intro">
+                    <div>
+                        <div>
+                            {
+                            selectedResumeDetail?.name && (
+                                <h3>{selectedResumeDetail?.name}</h3>
+                            )
+                            }
+                            {
+                            selectedResumeDetail?.position && (
+                                <p>{selectedResumeDetail?.position}</p>
+                            )
+                            }    
+                        </div>
+                        <ul>
+                            {
+                            selectedResumeDetail?.birthDate && (
+                                <li>{formatBirthDate(selectedResumeDetail.birthDate)}</li>
+                            )
+                            }
+                            {
+                            selectedResumeDetail?.gender && (
+                                <li>{getGenderLabel(selectedResumeDetail.gender)}</li>
+                            )
+                            }
+                            {
+                            selectedResumeDetail?.phone && (
+                                <li>{formatPhoneNumber(selectedResumeDetail.phone)}</li>
+                            )
+                            }
+                            {
+                            selectedResumeDetail?.email && (
+                                <li>{selectedResumeDetail?.email}</li>
+                            )
+                            }
+                        </ul>
+                    </div>
+                    {
+                        selectedResumeDetail?.description && (
+                        <p>{selectedResumeDetail?.description}</p>
+                        )
+                    }
+                </div>
 
-            {/* 액션 링크들 */}
-            <div className={styles.actions}>
-              <button
-                onClick={onEdit}
-                className={styles.actionButton}
-              >
-                편집
-              </button>
-              <span className={styles.divider}>|</span>
-              <button
-                onClick={handleDuplicateResume}
-                className={styles.actionButton}
-              >
-                복제
-              </button>
-              <span className={styles.divider}>|</span>
-              <button
-                onClick={handleDeleteResume}
-                className={styles.actionButton}
-              >
-                삭제
-              </button>
-            </div>
-          </div>
+                {/* 학력 섹션 */}
+                <div id="education" className="cont-box">
+                    <EducationView educations={selectedResumeDetail?.educations || []} showHidden={showHidden} />
+                </div>
+
+                {/* 경력 섹션 */}
+                <div id="career" className="cont-box">
+                    <CareerView careers={selectedResumeDetail?.careers || []} showHidden={showHidden} />
+                </div>
+
+                {/* 프로젝트 섹션 */}
+                <div id="project" className="cont-box">
+                    <ProjectView projects={selectedResumeDetail?.projects || []} showHidden={showHidden} />
+                </div>
+
+                {/* 활동 섹션 */}
+                <div id="activity" className="cont-box">
+                    <ActivityView activities={selectedResumeDetail?.activities || []} showHidden={showHidden} />
+                </div>
+
+                {/* 언어 섹션 */}
+                <div id="language" className="cont-box">
+                    <LanguageSkillView languageSkills={selectedResumeDetail?.languageSkills || []} showHidden={showHidden} />
+                </div>
+
+                {/* 첨부 섹션 */}
+                <div id="attachment" className="cont-box">
+                    <AttachmentView attachments={selectedResumeDetail?.attachments || []} showHidden={showHidden} />
+                </div>
+            </article>
+            <ViewFloatingNavigation 
+                showHidden={showHidden}
+                onTogglePrivateInfo={handleTogglePrivateInfo}
+                onExportPDF={handleExportPDF}
+                onCopyURL={handleCopyURL}
+            />
         </div>
 
         {/* 스크롤 가능한 컨텐츠 */}
-        <div className={styles.scrollContent}>
-          <div className={styles.contentInner}>
-            {/* 기본 정보 섹션 */}
-            <div id="basic-info" className={styles.basicInfo}>
-              <h2 className={styles.userName}>
-                {
-                  selectedResumeDetail?.name && (
-                    <span>
-                      {selectedResumeDetail?.name}
-                    </span>
-                  )
-                }
-                {
-                  selectedResumeDetail?.position && (
-                    <span style={{ color: selectedResumeDetail?.position ? 'inherit' : '#ddd' }}>{selectedResumeDetail?.position}</span>
-                  )
-                }                
-              </h2>
-              <div className={styles.userMeta}>
-                {
-                  selectedResumeDetail?.birthDate && (
-                    <span style={{ color: selectedResumeDetail?.birthDate ? 'inherit' : '#ddd' }}>
-                      {formatBirthDate(selectedResumeDetail.birthDate)}
-                    </span>
-                  )
-                }
-                {
-                  selectedResumeDetail?.gender && (
-                    <>
-                      {selectedResumeDetail?.birthDate && <span>|</span>}
-                      <span style={{ color: selectedResumeDetail?.gender ? 'inherit' : '#ddd' }}>
-                        {getGenderLabel(selectedResumeDetail.gender)}
-                      </span>
-                    </>
-                  )
-                }
-                {
-                  selectedResumeDetail?.phone && (
-                    <>
-                      {selectedResumeDetail?.gender && <span>|</span>}
-                      <span style={{ color: selectedResumeDetail?.phone ? 'inherit' : '#ddd' }}>
-                        {formatPhoneNumber(selectedResumeDetail.phone)}
-                      </span>
-                    </>
-                  )
-                }
-                {
-                  selectedResumeDetail?.email && (
-                    <>
-                      {selectedResumeDetail?.phone && <span>|</span>}
-                      <span style={{ color: selectedResumeDetail?.email ? 'inherit' : '#ddd' }}>
-                        {selectedResumeDetail?.email}
-                      </span>
-                    </>
-                  )
-                }
-              </div>
-
-              {/* 자기소개 */}
-              {
-                selectedResumeDetail?.description && (
-                  <div>
-                    <h3 className={styles.introTitle}>
-                      -----
-                    </h3>
-                    <p className={styles.introText} style={{ color: selectedResumeDetail?.description ? 'inherit' : '#ddd' }}>
-                      {selectedResumeDetail?.description}
-                    </p>
-                  </div>
-                )
-              }
-            </div>
-
-            {/* 학력 섹션 */}
-            <div id="education" className={styles.section}>
-              <EducationView educations={selectedResumeDetail?.educations || []} showHidden={showHidden} />
-            </div>
-
-            {/* 경력 섹션 */}
-            <div id="career" className={styles.section}>
-              <CareerView careers={selectedResumeDetail?.careers || []} showHidden={showHidden} />
-            </div>
-
-            {/* 프로젝트 섹션 */}
-            <div id="project" className={styles.section}>
-              <ProjectView projects={selectedResumeDetail?.projects || []} showHidden={showHidden} />
-            </div>
-
-            {/* 활동 섹션 */}
-            <div id="activity" className={styles.section}>
-              <ActivityView activities={selectedResumeDetail?.activities || []} showHidden={showHidden} />
-            </div>
-
-            {/* 언어 섹션 */}
-            <div id="language" className={styles.section}>
-              <LanguageSkillView languageSkills={selectedResumeDetail?.languageSkills || []} showHidden={showHidden} />
-            </div>
-
-            {/* 첨부 섹션 */}
-            <div id="attachment" className={styles.section}>
-              <AttachmentView attachments={selectedResumeDetail?.attachments || []} showHidden={showHidden} />
-            </div>
-          </div>
-          {/* 플로팅 네비게이션 */}
-          <ViewFloatingNavigation 
-            showHidden={showHidden}
-            onTogglePrivateInfo={handleTogglePrivateInfo}
-            onExportPDF={handleExportPDF}
-            onCopyURL={handleCopyURL}
-          />
-        </div>
-      </div>
     </div>
   );
 };

@@ -90,26 +90,24 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
     
     if(normalizedCategory == Attachment_AttachmentCategory.FILE) {
       return (
-        <div 
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+        <div
           onClick={() => handleFileDownload(attachment.fileUrl, attachment.fileName)}
         >
-          <Image src="/assets/img/ico/ic-download.png" alt="download" width={16} height={16} />
-          {attachment.fileName && <span>{attachment.fileName}</span>}
+          <Image src="/assets/img/ico/ic-down.svg" alt="download" width={1} height={1} />
+          {attachment.fileName && <p>{attachment.fileName}</p>}
         </div>
       );
     }
 
     if(normalizedCategory == Attachment_AttachmentCategory.URL) {
       return (
-        <div 
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+        <div
           onClick={() => {
             window.open(attachment.url, '_blank');
           }}
         >
-          <Image src="/assets/img/ico/ic-open.png" alt="etc" width={16} height={16} />
-          {attachment.url && <span>{attachment.url}</span>}
+          <Image src="/assets/img/ico/ic-open.svg" alt="etc" width={1} height={1} />
+          {attachment.url && <p>{attachment.url}</p>}
         </div>
       );
     }
@@ -119,47 +117,35 @@ const AttachmentView: React.FC<AttachmentViewProps> = ({ attachments, showHidden
   const filteredAttachments = attachments.filter(a => showHidden ? true : a.isVisible !== false);
 
   return (
-    <div className="view-container">
-      <h3 className="view-title">첨부</h3>
-      
-      {(!attachments || filteredAttachments.length === 0) ? (
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>첨부</h3>
+            </div>
+        </div>
+        
+        {(!attachments || filteredAttachments.length === 0) ? (
         <EmptyState text="등록된 첨부 정보가 없습니다." />
-      ) : (
-        <div className="view-list-container">
-          {filteredAttachments.map((attachment) => (
-            <div className="view-item" key={attachment.id}>
-              <div className="view-item-content">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <a
+        ) : (
+        <ul className="view-file-list">
+            {filteredAttachments.map((attachment) => (
+            <li key={attachment.id}>
+                <a
                     href={attachment.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      color: '#2196f3',
-                      textDecoration: 'none',
-                      flex: 1
-                    }}
-                  >
-                    <span style={{ fontSize: '16px' }}>
-                      {getAttachmentTypeIcon(attachment)}
-                    </span>
-                  </a>
-                  {attachment.type && (
-                    <span style={{ fontSize: '13px', color: '#999' }}>
-                      {getAttachmentTypeLabel(attachment.type)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+                >
+                    {getAttachmentTypeIcon(attachment)}
+                </a>
+                {
+                attachment.type && (
+                    <p>{getAttachmentTypeLabel(attachment.type)}</p>
+                )}
+            </li>
+            ))}
+        </ul>
+        )}
+    </>
   );
 };
 

@@ -75,65 +75,49 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills, s
   const filteredLanguageSkills = languageSkills.filter(l => showHidden ? true : l.isVisible !== false);
 
   return (
-    <div>
-      <h3 style={{ 
-        fontSize: '16px', 
-        fontWeight: '700', 
-        color: '#000',
-        marginBottom: '20px'
-      }}>
-        언어
-      </h3>
-      
-      {(!languageSkills || filteredLanguageSkills.length === 0) ? (
-        <EmptyState text="등록된 어학 정보가 없습니다." />
-      ) : (
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>언어</h3>
+            </div>
+        </div>
+        
+        {(!languageSkills || filteredLanguageSkills.length === 0) ? (
+            <EmptyState text="등록된 어학 정보가 없습니다." />
+        ) : (
+        
+        <ul className="view-list">
         {filteredLanguageSkills.map((languageSkill) => (
-          <div 
-            key={languageSkill.id}
-            style={{
-              padding: '20px',
-              border: '1px solid #e0e0e0',
-              marginBottom: '16px'
-            }}
-          >
-            {
-              languageSkill.language && (
-                <h4 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: '600', 
-                  color: '#333', 
-                  marginBottom: '8px'
-                }}>
-                  {getLanguageLabel(languageSkill.language)}
-                </h4>
-              )
-            }
-            {
-              languageSkill.level && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{
-                    fontSize: '13px',
-                    color: '#999',
-                    whiteSpace: 'nowrap',                
-                  }}>
-                    {getLevelLabel(languageSkill.level)}
-                  </span>
+            <li 
+                key={languageSkill.id}
+            >
+                <div className="info">
+                    <div>
+                        <div>
+                            {
+                            languageSkill.language && (
+                                <h4>{getLanguageLabel(languageSkill.language)}</h4>
+                            )
+                            }
+                        </div>
+                    </div>
                 </div>
-              )
-            }
-
-            {/* 어학 시험 */}
-            {languageSkill.languageTests && languageSkill.languageTests.length > 0 && (
-              <LanguageTestView languageTests={languageSkill.languageTests} showHidden={showHidden} />
-            )}
-          </div>
+                <div className="desc">
+                    {
+                    languageSkill.level && (
+                    <p>{getLevelLabel(languageSkill.level)}</p>
+                    )
+                    }
+                    {/* 어학 시험 */}
+                    {languageSkill.languageTests && languageSkill.languageTests.length > 0 && (
+                        <LanguageTestView languageTests={languageSkill.languageTests} showHidden={showHidden} />
+                    )}
+                </div>
+            </li>
         ))}
-      </div>
-      )}
-    </div>
+        </ul>
+        )}
+    </>
   );
 };
 

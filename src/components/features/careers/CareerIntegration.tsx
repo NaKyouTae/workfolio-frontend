@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ResumeDetail } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
 
+import Footer from "@/components/layouts/Footer"
+
 interface CareerIntegrationProps {
   resumeDetails: ResumeDetail[];
   onView: (resume: ResumeDetail) => void;
@@ -76,7 +78,9 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
     <section>
       <div className="contents">
         <div className="page-title">
-          <h2>내 이력 관리</h2>
+          <div>
+            <h2>내 이력 관리</h2>
+          </div>
         </div>
         <div className="page-cont">
           <div className="cont-box">
@@ -120,7 +124,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                   <div className="info">
                     <div>
                       <div>
-                        <input type="radio" name="default" id={`resume-${resume.id}`} checked={resume.isDefault} readOnly /><label htmlFor="resume1"></label>
+                        <input type="radio" className="input-resume" name="default" id={`resume-${resume.id}`} checked={resume.isDefault} readOnly /><label htmlFor="resume1"></label>
                         <p>{resume.title}</p>
                       </div>
                       <ul>
@@ -146,6 +150,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
           </div>
         </div>
       </div>
+      <Footer/>
     </section>
   );
 };
