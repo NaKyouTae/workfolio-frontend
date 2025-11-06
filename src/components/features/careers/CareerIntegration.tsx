@@ -11,6 +11,7 @@ interface CareerIntegrationProps {
   exportPDF: (resumeId?: string) => Promise<void>;
   copyURL: (publicId?: string) => Promise<void>;
   calculateTotalCareer: (resume: ResumeDetail) => string;
+  changeDefault: (resumeId?: string) => Promise<void>;
 }
 
 const CareerIntegration: React.FC<CareerIntegrationProps> = ({
@@ -22,6 +23,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   exportPDF,
   copyURL,
   calculateTotalCareer,
+  changeDefault,
 }) => {
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
 
@@ -58,6 +60,12 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   const handleCopyURL = (e: React.MouseEvent, resume: ResumeDetail) => {
     e.stopPropagation();
     copyURL(resume.publicId);
+  };
+
+  // 기본 이력서 변경
+  const handleChangeDefault = (e: React.MouseEvent, resume: ResumeDetail) => {
+    e.stopPropagation();
+    changeDefault(resume.id);
   };
 
   // 정렬된 이력서 목록
@@ -120,7 +128,15 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                   <div className="info">
                     <div>
                       <div>
-                        <input type="radio" name="default" id={`resume-${resume.id}`} checked={resume.isDefault} readOnly /><label htmlFor="resume1"></label>
+                        <input 
+                          type="radio" 
+                          name="default" 
+                          id={`resume-${resume.id}`} 
+                          checked={resume.isDefault} 
+                          readOnly 
+                          onClick={(e) => handleChangeDefault(e, resume)}
+                        />
+                        <label htmlFor={`resume-${resume.id}`}></label>
                         <p>{resume.title}</p>
                       </div>
                       <ul>

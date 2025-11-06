@@ -23,6 +23,7 @@ const CareerPage: React.FC = () => {
     exportPDF,
     copyURL,
     calculateTotalCareer,
+    changeDefault,
   } = useResumeDetails();
 
   // 선택된 이력서
@@ -170,6 +171,7 @@ const CareerPage: React.FC = () => {
           exportPDF={exportPDF}
           copyURL={copyURL}
           calculateTotalCareer={calculateTotalCareer}
+          changeDefault={changeDefault}
         />
       )}
       

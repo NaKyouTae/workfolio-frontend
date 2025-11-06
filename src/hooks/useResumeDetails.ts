@@ -378,6 +378,30 @@ export const useResumeDetails = () => {
     }
   }, [fetchResumeDetails]);
 
+  // 기본 이력서 변경
+  const changeDefault = useCallback(async (resumeId?: string): Promise<void> => {
+    if (!resumeId) {
+      showNotification('이력서 ID가 없습니다.', 'error');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/resumes/${resumeId}`, {
+        method: HttpMethod.PUT,
+      });
+
+      if (response.ok) {
+        showNotification('기본 이력서가 변경되었습니다.', 'success');
+        await refreshResumeDetails();
+      } else {
+        showNotification('기본 이력서 변경에 실패했습니다.', 'error');
+      }
+    } catch (error) {
+      console.error('기본 이력서 변경 실패:', error);
+      showNotification('기본 이력서 변경 중 오류가 발생했습니다.', 'error');
+    }
+  }, [refreshResumeDetails, showNotification]);
+
   return {
     resumeDetails,
     isLoading,
@@ -390,6 +414,7 @@ export const useResumeDetails = () => {
     copyURL,
     calculateTotalCareer,
     updateResume,
+    changeDefault,
   };
 };
 
