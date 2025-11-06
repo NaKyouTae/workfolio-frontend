@@ -134,10 +134,22 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                           id={`resume-${resume.id}`} 
                           checked={resume.isDefault} 
                           readOnly 
-                          onClick={(e) => handleChangeDefault(e, resume)}
+                          onChange={() => {}}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleChangeDefault(e, resume);
+                          }}
+                          style={{ cursor: 'pointer' }}
                         />
-                        <label htmlFor={`resume-${resume.id}`}></label>
-                        <p>{resume.title}</p>
+                        <label 
+                          htmlFor={`resume-${resume.id}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            changeDefault(resume.id);
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        ></label>
+                        <p onClick={() => handleView(resume)}>{resume.title}</p>
                       </div>
                       <ul>
                         <li onClick={(e) => handleEdit(e, resume)}>편집</li>
