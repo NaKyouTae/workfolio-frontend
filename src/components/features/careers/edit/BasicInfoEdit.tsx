@@ -2,8 +2,7 @@ import React from 'react';
 import { Resume_Gender } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import DatePicker from '@/components/ui/DatePicker';
-import styles from '../CareerContentEdit.module.css';
-import { compareEnumValue } from '@/utils/commonUtils';
+import { getResumeGenderLabel } from '@/utils/commonUtils';
 
 interface BasicInfoEditProps {
   name: string;
@@ -103,24 +102,12 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             </li>
             <li>
                 <p>성별</p>
-                {/* <label className={styles.radioLabel}>
-                    <input
-                    type="radio"
+                <Input 
+                    type="text"
+                    label="성별"
                     readOnly={true}
-                    checked={compareEnumValue(gender, Resume_Gender.MALE, Resume_Gender)}
-                    className={styles.radio}
-                    />
-                    <span className={styles.radioText}>남</span>
-                </label>
-                <label className={styles.radioLabel}>
-                    <input
-                    type="radio"
-                    readOnly={true}
-                    checked={compareEnumValue(gender, Resume_Gender.FEMALE, Resume_Gender)}
-                    className={styles.radio}
-                    />
-                    <span className={styles.radioText}>여</span>
-                </label> */}
+                    value={getResumeGenderLabel(gender)}
+                />
             </li>
             <li>
                 <p>전화번호</p>

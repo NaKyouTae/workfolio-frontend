@@ -95,13 +95,11 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
       <div className={styles.gridContainer2}>
         {/* 설명 */}
         <div className={styles.formFieldSpan2}>
-          <Input 
-            type="textarea"
-            label="상세 설명"
-            placeholder="프로젝트에 대한 상세한 설명, 사용한 기술, 성과 등을 기록하세요."
+          <textarea 
+            placeholder="내용을 입력해 주세요."
             value={project.description || ''}
             onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-          />
+          ></textarea>
         </div>
       </div>
       </div>

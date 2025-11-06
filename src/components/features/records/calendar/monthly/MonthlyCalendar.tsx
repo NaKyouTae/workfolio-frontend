@@ -11,6 +11,7 @@ import HttpMethod from '@/enums/HttpMethod'
 import RecordCreateModal from '../../modal/RecordCreateModal'
 import RecordDetail from '../../modal/RecordDetail'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
+import { useConfirm } from '@/hooks/useConfirm'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -32,6 +33,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
     allRecordGroups, 
     editableRecordGroups,
 }: MonthlyCalendarProps) {
+    const { confirm } = useConfirm();
     const [date, setDate] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
@@ -187,6 +189,16 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
     // 삭제 핸들러
     const handleDeleteRecord = async () => {
         if (!selectedRecord) return;
+        
+        const result = await confirm({
+            title: '레코드 삭제',
+            icon: '/assets/img/ico/ic-delete.svg',
+            description: `삭제하면 레코드에 저장된 내용이 모두 사라져요.\n한 번 삭제하면 되돌릴 수 없어요.`,
+            confirmText: '삭제하기',
+            cancelText: '돌아가기',
+        });
+        
+        if (!result) return;
         
         try {
             const response = await fetch(`/api/records/${selectedRecord.id}`, {

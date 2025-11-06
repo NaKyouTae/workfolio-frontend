@@ -52,6 +52,7 @@ const Dropdown = ({ selectedOption, options, setValue, label }: DropdownProps) =
             <button 
                 type="button"
                 onClick={toggleDropdown}
+                style={{ color: selectedLabel == '선택' ? '#808991' : '#121212' }}
             >
                 {selectedLabel}
             </button>

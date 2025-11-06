@@ -44,7 +44,6 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     const initialRecordType: CalendarViewType = urlView || parseCalendarViewType(systemConfig?.value, 'monthly')
 
     const [recordType, setRecordType] = useState<CalendarViewType>(initialRecordType)
-    const [searchTerm, setSearchTerm] = useState('')
     const [date, setDate] = useState<Date>(urlDate)
     
     // 초기 URL 설정 여부 추적
@@ -66,7 +65,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     }, [ownedRecordGroups])
     
     // records hook 사용 - recordType에 따라 적절한 파라미터 전달
-    const { records, refreshRecords } = useRecords(
+    const { records, refreshRecords, searchRecordsByKeyword } = useRecords(
         recordType, 
         recordType === 'monthly' || recordType === 'list' ? date.getMonth() + 1 : undefined,
         recordType === 'monthly' || recordType === 'list' ? date.getFullYear() : undefined,
@@ -162,9 +161,13 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
         updateURL(recordType, today)
     }, [recordType, updateURL])
 
-    const handleSearchChange = useCallback((term: string) => {
-        setSearchTerm(term)
-    }, [])
+    const handleSearchChange = useCallback(async (term: string) => {
+        // 키워드 검색 API 호출 (엔터 키를 눌렀을 때 호출됨)
+        if (term && term.trim() !== '') {
+            const result = await searchRecordsByKeyword(term)
+            console.log('검색 결과:', result)
+        }
+    }, [searchRecordsByKeyword])
 
     // URL 파라미터 변경 시 상태 업데이트 (외부에서 URL이 변경된 경우만)
     useEffect(() => {
@@ -224,7 +227,6 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                 onPreviousMonth={handlePreviousMonth}
                 onNextMonth={handleNextMonth}
                 onTodayMonth={handleTodayMonth}
-                searchTerm={searchTerm}
                 onSearchChange={handleSearchChange}
             />
             

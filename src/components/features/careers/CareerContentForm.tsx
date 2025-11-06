@@ -9,9 +9,6 @@ import {
   ResumeUpdateRequest_LanguageSkillRequest,
   ResumeUpdateRequest_ProjectRequest,
 } from '@/generated/resume';
-import styles from './CareerContentForm.module.css';
-
-// Import edit components
 import BasicInfoEdit from './edit/BasicInfoEdit';
 import CareerEdit from './edit/CareerEdit';
 import ProjectEdit from './edit/ProjectEdit';

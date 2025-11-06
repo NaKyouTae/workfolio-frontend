@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import styles from './ConfirmDialog.module.css';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -33,9 +32,35 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     onClose();
   };
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // 이벤트 전파를 차단하여 다른 외부 클릭 감지 핸들러가 동작하지 않도록 함
+    e.stopPropagation();
+    e.preventDefault();
+    
+    // 백그라운드 클릭 시 모달이 닫히지 않도록 함
+    if (e.target === e.currentTarget) {
+      // onClose(); // 주석 처리하여 백그라운드 클릭으로는 닫히지 않도록 함
+    }
+  };
+
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // 모달 내부 클릭 시 이벤트 전파 차단
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
   return (
-    <div className="modal">
-        <div className="modal-wrap sm">
+    <div 
+      className="modal" 
+      onClick={handleBackdropClick}
+      onMouseDown={handleBackdropClick}
+      style={{ 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(2px)',
+        zIndex: 10000
+      }}
+    >
+        <div className="modal-wrap sm" onClick={handleModalClick} onMouseDown={handleModalClick}>
             <div className="modal-cont">
                 <div className="modal-notice">
                     {icon && (
@@ -44,7 +69,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                     <div>
                         <h2>{title}</h2>
                         {description && (
-                            <p>{description}</p>
+                            <p style={{ whiteSpace: 'pre-line' }}>{description}</p>
                         )}
                     </div>
                 </div>

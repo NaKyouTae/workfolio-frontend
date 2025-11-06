@@ -85,7 +85,7 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
                 top: position.top,
                 ...(position.left !== undefined && { left: position.left }),
                 ...(position.right !== undefined && { right: position.right }),
-                zIndex: 9999
+                zIndex: 1000
             } : {}}
         >
             <div className="record-modal-tit">

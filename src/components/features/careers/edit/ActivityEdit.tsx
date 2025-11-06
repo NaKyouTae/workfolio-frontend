@@ -119,25 +119,23 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
           activity.type !== Activity_ActivityType.CERTIFICATION && (
             <>
               <div className={styles.formField}>
-                <Input 
-                  type="text"
-                  label="내용"
-                  placeholder="정보처리기사 자격증을 취득하였습니다."
+                <textarea 
+                  placeholder="내용을 입력해 주세요."
                   value={activity.description || ''}
                   onChange={(e) => handleActivityChange(index, 'description', e.target.value)}
-                />
+                ></textarea>
               </div>
             </>
           )
         }
       </div>
-      </div>
+    </div>
       
-      <CardActions
-        isVisible={activity.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteActivity(index)}
-      />
+    <CardActions
+      isVisible={activity.isVisible ?? true}
+      onToggleVisible={() => toggleVisible(index)}
+      onDelete={() => handleDeleteActivity(index)}
+    />
     </DraggableItem>
   );
 };
