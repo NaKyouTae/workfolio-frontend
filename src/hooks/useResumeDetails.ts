@@ -6,20 +6,7 @@ import dayjs from 'dayjs';
 import { useConfirmStore } from './useConfirm';
 import { useNotificationStore } from './useNotification';
 import { 
-  createSampleResume, 
-  createSampleCareers, 
-  createSampleEducations,
-  createSampleProjects,
-  createSampleActivities,
-  createSampleLanguageSkills,
-  createSampleAttachments,
-  createEmptySampleResume,
-  createEmptySampleCareers,
-  createEmptySampleEducations,
-  createEmptySampleProjects,
-  createEmptySampleActivities,
-  createEmptySampleLanguageSkills,
-  createEmptySampleAttachments
+  createAllSampleResumes
 } from '@/utils/sampleCareerData';
 import { ResumeUpdateRequest } from '@/generated/resume';
 
@@ -35,43 +22,18 @@ const checkIsLoggedIn = (): boolean => {
  * 샘플 ResumeDetail 데이터 생성
  */
 const createSampleResumeDetails = (): ResumeDetail[] => {
-  const resume = createSampleResume();
-  const emptyResume = createEmptySampleResume();
-  const careers = createSampleCareers();
-  const emptyCareers = createEmptySampleCareers();
-  const educations = createSampleEducations();
-  const emptyEducations = createEmptySampleEducations();
-  const projects = createSampleProjects();
-  const emptyProjects = createEmptySampleProjects();
-  const activities = createSampleActivities();
-  const emptyActivities = createEmptySampleActivities();
-  const languageSkills = createSampleLanguageSkills();
-  const emptyLanguageSkills = createEmptySampleLanguageSkills();
-  const attachments = createSampleAttachments();
-  const emptyAttachments = createEmptySampleAttachments();
-
-  return [
-    {
-      ...resume,
-      publicId: '',
-      careers,
-      educations,
-      projects,
-      activities,
-      languageSkills,
-      attachments,
-    },
-    {
-      ...emptyResume,
-      publicId: '',
-      careers: emptyCareers,
-      educations: emptyEducations,
-      projects: emptyProjects,
-      activities: emptyActivities,
-      languageSkills: emptyLanguageSkills,
-      attachments: emptyAttachments,
-    }
-  ];
+  const allResumes = createAllSampleResumes();
+  
+  return allResumes.map(({ resume, careers, educations, projects, activities, languageSkills, attachments }) => ({
+    ...resume,
+    publicId: '',
+    careers,
+    educations,
+    projects,
+    activities,
+    languageSkills,
+    attachments,
+  }));
 };
 
 /**

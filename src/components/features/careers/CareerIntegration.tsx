@@ -63,9 +63,11 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   // 정렬된 이력서 목록
   const sortedResumes = [...resumeDetails].sort((a, b) => {
     if (sortOrder === 'recent') {
+      // 최근 수정일 순 (updatedAt 내림차순)
       return (b.updatedAt || 0) - (a.updatedAt || 0);
     } else {
-      return (a.updatedAt || 0) - (b.updatedAt || 0);
+      // 오래된 순 (createdAt 오름차순)
+      return (a.createdAt || 0) - (b.createdAt || 0);
     }
   });
 
@@ -135,6 +137,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                     </ul>
                   </div>
                   <div className="desc">
+                    {/* <p>최종 등록일 : {DateUtil.formatTimestamp(resume.createdAt || 0, 'YYYY. MM. DD.')}</p> */}
                     <p>최종 수정일 : {DateUtil.formatTimestamp(resume.updatedAt || 0, 'YYYY. MM. DD.')}</p>
                   </div>
                 </li>

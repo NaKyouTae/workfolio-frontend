@@ -28,7 +28,7 @@ export const createSampleWorker = (): Worker => {
     id: 'worker-1',
     phone: '010-1234-5678',
     email: 'hong@example.com',
-    brithDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.MALE,
     nickName: '홍길동',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -54,7 +54,7 @@ export const createSampleResume = (): Resume => {
     isDefault: true,
     worker,
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
-    updatedAt: now
+    updatedAt: now - 2 * 24 * 60 * 60 * 1000
   };
 };
 
@@ -551,9 +551,9 @@ export const createSampleResume2 = () => {
     nickName: '김민준',
     phone: '010-2345-6789',
     email: 'minjun.kim@example.com',
-    brithDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.MALE,
-    createdAt: now - 365 * 24 * 60 * 60 * 1000,
+    createdAt: now - 300 * 24 * 60 * 60 * 1000,
     updatedAt: now
   };
 
@@ -569,8 +569,8 @@ export const createSampleResume2 = () => {
     description: 'Spring Boot와 MSA 아키텍처에 능숙한 5년차 백엔드 개발자입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 180 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 10 * 24 * 60 * 60 * 1000
+    createdAt: now - 280 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 3 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -674,7 +674,7 @@ export const createSampleResume3 = () => {
     id: 'worker-3',
     phone: '010-3456-7890',
     email: 'jieun.lee@example.com',
-    brithDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.FEMALE,
     nickName: '이지은',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -693,8 +693,8 @@ export const createSampleResume3 = () => {
     description: 'React와 Next.js를 주력으로 사용하는 3년차 프론트엔드 개발자입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 150 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 5 * 24 * 60 * 60 * 1000
+    createdAt: now - 120 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 1 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -780,7 +780,7 @@ export const createSampleResume4 = () => {
     id: 'worker-4',
     phone: '010-4567-8901',
     email: 'seoyeon.park@example.com',
-    brithDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.FEMALE,
     nickName: '박서연',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -799,8 +799,8 @@ export const createSampleResume4 = () => {
     description: '사용자 중심의 디자인을 추구하는 7년차 UX 디자이너입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 200 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 15 * 24 * 60 * 60 * 1000
+    createdAt: now - 45 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 4 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -926,7 +926,7 @@ export const createSampleResume5 = () => {
     id: 'worker-5',
     phone: '010-5678-9012',
     email: 'junho.choi@example.com',
-    brithDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.MALE,
     nickName: '최준호',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -945,8 +945,8 @@ export const createSampleResume5 = () => {
     description: '데이터 기반 의사결정을 중시하는 8년차 PM입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 220 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 20 * 24 * 60 * 60 * 1000
+    createdAt: now - 90 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 7 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -1063,7 +1063,7 @@ export const createSampleResume6 = () => {
     id: 'worker-6',
     phone: '010-6789-0123',
     email: 'subin.jung@example.com',
-    brithDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.FEMALE,
     nickName: '정수빈',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -1082,8 +1082,8 @@ export const createSampleResume6 = () => {
     description: 'Python과 SQL을 활용한 데이터 분석 전문가입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 170 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 8 * 24 * 60 * 60 * 1000
+    createdAt: now - 200 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 15 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -1157,7 +1157,7 @@ export const createSampleResume7 = () => {
     id: 'worker-7',
     phone: '010-7890-1234',
     email: 'dongwoo.kang@example.com',
-    brithDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.MALE,
     nickName: '강동우',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -1176,8 +1176,8 @@ export const createSampleResume7 = () => {
     description: 'Kubernetes와 AWS에 능숙한 인프라 전문가입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 190 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 12 * 24 * 60 * 60 * 1000
+    createdAt: now - 60 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 10 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -1251,7 +1251,7 @@ export const createSampleResume8 = () => {
     id: 'worker-8',
     phone: '010-8901-2345',
     email: 'seoa.yoon@example.com',
-    brithDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.FEMALE,
     nickName: '윤서아',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -1270,8 +1270,8 @@ export const createSampleResume8 = () => {
     description: '데이터 기반 마케팅 전략 수립 및 실행 전문가입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 160 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 7 * 24 * 60 * 60 * 1000
+    createdAt: now - 150 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 12 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -1345,7 +1345,7 @@ export const createSampleResume9 = () => {
     id: 'worker-9',
     phone: '010-9012-3456',
     email: 'hyunwoo.cho@example.com',
-    brithDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.MALE,
     nickName: '조현우',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -1364,8 +1364,8 @@ export const createSampleResume9 = () => {
     description: '자동화 테스트에 능숙한 6년차 QA 엔지니어입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 180 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 9 * 24 * 60 * 60 * 1000
+    createdAt: now - 30 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 5 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -1439,7 +1439,7 @@ export const createSampleResume10 = () => {
     id: 'worker-10',
     phone: '010-0123-4567',
     email: 'minji.song@example.com',
-    brithDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.FEMALE,
     nickName: '송민지',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -1458,8 +1458,8 @@ export const createSampleResume10 = () => {
     description: 'Swift와 SwiftUI를 전문으로 하는 iOS 개발자입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 140 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 6 * 24 * 60 * 60 * 1000
+    createdAt: now - 180 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 20 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -1533,7 +1533,7 @@ export const createSampleResume11 = () => {
     id: 'worker-11',
     phone: '010-1357-2468',
     email: 'jihoon.han@example.com',
-    brithDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
+    birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
     gender: Worker_Gender.MALE,
     nickName: '한지훈',
     createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -1552,8 +1552,8 @@ export const createSampleResume11 = () => {
     description: '딥러닝과 NLP 전문 AI 엔지니어입니다.',
     isDefault: false,
     worker,
-    createdAt: now - 210 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 14 * 24 * 60 * 60 * 1000
+    createdAt: now - 250 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 18 * 24 * 60 * 60 * 1000
   };
 
   const careers: Career[] = [
@@ -1871,4 +1871,20 @@ export const createEmptySampleResumeDetails = () => {
   const attachments = createEmptySampleAttachments();
 
   return { resume, careers, educations, projects, activities, languageSkills, attachments };
+};
+
+// 모든 샘플 Resume 데이터를 한 번에 반환
+export const createAllSampleResumes = () => {
+  return [
+    createSampleResume2(),
+    createSampleResume3(),
+    createSampleResume4(),
+    createSampleResume5(),
+    createSampleResume6(),
+    createSampleResume7(),
+    createSampleResume8(),
+    createSampleResume9(),
+    createSampleResume10(),
+    createSampleResume11(),
+  ];
 };
