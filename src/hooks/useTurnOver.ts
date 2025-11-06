@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { TurnOverDetail } from '@/generated/common'
 import { TurnOverDetailResponse, TurnOverUpsertRequest } from '@/generated/turn_over'
+import { createAllSampleTurnOvers } from '@/utils/sampleTurnOverData'
 
 export function useTurnOver() {
     const [turnOvers, setTurnOvers] = useState<TurnOverDetail[]>([])
@@ -16,9 +17,10 @@ export function useTurnOver() {
                 ?.split('=')[1];
             
             if (!accessToken) {
-                // 로그인하지 않은 경우 빈 배열 사용
-                setTurnOvers([])
-                return []
+                // 로그인하지 않은 경우 샘플 데이터 사용
+                const sampleTurnOvers = createAllSampleTurnOvers()
+                setTurnOvers(sampleTurnOvers)
+                return sampleTurnOvers
             }
 
             const response = await fetch('/api/turn-over', {
@@ -35,13 +37,17 @@ export function useTurnOver() {
                 return fetchedTurnOvers
             } else {
                 console.error('Failed to fetch turn overs')
-                setTurnOvers([])
-                return []
+                // API 실패 시에도 샘플 데이터 사용
+                const sampleTurnOvers = createAllSampleTurnOvers()
+                setTurnOvers(sampleTurnOvers)
+                return sampleTurnOvers
             }
         } catch (error) {
             console.error('Error fetching turn overs:', error)
-            setTurnOvers([])
-            return []
+            // 에러 발생 시에도 샘플 데이터 사용
+            const sampleTurnOvers = createAllSampleTurnOvers()
+            setTurnOvers(sampleTurnOvers)
+            return sampleTurnOvers
         } finally {
             setIsLoading(false)
         }
@@ -65,8 +71,9 @@ export function useTurnOver() {
                 ?.split('=')[1];
             
             if (!accessToken) {
-                console.error('No access token found')
-                return null
+                // 로그인하지 않은 경우 샘플 데이터에서 찾기
+                const sampleTurnOvers = createAllSampleTurnOvers()
+                return sampleTurnOvers.find(to => to.id === id) || null
             }
 
             const response = await fetch(`/api/turn-over/details/${id}`, {
@@ -81,11 +88,15 @@ export function useTurnOver() {
                 return data.turnOver || null
             } else {
                 console.error('Failed to fetch turn over detail')
-                return null
+                // API 실패 시 샘플 데이터에서 찾기
+                const sampleTurnOvers = createAllSampleTurnOvers()
+                return sampleTurnOvers.find(to => to.id === id) || null
             }
         } catch (error) {
             console.error('Error fetching turn over detail:', error)
-            return null
+            // 에러 발생 시 샘플 데이터에서 찾기
+            const sampleTurnOvers = createAllSampleTurnOvers()
+            return sampleTurnOvers.find(to => to.id === id) || null
         }
     }, [])
 
