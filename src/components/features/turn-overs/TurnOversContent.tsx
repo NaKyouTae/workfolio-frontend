@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TurnOversContentView from './content/TurnOverContentView';
 import { TurnOverDetail } from '@/generated/common';
-import TurnOversIntegrationPage from './content/TurnOversIntegrationPage';
+import TurnOversIntegration from './content/TurnOversIntegration';
 import TurnOverContentEdit from './content/TurnOverContentEdit';
 import { TurnOverUpsertRequest } from '@/generated/turn_over';
 import { useConfirm } from '@/hooks/useConfirm';
@@ -122,7 +122,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
 
   return (
     <div style={{ width: '100%' }}>
-      {viewMode === 'home' && <TurnOversIntegrationPage 
+      {viewMode === 'home' && <TurnOversIntegration 
         onSelectTurnOver={handleTurnOverSelect} 
         onEdit={handleTurnOverEdit} 
         onDuplicate={handleDuplicate} 

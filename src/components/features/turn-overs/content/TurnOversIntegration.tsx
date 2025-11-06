@@ -1,17 +1,18 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTurnOver } from '@/hooks/useTurnOver';
 import { TurnOverDetail } from '@/generated/common';
-import styles from './TurnOversIntegrationPage.module.css';
+import styles from './TurnOversIntegration.module.css';
 
-interface TurnOversIntegrationPageProps {
+interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDuplicate?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
 
-const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete }) => {
+const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete }) => {
   const { turnOvers, isLoading } = useTurnOver();
+  const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
 
   // 통계 계산
   const statistics = useMemo(() => {
@@ -69,10 +70,18 @@ const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onS
     };
   }, [turnOvers]);
 
-  // 정렬 (최근 순)
+  // 정렬된 이직 활동 목록
   const sortedTurnOvers = useMemo(() => {
-    return [...turnOvers].sort((a, b) => b.createdAt - a.createdAt);
-  }, [turnOvers]);
+    return [...turnOvers].sort((a, b) => {
+      if (sortOrder === 'recent') {
+        // 최근 수정일 순 (updatedAt 내림차순)
+        return (b.updatedAt || 0) - (a.updatedAt || 0);
+      } else {
+        // 오래된 순 (createdAt 오름차순)
+        return (a.createdAt || 0) - (b.createdAt || 0);
+      }
+    });
+  }, [turnOvers, sortOrder]);
 
   // 이직 활동 상태 계산
   const getTurnOverStatus = (turnOver: TurnOverDetail) => {
@@ -160,7 +169,13 @@ const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onS
           <h2 className={styles.sectionTitle}>
             전체 이직 활동 <span className={styles.count}>{turnOvers.length}개</span>
           </h2>
-          <div className={styles.sortInfo}>최근 이직 순 ▼</div>
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'recent' | 'oldest')}
+          >
+            <option value="recent">최근 수정일 순</option>
+            <option value="oldest">오래된 순</option>
+          </select>
         </div>
 
         {sortedTurnOvers.length === 0 ? (
@@ -296,5 +311,5 @@ const TurnOversIntegrationPage: React.FC<TurnOversIntegrationPageProps> = ({ onS
   );
 };
 
-export default TurnOversIntegrationPage;
+export default TurnOversIntegration;
 
