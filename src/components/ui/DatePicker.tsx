@@ -116,7 +116,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange = undefined, la
                         value={dateInputValue}
                         onChange={handleDateInputChange}
                         onClick={() => !readOnly && setIsCalendarOpen(true)}
-                        placeholder="yyyy. MM. dd."
+                        placeholder="YYYY. MM. DD."
                         readOnly={readOnly}
                         className={`date-input ${readOnly ? 'read-only' : ''}`}
                     />

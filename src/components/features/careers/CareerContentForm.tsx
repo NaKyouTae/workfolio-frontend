@@ -23,6 +23,8 @@ import EditFloatingNavigation from './EditFloatingNavigation';
 import Input from '@/components/ui/Input';
 import { AttachmentRequest } from '@/generated/attachment';
 
+import Footer from "@/components/layouts/Footer"
+
 interface CareerContentFormProps {
   // 기본 정보
   title: string;
@@ -100,115 +102,109 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
   onCancel
 }) => {
   return (
-    <div className={styles.container}>
-      <div style={{ 
-        padding: '20px 30px', 
-        backgroundColor: '#fff', 
-        borderBottom: '1px solid #e0e0e0',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <ul>
-            <li>
-                <input
-                    type="checkbox"
-                    checked={isDefault}
-                    onChange={(e) => onIsDefaultChange(e.target.checked)}
-                    id="isDefault"
+    <section>
+        <div className="contents">
+            <div className="page-title">
+                <div>
+                    <div>
+                        <input
+                            type="checkbox"
+                            checked={isDefault}
+                            onChange={(e) => onIsDefaultChange(e.target.checked)}
+                            id="isDefault"
+                            className="input-resume"
+                        />
+                        <label htmlFor="isDefault"></label>
+                        <Input
+                            type="text"
+                            label="제목"
+                            placeholder="이력서 제목을 입력해 주세요."
+                            value={title}
+                            onChange={(e) => onTitleChange(e.target.value)}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="page-cont">
+                <article>
+                    {/* 기본 정보 섹션 */}
+                    <div id="basic-info" className="cont-box">
+                        <BasicInfoEdit
+                            name={name}
+                            birthDate={birthDate}
+                            gender={gender}
+                            phone={phone}
+                            email={email}
+                            position={position}
+                            description={description}
+                            onNameChange={onNameChange}
+                            onBirthDateChange={onBirthDateChange}
+                            onGenderChange={onGenderChange}
+                            onPhoneChange={onPhoneChange}
+                            onEmailChange={onEmailChange}
+                            onPositionChange={onPositionChange}
+                            onDescriptionChange={onDescriptionChange}
+                        />
+                    </div>
+
+                    {/* 학력 섹션 */}
+                    <div id="education" className="cont-box">
+                        <EducationEdit
+                            educations={educations}
+                            onUpdate={onEducationsChange}
+                        />
+                    </div>
+
+                    {/* 경력 섹션 */}
+                    <div id="career" className="cont-box">
+                        <CareerEdit
+                            careers={careers}
+                            onUpdate={onCareersChange}
+                        />
+                    </div>
+
+                    {/* 프로젝트 섹션 */}
+                    <div id="project" className="cont-box">
+                        <ProjectEdit
+                            projects={projects}
+                            onUpdate={onProjectsChange}
+                        />
+                    </div>
+
+                    {/* 활동 섹션 */}
+                    <div id="activity" className="cont-box">
+                        <ActivityEdit
+                            activities={activities}
+                            onUpdate={onActivitiesChange}
+                        />
+                    </div>
+
+                    {/* 어학 섹션 */}
+                    <div id="language" className="cont-box">
+                        <LanguageSkillEdit
+                            languageSkills={languages}
+                            onUpdate={onLanguagesChange}
+                        />
+                    </div>
+
+                    {/* 첨부 섹션 */}
+                    <div id="attachment" className="cont-box">
+                        <AttachmentEdit
+                            attachments={attachments}
+                            onUpdate={onAttachmentsChange}
+                        />
+                    </div>
+                </article>
+                
+                <EditFloatingNavigation
+                    onSave={onSave}
+                    {...(onCancel && { onCancel })}
                 />
-                <label htmlFor="isDefault"><p>기본</p></label>
-            </li>
-          </ul>
-          <div style={{ flex: 1 }}>
-            <Input
-              type="text"
-              label="제목"
-              placeholder="이력서 제목"
-              value={title}
-              onChange={(e) => onTitleChange(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', position: 'relative', gap: '20px', justifyContent: 'space-between' }}>
-        <div className={styles.content}>
-          {/* 기본 정보 섹션 */}
-          <div id="basic-info">
-            <BasicInfoEdit
-              name={name}
-              birthDate={birthDate}
-              gender={gender}
-              phone={phone}
-              email={email}
-              position={position}
-              description={description}
-              onNameChange={onNameChange}
-              onBirthDateChange={onBirthDateChange}
-              onGenderChange={onGenderChange}
-              onPhoneChange={onPhoneChange}
-              onEmailChange={onEmailChange}
-              onPositionChange={onPositionChange}
-              onDescriptionChange={onDescriptionChange}
-            />
-          </div>
-
-          {/* 학력 섹션 */}
-          <div id="education">
-            <EducationEdit
-              educations={educations}
-              onUpdate={onEducationsChange}
-            />
-          </div>
-
-          {/* 경력 섹션 */}
-          <div id="career">
-            <CareerEdit
-              careers={careers}
-              onUpdate={onCareersChange}
-            />
-          </div>
-
-          {/* 프로젝트 섹션 */}
-          <div id="project">
-            <ProjectEdit
-              projects={projects}
-              onUpdate={onProjectsChange}
-            />
-          </div>
-
-          {/* 활동 섹션 */}
-          <div id="activity">
-            <ActivityEdit
-              activities={activities}
-              onUpdate={onActivitiesChange}
-            />
-          </div>
-
-          {/* 어학 섹션 */}
-          <div id="language">
-            <LanguageSkillEdit
-              languageSkills={languages}
-              onUpdate={onLanguagesChange}
-            />
-          </div>
-
-          {/* 첨부 섹션 */}
-          <div id="attachment">
-            <AttachmentEdit
-              attachments={attachments}
-              onUpdate={onAttachmentsChange}
-            />
-          </div>
+            </div>
         </div>
 
-        {/* 오른쪽 플로팅 네비게이션 */}
-        <EditFloatingNavigation
-          onSave={onSave}
-          {...(onCancel && { onCancel })}
-        />
-      </div>
-    </div>
+        <Footer/>
+    </section>
   );
 };
 

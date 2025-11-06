@@ -50,47 +50,21 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '8px',
-    border: showBorder ? '2px dashed #2196f3' : '2px dashed transparent',
-    borderRadius: '8px',
-    padding: showBorder ? '8px' : '0',
-    backgroundColor: showBorder ? '#f0f7ff' : 'transparent',
+    opacity: isDragging ? .8 : 1,
     ...customStyle,
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={className}>
-      {showDragButton && (
-        <button
-          {...attributes}
-          {...listeners}
-          style={{
-            cursor: 'grab',
-            background: 'transparent',
-            border: 'none',
-            padding: '0',
-            marginRight: '0px',
-            display: 'flex',
-            alignItems: 'center',
-            flexShrink: 0,
-            maxWidth: '16px',
-            width: '16px',
-          }}
-          aria-label="드래그하여 순서 변경"
-        >
-          <Image
-            src="/assets/img/drag-button.png"
-            alt="드래그"
-            width={dragButtonSize}
-            height={dragButtonSize}
-            style={{ display: 'block' }}
-          />
-        </button>
-      )}
-      {children}
+    <div ref={setNodeRef} style={style} className="edit-drag-list">
+        {showDragButton && (
+            <button
+                {...attributes}
+                {...listeners}
+            >
+                <i className="ic-drag" />
+            </button>
+        )}
+        {children}
     </div>
   );
 };

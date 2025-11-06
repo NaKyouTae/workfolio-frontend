@@ -35,70 +35,21 @@ const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
   };
 
   return (
-    <div className={styles.floatingNav}>
-      <div className={styles.navContent}>
-        {/* 목차 */}
-        <nav className={styles.tocList}>
-          <button 
-            onClick={() => scrollToSection('basic-info')} 
-            className={styles.tocItem}
-          >
-            기본 정보
-          </button>
-          <button 
-            onClick={() => scrollToSection('education')} 
-            className={styles.tocItem}
-          >
-            학력
-          </button>
-          <button 
-            onClick={() => scrollToSection('career')} 
-            className={styles.tocItem}
-          >
-            경력
-          </button>
-          <button 
-            onClick={() => scrollToSection('project')} 
-            className={styles.tocItem}
-          >
-            프로젝트
-          </button>
-          <button 
-            onClick={() => scrollToSection('activity')} 
-            className={styles.tocItem}
-          >
-            활동
-          </button>
-          <button 
-            onClick={() => scrollToSection('language')} 
-            className={styles.tocItem}
-          >
-            언어
-          </button>
-          <button 
-            onClick={() => scrollToSection('attachment')} 
-            className={styles.tocItem}
-          >
-            첨부
-          </button>
-        </nav>
-      </div>
-      {/* 저장/취소 버튼 */}
-      <div className={styles.floatingActions}>
-        <button
-            onClick={onSave}
-            className={styles.floatingSaveButton}
-            >
-            저장하기
-            </button>
-            <button
-            onClick={handleCancel}
-            className={styles.floatingCancelButton}
-            >
-            취소
-        </button>
-      </div>
-    </div>
+    <nav>
+        <ul className="nav-wrap">
+            <li onClick={() => scrollToSection('basic-info')} className="active">기본 정보</li>
+            <li onClick={() => scrollToSection('education')}>학력</li>
+            <li onClick={() => scrollToSection('career')}>경력</li>
+            <li onClick={() => scrollToSection('project')}>프로젝트</li>
+            <li onClick={() => scrollToSection('activity')}>활동</li>
+            <li onClick={() => scrollToSection('language')}>언어</li>
+            <li onClick={() => scrollToSection('attachment')}>첨부</li>
+        </ul>
+        <div className="nav-btn">
+            <button className="dark-gray" onClick={onSave}>저장하기</button>
+            <button className="line gray" onClick={handleCancel}>취소</button>
+        </div>
+    </nav>
   );
 };
 

@@ -19,35 +19,33 @@ const CardActions: React.FC<CardActionsProps> = ({
   onDelete,
 }) => {
   return (
-    <div className={styles.cardActions}>
-      <button
-        onClick={onToggleVisible}
-        className={`${styles.visibleButton} ${isVisible ? styles.visible : ''}`}
-        title={isVisible ? '보임' : '안보임'}
-        type="button"
-      >
-        <Image
-          src={isVisible ? '/assets/img/ico/ic-show.png' : '/assets/img/ico/ic-hide.png'}
-          alt={isVisible ? '보임' : '안보임'}
-          width={20}
-          height={20}
-          style={{ display: 'block' }}
-        />
-      </button>
-      <button
-        onClick={onDelete}
-        className={styles.cardDeleteButton}
-        title="삭제"
-        type="button"
-      >
-        <Image
-          src="/assets/img/ico/ic-minus.png"
-          alt="삭제"
-          width={20}
-          height={20}
-          style={{ display: 'block' }}
-        />
-      </button>
+    <div className="edit-btn">
+        <button
+            onClick={onToggleVisible}
+            className={`line gray ${isVisible ? styles.visible : ''}`}
+            title={isVisible ? '노출' : '숨김'}
+            type="button"
+        >
+            <Image
+                src={isVisible ? '/assets/img/ico/ic-show.svg' : '/assets/img/ico/ic-hide.svg'}
+                alt={isVisible ? '노출' : '숨김'}
+                width={1}
+                height={1}
+            />
+        </button>
+        <button
+            onClick={onDelete}
+            title="삭제"
+            type="button"
+            className="gray"
+        >
+            <Image
+                src="/assets/img/ico/ic-minus.svg"
+                alt="삭제"
+                width={1}
+                height={1}
+            />
+        </button>
     </div>
   );
 };

@@ -38,61 +38,54 @@ const SalaryItem: React.FC<SalaryItemProps> = ({
 
   return (
     <DraggableItem 
-      id={salary.id || `salary-${careerIndex}-${salaryIndex}`}
-      className={styles.cardWrapper}
-      dragButtonSize={20}
+        id={salary.id || `salary-${careerIndex}-${salaryIndex}`}
     >
-      <div 
-        style={{
-          flex: 1,
-          padding: '16px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '6px',
-          border: '1px solid #e0e0e0',
-          position: 'relative'
-        }}
-      >
-        <div className={styles.gridContainer2}>
-          <div className={styles.formField}>
-            <Input
-              type="number"
-              label="급여 금액 (원)"
-              placeholder="50000000"
-              value={salary.amount?.toString() || ''}
-              onChange={(e) => handleSalaryChange(careerIndex, salaryIndex, 'amount', Number(e.target.value))}
+        <div className="card">
+            <ul className='edit-cont'>
+                <li>
+                    <p>연봉(만 원)</p>
+                    <div className="input-desc">
+                        <Input
+                            type="number"
+                            label="연봉(만 원)"
+                            placeholder="연봉을 입력해 주세요."
+                            value={salary.amount?.toString() || ''}
+                            onChange={(e) => handleSalaryChange(careerIndex, salaryIndex, 'amount', Number(e.target.value))}
+                        />
+                        <span>만 원</span>
+                        {/* {salary.amount > 0 && (
+                            <>
+                            {formatCurrency(salary.amount)}원
+                            </>
+                        )} */}
+                    </div>
+                </li>
+                <li>
+                    <p>협상 일자</p>
+                    <DatePicker
+                        value={salary.negotiationDate}
+                        onChange={(date) => handleSalaryChange(careerIndex, salaryIndex, 'negotiationDate', DateTime.fromISO(date).toMillis())}
+                        required={false}
+                    />
+                </li>
+                <li className="full">
+                    <p>내용</p>
+                    {/* <Input
+                        type="text"
+                        label="내용"
+                        placeholder="예) 협상 내용, 추가 복지 혜택 등"
+                        value={salary.memo || ''}
+                        onChange={(e) => handleSalaryChange(careerIndex, salaryIndex, 'memo', e.target.value)}
+                    /> */}
+                    <textarea placeholder="예) 협상 내용, 추가 복지 혜택 등"></textarea>
+                </li>
+            </ul>
+            <CardActions
+                isVisible={salary.isVisible ?? true}
+                onToggleVisible={() => handleSalaryChange(careerIndex, salaryIndex, 'isVisible', !salary.isVisible)}
+                onDelete={() => handleDeleteSalary(careerIndex, salaryIndex)}
             />
-            {salary.amount > 0 && (
-              <p style={{ marginTop: '4px', fontSize: '12px', color: '#666' }}>
-                {formatCurrency(salary.amount)}원
-              </p>
-            )}
-          </div>
-          <div className={styles.formField}>
-            <DatePicker
-              label="협상일"
-              value={salary.negotiationDate}
-              onChange={(date) => handleSalaryChange(careerIndex, salaryIndex, 'negotiationDate', DateTime.fromISO(date).toMillis())}
-              required={false}
-            />
-          </div>
         </div>
-
-        <div className={styles.formField}>
-          <Input
-            type="text"
-            label="메모"
-            placeholder="급여 협상 내용, 복지 혜택 등"
-            value={salary.memo || ''}
-            onChange={(e) => handleSalaryChange(careerIndex, salaryIndex, 'memo', e.target.value)}
-          />
-        </div>
-      </div>
-      
-      <CardActions
-        isVisible={salary.isVisible ?? true}
-        onToggleVisible={() => handleSalaryChange(careerIndex, salaryIndex, 'isVisible', !salary.isVisible)}
-        onDelete={() => handleDeleteSalary(careerIndex, salaryIndex)}
-      />
     </DraggableItem>
   );
 };
@@ -122,177 +115,163 @@ const CareerItem: React.FC<CareerItemProps> = ({
 }) => {
   return (
     <DraggableItem 
-      id={careerRequest.career?.id || `career-${index}`}
-      className={styles.cardWrapper}
+        id={careerRequest.career?.id || `career-${index}`}
     >
-      <div className={styles.card}>
-        {careerRequest.career && (
-        <>
-          <div className={styles.gridContainer2}>
-            <div className={styles.formField}>
-              <Input 
-                type="text"
-                label="회사명"
-                placeholder="워크폴리오"
-                value={careerRequest.career.name || ''}
-                onChange={(e) => handleCareerChange(index, 'name', e.target.value)}
-              />
-            </div>
-            <div className={styles.formField}>
-              <Input 
-                type="text"
-                label="최종 연봉(만원)"
-                placeholder="1000"
-                value={careerRequest.career.salary?.toString() || ''}
-                onChange={(e) => handleCareerChange(index, 'salary', Number(e.target.value))}
-              />
-            </div>
-          </div>
-          <div className={styles.gridContainer2}>
-            {/* 입사일-퇴사일 */}
-            <div className={styles.formFieldSpan2}>
-              <label className={styles.label}>
-                입사년월 - 퇴사년월
-              </label>
-              <div className={styles.dateRangeContainer}>
-                <DatePicker
-                  value={careerRequest.career.startedAt}
-                  onChange={(date) => handleCareerChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
-                  required={false}
+        <div className="card-wrap">
+            <div className="card">
+                {careerRequest.career && (
+                    <ul className="edit-cont">
+                        <li>
+                            <p>회사명</p>
+                            <Input 
+                                type="text"
+                                label="회사명"
+                                placeholder="회사명을 입력해 주세요."
+                                value={careerRequest.career.name || ''}
+                                onChange={(e) => handleCareerChange(index, 'name', e.target.value)}
+                            />
+                        </li>
+                        <li>
+                            <p>최종 연봉(만 원)</p>
+                            <div className="input-desc">
+                                <Input 
+                                    type="text"
+                                    label="최종 연봉(만 원)"
+                                    placeholder="최종 연봉을 입력해 주세요."
+                                    value={careerRequest.career.salary?.toString() || ''}
+                                    onChange={(e) => handleCareerChange(index, 'salary', Number(e.target.value))}
+                                />
+                                <span>만 원</span>
+                            </div>
+                        </li>
+                        <li>
+                            <p>입사년월 - 퇴사년월</p>
+                            <div>
+                                <DatePicker
+                                    value={careerRequest.career.startedAt}
+                                    onChange={(date) => handleCareerChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                                    required={false}
+                                />
+                                <span>-</span>
+                                {!careerRequest.career.isWorking && (
+                                    <DatePicker
+                                    value={careerRequest.career.endedAt}
+                                    onChange={(date) => handleCareerChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
+                                    required={false}
+                                    />
+                                )}
+                                <input
+                                    type="checkbox"
+                                    checked={careerRequest.career.isWorking || false}
+                                    onChange={(e) => {
+                                        handleCareerChange(index, 'isWorking', e.target.checked);
+                                        if (e.target.checked) {
+                                        handleCareerChange(index, 'endedAt', undefined);
+                                        }
+                                    }}
+                                />
+                                <label>재직 중</label>
+                            </div>
+                        </li>
+                        <li>
+                            <p>재직 형태</p>
+                            <Dropdown
+                                selectedOption={normalizeEnumValue(careerRequest.career.employmentType, Career_EmploymentType)}
+                                options={[
+                                    { value: Career_EmploymentType.FULL_TIME, label: '정규직' },
+                                    { value: Career_EmploymentType.CONTRACT, label: '계약직' },
+                                    { value: Career_EmploymentType.INTERN, label: '인턴' },
+                                    { value: Career_EmploymentType.FREELANCER, label: '프리랜서' },
+                                ]}
+                                setValue={(value) => handleCareerChange(index, 'employmentType', normalizeEnumValue(value, Career_EmploymentType))}
+                            />
+                        </li>
+                        <li>
+                            <p>부서</p>
+                            <Input
+                                type="text"
+                                label="부서"
+                                placeholder="부서를 입력해 주세요."
+                                value={careerRequest.career.department || ''}
+                                onChange={(e) => handleCareerChange(index, 'department', e.target.value)}
+                            />
+                        </li>
+                        <li>
+                            <p>직무</p>
+                            <Input
+                                type="text"
+                                label="직무"
+                                placeholder="직무를 입력해 주세요."
+                                value={careerRequest.career.jobTitle || ''}
+                                onChange={(e) => handleCareerChange(index, 'jobTitle', e.target.value)}
+                            />
+                        </li>
+                        <li>
+                            <p>직책</p>
+                            <Input
+                                type="text"
+                                label="직책"
+                                placeholder="예) 파트장, 팀장, 본부장 등"
+                                value={careerRequest.career.position || ''}
+                                onChange={(e) => handleCareerChange(index, 'position', e.target.value)}
+                            />
+                        </li>
+                        <li>
+                            <p>직급</p>
+                            <Input
+                                type="text"
+                                label="직급"
+                                placeholder="예) 사원, 대리, 과장 등"
+                                value={careerRequest.career.rank || ''}
+                                onChange={(e) => handleCareerChange(index, 'rank', e.target.value)}
+                            />
+                        </li>
+                        <li className="full">
+                            <p>내용</p>
+                            {/* <Input
+                                type="text"
+                                label="내용"
+                                placeholder=""내용을 입력해 주세요."
+                                value={careerRequest.career.description || ''}
+                                onChange={(e) => handleCareerChange(index, 'description', e.target.value)}
+                            /> */}
+                            <textarea placeholder="내용을 입력해 주세요."></textarea>
+                        </li>
+                    </ul>
+                )}
+                <CardActions
+                isVisible={careerRequest.career?.isVisible ?? true}
+                onToggleVisible={() => toggleVisible(index)}
+                onDelete={() => handleDeleteCareer(index)}
                 />
-                <span className={styles.dateSeparator}>-</span>
-                {!careerRequest.career.isWorking && (
-                  <DatePicker
-                    value={careerRequest.career.endedAt}
-                    onChange={(date) => handleCareerChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
-                    required={false}
-                  />
+            </div>
+            <div className="card-sub">
+                <div className="cont-sub-tit">
+                    <div>
+                        <h4>연봉</h4>
+                        {/* <p>{careerRequest.salaries?.length || 0}개</p> */}
+                    </div>
+                    <button onClick={() => handleAddSalary(index)}><i className="ic-add" />추가</button>
+                </div>
+                {careerRequest.salaries && careerRequest.salaries.length > 0 && (
+                    <DraggableList
+                        items={careerRequest.salaries}
+                        onReorder={(reorderedSalaries) => handleSalaryReorder(index, reorderedSalaries)}
+                        getItemId={(sal, idx) => sal.id || `salary-${index}-${idx}`}
+                        renderItem={(salary, salaryIndex) => (
+                            <SalaryItem
+                            key={salary.id || `salary-${index}-${salaryIndex}`}
+                            salary={salary}
+                            salaryIndex={salaryIndex}
+                            careerIndex={index}
+                            handleSalaryChange={handleSalaryChange}
+                            handleDeleteSalary={handleDeleteSalary}
+                            />
+                        )}
+                    />
                 )}
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={careerRequest.career.isWorking || false}
-                    onChange={(e) => {
-                      handleCareerChange(index, 'isWorking', e.target.checked);
-                      if (e.target.checked) {
-                        handleCareerChange(index, 'endedAt', undefined);
-                      }
-                    }}
-                    className={styles.checkbox}
-                  />
-                  <span className={styles.checkboxText}>재직 중</span>
-                </label>
-              </div>
             </div>
-
-            {/* 고용 형태 */}
-            <div className={styles.formField}>
-              <Dropdown
-                label="재직 형태"
-                selectedOption={normalizeEnumValue(careerRequest.career.employmentType, Career_EmploymentType)}
-                options={[
-                  { value: Career_EmploymentType.FULL_TIME, label: '정규직' },
-                  { value: Career_EmploymentType.CONTRACT, label: '계약직' },
-                  { value: Career_EmploymentType.INTERN, label: '인턴' },
-                  { value: Career_EmploymentType.FREELANCER, label: '프리랜서' },
-                ]}
-                setValue={(value) => handleCareerChange(index, 'employmentType', normalizeEnumValue(value, Career_EmploymentType))}
-              />
-            </div>
-          </div>
-          <div className={styles.gridContainer2}>
-            <div className={styles.formField}>
-              <Input
-                type="text"
-                label="직책"
-                placeholder="솔루션 아키텍트"
-                value={careerRequest.career.position || ''}
-                onChange={(e) => handleCareerChange(index, 'position', e.target.value)}
-              />
-            </div>
-            <div className={styles.formField}>
-              <Input
-                type="text"
-                label="직급"
-                placeholder="책임 솔루션 아키텍트"
-                value={careerRequest.career.rank || ''}
-                onChange={(e) => handleCareerChange(index, 'rank', e.target.value)}
-              />
-            </div>
-          </div>
-          <div className={styles.gridContainer2}>
-            <div className={styles.formField}>
-              <Input
-                type="text"
-                label="부서"
-                placeholder="솔루션 개발팀"
-                value={careerRequest.career.department || ''}
-                onChange={(e) => handleCareerChange(index, 'department', e.target.value)}
-              />
-            </div>
-            <div className={styles.formField}>
-              <Input
-                type="text"
-                label="직무"
-                placeholder="백엔드 개발자"
-                value={careerRequest.career.jobTitle || ''}
-                onChange={(e) => handleCareerChange(index, 'jobTitle', e.target.value)}
-              />
-            </div>
-          </div>
-          <div className={styles.formField}>
-            <Input
-              type="text"
-              label="내용"
-              placeholder="내용"
-              value={careerRequest.career.description || ''}
-              onChange={(e) => handleCareerChange(index, 'description', e.target.value)}
-            />
-          </div>
-
-          {/* Salary 섹션 */}
-          <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid #e0e0e0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#333', margin: 0 }}>
-                연봉 협상 내역 | {careerRequest.salaries?.length || 0}개
-              </h4>
-              <button
-                type="button"
-                onClick={() => handleAddSalary(index)}
-                className={styles.addButton}
-                style={{ fontSize: '12px', padding: '6px 12px' }}
-              >
-                <span>+ 연봉 추가</span>
-              </button>
-            </div>
-
-            {careerRequest.salaries && careerRequest.salaries.length > 0 && (
-              <DraggableList
-                items={careerRequest.salaries}
-                onReorder={(reorderedSalaries) => handleSalaryReorder(index, reorderedSalaries)}
-                getItemId={(sal, idx) => sal.id || `salary-${index}-${idx}`}
-                renderItem={(salary, salaryIndex) => (
-                  <SalaryItem
-                    key={salary.id || `salary-${index}-${salaryIndex}`}
-                    salary={salary}
-                    salaryIndex={salaryIndex}
-                    careerIndex={index}
-                    handleSalaryChange={handleSalaryChange}
-                    handleDeleteSalary={handleDeleteSalary}
-                  />
-                )}
-              />
-            )}
-          </div>
-        </>
-      )}
-      </div>
-      
-      <CardActions
-        isVisible={careerRequest.career?.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteCareer(index)}
-      />
+        </div>
     </DraggableItem>
   );
 };
@@ -458,40 +437,39 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
   };
 
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitleCounter}>경력 | {careers.length}개</h3>
-        <div className={styles.addButtonContainer}>
-          <button onClick={handleAddCareer} className={styles.addButton}>
-            <span>+ 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>경력</h3>
+                <p>{careers.length}개</p>
+            </div>
+            <button onClick={handleAddCareer}><i className="ic-add" />추가</button>
         </div>
-      </div>
 
-      {careers.length === 0 ? (
-        <EmptyState text="등록된 경력 정보가 없습니다." />
-      ) : (
+        {careers.length === 0 ? (
+            <EmptyState text="등록된 경력 정보가 없습니다." />
+        ) : (
         <DraggableList
-          items={careers}
-          onReorder={handleCareerReorder}
-          getItemId={(car, idx) => car.career?.id || `career-${idx}`}
-          renderItem={(careerRequest, index) => (
-            <CareerItem
-              key={careerRequest.career?.id || `career-${index}`}
-              careerRequest={careerRequest}
-              index={index}
-              handleCareerChange={handleCareerChange}
-              toggleVisible={toggleVisible}
-              handleDeleteCareer={handleDeleteCareer}
-              handleAddSalary={handleAddSalary}
-              handleSalaryChange={handleSalaryChange}
-              handleDeleteSalary={handleDeleteSalary}
-              handleSalaryReorder={handleSalaryReorder}
-            />
-          )}
+            items={careers}
+            onReorder={handleCareerReorder}
+            getItemId={(car, idx) => car.career?.id || `career-${idx}`}
+            renderItem={(careerRequest, index) => (
+                <CareerItem
+                key={careerRequest.career?.id || `career-${index}`}
+                careerRequest={careerRequest}
+                index={index}
+                handleCareerChange={handleCareerChange}
+                toggleVisible={toggleVisible}
+                handleDeleteCareer={handleDeleteCareer}
+                handleAddSalary={handleAddSalary}
+                handleSalaryChange={handleSalaryChange}
+                handleDeleteSalary={handleDeleteSalary}
+                handleSalaryReorder={handleSalaryReorder}
+                />
+            )}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 

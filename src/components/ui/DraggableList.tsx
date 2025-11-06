@@ -70,16 +70,16 @@ function DraggableList<T>({
 
   return (
     <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
     >
-      <SortableContext
-        items={items.map((item, idx) => getItemId(item, idx))}
-        strategy={verticalListSortingStrategy}
-      >
-        {children || items.map((item, index) => renderItem(item, index))}
-      </SortableContext>
+        <SortableContext
+            items={items.map((item, idx) => getItemId(item, idx))}
+            strategy={verticalListSortingStrategy}
+        >
+            {children || items.map((item, index) => renderItem(item, index))}
+        </SortableContext>
     </DndContext>
   );
 }

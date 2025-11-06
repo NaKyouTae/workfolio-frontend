@@ -67,102 +67,91 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   onDescriptionChange,
 }) => {
   return (
-    <div className={styles.section}>
-      <h3 className={styles.sectionTitle}>
-        기본 정보
-      </h3>
-      
-      <div className={styles.gridContainer2}>
-        {/* 이름 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="이름"
-            readOnly={true}
-            value={name}
-          />
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>기본 정보</h3>
+            </div>
         </div>
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="직무"
-            placeholder="백엔드 개발자"
-            value={position}
-            onChange={(e) => onPositionChange(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className={styles.gridContainer2}>
-        <div className={styles.formField}>
-          <DatePicker
-            label="생년월일"
-            value={birthDate}
-            readOnly={true}
-            required={false}
-          />
-        </div>
-        {/* 성별 */}
-        <div className={styles.formField}>
-          <label className={styles.label}>
-            성별
-          </label>
-          <div className={styles.radioGroup}>
-            <label className={styles.radioLabel}>
-              <input
-                type="radio"
-                readOnly={true}
-                checked={compareEnumValue(gender, Resume_Gender.MALE, Resume_Gender)}
-                className={styles.radio}
-              />
-              <span className={styles.radioText}>남</span>
-            </label>
-            <label className={styles.radioLabel}>
-              <input
-                type="radio"
-                readOnly={true}
-                checked={compareEnumValue(gender, Resume_Gender.FEMALE, Resume_Gender)}
-                className={styles.radio}
-              />
-              <span className={styles.radioText}>여</span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div className={styles.gridContainer2}>
-        {/* 전화번호 */}
-        <div className={styles.formField}>
-          <Input 
-            type="tel"
-            label="전화번호"
-            readOnly={true}
-            value={formatPhoneNumber(phone)}
-          />
-        </div>
-        {/* 이메일 */}
-        <div className={styles.formField}>
-          <Input 
-            type="email"
-            label="이메일"
-            readOnly={true}
-            value={email}
-          />
-        </div>
-      </div>
-
-      <div className={styles.gridContainer1}>
-        {/* 전화번호 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="소개"
-            placeholder="간단 자기소개 입력"
-            value={description}
-            onChange={(e) => onDescriptionChange(e.target.value)}
-          />
-        </div>
-      </div>
-    </div>
+        <ul className="edit-list">
+            <li>
+                <p>이름</p>
+                <Input 
+                    type="text"
+                    label="이름"
+                    readOnly={true}
+                    value={name}
+                />
+            </li>
+            <li>
+                <p>직무</p>
+                <Input 
+                    type="text"
+                    label="직무"
+                    placeholder="직무를 입력해 주세요."
+                    value={position}
+                    onChange={(e) => onPositionChange(e.target.value)}
+                />
+            </li>
+            <li>
+                <p>생년월일</p>
+                <DatePicker
+                    value={birthDate}
+                    readOnly={true}
+                    required={false}
+                />
+            </li>
+            <li>
+                <p>성별</p>
+                {/* <label className={styles.radioLabel}>
+                    <input
+                    type="radio"
+                    readOnly={true}
+                    checked={compareEnumValue(gender, Resume_Gender.MALE, Resume_Gender)}
+                    className={styles.radio}
+                    />
+                    <span className={styles.radioText}>남</span>
+                </label>
+                <label className={styles.radioLabel}>
+                    <input
+                    type="radio"
+                    readOnly={true}
+                    checked={compareEnumValue(gender, Resume_Gender.FEMALE, Resume_Gender)}
+                    className={styles.radio}
+                    />
+                    <span className={styles.radioText}>여</span>
+                </label> */}
+            </li>
+            <li>
+                <p>전화번호</p>
+                <Input 
+                    type="tel"
+                    label="전화번호"
+                    readOnly={true}
+                    value={formatPhoneNumber(phone)}
+                />
+            </li>
+            <li>
+                <p>이메일</p>
+                <Input 
+                    type="email"
+                    label="이메일"
+                    readOnly={true}
+                    value={email}
+                />
+            </li>
+            <li className="full">
+                <p>소개</p>
+                <Input 
+                    type="text"
+                    label="소개"
+                    placeholder="소개를 작성해 주세요."
+                    value={description}
+                    onChange={(e) => onDescriptionChange(e.target.value)}
+                />
+            </li>
+        </ul>
+    </>
   );
 };
 

@@ -34,82 +34,79 @@ const EducationItem: React.FC<EducationItemProps> = ({
 }) => {
   return (
     <DraggableItem 
-      id={education.id || `education-${index}`}
-      className={styles.cardWrapper}
+        id={education.id || `education-${index}`}
     >
-      <div className={styles.card}>
-        <div className={styles.gridContainer2}>
-        {/* 학교 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="학교"
-            placeholder="서울대학교"
-            value={education.name || ''}
-            onChange={(e) => handleEducationChange(index, 'name', e.target.value)}
-          />
+        <div className="card">
+            <ul className="edit-cont">
+                <li>
+                    <p>학교명</p>
+                    <Input 
+                        type="text"
+                        label="학교"
+                        placeholder="학교명을 입력해 주세요."
+                        value={education.name || ''}
+                        onChange={(e) => handleEducationChange(index, 'name', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>전공 및 학위</p>
+                    <Input 
+                        type="text"
+                        label="전공"
+                        placeholder="예) 경영학과 학사 등"
+                        value={education.major || ''}
+                        onChange={(e) => handleEducationChange(index, 'major', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>입학년월 - 졸업년월</p>
+                    <div>
+                        <DatePicker
+                            value={education.startedAt}
+                            onChange={(date) => handleEducationChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                            required={false}
+                        />
+                        <span>-</span>
+                        <DatePicker
+                            value={education.endedAt}
+                            onChange={(date) => handleEducationChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
+                            required={false}
+                        />
+                    </div>
+                </li>
+                <li>
+                    <p>졸업 상태</p>
+                    <Dropdown
+                        selectedOption={normalizeEnumValue(education.status, Education_EducationStatus)}
+                        options={[
+                            { value: Education_EducationStatus.GRADUATED, label: '졸업' },
+                            { value: Education_EducationStatus.GRADUATING, label: '졸업예정' },
+                            { value: Education_EducationStatus.ENROLLED, label: '재학중' },
+                            { value: Education_EducationStatus.DROPPED_OUT, label: '중퇴' },
+                            { value: Education_EducationStatus.COMPLETED, label: '수료' },
+                            { value: Education_EducationStatus.ON_LEAVE, label: '휴학' },
+                        ]}
+                        setValue={(value) => handleEducationChange(index, 'status', normalizeEnumValue(value, Education_EducationStatus))}
+                    />
+                </li>
+                <li className="full">
+                    <p>내용</p>
+                    {/* <Input
+                        type="text"
+                        label="내용"
+                        placeholder="내용을 입력해 주세요."
+                        value={education.description || ''}
+                        onChange={(e) => handleEducationChange(index, 'description', e.target.value)}
+                    /> */}
+                    <textarea placeholder="내용을 입력해 주세요."></textarea>
+                </li>
+            </ul>
+            <CardActions
+            isVisible={education.isVisible ?? true}
+            onToggleVisible={() => toggleVisible(index)}
+            onDelete={() => handleDeleteEducation(index)}
+            />
         </div>
-
-        {/* 전공 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="전공"
-            placeholder="컴퓨터공학"
-            value={education.major || ''}
-            onChange={(e) => handleEducationChange(index, 'major', e.target.value)}
-          />
-        </div>
-      </div>
-      <div className={styles.gridContainer2}>
-        <div className={styles.formField}>
-          <DatePicker
-            label="시작 일시"
-            value={education.startedAt}
-            onChange={(date) => handleEducationChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
-            required={false}
-          />
-          <span className={styles.dateSeparator}>~</span>
-          <DatePicker
-            label="종료 일시"
-            value={education.endedAt}
-            onChange={(date) => handleEducationChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
-            required={false}
-          />
-        </div>
-        {/* 상태 */}
-        <div className={styles.formField}>
-          <Dropdown
-            label="상태"
-            selectedOption={normalizeEnumValue(education.status, Education_EducationStatus)}
-            options={[
-              { value: Education_EducationStatus.GRADUATED, label: '졸업' },
-              { value: Education_EducationStatus.GRADUATING, label: '졸업예정' },
-              { value: Education_EducationStatus.ENROLLED, label: '재학중' },
-              { value: Education_EducationStatus.DROPPED_OUT, label: '중퇴' },
-              { value: Education_EducationStatus.COMPLETED, label: '수료' },
-              { value: Education_EducationStatus.ON_LEAVE, label: '휴학' },
-            ]}
-            setValue={(value) => handleEducationChange(index, 'status', normalizeEnumValue(value, Education_EducationStatus))}
-          />
-        </div>
-      </div>
-      <div className={styles.formField}>
-        <Input
-          type="text"
-          label="내용"
-          placeholder="내용"
-          value={education.description || ''}
-          onChange={(e) => handleEducationChange(index, 'description', e.target.value)}
-        />
-      </div>
-      </div>
-      
-      <CardActions
-        isVisible={education.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteEducation(index)}
-      />
     </DraggableItem>
   );
 };
@@ -188,41 +185,35 @@ const EducationEdit: React.FC<EducationEditProps> = ({ educations, onUpdate }) =
   };
 
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitleCounter}>
-          학력 | {educations.length}개
-        </h3>
-        <div className={styles.addButtonContainer}>
-          <button
-            onClick={handleAddEducation}
-            className={styles.addButton}
-          >
-            <span>+ 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>학력</h3>
+                {/* <p>{educations.length}개</p> */}
+            </div>
+            <button onClick={handleAddEducation}><i className="ic-add" />추가</button>
         </div>
-      </div>
 
-      {educations.length === 0 ? (
+        {educations.length === 0 ? (
         <EmptyState text="등록된 학력 정보가 없습니다." />
-      ) : (
+        ) : (
         <DraggableList
-          items={educations}
-          onReorder={handleReorder}
-          getItemId={(edu, idx) => edu.id || `education-${idx}`}
-          renderItem={(education, index) => (
+            items={educations}
+            onReorder={handleReorder}
+            getItemId={(edu, idx) => edu.id || `education-${idx}`}
+            renderItem={(education, index) => (
             <EducationItem
-              key={education.id || `education-${index}`}
-              education={education}
-              index={index}
-              handleEducationChange={handleEducationChange}
-              toggleVisible={toggleVisible}
-              handleDeleteEducation={handleDeleteEducation}
+                key={education.id || `education-${index}`}
+                education={education}
+                index={index}
+                handleEducationChange={handleEducationChange}
+                toggleVisible={toggleVisible}
+                handleDeleteEducation={handleDeleteEducation}
             />
-          )}
+            )}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 

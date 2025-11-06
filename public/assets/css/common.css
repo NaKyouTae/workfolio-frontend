@@ -174,13 +174,19 @@ a:visited, a:hover, a:active, a:focus {
 
 /* input : checkbox */
 input {width: 100%; height: 5.2rem; padding: 0 1.6rem; border-radius: .8rem; font-size: 1.6rem; font-weight: 500; background-color: var(--white); border: 1px solid var(--gray003); color: var(--black); cursor: text;}
-input.md {height: 4rem; padding: 0 1.5rem; font-size: 1.4rem; border-radius: .6rem;}
+input.md {height: 4rem; padding: 0 1.4rem; font-size: 1.4rem; border-radius: .6rem;}
 input.sm {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
-input::placeholder {color: var(--gray005);}
+input::placeholder {color: var(--gray005); font-weight: 400;}
+input:disabled,
+input:read-only {background-color: var(--gray001); color: var(--gray005);}
 
 .input-search {width: 24rem; position: relative; display: flex; align-items: center;}
 .input-search::before {content: ''; display: block; width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-search.svg); background-repeat: no-repeat; background-size: contain; background-position: center; position: absolute; left: 1.2rem;}
 .input-search input {height: 3.2rem; padding: 0 1.2rem 0 3.2rem; font-size: 1.2rem; border-radius: .6rem;}
+
+.input-desc {position: relative; display: flex; align-items: center;}
+.input-desc input {padding-right: 5.2rem!important;}
+.input-desc span {position: absolute; font-size: 1.2rem; color: var(--gray005); right: 1.6rem;}
 
 input[type="checkbox"] {display: none;}
 input[type="checkbox"] + label {display: flex; align-items: center; column-gap: .8rem; cursor: pointer;}
@@ -197,6 +203,9 @@ input[type="radio"]:checked + label::before {background-image: url(../img/ico/ic
 input.input-resume + label::before {background-image: url(../img/ico/ic-resume-check.svg); background-color: transparent;}
 input:checked.input-resume + label::before {background-image: url(../img/ico/ic-resume-check-ov.svg);}
 
+.page-title input.input-resume + label::before {width: 1.8rem; height: 1.8rem;}
+.page-title input.input-resume ~ input {width: 100%; font-size: 1.8rem; font-weight: 600; padding: 0; border: 0;}
+
 /* input : file */
 .file {display: flex; align-items: center; column-gap: .6rem;}
 .file > input[type="file"] {display: none;}
@@ -210,6 +219,7 @@ input:checked.input-resume + label::before {background-image: url(../img/ico/ic-
 
 /* textarea */
 textarea {width: 100%; padding: .8rem 1.2rem; border-radius: .4rem; font-size: 1.2rem; line-height: 1.6; font-weight: 500; background-color: var(--white); border: 1px solid var(--gray003); color: var(--black); cursor: text;}
+textarea::placeholder {color: var(--gray005); font-weight: 400;}
 
 /* select */
 select {height: 3.2rem; padding: 0 3.8rem 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; -webkit-appearance: none; appearance: none; cursor: pointer;}
@@ -219,7 +229,7 @@ select.sm {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border
 
 /* dropdown */
 .dropdown {position: relative;}
-.dropdown > button {height: 3.2rem; padding: 0 3.8rem 0 1.2rem; font-size: 1.2rem; justify-content: flex-start; background-color: transparent; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; cursor: pointer;}
+.dropdown > button {height: 3.2rem; padding: 0 3.8rem 0 1.2rem; font-size: 1.2rem; justify-content: flex-start; background-color: transparent; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; cursor: pointer; color: var(--black);}
 .dropdown > button:has(+ ul) {background-image: url(../img/ico/ic-select-ov.svg);}
 .dropdown > ul {position: absolute; top: 3.4rem; width: 100%; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000;}
 .dropdown > ul > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer;}
@@ -236,7 +246,7 @@ button.sm {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: 
 button.xsm {width: fit-content; min-width: 9.2rem; height: 2.8rem; padding: 0 1rem; font-size: 1.1rem; border-radius: .4rem;}
 
 button.trans {width: fit-content; height: fit-content; padding: 0; background-color: transparent;}
-button.gray {background-color: var(--gray004);}
+button.gray {background-color: var(--gray002);}
 button.dark-gray {background-color: var(--gray006);}
 button.line.gray {border-color: var(--gray003); background-color: var(--white); color: var(--black);}
 
@@ -260,7 +270,7 @@ button.line.gray {border-color: var(--gray003); background-color: var(--white); 
 .date-picker .calendar .days {display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 0;}
 .date-picker .calendar .days > li {display: flex; align-items: center; justify-content: center; height: 2rem;}
 .date-picker .calendar .days > li.other {color: var(--gray005);}
-.date-picker .calendar .days > li > p {width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 100%;}
+.date-picker .calendar .days > li > p {width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 100%; cursor: pointer;}
 .date-picker .calendar .days > li.today > p {background-color: var(--yellow002); font-weight: 500;}
 
 .time-picker {width: 100%; max-height: 16.2rem; padding: .6rem 0; background-color: var(--white); border: 1px solid var(--gray003); border-radius: .4rem; position: absolute; top: 3.4rem; z-index: 10; overflow-y: auto;}

@@ -44,15 +44,14 @@ const Dropdown = ({ selectedOption, options, setValue, label }: DropdownProps) =
     }, [isOpen]);
 
     // 선택된 옵션의 라벨 찾기
-    const selectedLabel = options.find(option => option.value === selectedOption)?.label || '선택해주세요';
+    const selectedLabel = options.find(option => option.value === selectedOption)?.label || '선택';
     
     return (
         <div className="dropdown" ref={dropdownRef}>
             {label && <label className="dropdown-label">{label}</label>}
             <button 
                 type="button"
-                onClick={toggleDropdown} 
-                style={{color: 'black'}}
+                onClick={toggleDropdown}
             >
                 {selectedLabel}
             </button>

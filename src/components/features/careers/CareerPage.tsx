@@ -205,6 +205,7 @@ const CareerPage: React.FC = () => {
             onSave={handleEditComplete}
             onCancel={handleEditCancel}
           />
+          <Footer/>
         </div>
       )}
       {/* 이력서 생성 모달 */}
