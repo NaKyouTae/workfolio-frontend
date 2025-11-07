@@ -27,38 +27,31 @@ const TurnOverFloatingActions: React.FC<TurnOverFloatingActionsProps> = ({
   const showButtons = onSave || onCancel;
 
   return (
-    <div className={styles.floatingActions}>
-      {/* 네비게이션 메뉴 */}
-      {navigationItems && navigationItems.length > 0 && (
-        <div className={styles.floatingNavigation}>
-          {navigationItems.map((item) => (
-            <button
-              key={item.id}
-              className={`${styles.navItem} ${item.isActive ? styles.navItemActive : ''}`}
-              onClick={item.onClick}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* 액션 버튼 */}
-      {showButtons && (
-        <div className={styles.floatingButtons}>
-          {onSave && (
-            <button className={styles.saveButton} onClick={onSave}>
-              저장하기
-            </button>
-          )}
-          {onCancel && (
-            <button className={styles.cancelButton} onClick={onCancel}>
-              취소하기
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+    <nav>
+        {navigationItems && navigationItems.length > 0 && (
+            <ul className="nav-wrap">
+                {navigationItems.map((item) => (
+                    <li
+                        key={item.id}
+                        className={`${item.isActive ? 'active' : ''}`}
+                        onClick={item.onClick}
+                    >
+                    {item.label}
+                    </li>
+                ))}
+            </ul>
+        )}
+        {showButtons && (
+            <div className="nav-btn">
+                {onSave && (
+                    <button className="dark-gray" onClick={onSave}>저장하기</button>
+                )}
+                {onCancel && (
+                    <button className="line gray" onClick={onCancel}>취소</button>
+                )}
+            </div>
+        )}
+    </nav>
   );
 };
 
