@@ -1,37 +1,36 @@
 /**
- * 토큰 재발급을 지원하는 fetch wrapper
+ * 토큰 재발급을 지원하는 자동 인터셉터
+ * 
+ * ## 동작 방식
+ * - 앱 시작 시 `setupGlobalFetchInterceptor()`가 자동으로 호출됨
+ * - 모든 fetch API 호출이 자동으로 가로채짐
+ * - 401 에러 발생 시 자동으로 토큰 재발급 시도
+ * - 재발급 성공 시 원래 요청 자동 재시도
+ * - 사용자는 토큰 만료를 인지하지 못함
  * 
  * ## 사용 방법
+ * 별도의 작업이 필요 없습니다. 일반적인 fetch를 그대로 사용하세요:
  * 
- * ### 방법 1: 명시적으로 사용 (권장)
  * ```typescript
- * import { fetchWithTokenRefresh } from '@/utils/fetchWithTokenRefresh';
- * 
- * const response = await fetchWithTokenRefresh('/api/workers/me', {
+ * // 자동으로 401 처리됨
+ * const response = await fetch('/api/workers/me', {
  *   method: 'GET',
  * });
  * ```
  * 
- * ### 방법 2: 각 API 호출 후 401 체크
- * ```typescript
- * const response = await fetch('/api/some-endpoint');
- * if (response.status === 401) {
- *   // 토큰 재발급 후 재시도
- *   const retryResponse = await fetchWithTokenRefresh('/api/some-endpoint');
- * }
- * ```
+ * ## 토큰 재발급 플로우
+ * 1. API 호출 → 401 Unauthorized 발생
+ * 2. 자동으로 /api/token/reissue 호출 (refresh token 체크)
+ * 3. Refresh token이 있으면 → 새 access token 발급
+ * 4. 원래 API 요청 자동 재시도 → 응답 반환 ✅
+ * 5. Refresh token이 없거나 만료되면 → 로그인 페이지로 리다이렉트 (개발 중 비활성화)
  * 
- * ## 동작 방식
- * 1. API 호출 시 401 Unauthorized 발생
- * 2. 자동으로 /api/token/reissue 호출 (refresh token 있는지 체크)
- * 3. refresh token이 있으면 새로운 access token 발급
- * 4. 원래 API 요청 자동 재시도
- * 5. refresh token이 없거나 만료되면 로그인 페이지로 리다이렉트 (개발 중에는 비활성화)
+ * ## 제외되는 API
+ * - `/api/token/reissue` (토큰 재발급 API 자체)
+ * - 외부 도메인 API (다른 서버의 API)
  * 
- * ## 주의사항
- * - window.fetch 오버라이드 방식은 사용하지 않음
- * - 각 API 호출에서 명시적으로 사용해야 함
- * - 로그인 페이지 리다이렉트는 개발 완료 후 활성화 필요
+ * ## 개발 완료 후 해야 할 일
+ * `redirectToLogin()` 함수의 주석을 해제하여 로그인 페이지 리다이렉트 활성화
  */
 
 let isRefreshing = false;
@@ -190,24 +189,119 @@ export async function fetchWithTokenRefresh(
 }
 
 /**
- * 전역 fetch 인터셉터 (사용 안 함 - window.fetch 오버라이드 방식 제거)
+ * 전역 fetch를 래핑하여 자동 토큰 재발급 지원
+ * 모든 API 호출에서 401 에러 발생 시 자동으로 토큰 재발급 시도
  * 
- * 대신 각 API 호출에서 fetchWithTokenRefresh()를 명시적으로 사용하거나,
- * Response를 받은 후 401 에러를 체크하여 토큰 재발급을 처리하세요.
+ * ## 동작 방식
+ * 1. 모든 fetch 호출을 가로챔
+ * 2. 401 에러 발생 시 자동으로 토큰 재발급 시도
+ * 3. 재발급 성공 시 원래 요청 자동 재시도
+ * 4. 재발급 실패 시 로그인 페이지로 리다이렉트 (개발 중에는 비활성화)
  * 
- * 사용 예시:
- * ```typescript
- * import { fetchWithTokenRefresh } from '@/utils/fetchWithTokenRefresh';
- * 
- * const response = await fetchWithTokenRefresh('/api/some-endpoint', {
- *   method: 'GET',
- * });
- * ```
+ * ## 제외되는 API
+ * - /api/token/reissue (토큰 재발급 API 자체)
+ * - 외부 도메인 API
  */
 export function setupGlobalFetchInterceptor() {
-  console.log('⚠️ Global fetch interceptor is disabled. Use fetchWithTokenRefresh() explicitly for API calls that need token refresh.');
+  if (typeof window === 'undefined') {
+    console.log('⚠️ Server-side detected, skipping fetch interceptor');
+    return;
+  }
+
+  // 이미 오버라이드되어 있는지 체크
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if ((window.fetch as any).__intercepted) {
+    console.log('⚠️ Fetch interceptor already installed');
+    return;
+  }
+
+  // 원래 fetch 저장
+  const _originalFetch = window.fetch.bind(window);
   
-  // window.fetch 오버라이드 방식은 사용하지 않음
-  // 대신 각 API 호출에서 fetchWithTokenRefresh를 명시적으로 사용
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).fetch = async function(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    
+    // 토큰 재발급 API 자체는 원래 fetch 사용 (무한 루프 방지)
+    if (url.includes('/api/token/reissue')) {
+      return _originalFetch(input, init);
+    }
+    
+    // 외부 API는 제외
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      if (!url.includes(window.location.host)) {
+        return _originalFetch(input, init);
+      }
+    }
+    
+    // 첫 번째 요청 시도
+    let response = await _originalFetch(input, init);
+    
+    // 401 에러가 아니면 그대로 반환
+    if (response.status !== 401) {
+      return response;
+    }
+    
+    console.log(`🔒 401 Unauthorized detected for ${url} - attempting token refresh`);
+    
+    // 401 에러 발생 시 토큰 재발급 시도
+    if (isRefreshing) {
+      console.log('⏳ Token refresh already in progress, waiting...');
+      // 이미 토큰 재발급 중이면 대기
+      return new Promise((resolve, reject) => {
+        subscribeTokenRefresh(() => {
+          // 토큰 재발급 성공 후 원래 요청 재시도
+          _originalFetch(input, init)
+            .then(resolve)
+            .catch(reject);
+        });
+      });
+    }
+
+    isRefreshing = true;
+
+    try {
+      // 토큰 재발급 시도 (refresh token이 있는지 자동으로 체크됨)
+      const newToken = await refreshToken();
+      
+      if (!newToken) {
+        // 토큰 재발급 실패 (refresh token이 없거나 만료됨)
+        console.error('❌ Token refresh failed - no refresh token or expired');
+        onRefreshFailed();
+        isRefreshing = false;
+        
+        // 로그인 페이지로 리다이렉트 (개발 중에는 주석 처리됨)
+        redirectToLogin();
+        
+        return response;
+      }
+
+      // 토큰 재발급 성공
+      console.log('✅ Token refresh successful, notifying waiting requests...');
+      onRefreshed(newToken);
+      isRefreshing = false;
+
+      console.log('🔁 Retrying original request with new token...');
+      // 원래 요청 재시도
+      response = await _originalFetch(input, init);
+      console.log('✅ Retry successful, status:', response.status);
+      return response;
+    } catch (error) {
+      console.error('❌ Error in token refresh process:', error);
+      onRefreshFailed();
+      isRefreshing = false;
+      
+      // 에러 발생 시에도 로그인 페이지로 리다이렉트 (개발 중에는 주석 처리됨)
+      redirectToLogin();
+      
+      return response;
+    }
+  };
+
+  // 오버라이드 표시
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ((window as any).fetch).__intercepted = true;
+  
+  console.log('✅ Global fetch interceptor enabled - all API calls with 401 error will auto-refresh token');
 }
 

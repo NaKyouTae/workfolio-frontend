@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { TurnOverGoalDetail } from '@/generated/common';
 import styles from './TurnOverGoalView.module.css';
 import MemoView from './common/MemoView';
@@ -7,13 +7,17 @@ import TurnOverDirectionView from './common/TurnOverDirectionView';
 import SelfIntroductionView from './common/SelfIntroductionView';
 import InterviewQuestionView from './common/InterviewQuestionView';
 import CheckListView from './common/CheckListView';
-import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '../TurnOverFloatingActions';
 
 interface TurnOverGoalViewProps {
   turnOverGoal: TurnOverGoalDetail | null;
 }
 
-const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => {
+export interface TurnOverViewRef {
+  getNavigationItems: () => FloatingNavigationItem[];
+}
+
+const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ turnOverGoal }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('direction');
   
   // 각 섹션에 대한 ref
@@ -23,14 +27,6 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
   const memoRef = useRef<HTMLDivElement>(null);
   const checkListRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLDivElement>(null);
-
-  if (!turnOverGoal) {
-    return (
-      <div className={styles.emptyState}>
-        <p>목표 정보가 없습니다.</p>
-      </div>
-    );
-  }
 
   // 섹션으로 스크롤하는 함수
   const scrollToSection = (sectionId: string) => {
@@ -50,6 +46,7 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
     }
   };
 
+  // 네비게이션 아이템 생성 함수
   const getNavigationItems = (): FloatingNavigationItem[] => {
     return [
       {
@@ -90,6 +87,19 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
       },
     ];
   };
+
+  // ref를 통해 getNavigationItems 함수를 노출
+  useImperativeHandle(ref, () => ({
+    getNavigationItems,
+  }));
+
+  if (!turnOverGoal) {
+    return (
+      <div className={styles.emptyState}>
+        <p>목표 정보가 없습니다.</p>
+      </div>
+    );
+  }
     
   return (
     <div className={styles.container}>
@@ -127,11 +137,10 @@ const TurnOverGoalView: React.FC<TurnOverGoalViewProps> = ({ turnOverGoal }) => 
           <AttachmentView attachments={turnOverGoal.attachments || []} />
         </div>
       </div>
-
-      {/* Floating Navigation */}
-      <TurnOverFloatingActions navigationItems={getNavigationItems()} />
     </div>
   );
-};
+});
+
+TurnOverGoalView.displayName = 'TurnOverGoalView';
 
 export default TurnOverGoalView;

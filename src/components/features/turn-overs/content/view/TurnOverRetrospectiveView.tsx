@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { TurnOverRetrospectiveDetail } from '@/generated/common';
 import styles from './TurnOverRetrospectiveView.module.css';
 import MemoView from './common/MemoView';
@@ -6,13 +6,14 @@ import AttachmentView from '@/components/features/common/AttachmentView';
 import FinalChoiceView from './common/FinalChoiceView';
 import NegotiationView from './common/NegotiationView';
 import SatisfactionView from './common/SatisfactionView';
-import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { TurnOverViewRef } from './TurnOverGoalView';
 
 interface TurnOverRetrospectiveViewProps {
   turnOverRetrospective: TurnOverRetrospectiveDetail | null;
 }
 
-const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ turnOverRetrospective }) => {
+const TurnOverRetrospectiveView = forwardRef<TurnOverViewRef, TurnOverRetrospectiveViewProps>(({ turnOverRetrospective }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('finalChoice');
   
   // 각 섹션에 대한 ref
@@ -21,14 +22,6 @@ const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ t
   const satisfactionRef = useRef<HTMLDivElement>(null);
   const memoRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLDivElement>(null);
-
-  if (!turnOverRetrospective) {
-    return (
-      <div className={styles.emptyState}>
-        <p>회고 정보가 없습니다.</p>
-      </div>
-    );
-  }
 
   // 섹션으로 스크롤하는 함수
   const scrollToSection = (sectionId: string) => {
@@ -47,6 +40,7 @@ const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ t
     }
   };
 
+  // 네비게이션 아이템 생성 함수
   const getNavigationItems = (): FloatingNavigationItem[] => {
     return [
       {
@@ -81,6 +75,19 @@ const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ t
       },
     ];
   };
+
+  // ref를 통해 getNavigationItems 함수를 노출
+  useImperativeHandle(ref, () => ({
+    getNavigationItems,
+  }));
+
+  if (!turnOverRetrospective) {
+    return (
+      <div className={styles.emptyState}>
+        <p>회고 정보가 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -126,12 +133,11 @@ const TurnOverRetrospectiveView: React.FC<TurnOverRetrospectiveViewProps> = ({ t
           <AttachmentView attachments={turnOverRetrospective.attachments || []} />
         </div>
       </div>
-
-      {/* Floating Navigation */}
-      <TurnOverFloatingActions navigationItems={getNavigationItems()} />
     </div>
   );
-};
+});
+
+TurnOverRetrospectiveView.displayName = 'TurnOverRetrospectiveView';
 
 export default TurnOverRetrospectiveView;
 

@@ -11,7 +11,6 @@ export default function TokenRefreshProvider({ children }: { children: React.Rea
   useEffect(() => {
     // 클라이언트에서만 실행
     if (typeof window !== 'undefined') {
-        console.log('setupGlobalFetchInterceptor');
       setupGlobalFetchInterceptor();
     }
   }, []);

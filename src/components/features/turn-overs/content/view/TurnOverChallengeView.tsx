@@ -1,30 +1,23 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { TurnOverChallengeDetail } from '@/generated/common';
 import styles from './TurnOverChallengeView.module.css';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/features/common/AttachmentView';
 import JobApplicationListView from './common/JobApplicationListView';
-import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { TurnOverViewRef } from './TurnOverGoalView';
 
 interface TurnOverChallengeViewProps {
   turnOverChallenge: TurnOverChallengeDetail | null;
 }
 
-const TurnOverChallengeView: React.FC<TurnOverChallengeViewProps> = ({ turnOverChallenge }) => {
+const TurnOverChallengeView = forwardRef<TurnOverViewRef, TurnOverChallengeViewProps>(({ turnOverChallenge }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('jobApplication');
   
   // 각 섹션에 대한 ref
   const jobApplicationRef = useRef<HTMLDivElement>(null);
   const memoRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLDivElement>(null);
-
-  if (!turnOverChallenge) {
-    return (
-      <div className={styles.emptyState}>
-        <p>도전 정보가 없습니다.</p>
-      </div>
-    );
-  }
 
   // 섹션으로 스크롤하는 함수
   const scrollToSection = (sectionId: string) => {
@@ -41,6 +34,7 @@ const TurnOverChallengeView: React.FC<TurnOverChallengeViewProps> = ({ turnOverC
     }
   };
 
+  // 네비게이션 아이템 생성 함수
   const getNavigationItems = (): FloatingNavigationItem[] => {
     return [
       {
@@ -64,6 +58,19 @@ const TurnOverChallengeView: React.FC<TurnOverChallengeViewProps> = ({ turnOverC
     ];
   };
 
+  // ref를 통해 getNavigationItems 함수를 노출
+  useImperativeHandle(ref, () => ({
+    getNavigationItems,
+  }));
+
+  if (!turnOverChallenge) {
+    return (
+      <div className={styles.emptyState}>
+        <p>도전 정보가 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.contentInner}>
@@ -82,12 +89,11 @@ const TurnOverChallengeView: React.FC<TurnOverChallengeViewProps> = ({ turnOverC
           <AttachmentView attachments={turnOverChallenge.attachments || []} />
         </div>
       </div>
-
-      {/* Floating Navigation */}
-      <TurnOverFloatingActions navigationItems={getNavigationItems()} />
     </div>
   );
-};
+});
+
+TurnOverChallengeView.displayName = 'TurnOverChallengeView';
 
 export default TurnOverChallengeView;
 
