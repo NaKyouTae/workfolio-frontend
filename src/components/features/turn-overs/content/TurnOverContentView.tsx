@@ -6,7 +6,6 @@ import TurnOverChallengeView from './view/TurnOverChallengeView';
 import TurnOverContentViewHeader from './TurnOverContentViewHeader';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
 import TurnOverFloatingActions, { FloatingNavigationItem } from './TurnOverFloatingActions';
-import styles from './TurnOverContentView.module.css';
 
 interface TurnOversContentViewProps {
   selectedTurnOver: TurnOverDetail | null;

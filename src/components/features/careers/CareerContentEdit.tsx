@@ -258,7 +258,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
       onLanguagesChange={setLanguages}
       onAttachmentsChange={setAttachments}
       onSave={handleSaveAll}
-        onCancel={onCancel}
+      onCancel={onCancel}
     />
   );
 };

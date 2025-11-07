@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { ResumeUpdateRequest_LanguageSkillRequest, ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest } from '@/generated/resume';
 import { LanguageSkill_Language, LanguageSkill_LanguageLevel } from '@/generated/common';
 import Dropdown from '@/components/ui/Dropdown';
-import styles from '../CareerContentEdit.module.css';
 import LanguageTestEdit from './LanguageTestEdit';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';

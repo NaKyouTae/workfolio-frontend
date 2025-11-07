@@ -3,10 +3,10 @@ import { ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest } from '@/
 import Input from '@/components/ui/Input';
 import DatePicker from '@/components/ui/DatePicker';
 import DateUtil from '@/utils/DateUtil';
-import styles from '../CareerContentEdit.module.css';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface LanguageTestEditProps {
   languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[];
@@ -161,21 +161,25 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
             </div>
             <button onClick={handleAddLanguageTest}><i className="ic-add" />추가</button>
         </div>
-        <DraggableList
-        items={languageTests}
-        onReorder={handleReorder}
-        getItemId={(test, idx) => test.id || `language-test-${idx}`}
-        renderItem={(languageTest, index) => (
-            <LanguageTestItem
-            key={languageTest.id || `language-test-${index}`}
-            languageTest={languageTest}
-            index={index}
-            handleLanguageTestChange={handleLanguageTestChange}
-            toggleVisible={toggleVisible}
-            handleDeleteLanguageTest={handleDeleteLanguageTest}
-            />
+        {languageTests.length === 0 ? (
+          <EmptyState text="등록된 어학 시험 정보가 없습니다." />
+        ) : (
+          <DraggableList
+            items={languageTests}
+            onReorder={handleReorder}
+            getItemId={(test, idx) => test.id || `language-test-${idx}`}
+            renderItem={(languageTest, index) => (
+                <LanguageTestItem
+                key={languageTest.id || `language-test-${index}`}
+                languageTest={languageTest}
+                index={index}
+                handleLanguageTestChange={handleLanguageTestChange}
+                toggleVisible={toggleVisible}
+                handleDeleteLanguageTest={handleDeleteLanguageTest}
+                />
+            )}
+          />
         )}
-        />
     </div>
   );
 };

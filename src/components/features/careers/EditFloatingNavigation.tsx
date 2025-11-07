@@ -1,5 +1,4 @@
-import React from 'react';
-import styles from './CareerContentEdit.module.css';
+import React, { useState } from 'react';
 import { useConfirm } from '@/hooks/useConfirm';
 
 interface EditFloatingNavigationProps {
@@ -12,11 +11,23 @@ const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
   onCancel
 }) => {
   const { confirm } = useConfirm();
+  const [activeSection, setActiveSection] = useState<string>('basic-info');
+
+  const sections = [
+    { id: 'basic-info', label: '기본 정보' },
+    { id: 'education', label: '학력' },
+    { id: 'career', label: '경력' },
+    { id: 'project', label: '프로젝트' },
+    { id: 'activity', label: '활동' },
+    { id: 'language', label: '언어' },
+    { id: 'attachment', label: '첨부' },
+  ];
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(sectionId);
     }
   };
 
@@ -37,13 +48,15 @@ const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
   return (
     <nav>
         <ul className="nav-wrap">
-            <li onClick={() => scrollToSection('basic-info')} className="active">기본 정보</li>
-            <li onClick={() => scrollToSection('education')}>학력</li>
-            <li onClick={() => scrollToSection('career')}>경력</li>
-            <li onClick={() => scrollToSection('project')}>프로젝트</li>
-            <li onClick={() => scrollToSection('activity')}>활동</li>
-            <li onClick={() => scrollToSection('language')}>언어</li>
-            <li onClick={() => scrollToSection('attachment')}>첨부</li>
+          {sections.map((section) => (
+            <li
+              key={section.id}
+              onClick={() => scrollToSection(section.id)}
+              className={activeSection === section.id ? 'active' : ''}
+            >
+              {section.label}
+            </li>
+          ))}
         </ul>
         <div className="nav-btn">
             <button className="dark-gray" onClick={onSave}>저장하기</button>
