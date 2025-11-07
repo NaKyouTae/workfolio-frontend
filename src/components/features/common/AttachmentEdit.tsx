@@ -58,91 +58,67 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
 
   return (
     <DraggableItem 
-      id={attachment.id || `attachment-${index}`}
-      className="edit-card-wrapper"
+        id={attachment.id || `attachment-${index}`}
     >
-      <div className="edit-card">
-        <div className="edit-grid-container-2">
-          {/* 종류 */}
-          <div className="edit-form-field">
-            <Dropdown
-              label="종류"
-              selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
-              options={[
-                { value: Attachment_AttachmentType.RESUME, label: '이력서' },
-                { value: Attachment_AttachmentType.PORTFOLIO, label: '포트폴리오' },
-                { value: Attachment_AttachmentType.CAREER_STATEMENT, label: '경력기술서' },
-                { value: Attachment_AttachmentType.CERTIFICATE, label: '증명서' },
-                { value: Attachment_AttachmentType.ETC, label: '기타' },
-              ]}
-              setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
+        <div className="card">
+            <ul className="edit-cont">
+                <li>
+                    <p>구분</p>
+                    <Dropdown
+                        selectedOption={normalizeEnumValue(attachment.type, Attachment_AttachmentType)}
+                        options={[
+                        { value: Attachment_AttachmentType.RESUME, label: '이력서' },
+                        { value: Attachment_AttachmentType.PORTFOLIO, label: '포트폴리오' },
+                        { value: Attachment_AttachmentType.CAREER_STATEMENT, label: '경력기술서' },
+                        { value: Attachment_AttachmentType.CERTIFICATE, label: '증명서' },
+                        { value: Attachment_AttachmentType.ETC, label: '기타' },
+                        ]}
+                        setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
+                    />
+                </li>
+                {/* 파일 업로드 (파일 모드일 때) */}
+                {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
+                <li>
+                    <p>파일 첨부</p>
+                    <label className="file">
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            onChange={onFileChange}
+                        />
+                        <Input 
+                            type="text"
+                            label="파일 이름"
+                            placeholder="파일을 선택해 주세요."
+                            readOnly
+                            value={attachment.fileName || ''}
+                            onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
+                        />
+                        <button
+                            onClick={() => fileInputRef.current?.click()}>파일 찾기</button>
+                    </label>
+                </li>
+                )}
+                {/* 파일 URL (URL 모드일 때만) */}
+                {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
+                <li>
+                    <p>URL</p>
+                    <Input 
+                        type="url"
+                        label="URL"
+                        placeholder="URL을 입력해 주세요."
+                        value={attachment.url || ''}
+                        onChange={(e) => handleAttachmentChange(index, 'url', e.target.value)}
+                    />
+                </li>
+                )}
+            </ul>
+            <CardActions
+                isVisible={attachment.isVisible ?? true}
+                onToggleVisible={() => toggleVisible(index)}
+                onDelete={() => handleDeleteAttachment(index)}
             />
-          </div>
-
-          {/* 파일 업로드 (파일 모드일 때) */}
-          {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
-            <div className="edit-grid-container-2">
-              <div className="edit-form-field">
-                <Input 
-                  type="text"
-                  label="파일 이름"
-                  placeholder="portfolio.pdf"
-                  readOnly
-                  value={attachment.fileName || ''}
-                  onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
-                />
-              </div>
-              <div className="edit-form-field">
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    onChange={onFileChange}
-                    style={{ display: 'none' }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    style={{
-                      padding: '8px 16px',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      backgroundColor: '#fff',
-                      color: '#333',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      height: '32px',
-                      width: '100px',
-                    }}
-                  >
-                    파일 찾기
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 파일 URL (URL 모드일 때만) */}
-          {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
-            <div className="edit-form-field">
-              <Input 
-                type="url"
-                label="URL"
-                placeholder="https://example.com"
-                value={attachment.url || ''}
-                onChange={(e) => handleAttachmentChange(index, 'url', e.target.value)}
-              />
-            </div>
-          )}
         </div>
-      </div>
-      
-      <CardActions
-        isVisible={attachment.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteAttachment(index)}
-      />
     </DraggableItem>
   );
 };
@@ -293,38 +269,29 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
   };
 
   return (
-    <div className="edit-section">
-      <div className="edit-section-header">
-        <h3 className="edit-section-title-counter">
-          첨부 | {attachments.length}개
-        </h3>
-        <div className="edit-add-button-container">
-          <button
-            onClick={handleAddFileAttachment}
-            className="edit-add-button"
-          >
-            <span>+ 파일 추가</span>
-          </button>
-          <button
-            onClick={handleAddUrlAttachment}
-            className="edit-add-button"
-          >
-            <span>+ URL 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>첨부</h3>
+                {/* <p>{attachments.length}개</p> */}
+            </div>
+            <div>
+                <button onClick={handleAddFileAttachment}><i className="ic-add" />파일 추가</button>
+                <button onClick={handleAddUrlAttachment}><i className="ic-add" />URL 추가</button>
+            </div>
         </div>
-      </div>
 
-      {attachments.length === 0 ? (
+        {attachments.length === 0 ? (
         <EmptyState text="등록된 첨부 정보가 없습니다." />
-      ) : (
+        ) : (
         <DraggableList
-          items={attachments}
-          onReorder={handleReorder}
-          getItemId={(att, idx) => att.id || `attachment-${idx}`}
-          renderItem={(attachment, index) => {
+            items={attachments}
+            onReorder={handleReorder}
+            getItemId={(att, idx) => att.id || `attachment-${idx}`}
+            renderItem={(attachment, index) => {
             const attachmentWithMode = attachment as AttachmentWithMode;
             return (
-              <AttachmentItem
+                <AttachmentItem
                 key={attachment.id || `attachment-${index}`}
                 attachment={attachmentWithMode}
                 index={index}
@@ -332,12 +299,12 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
                 toggleVisible={toggleVisible}
                 handleDeleteAttachment={handleDeleteAttachment}
                 handleFileUpload={handleFileUpload}
-              />
+                />
             );
-          }}
+            }}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import "../../public/assets/css/common.css"
 import "../../public/assets/css/style.css"
 import ConfirmDialogProvider from "@/components/ui/ConfirmDialogProvider"
 import NotificationProvider from "@/components/ui/NotificationProvider"
+import TokenRefreshProvider from "@/components/providers/TokenRefreshProvider"
 
 export const metadata = {
     title: "워크폴리오 - 나만의 기록장",
@@ -35,9 +36,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Head>
             </head>
             <body>
-                {children}
-                <ConfirmDialogProvider />
-                <NotificationProvider />
+                <TokenRefreshProvider>
+                    {children}
+                    <ConfirmDialogProvider />
+                    <NotificationProvider />
+                </TokenRefreshProvider>
             </body>
         </html>
     );

@@ -30,59 +30,45 @@ const LanguageTestItem: React.FC<LanguageTestItemProps> = ({
 }) => {
   return (
     <DraggableItem 
-      id={languageTest.id || `language-test-${index}`}
-      className={styles.cardWrapper}
-      dragButtonSize={20}
+        id={languageTest.id || `language-test-${index}`}
     >
-      <div style={{ 
-        flex: 1,
-        padding: '12px',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '6px',
-        position: 'relative'
-      }}>
-        <div className={styles.gridContainer2}>
-        {/* 시험명 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="시험명"
-            placeholder="TOEIC, TOEFL, JLPT 등"
-            value={languageTest.name || ''}
-            onChange={(e) => handleLanguageTestChange(index, 'name', e.target.value)}
-          />
+        <div className="card">
+            <ul className="edit-cont">
+                <li className="full">
+                    <p>시험</p>
+                    <Input 
+                        type="text"
+                        label="시험명"
+                        placeholder="시험명을 입력해 주세요."
+                        value={languageTest.name || ''}
+                        onChange={(e) => handleLanguageTestChange(index, 'name', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>점수 및 등급</p>
+                    <Input 
+                        type="text"
+                        label="점수 및 등급"
+                        placeholder="점수 및 등급을 입력해 주세요."
+                        value={languageTest.score || ''}
+                        onChange={(e) => handleLanguageTestChange(index, 'score', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>취득년월</p>
+                    <DatePicker 
+                        required={false}
+                        value={languageTest.acquiredAt}
+                        onChange={(date) => handleLanguageTestChange(index, 'acquiredAt', date)}
+                    />
+                </li>
+            </ul>
+            <CardActions
+                isVisible={languageTest.isVisible ?? true}
+                onToggleVisible={() => toggleVisible(index)}
+                onDelete={() => handleDeleteLanguageTest(index)}
+            />
         </div>
-      </div>
-
-      <div className={styles.gridContainer2}>
-        {/* 점수/등급 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="점수/등급"
-            placeholder="00-00-000000"
-            value={languageTest.score || ''}
-            onChange={(e) => handleLanguageTestChange(index, 'score', e.target.value)}
-          />
-        </div>
-
-        {/* 취득일 */}
-        <div className={styles.formField}>
-          <DatePicker 
-            required={false}
-            label="취득년월"
-            value={languageTest.acquiredAt}
-            onChange={(date) => handleLanguageTestChange(index, 'acquiredAt', date)}
-          />
-        </div>
-      </div>
-      </div>
-      
-      <CardActions
-        isVisible={languageTest.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteLanguageTest(index)}
-      />
     </DraggableItem>
   );
 };
@@ -167,37 +153,29 @@ const LanguageTestEdit: React.FC<LanguageTestEditProps> = ({ languageTests, onUp
   };
 
   return (
-    <div style={{ marginTop: '16px' }}>
-      <div className={styles.sectionHeader}>
-        <h4 className={styles.sectionTitleCounter} style={{ fontSize: '14px' }}>
-          어학 시험 | {languageTests.length}개
-        </h4>
-        <div className={styles.addButtonContainer}>
-          <button
-            onClick={handleAddLanguageTest}
-            className={styles.addButton}
-            style={{ fontSize: '12px' }}
-          >
-            <span>+ 추가</span>
-          </button>
+    <div className="card-sub">
+        <div className="cont-sub-tit">
+            <div>
+                <h4>어학 시험</h4>
+                {/* <p>{languageTests.length}개</p> */}
+            </div>
+            <button onClick={handleAddLanguageTest}><i className="ic-add" />추가</button>
         </div>
-      </div>
-
-      <DraggableList
+        <DraggableList
         items={languageTests}
         onReorder={handleReorder}
         getItemId={(test, idx) => test.id || `language-test-${idx}`}
         renderItem={(languageTest, index) => (
-          <LanguageTestItem
+            <LanguageTestItem
             key={languageTest.id || `language-test-${index}`}
             languageTest={languageTest}
             index={index}
             handleLanguageTestChange={handleLanguageTestChange}
             toggleVisible={toggleVisible}
             handleDeleteLanguageTest={handleDeleteLanguageTest}
-          />
+            />
         )}
-      />
+        />
     </div>
   );
 };

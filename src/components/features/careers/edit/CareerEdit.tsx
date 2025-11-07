@@ -36,7 +36,7 @@ const SalaryItem: React.FC<SalaryItemProps> = ({
         id={salary.id || `salary-${careerIndex}-${salaryIndex}`}
     >
         <div className="card">
-            <ul className='edit-cont'>
+            <ul className="edit-cont">
                 <li>
                     <p>연봉(만 원)</p>
                     <div className="input-desc">

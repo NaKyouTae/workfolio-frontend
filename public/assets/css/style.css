@@ -89,9 +89,10 @@ aside {border-right: 1px solid var(--gray002); display: flex; flex-flow: column;
 .aside-cont .record-group .record-group-list {display: flex; flex-flow: column; width: calc(100% + 4rem); margin: 0 -2rem;}
 .aside-cont .record-group .record-group-list > li {width: 100%; height: 3.2rem; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;}
 .aside-cont .record-group .record-group-list > li .info {flex: 1;}
-.aside-cont .record-group .record-group-list > li .info > input + label::before {background-color: var(--group-color);}
+.aside-cont .record-group .record-group-list > li .info > input + label::before {background-color: var(--group-color); border-color: transparent;}
 .aside-cont .record-group .record-group-list > li .info > input + label input {height: 2.4rem; padding: 0 .8rem; border-radius: .4rem; font-size: 1.4rem;}
 .aside-cont .record-group .record-group-list > li .info > input + label > p {flex: 1; max-width: 19.6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.aside-cont .record-group .record-group-list > li .info > input:checked + label::before {background-image: url(../img/ico/ic-check-ov.svg);}
 .aside-cont .record-group .record-group-list > li .more {position: relative;}
 .aside-cont .record-group .record-group-list > li .more > button {opacity: 0;}
 .aside-cont .record-group .record-group-list > li .more > button.active {opacity: 1;}
@@ -144,7 +145,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .cont-tit > div > h3 {font-size: 1.6rem; font-weight: 600;}
 .cont-tit > div > p {font-size: 1.4rem; color: var(--gray005);}
 .cont-tit > select {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border: 0; background-image: url(../img/ico/ic-select-bl.svg); background-position: center right;}
-.cont-tit > button {width: fit-content; height: 1.6rem; padding: 0; column-gap: .6rem; font-size: 1.4rem; color: var(--gray005); border-radius: 0; background-color: transparent;}
+.cont-tit button {width: fit-content; height: 1.6rem; padding: 0; column-gap: .6rem; font-size: 1.4rem; color: var(--gray005); border-radius: 0; background-color: transparent;}
 
 .cont-sub-tit {display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem;}
 .cont-sub-tit > div {display: flex; align-items: center; column-gap: 1rem;}
@@ -214,8 +215,6 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .record-info-input > li > p {font-size: 1.2rem; font-weight: 500; color: var(--gray005);}
 .record-info-input > li input {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
 .record-info-input > li input + label > p {font-size: 1.2rem;}
-.record-info-input > li input[type="checkbox"] + label:before {background-color: transparent; border: 1px solid var(--gray003);}
-.record-info-input > li input[type="checkbox"]:checked + label:before {background-image: url(../img/ico/ic-check-line-ov.svg);}
 .record-info-input > li .record-select {display: flex; align-items: center; column-gap: .6rem;}
 .record-info-input > li .record-select .color {display: block; width: .8rem; height: 3.2rem; border-radius: .2rem;}
 .record-info-input > li .record-select .dropdown {flex: 1;}
@@ -357,18 +356,21 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 .edit-drag-list > button {width: fit-content; height: fit-content; padding: 0; border: 0; background-color: transparent;}
 
 .edit-drag-list .card {flex: 1; display: flex; align-items: center; column-gap: 1rem;}
-.edit-drag-list .card .edit-cont {flex: 1; width: 100%; padding: 1.2rem; display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1rem 2rem; border: 1px dashed var(--gray003); border-radius: 1rem;}
+.edit-drag-list .card .edit-cont {flex: 1; width: 100%; padding: 1.2rem 1.2rem 1.2rem 1.6rem; display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1rem 2rem; border: 1px dashed var(--gray003); border-radius: 1rem;}
 .edit-drag-list .card .edit-cont > li {display: flex; column-gap: 1rem;}
 .edit-drag-list .card .edit-cont > li > p {width: 10rem; height: 4rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005); display: flex; align-items: center;}
 .edit-drag-list .card .edit-cont > li > *:not(p) {flex: 1;}
 .edit-drag-list .card .edit-cont > li > div {display: flex; align-items: center; column-gap: .8rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005);}
+.edit-drag-list .card .edit-cont > li > div > input[type="checkbox"] + label {white-space: nowrap;}
 .edit-drag-list .card .edit-cont > li input {height: 4rem; padding: 0 1.4rem; font-size: 1.4rem; border-radius: .6rem;}
 .edit-drag-list .card .edit-cont > li textarea {height: 10rem; padding: 1.2rem 1.4rem; font-size: 1.4rem; border-radius: .6rem;}
 .edit-drag-list .card .edit-cont > li.full {grid-column: 1 / span 2;}
 
-.edit-drag-list .card .edit-cont .date-picker {top: 4.2rem; width: calc(100% + 1.6rem);}
+.edit-drag-list .card .edit-cont .date-picker {top: 4.2rem; min-width: 16rem;}
 .edit-drag-list .card .edit-cont .date-time {width: 100%;}
 .edit-drag-list .card .edit-cont .dropdown > button {height: 4rem; font-size: 1.4rem; border-radius: .6rem;}
+.edit-drag-list .card .edit-cont .dropdown > ul {top: 4.2rem;}
+.edit-drag-list .card .edit-cont .file > button {height: 4rem; font-size: 1.4rem; border-radius: .6rem;}
 
 .edit-drag-list .card .edit-btn {height: 100%; display: flex; flex-flow: column; row-gap: 1rem;}
 .edit-drag-list .card .edit-btn > button {flex: 1; width: 4rem; height: 100%; padding: 0; border-radius: .6rem;}
