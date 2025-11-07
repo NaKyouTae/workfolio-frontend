@@ -39,7 +39,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     
     // 백그라운드 클릭 시 모달이 닫히지 않도록 함
     if (e.target === e.currentTarget) {
-      // onClose(); // 주석 처리하여 백그라운드 클릭으로는 닫히지 않도록 함
+      onClose(); // 주석 처리하여 백그라운드 클릭으로는 닫히지 않도록 함
     }
   };
 
