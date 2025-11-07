@@ -41,7 +41,7 @@ const SalaryItem: React.FC<SalaryItemProps> = ({
         id={salary.id || `salary-${careerIndex}-${salaryIndex}`}
     >
         <div className="card">
-            <ul className='edit-cont'>
+            <ul className="edit-cont">
                 <li>
                     <p>연봉(만 원)</p>
                     <div className="input-desc">
@@ -169,8 +169,9 @@ const CareerItem: React.FC<CareerItemProps> = ({
                                         handleCareerChange(index, 'endedAt', undefined);
                                         }
                                     }}
+                                    id="isWorking"
                                 />
-                                <label>재직 중</label>
+                                <label htmlFor="isWorking">재직 중</label>
                             </div>
                         </li>
                         <li>

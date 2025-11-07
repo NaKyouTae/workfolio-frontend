@@ -190,9 +190,9 @@ input:read-only {background-color: var(--gray001); color: var(--gray005);}
 
 input[type="checkbox"] {display: none;}
 input[type="checkbox"] + label {display: flex; align-items: center; column-gap: .8rem; cursor: pointer;}
-input[type="checkbox"] + label::before {content: ''; width: 1.6rem; height: 1.6rem; border-radius: .2rem; background-color: var(--yellow004); background-repeat: no-repeat; background-size: contain; background-position: center;}
+input[type="checkbox"] + label::before {content: ''; width: 1.6rem; height: 1.6rem; border-radius: .2rem; border: 1px solid var(--gray003); background-repeat: no-repeat; background-size: contain; background-position: center;}
 input[type="checkbox"] + label > p {font-size: 1.4rem; color: var(--black);}
-input[type="checkbox"]:checked + label::before {background-image: url(../img/ico/ic-check-ov.svg);}
+input[type="checkbox"]:checked + label::before {background-image: url(../img/ico/ic-check-line-ov.svg);}
 
 input[type="radio"] {display: none;}
 input[type="radio"] + label {display: flex; align-items: center; column-gap: .8rem; cursor: pointer;}
@@ -200,7 +200,7 @@ input[type="radio"] + label::before {content: ''; width: 1.6rem; height: 1.6rem;
 input[type="radio"] + label > p {font-size: 1.4rem; color: var(--black);}
 input[type="radio"]:checked + label::before {background-image: url(../img/ico/ic-check-ov.svg);}
 
-input.input-resume + label::before {background-image: url(../img/ico/ic-resume-check.svg); background-color: transparent;}
+input.input-resume + label::before {background-image: url(../img/ico/ic-resume-check.svg); border-color: transparent;}
 input:checked.input-resume + label::before {background-image: url(../img/ico/ic-resume-check-ov.svg);}
 
 .page-title input.input-resume + label::before {width: 1.8rem; height: 1.8rem;}
@@ -231,8 +231,8 @@ select.sm {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border
 .dropdown {position: relative;}
 .dropdown > button {height: 3.2rem; padding: 0 3.8rem 0 1.2rem; font-size: 1.2rem; justify-content: flex-start; background-color: transparent; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; cursor: pointer; color: var(--black);}
 .dropdown > button:has(+ ul) {background-image: url(../img/ico/ic-select-ov.svg);}
-.dropdown > ul {position: absolute; top: 3.4rem; width: 100%; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000;}
-.dropdown > ul > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer;}
+.dropdown > ul {position: absolute; top: 3.4rem; width: 100%; max-height: 16rem; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000; overflow-y: auto;}
+.dropdown > ul > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0;}
 .dropdown > ul > li:hover {background-color: var(--gray002);}
 
 
@@ -266,9 +266,9 @@ button.line.gray {border-color: var(--gray003); background-color: var(--white); 
 .date-picker .controller > button {width: fit-content; height: fit-content; padding: 0; background-color: transparent;}
 .date-picker .calendar {display: flex; flex-flow: column; padding: .6rem 0;}
 .date-picker .calendar .week {display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 0;}
-.date-picker .calendar .week > li {display: flex; align-items: center; justify-content: center; height: 2rem;}
+.date-picker .calendar .week > li {display: flex; align-items: center; justify-content: center; height: 2rem; font-size: 1rem;}
 .date-picker .calendar .days {display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 0;}
-.date-picker .calendar .days > li {display: flex; align-items: center; justify-content: center; height: 2rem;}
+.date-picker .calendar .days > li {display: flex; align-items: center; justify-content: center; height: 2rem; font-size: 1rem;}
 .date-picker .calendar .days > li.other {color: var(--gray005);}
 .date-picker .calendar .days > li > p {width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 100%; cursor: pointer;}
 .date-picker .calendar .days > li.today > p {background-color: var(--yellow002); font-weight: 500;}

@@ -35,109 +35,100 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 }) => {
   return (
     <DraggableItem 
-      id={activity.id || `activity-${index}`}
-      className={styles.cardWrapper}
+        id={activity.id || `activity-${index}`}
     >
-      <div className={styles.card}>
-        <div className={styles.gridContainer2}>
-        {/* 활동명 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="활동명"
-            placeholder="정보처리기사"
-            value={activity.name || ''}
-            onChange={(e) => handleActivityChange(index, 'name', e.target.value)}
-          />
+        <div className="card">
+            <ul className="edit-cont">
+                <li>
+                    <p>활동명</p>
+                    <Input 
+                        type="text"
+                        label="활동명"
+                        placeholder="예) 자격증명, 교육명 등"
+                        value={activity.name || ''}
+                        onChange={(e) => handleActivityChange(index, 'name', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>구분</p>
+                    <Dropdown
+                        selectedOption={normalizeEnumValue(activity.type, Activity_ActivityType)}
+                        options={[
+                            { value: Activity_ActivityType.EXTERNAL, label: '대외활동' },
+                            { value: Activity_ActivityType.EDUCATION, label: '교육' },
+                            { value: Activity_ActivityType.CERTIFICATION, label: '자격증' },
+                            { value: Activity_ActivityType.AWARD, label: '수상' },
+                            { value: Activity_ActivityType.ETC, label: '기타' },
+                        ]}
+                        setValue={(value) => handleActivityChange(index, 'type', normalizeEnumValue(value, Activity_ActivityType))}
+                    />
+                </li>
+                <li>
+                    <p>기관</p>
+                    <Input 
+                        type="text"
+                        label="기관"
+                        placeholder="예) 한국산업인력공단 등"
+                        value={activity.organization || ''}
+                        onChange={(e) => handleActivityChange(index, 'organization', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>기간</p>
+                    <div>
+                        <DatePicker
+                            value={activity.startedAt}
+                            onChange={(date) => handleActivityChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                            required={false}
+                        />
+                        { activity.type !== Activity_ActivityType.CERTIFICATION && (
+                        <>  
+                            <span>-</span>
+                            <DatePicker
+                                value={activity.endedAt}
+                                onChange={(date) => handleActivityChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
+                                required={false}
+                            />
+                        </>
+                        )}
+                    </div>
+                </li>
+                {
+                    activity.type === Activity_ActivityType.CERTIFICATION && (
+                    <li>
+                        <p>취득번호</p>
+                        <Input 
+                            type="text"
+                            label="취득번호"
+                            placeholder="취득번호를 입력해 주세요."
+                            value={activity.certificateNumber || ''}
+                            onChange={(e) => handleActivityChange(index, 'certificateNumber', e.target.value)}
+                        />
+                    </li>
+                    )
+                }
+                {
+                    activity.type !== Activity_ActivityType.CERTIFICATION && (
+                    <li className="full">
+                        <p>내용</p>
+                        {/* <Input 
+                            type="text"
+                            label="내용"
+                            placeholder="내용을 입력해 주세요."
+                            value={activity.description || ''}
+                            onChange={(e) => handleActivityChange(index, 'description', e.target.value)}
+                        /> */}
+                        <textarea placeholder="내용을 입력해 주세요."></textarea>
+                    </li>
+                    )
+                }
+            </ul>
+            <CardActions
+            isVisible={activity.isVisible ?? true}
+            onToggleVisible={() => toggleVisible(index)}
+            onDelete={() => handleDeleteActivity(index)}
+            />
         </div>
-        {/* 활동 유형 */}
-        <div className={styles.formField}>
-          <Dropdown
-            label="구분"
-            selectedOption={normalizeEnumValue(activity.type, Activity_ActivityType)}
-            options={[
-              { value: Activity_ActivityType.EXTERNAL, label: '대외활동' },
-              { value: Activity_ActivityType.EDUCATION, label: '교육' },
-              { value: Activity_ActivityType.CERTIFICATION, label: '자격증' },
-              { value: Activity_ActivityType.AWARD, label: '수상' },
-              { value: Activity_ActivityType.ETC, label: '기타' },
-            ]}
-            setValue={(value) => handleActivityChange(index, 'type', normalizeEnumValue(value, Activity_ActivityType))}
-          />
-        </div>
-
-      </div>
-      <div className={styles.gridContainer2}>
-        {/* 기관/단체명 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="기관"
-            placeholder="한국산업인력공단"
-            value={activity.organization || ''}
-            onChange={(e) => handleActivityChange(index, 'organization', e.target.value)}
-          />
-        </div>
-        <div className={styles.formField}>
-          <DatePicker
-            label="기간"
-            value={activity.startedAt}
-            onChange={(date) => handleActivityChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
-            required={false}
-          />
-          { activity.type !== Activity_ActivityType.CERTIFICATION && (
-            <>  
-              <span className={styles.dateSeparator}>-</span>
-              <DatePicker
-                label="종료일"
-                value={activity.endedAt}
-                onChange={(date) => handleActivityChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
-                required={false}
-              />
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className={styles.gridContainer2}>
-        {
-          activity.type === Activity_ActivityType.CERTIFICATION && (
-            <>
-              <div className={styles.formField}>
-                <Input 
-                  type="text"
-                  label="자격증 번호"
-                  placeholder="00-00-000000"
-                  value={activity.certificateNumber || ''}
-                  onChange={(e) => handleActivityChange(index, 'certificateNumber', e.target.value)}
-                />
-              </div>
-            </>
-          )
-        }
-        {
-          activity.type !== Activity_ActivityType.CERTIFICATION && (
-            <>
-              <div className={styles.formField}>
-                <Input 
-                  type="text"
-                  label="내용"
-                  placeholder="정보처리기사 자격증을 취득하였습니다."
-                  value={activity.description || ''}
-                  onChange={(e) => handleActivityChange(index, 'description', e.target.value)}
-                />
-              </div>
-            </>
-          )
-        }
-      </div>
-      </div>
-      
-      <CardActions
-        isVisible={activity.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteActivity(index)}
-      />
     </DraggableItem>
   );
 };
@@ -226,41 +217,35 @@ const ActivityEdit: React.FC<ActivityEditProps> = ({ activities, onUpdate }) => 
   };
 
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitleCounter}>
-          활동 | {activities.length}개
-        </h3>
-        <div className={styles.addButtonContainer}>
-          <button
-            onClick={handleAddActivity}
-            className={styles.addButton}
-          >
-            <span>+ 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>활동</h3>
+                {/* <p>{activities.length}개</p> */}
+            </div>
+            <button onClick={handleAddActivity}><i className="ic-add" />추가</button>
         </div>
-      </div>
 
-      {activities.length === 0 ? (
+        {activities.length === 0 ? (
         <EmptyState text="등록된 활동 정보가 없습니다." />
-      ) : (
+        ) : (
         <DraggableList
-          items={activities}
-          onReorder={handleReorder}
-          getItemId={(act, idx) => act.id || `activity-${idx}`}
-          renderItem={(activity, index) => (
+            items={activities}
+            onReorder={handleReorder}
+            getItemId={(act, idx) => act.id || `activity-${idx}`}
+            renderItem={(activity, index) => (
             <ActivityItem
-              key={activity.id || `activity-${index}`}
-              activity={activity}
-              index={index}
-              handleActivityChange={handleActivityChange}
-              toggleVisible={toggleVisible}
-              handleDeleteActivity={handleDeleteActivity}
+                key={activity.id || `activity-${index}`}
+                activity={activity}
+                index={index}
+                handleActivityChange={handleActivityChange}
+                toggleVisible={toggleVisible}
+                handleDeleteActivity={handleDeleteActivity}
             />
-          )}
+            )}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 

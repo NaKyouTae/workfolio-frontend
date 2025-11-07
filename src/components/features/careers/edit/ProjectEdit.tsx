@@ -31,86 +31,74 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
 }) => {
   return (
     <DraggableItem 
-      id={project.id || `project-${index}`}
-      className={styles.cardWrapper}
+        id={project.id || `project-${index}`}
     >
-      <div className={styles.card}>
-        <div className={styles.gridContainer2}>
-        {/* 프로젝트명 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="프로젝트명"
-            placeholder="전사 ERP 시스템 구축"
-            value={project.title || ''}
-            onChange={(e) => handleProjectChange(index, 'title', e.target.value)}
-          />
+        <div className="card">
+            <ul className="edit-cont">
+                <li>
+                    <p>프로젝트명</p>
+                    <Input 
+                        type="text"
+                        label="프로젝트명"
+                        placeholder="프로젝트명을 입력해 주세요."
+                        value={project.title || ''}
+                        onChange={(e) => handleProjectChange(index, 'title', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>소속</p>
+                    <Input 
+                        type="text"
+                        label="소속"
+                        placeholder="소속을 입력해 주세요."
+                        value={project.affiliation || ''}
+                        onChange={(e) => handleProjectChange(index, 'affiliation', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>시작년월 - 종료년월</p>
+                    <div>
+                        <DatePicker 
+                            required={false}
+                            value={project.startedAt}
+                            onChange={(date) => handleProjectChange(index, 'startedAt', date)}
+                        />
+                        <span>-</span>
+                        <DatePicker 
+                            required={false}
+                            value={project.endedAt}
+                            onChange={(date) => handleProjectChange(index, 'endedAt', date)}
+                        />
+                    </div>
+                </li>
+                <li>
+                    <p>역할</p>
+                    <Input 
+                        type="text"
+                        label="역할"
+                        placeholder="예) PM, 기획 등"
+                        value={project.role || ''}
+                        onChange={(e) => handleProjectChange(index, 'role', e.target.value)}
+                    />
+                </li>
+                <li className="full">
+                    <p>내용</p>
+                    {/* <Input
+                        type="text"
+                        label="내용"
+                        placeholder="내용을 입력해 주세요."
+                        value={project.description || ''}
+                        onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
+                    /> */}
+                    <textarea placeholder="내용을 입력해 주세요."></textarea>
+                </li>
+            </ul>
+            <CardActions
+            isVisible={project.isVisible ?? true}
+            onToggleVisible={() => toggleVisible(index)}
+            onDelete={() => handleDeleteProject(index)}
+            />
         </div>
-
-        {/* 역할 */}
-        <div className={styles.formField}>
-          <Input 
-            type="text"
-            label="역할"
-            placeholder="백엔드 개발 리드"
-            value={project.role || ''}
-            onChange={(e) => handleProjectChange(index, 'role', e.target.value)}
-          />
-        </div>
-      </div>
-      <div className={styles.gridContainer2}>
-        <div className={styles.formField}>
-        <Input 
-            type="text"
-            label="소속"
-            placeholder="네이버"
-            value={project.affiliation || ''}
-            onChange={(e) => handleProjectChange(index, 'affiliation', e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className={styles.gridContainer2}>
-        {/* 시작일 */}
-        <div className={styles.formField}>
-          <DatePicker 
-            required={false}
-            label="시작일"
-            value={project.startedAt}
-            onChange={(date) => handleProjectChange(index, 'startedAt', date)}
-          />
-        </div>
-
-        {/* 종료일 */}
-        <div className={styles.formField}>
-          <DatePicker 
-            required={false}
-            label="종료일"
-            value={project.endedAt}
-            onChange={(date) => handleProjectChange(index, 'endedAt', date)}
-          />
-        </div>
-      </div>
-
-      <div className={styles.gridContainer2}>
-        {/* 설명 */}
-        <div className={styles.formFieldSpan2}>
-          <Input 
-            type="textarea"
-            label="상세 설명"
-            placeholder="프로젝트에 대한 상세한 설명, 사용한 기술, 성과 등을 기록하세요."
-            value={project.description || ''}
-            onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-          />
-        </div>
-      </div>
-      </div>
-      
-      <CardActions
-        isVisible={project.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteProject(index)}
-      />
     </DraggableItem>
   );
 };
@@ -197,41 +185,35 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
   };
 
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitleCounter}>
-          프로젝트 | {projects.length}개
-        </h3>
-        <div className={styles.addButtonContainer}>
-          <button
-            onClick={handleAddProject}
-            className={styles.addButton}
-          >
-            <span>+ 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>프로젝트</h3>
+                {/* <p>{projects.length}개</p> */}
+            </div>
+            <button onClick={handleAddProject}><i className="ic-add" />추가</button>
         </div>
-      </div>
 
-      {projects.length === 0 ? (
+        {projects.length === 0 ? (
         <EmptyState text="등록된 프로젝트 정보가 없습니다." />
-      ) : (
+        ) : (
         <DraggableList
-          items={projects}
-          onReorder={handleReorder}
-          getItemId={(proj, idx) => proj.id || `project-${idx}`}
-          renderItem={(project, index) => (
+            items={projects}
+            onReorder={handleReorder}
+            getItemId={(proj, idx) => proj.id || `project-${idx}`}
+            renderItem={(project, index) => (
             <ProjectItem
-              key={project.id || `project-${index}`}
-              project={project}
-              index={index}
-              handleProjectChange={handleProjectChange}
-              toggleVisible={toggleVisible}
-              handleDeleteProject={handleDeleteProject}
+                key={project.id || `project-${index}`}
+                project={project}
+                index={index}
+                handleProjectChange={handleProjectChange}
+                toggleVisible={toggleVisible}
+                handleDeleteProject={handleDeleteProject}
             />
-          )}
+            )}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 

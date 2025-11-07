@@ -36,72 +36,67 @@ const LanguageSkillItem: React.FC<LanguageSkillItemProps> = ({
 }) => {
   return (
     <DraggableItem 
-      id={languageSkill.id || `language-skill-${index}`}
-      className={styles.cardWrapper}
+        id={languageSkill.id || `language-skill-${index}`}
     >
-      <div className={styles.card}>
-        <div className={styles.gridContainer2}>
-        {/* 언어 */}
-        <div className={styles.formField}>
-          <Dropdown
-            label="언어"
-            selectedOption={normalizeEnumValue(languageSkill.language, LanguageSkill_Language)}
-            options={[
-              { value: LanguageSkill_Language.ENGLISH, label: '영어' },
-              { value: LanguageSkill_Language.JAPANESE, label: '일본어' },
-              { value: LanguageSkill_Language.CHINESE, label: '중국어' },
-              { value: LanguageSkill_Language.KOREAN, label: '한국어' },
-              { value: LanguageSkill_Language.FRENCH, label: '프랑스어' },
-              { value: LanguageSkill_Language.SPANISH, label: '스페인어' },
-              { value: LanguageSkill_Language.GERMAN, label: '독일어' },
-              { value: LanguageSkill_Language.RUSSIAN, label: '러시아어' },
-              { value: LanguageSkill_Language.VIETNAMESE, label: '베트남어' },
-              { value: LanguageSkill_Language.ITALIAN, label: '이탈리아어' },
-              { value: LanguageSkill_Language.THAI, label: '태국어' },
-              { value: LanguageSkill_Language.ARABIC, label: '아랍어' },
-              { value: LanguageSkill_Language.PORTUGUESE, label: '포르투갈어' },
-              { value: LanguageSkill_Language.INDONESIAN, label: '인도네시아어' },
-              { value: LanguageSkill_Language.MONGOLIAN, label: '몽골어' },
-              { value: LanguageSkill_Language.TURKISH, label: '터키어' },
-            ]}
-            setValue={(value) => handleLanguageSkillChange(index, 'language', normalizeEnumValue(value, LanguageSkill_Language))}
-          />
+        <div className="card-wrap">
+            <div className="card">
+                <ul className="edit-cont">
+                    <li>
+                        <p>언어</p>
+                        <Dropdown
+                            selectedOption={normalizeEnumValue(languageSkill.language, LanguageSkill_Language)}
+                            options={[
+                                { value: LanguageSkill_Language.ENGLISH, label: '영어' },
+                                { value: LanguageSkill_Language.JAPANESE, label: '일본어' },
+                                { value: LanguageSkill_Language.CHINESE, label: '중국어' },
+                                { value: LanguageSkill_Language.KOREAN, label: '한국어' },
+                                { value: LanguageSkill_Language.FRENCH, label: '프랑스어' },
+                                { value: LanguageSkill_Language.SPANISH, label: '스페인어' },
+                                { value: LanguageSkill_Language.GERMAN, label: '독일어' },
+                                { value: LanguageSkill_Language.RUSSIAN, label: '러시아어' },
+                                { value: LanguageSkill_Language.VIETNAMESE, label: '베트남어' },
+                                { value: LanguageSkill_Language.ITALIAN, label: '이탈리아어' },
+                                { value: LanguageSkill_Language.THAI, label: '태국어' },
+                                { value: LanguageSkill_Language.ARABIC, label: '아랍어' },
+                                { value: LanguageSkill_Language.PORTUGUESE, label: '포르투갈어' },
+                                { value: LanguageSkill_Language.INDONESIAN, label: '인도네시아어' },
+                                { value: LanguageSkill_Language.MONGOLIAN, label: '몽골어' },
+                                { value: LanguageSkill_Language.TURKISH, label: '터키어' },
+                            ]}
+                            setValue={(value) => handleLanguageSkillChange(index, 'language', normalizeEnumValue(value, LanguageSkill_Language))}
+                        />
+                    </li>
+                    <li>
+                        <p>수준</p>
+                        <Dropdown
+                            selectedOption={normalizeEnumValue(languageSkill.level, LanguageSkill_LanguageLevel)}
+                            options={[
+                                { value: LanguageSkill_LanguageLevel.DAILY_CONVERSATION, label: '일상 회화 가능' },
+                                { value: LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION, label: '비즈니스 회화 가능' },
+                                { value: LanguageSkill_LanguageLevel.NATIVE_LEVEL, label: '원어민 수준' },
+                            ]}
+                            setValue={(value) => handleLanguageSkillChange(index, 'level', normalizeEnumValue(value, LanguageSkill_LanguageLevel))}
+                        />
+                    </li>
+                </ul>
+                <CardActions
+                isVisible={languageSkill.isVisible ?? true}
+                onToggleVisible={() => toggleVisible(index)}
+                onDelete={() => handleDeleteLanguageSkill(index)}
+                />
+            </div>
+            <LanguageTestEdit
+            languageTests={languageSkill.languageTests || []}
+            onUpdate={(languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[]) => {
+                const newLanguageSkills = [...languageSkills];
+                newLanguageSkills[index] = {
+                ...newLanguageSkills[index],
+                languageTests
+                };
+                onUpdate(newLanguageSkills);
+            }}
+        />
         </div>
-
-        {/* 수준 */}
-        <div className={styles.formField}>
-          <Dropdown
-            label="수준"
-            selectedOption={normalizeEnumValue(languageSkill.level, LanguageSkill_LanguageLevel)}
-            options={[
-              { value: LanguageSkill_LanguageLevel.DAILY_CONVERSATION, label: '일상 회화 가능' },
-              { value: LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION, label: '비즈니스 회화 가능' },
-              { value: LanguageSkill_LanguageLevel.NATIVE_LEVEL, label: '원어민 수준' },
-            ]}
-            setValue={(value) => handleLanguageSkillChange(index, 'level', normalizeEnumValue(value, LanguageSkill_LanguageLevel))}
-          />
-        </div>
-      </div>
-
-      {/* 어학 시험 */}
-      <LanguageTestEdit
-        languageTests={languageSkill.languageTests || []}
-        onUpdate={(languageTests: ResumeUpdateRequest_LanguageSkillRequest_LanguageTestRequest[]) => {
-          const newLanguageSkills = [...languageSkills];
-          newLanguageSkills[index] = {
-            ...newLanguageSkills[index],
-            languageTests
-          };
-          onUpdate(newLanguageSkills);
-        }}
-      />
-      </div>
-      
-      <CardActions
-        isVisible={languageSkill.isVisible ?? true}
-        onToggleVisible={() => toggleVisible(index)}
-        onDelete={() => handleDeleteLanguageSkill(index)}
-      />
     </DraggableItem>
   );
 };
@@ -191,43 +186,37 @@ const LanguageSkillEdit: React.FC<LanguageSkillEditProps> = ({ languageSkills, o
   };
 
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitleCounter}>
-          어학 | {languageSkills.length}개
-        </h3>
-        <div className={styles.addButtonContainer}>
-          <button
-            onClick={handleAddLanguageSkill}
-            className={styles.addButton}
-          >
-            <span>+ 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>어학</h3>
+                {/* <p>{languageSkills.length}개</p> */}
+            </div>
+            <button onClick={handleAddLanguageSkill}><i className="ic-add" />추가</button>
         </div>
-      </div>
 
-      {languageSkills.length === 0 ? (
+        {languageSkills.length === 0 ? (
         <EmptyState text="등록된 어학 정보가 없습니다." />
-      ) : (
+        ) : (
         <DraggableList
-          items={languageSkills}
-          onReorder={handleReorder}
-          getItemId={(skill, idx) => skill.id || `language-skill-${idx}`}
-          renderItem={(languageSkill, index) => (
+            items={languageSkills}
+            onReorder={handleReorder}
+            getItemId={(skill, idx) => skill.id || `language-skill-${idx}`}
+            renderItem={(languageSkill, index) => (
             <LanguageSkillItem
-              key={languageSkill.id || `language-skill-${index}`}
-              languageSkill={languageSkill}
-              index={index}
-              handleLanguageSkillChange={handleLanguageSkillChange}
-              toggleVisible={toggleVisible}
-              handleDeleteLanguageSkill={handleDeleteLanguageSkill}
-              languageSkills={languageSkills}
-              onUpdate={onUpdate}
+                key={languageSkill.id || `language-skill-${index}`}
+                languageSkill={languageSkill}
+                index={index}
+                handleLanguageSkillChange={handleLanguageSkillChange}
+                toggleVisible={toggleVisible}
+                handleDeleteLanguageSkill={handleDeleteLanguageSkill}
+                languageSkills={languageSkills}
+                onUpdate={onUpdate}
             />
-          )}
+            )}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 
