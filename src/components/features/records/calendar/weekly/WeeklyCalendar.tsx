@@ -9,6 +9,7 @@ import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { isRecordType } from '@/utils/calendarUtils'
+import { useConfirm } from '@/hooks/useConfirm'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -45,6 +46,8 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     allRecordGroups,
     editableRecordGroups,
 }) => {
+    const { confirm } = useConfirm();
+    
     // 주간 날짜 생성 (일요일부터 토요일까지) - useCallback으로 메모이제이션
     const getWeekDays = useCallback((date: Date): WeeklyCalendarDay[] => {
         const startOfWeek = dayjs(date).startOf('week')
@@ -656,7 +659,18 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     }
 
     const handleDeleteRecord = async () => {
+        
         if (!selectedRecord) return;
+        
+        const result = await confirm({
+            title: '레코드 삭제',
+            icon: '/assets/img/ico/ic-delete.svg',
+            description: `삭제하면 레코드에 저장된 내용이 모두 사라져요.\n한 번 삭제하면 되돌릴 수 없어요.`,
+            confirmText: '삭제하기',
+            cancelText: '돌아가기',
+        });
+        
+        if (!result) return;
         
         try {
             const response = await fetch(`/api/records/${selectedRecord.id}`, {
@@ -673,28 +687,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
             console.error('Error deleting record:', error);
         }
     }
-
-    // 렌더링 성능 분석 (사용하지 않음 - 주석 처리)
-    // const renderPerformance = useMemo(() => {
-    //     const startTime = performance.now()
-    //     return {
-    //         startTime,
-    //         endTime: performance.now(),
-    //         duration: performance.now() - startTime
-    //     }
-    // }, [])
-    
-    // 렌더링 완료 후 성능 로그
-    // useEffect(() => {
-    //     // 개발 환경에서만 로그 출력
-    //     if (process.env.NODE_ENV === 'development') {
-    //         const endTime = performance.now()
-    //         console.log(`⚡ WeeklyCalendar 렌더링 성능:`)
-    //         console.log(`  - 렌더링 시간: ${endTime.toFixed(2)}ms`)
-    //         console.log(`  - 총 렌더링 횟수: ${renderCountRef.current}`)
-    //         console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
-    //     }
-    // })
 
     return (
         <div className="weekly">

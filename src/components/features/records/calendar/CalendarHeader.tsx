@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CalendarNavigation from './CalendarNavigation';
 import { CalendarViewType } from '@/models/CalendarTypes';
 
@@ -9,7 +9,6 @@ interface CalendarHeaderProps {
     onPreviousMonth: () => void;
     onNextMonth: () => void;
     onTodayMonth: () => void;
-    searchTerm?: string;
     onSearchChange?: (term: string) => void;
 }
 
@@ -20,9 +19,16 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
     onPreviousMonth,
     onNextMonth,
     onTodayMonth,
-    searchTerm = '',
     onSearchChange,
 }) => {
+    const [inputValue, setInputValue] = useState('');
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && onSearchChange) {
+            onSearchChange(inputValue);
+        }
+    };
+
     return (
         <div className="page-title">
             <div className="calendar-nav">
@@ -39,8 +45,9 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                         <input
                             type="text"
                             placeholder="검색어를 입력해 주세요."
-                            value={searchTerm}
-                            onChange={(e) => onSearchChange(e.target.value)}
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
                         />
                     </div>
                 )}

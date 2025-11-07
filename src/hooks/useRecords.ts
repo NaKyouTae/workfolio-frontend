@@ -145,9 +145,37 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
         }
     }, [recordRefreshTrigger, refreshRecords]);
 
+    // 키워드로 레코드 검색
+    const searchRecordsByKeyword = useCallback(async (keyword: string) => {
+        if (!keyword || keyword.trim() === '') {
+            return null;
+        }
+
+        try {
+            const response = await fetch(`/api/records/keywords?keyword=${encodeURIComponent(keyword)}`, {
+                method: HttpMethod.GET,
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return null;
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error searching records by keyword:', error);
+            return null;
+        }
+    }, []);
+
     return {
         records,
         isLoading,
-        refreshRecords
+        refreshRecords,
+        searchRecordsByKeyword
     };
 };

@@ -8,7 +8,6 @@ import LanguageSkillView from './view/LanguageSkillView';
 import AttachmentView from '@/components/features/common/AttachmentView';
 import ViewFloatingNavigation from './ViewFloatingNavigation';
 import { normalizeEnumValue } from '@/utils/commonUtils';
-import styles from './CareerContentView.module.css';
 import DateUtil from '@/utils/DateUtil';
 
 interface CareerContentViewProps {

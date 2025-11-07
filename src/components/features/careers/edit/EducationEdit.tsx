@@ -3,7 +3,6 @@ import { ResumeUpdateRequest_EducationRequest } from '@/generated/resume';
 import { Education_EducationStatus } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
-import styles from '../CareerContentEdit.module.css';
 import DatePicker from '@/components/ui/DatePicker';
 import { DateTime } from 'luxon';
 import { normalizeEnumValue } from '@/utils/commonUtils';
@@ -91,14 +90,10 @@ const EducationItem: React.FC<EducationItemProps> = ({
                 </li>
                 <li className="full">
                     <p>내용</p>
-                    {/* <Input
-                        type="text"
-                        label="내용"
-                        placeholder="내용을 입력해 주세요."
-                        value={education.description || ''}
-                        onChange={(e) => handleEducationChange(index, 'description', e.target.value)}
-                    /> */}
-                    <textarea placeholder="내용을 입력해 주세요."></textarea>
+                    <textarea placeholder="내용을 입력해 주세요."
+                    value={education.description || ''}
+                    onChange={(e) => handleEducationChange(index, 'description', e.target.value)}
+                    ></textarea>
                 </li>
             </ul>
             <CardActions

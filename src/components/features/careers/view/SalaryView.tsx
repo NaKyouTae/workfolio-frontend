@@ -42,10 +42,7 @@ const SalaryView: React.FC<SalaryViewProps> = ({ salaries, showHidden = false })
                     {
                     salary.amount && salary.amount > 0 && (
                         <span>
-                        {
-                        (salary.amount && salary.amount > 0) 
-                            ? `연봉 ${salary.amount.toLocaleString('ko-KR')}만 원` 
-                            : '연봉'}
+                        {`연봉 ${Number(salary.amount).toLocaleString('ko-KR')}만 원`}
                         </span>
                     )
                     }

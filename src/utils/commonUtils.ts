@@ -1,4 +1,4 @@
-import { RecordGroup_RecordGroupType, recordGroup_RecordGroupTypeToJSON } from '@/generated/common';
+import { RecordGroup_RecordGroupType, recordGroup_RecordGroupTypeToJSON, Worker_Gender, Resume_Gender } from '@/generated/common';
 import { CalendarViewType } from '@/models/CalendarTypes';
 
 /**
@@ -147,5 +147,103 @@ export const compareEnumValue = <T extends number>(
   const normalized2 = normalizeEnumValue<T>(value2, enumObject);
   
   return normalized1 === normalized2;
+};
+
+/**
+ * Worker_Gender를 한글로 변환
+ * @param gender - Worker_Gender enum 값
+ * @returns 한글 성별 문자열
+ * 
+ * @example
+ * getWorkerGenderLabel(Worker_Gender.MALE) // '남성'
+ * getWorkerGenderLabel(Worker_Gender.FEMALE) // '여성'
+ * getWorkerGenderLabel(0) // '남성'
+ * getWorkerGenderLabel(1) // '여성'
+ */
+export const getWorkerGenderLabel = (gender: Worker_Gender | number | undefined): string => {
+  if (gender === undefined || gender === null) {
+    return '';
+  }
+
+  switch (gender) {
+    case Worker_Gender.MALE:
+    case 0:
+      return '남성';
+    case Worker_Gender.FEMALE:
+    case 1:
+      return '여성';
+    default:
+      return '';
+  }
+};
+
+/**
+ * Resume_Gender를 한글로 변환
+ * @param gender - Resume_Gender enum 값
+ * @returns 한글 성별 문자열
+ * 
+ * @example
+ * getResumeGenderLabel(Resume_Gender.MALE) // '남성'
+ * getResumeGenderLabel(Resume_Gender.FEMALE) // '여성'
+ * getResumeGenderLabel(1) // '남성'
+ * getResumeGenderLabel(2) // '여성'
+ */
+export const getResumeGenderLabel = (gender: Resume_Gender | number | undefined): string => {
+  if (gender === undefined || gender === null) {
+    return '';
+  }
+
+  switch (gender) {
+    case Resume_Gender.MALE:
+    case 1:
+      return '남성';
+    case Resume_Gender.FEMALE:
+    case 2:
+      return '여성';
+    case Resume_Gender.UNKNOWN:
+    case 0:
+      return '';
+    default:
+      return '';
+  }
+};
+
+/**
+ * Gender를 한글로 변환 (Worker_Gender 또는 Resume_Gender 자동 감지)
+ * @param gender - Gender enum 값 (Worker_Gender 또는 Resume_Gender)
+ * @param type - 'worker' 또는 'resume' (선택적, 지정하지 않으면 자동 감지)
+ * @returns 한글 성별 문자열
+ * 
+ * @example
+ * getGenderLabel(Worker_Gender.MALE, 'worker') // '남성'
+ * getGenderLabel(Resume_Gender.FEMALE, 'resume') // '여성'
+ * getGenderLabel(0, 'worker') // '남성'
+ * getGenderLabel(1, 'resume') // '남성'
+ * getGenderLabel(2, 'resume') // '여성'
+ */
+export const getGenderLabel = (
+  gender: Worker_Gender | Resume_Gender | number | undefined,
+  type?: 'worker' | 'resume'
+): string => {
+  if (gender === undefined || gender === null) {
+    return '';
+  }
+
+  if (type === 'worker') {
+    return getWorkerGenderLabel(gender as Worker_Gender);
+  }
+
+  if (type === 'resume') {
+    return getResumeGenderLabel(gender as Resume_Gender);
+  }
+
+  // 자동 감지: Resume_Gender는 UNKNOWN(0), MALE(1), FEMALE(2)이므로
+  // 2인 경우 Resume_Gender로 판단
+  if (gender === 2) {
+    return getResumeGenderLabel(gender as Resume_Gender);
+  }
+
+  // 0 또는 1인 경우 Worker_Gender로 판단 (더 일반적)
+  return getWorkerGenderLabel(gender as Worker_Gender);
 };
 

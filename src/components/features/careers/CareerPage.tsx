@@ -12,12 +12,11 @@ import Footer from "@/components/layouts/Footer"
 
 const CareerPage: React.FC = () => {
   // 사용자 인증 상태
-  const { user, isLoading: userLoading, fetchUser } = useUser();
+  const { user, fetchUser } = useUser();
 
   // 이력서 목록 관리
   const { 
     resumeDetails, 
-    isLoading, 
     fetchResumeDetails,
     refreshResumeDetails,
     duplicateResume,
@@ -46,7 +45,7 @@ const CareerPage: React.FC = () => {
 
   // 컴포넌트 마운트 시 사용자 정보 가져오기
   useEffect(() => {
-    if (!user && !userLoading && !userFetchAttempted.current) {
+    if (!user && !userFetchAttempted.current) {
       console.log('Fetching user information...');
       userFetchAttempted.current = true;
       fetchUser().catch(error => {
@@ -136,20 +135,6 @@ const CareerPage: React.FC = () => {
     setIsCreateMode(false);
     await refreshResumeDetails();
   };
-
-  // 로딩 중일 때
-  if (isLoading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        로딩 중...
-      </div>
-    );
-  }
 
   // 메인 뷰
   return (

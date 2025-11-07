@@ -5,7 +5,6 @@ import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
 import DatePicker from '@/components/ui/DatePicker';
 import { DateTime } from 'luxon';
-import styles from '../CareerContentEdit.module.css';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
@@ -32,10 +31,6 @@ const SalaryItem: React.FC<SalaryItemProps> = ({
   handleSalaryChange,
   handleDeleteSalary,
 }) => {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('ko-KR').format(amount);
-  };
-
   return (
     <DraggableItem 
         id={salary.id || `salary-${careerIndex}-${salaryIndex}`}
@@ -53,11 +48,6 @@ const SalaryItem: React.FC<SalaryItemProps> = ({
                             onChange={(e) => handleSalaryChange(careerIndex, salaryIndex, 'amount', Number(e.target.value))}
                         />
                         <span>만 원</span>
-                        {/* {salary.amount > 0 && (
-                            <>
-                            {formatCurrency(salary.amount)}원
-                            </>
-                        )} */}
                     </div>
                 </li>
                 <li>
@@ -70,14 +60,11 @@ const SalaryItem: React.FC<SalaryItemProps> = ({
                 </li>
                 <li className="full">
                     <p>내용</p>
-                    {/* <Input
-                        type="text"
-                        label="내용"
-                        placeholder="예) 협상 내용, 추가 복지 혜택 등"
-                        value={salary.memo || ''}
-                        onChange={(e) => handleSalaryChange(careerIndex, salaryIndex, 'memo', e.target.value)}
-                    /> */}
-                    <textarea placeholder="예) 협상 내용, 추가 복지 혜택 등"></textarea>
+                    <textarea 
+                      placeholder="내용을 입력해 주세요." 
+                      value={salary.memo || ''}
+                      onChange={(e) => handleSalaryChange(careerIndex, salaryIndex, 'memo', e.target.value)}
+                    ></textarea>
                 </li>
             </ul>
             <CardActions
@@ -236,7 +223,11 @@ const CareerItem: React.FC<CareerItemProps> = ({
                                 value={careerRequest.career.description || ''}
                                 onChange={(e) => handleCareerChange(index, 'description', e.target.value)}
                             /> */}
-                            <textarea placeholder="내용을 입력해 주세요."></textarea>
+                            <textarea 
+                              placeholder="내용을 입력해 주세요."
+                              value={careerRequest.career.description || ''}
+                              onChange={(e) => handleCareerChange(index, 'description', e.target.value)}                            
+                            ></textarea>
                         </li>
                     </ul>
                 )}
@@ -250,7 +241,6 @@ const CareerItem: React.FC<CareerItemProps> = ({
                 <div className="cont-sub-tit">
                     <div>
                         <h4>연봉</h4>
-                        {/* <p>{careerRequest.salaries?.length || 0}개</p> */}
                     </div>
                     <button onClick={() => handleAddSalary(index)}><i className="ic-add" />추가</button>
                 </div>
@@ -298,7 +288,15 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
       isVisible: true,
       priority,
     },
-    salaries: [],
+    salaries: [
+      {
+        amount: 0,
+        memo: '',
+        negotiationDate: undefined,
+        isVisible: true,
+        priority: 0,
+      },
+    ],
   });
 
   // priority를 배열 인덱스와 동기화 (career와 salaries 모두)
@@ -456,16 +454,16 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
             getItemId={(car, idx) => car.career?.id || `career-${idx}`}
             renderItem={(careerRequest, index) => (
                 <CareerItem
-                key={careerRequest.career?.id || `career-${index}`}
-                careerRequest={careerRequest}
-                index={index}
-                handleCareerChange={handleCareerChange}
-                toggleVisible={toggleVisible}
-                handleDeleteCareer={handleDeleteCareer}
-                handleAddSalary={handleAddSalary}
-                handleSalaryChange={handleSalaryChange}
-                handleDeleteSalary={handleDeleteSalary}
-                handleSalaryReorder={handleSalaryReorder}
+                  key={careerRequest.career?.id || `career-${index}`}
+                  careerRequest={careerRequest}
+                  index={index}
+                  handleCareerChange={handleCareerChange}
+                  toggleVisible={toggleVisible}
+                  handleDeleteCareer={handleDeleteCareer}
+                  handleAddSalary={handleAddSalary}
+                  handleSalaryChange={handleSalaryChange}
+                  handleDeleteSalary={handleDeleteSalary}
+                  handleSalaryReorder={handleSalaryReorder}
                 />
             )}
         />

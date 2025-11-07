@@ -8,6 +8,7 @@ import { useRecordGroupStore } from '@/store/recordGroupStore'
 import RecordCreateModal from '../../modal/RecordCreateModal'
 import RecordDetail from '../../modal/RecordDetail'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
+import { useConfirm } from '@/hooks/useConfirm'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -18,6 +19,7 @@ interface ListRecord extends Record {
     displayTime: string
     dayOfWeek: string
     isWeekend: boolean
+    isToday: boolean
     isFirstRecordOfDay: boolean
     isMultiDayStart?: boolean
     isMultiDayEnd?: boolean
@@ -39,6 +41,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
     allRecordGroups,
     editableRecordGroups,
 }) => {
+    const { confirm } = useConfirm();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -56,14 +59,19 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
     const currentYear = initialDayjs.year()
     const daysInMonth = initialDayjs.daysInMonth()
     
+    // 오늘 날짜
+    const today = dayjs().format('YYYY-MM-DD')
+    
     // initialDate 기준 월의 모든 날짜 배열 생성
     const allDaysInMonth = Array.from({ length: daysInMonth }, (_, i) => {
         const date = initialDayjs.year(currentYear).month(currentMonth).date(i + 1)
+        const dateStr = date.format('YYYY-MM-DD')
         return {
-            date: date.format('YYYY-MM-DD'),
+            date: dateStr,
             displayDate: date.format(dateFormat),
             dayOfWeek: date.format('ddd'),
             isWeekend: date.day() === 0 || date.day() === 6,
+            isToday: dateStr === today,
             dayjs: date
         }
     })
@@ -105,7 +113,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
     }, {} as { [key: string]: Record[] })
 
     // 모든 날짜에 대해 레코드가 있으면 표시, 없으면 빈 행 표시
-    const listRecords: (ListRecord | { isEmpty: true; date: string; displayDate: string; dayOfWeek: string; isWeekend: boolean })[] = []
+    const listRecords: (ListRecord | { isEmpty: true; date: string; displayDate: string; dayOfWeek: string; isWeekend: boolean; isToday: boolean })[] = []
     
     allDaysInMonth.forEach(dayInfo => {
         const recordsForDay = recordsByDate[dayInfo.date] || []
@@ -118,6 +126,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                 displayDate: dayInfo.displayDate,
                 dayOfWeek: dayInfo.dayOfWeek,
                 isWeekend: dayInfo.isWeekend,
+                isToday: dayInfo.isToday,
                 currentDay: dayInfo.dayjs
             })
         } else {
@@ -152,6 +161,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                     displayTime,
                     dayOfWeek: startDate.format('ddd'),
                     isWeekend: currentDay.day() === 0 || currentDay.day() === 6,
+                    isToday: dayInfo.isToday,
                     isFirstRecordOfDay: index === 0, // 같은 날짜의 첫 번째 레코드인지 표시
                     isMultiDayStart,
                     isMultiDayEnd,
@@ -232,6 +242,16 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
     const handleDeleteRecord = async () => {
         if (!selectedRecord) return;
         
+        const result = await confirm({
+            title: '레코드 삭제',
+            icon: '/assets/img/ico/ic-delete.svg',
+            description: `삭제하면 레코드에 저장된 내용이 모두 사라져요.\n한 번 삭제하면 되돌릴 수 없어요.`,
+            confirmText: '삭제하기',
+            cancelText: '돌아가기',
+        });
+        
+        if (!result) return;
+        
         try {
             const response = await fetch(`/api/records/${selectedRecord.id}`, {
                 method: HttpMethod.DELETE,
@@ -275,6 +295,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                             return (
                                 <tr
                                     key={`empty-${item.date}`}
+                                    className={item.isToday ? 'today' : ''}
                                 >
                                     <td className={`${item.isWeekend ? 'holiday' : ''}`}>{item.displayDate}</td>
                                     <td><button onClick={() => handleOpenCreateModal(item.date)}><i className="ic-add" /></button></td>
@@ -288,7 +309,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                         // 레코드가 있는 경우
                         const record = item as ListRecord
                         return (
-                            <tr key={`${record.id}-${index}`}>
+                            <tr key={`${record.id}-${index}`} className={record.isToday ? 'today' : ''}>
                                 <td className={`${record.isWeekend ? 'holiday' : ''}`}>{record.isFirstRecordOfDay ? item.displayDate : ''}</td>
                                 <td>
                                     {record.isFirstRecordOfDay ? (

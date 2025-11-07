@@ -72,6 +72,11 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
 
   // 정렬된 이력서 목록
   const sortedResumes = [...resumeDetails].sort((a, b) => {
+    // 대표 이력서(isDefault가 true)는 항상 첫 번째로
+    // if (a.isDefault && !b.isDefault) return -1;
+    // if (!a.isDefault && b.isDefault) return 1;
+    
+    // 둘 다 대표가 아니거나 둘 다 대표인 경우 sortOrder에 따라 정렬
     if (sortOrder === 'recent') {
       // 최근 수정일 순 (updatedAt 내림차순)
       return (b.updatedAt || 0) - (a.updatedAt || 0);
@@ -140,8 +145,8 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                                             readOnly 
                                             onChange={() => {}}
                                             onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleChangeDefault(e, resume);
+                                              e.stopPropagation();
+                                              handleChangeDefault(e, resume);
                                             }}
                                             className="input-resume"
                                         />
