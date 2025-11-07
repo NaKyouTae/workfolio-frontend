@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TurnOver } from '@/generated/common';
 
 interface TurnOversSidebarProps {
@@ -10,7 +10,13 @@ interface TurnOversSidebarProps {
 }
 
 const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, onGoHome, refreshTurnOvers, onTurnOverSelect, onTurnOverCreated }) => {
+  const [selectedTurnOver, setSelectedTurnOver] = useState<TurnOverDetail | null>(null);
 
+  const handleTurnOverSelect = (id: string) => {
+    setSelectedTurnOver(turnOvers.find((turnOver) => turnOver.id === id) || null);
+    onTurnOverSelect(id)
+  };
+  
   const handleTurnOverCreated = () => {
     onTurnOverCreated();
   };
@@ -36,7 +42,8 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, onGoHome
                             return (
                                 <li
                                     key={turnOver.id}
-                                    onClick={() => onTurnOverSelect(turnOver.id)}
+                                    className={turnOver.id === selectedTurnOver?.id ? 'active' : ''}  
+                                    onClick={() => handleTurnOverSelect(turnOver.id)}
                                 >
                                     <p>{turnOver.name}</p>
                                 </li>
