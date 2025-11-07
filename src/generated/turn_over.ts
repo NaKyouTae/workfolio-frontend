@@ -11,6 +11,9 @@ import {
   ApplicationStage_ApplicationStageStatus,
   applicationStage_ApplicationStageStatusFromJSON,
   applicationStage_ApplicationStageStatusToJSON,
+  JobApplication_JobApplicationStatus,
+  jobApplication_JobApplicationStatusFromJSON,
+  jobApplication_JobApplicationStatusToJSON,
   TurnOver,
   TurnOverDetail,
   TurnOverRetrospective_EmploymentType,
@@ -90,6 +93,7 @@ export interface TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRe
   applicationStages: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[];
   isVisible: boolean;
   priority: number;
+  status: JobApplication_JobApplicationStatus;
 }
 
 export interface TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest {
@@ -1169,6 +1173,7 @@ function createBaseTurnOverUpsertRequest_TurnOverChallengeRequest_JobApplication
     applicationStages: [],
     isVisible: false,
     priority: 0,
+    status: 0,
   };
 }
 
@@ -1217,6 +1222,9 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
     }
     if (message.priority !== 0) {
       writer.uint32(96).uint32(message.priority);
+    }
+    if (message.status !== 0) {
+      writer.uint32(104).int32(message.status);
     }
     return writer;
   },
@@ -1332,6 +1340,14 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
           message.priority = reader.uint32();
           continue;
         }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1359,6 +1375,7 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
         : [],
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
+      status: isSet(object.status) ? jobApplication_JobApplicationStatusFromJSON(object.status) : 0,
     };
   },
 
@@ -1402,6 +1419,9 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
     }
+    if (message.status !== 0) {
+      obj.status = jobApplication_JobApplicationStatusToJSON(message.status);
+    }
     return obj;
   },
 
@@ -1429,6 +1449,7 @@ export const TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationReques
       ) || [];
     message.isVisible = object.isVisible ?? false;
     message.priority = object.priority ?? 0;
+    message.status = object.status ?? 0;
     return message;
   },
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { JobApplicationDetail, ApplicationStage_ApplicationStageStatus } from '@/generated/common';
+import { JobApplicationDetail, ApplicationStage_ApplicationStageStatus, JobApplication_JobApplicationStatus } from '@/generated/common';
 import EmptyState from '@/components/ui/EmptyState';
 import DateUtil from '@/utils/DateUtil';
 import MemoDetailModal from '@/components/ui/MemoDetailModal';
@@ -24,6 +24,25 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
       }
       return newSet;
     });
+  };
+
+  const getJobApplicationStatusLabel = (status: JobApplication_JobApplicationStatus) => {
+    switch (status) {
+      case JobApplication_JobApplicationStatus.PENDING:
+        return '대기';
+      case JobApplication_JobApplicationStatus.RUNNING:
+        return '진행 중';
+      case JobApplication_JobApplicationStatus.PASSED:
+        return '합격';
+      case JobApplication_JobApplicationStatus.FAILED:
+        return '불합격';
+      case JobApplication_JobApplicationStatus.CANCELLED:
+        return '취소';
+      case JobApplication_JobApplicationStatus.UNKNOWN:
+        return '알 수 없음';
+      default:
+        return '알 수 없음';
+    }
   };
 
   const getStatusLabel = (status: ApplicationStage_ApplicationStageStatus) => {
@@ -88,6 +107,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
             <tr style={{ backgroundColor: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
               <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>회사명</th>
               <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>직무</th>
+              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>진행 상태</th>
               <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>채용 절차</th>
               <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>공고문</th>
               <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>모집 기간</th>
@@ -111,6 +131,9 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                     </td>
                     <td style={{ padding: '12px', color: '#1a1a1a' }}>
                       {app.position}
+                    </td>
+                    <td style={{ padding: '12px', color: '#1a1a1a' }}>
+                      {getJobApplicationStatusLabel(app.status)}
                     </td>
                     <td style={{ padding: '12px' }}>
                       {hasStages ? (

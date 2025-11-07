@@ -907,11 +907,69 @@ export interface JobApplication {
   endedAt?: number | undefined;
   applicationSource: string;
   memo: string;
+  status: JobApplication_JobApplicationStatus;
   isVisible: boolean;
   priority: number;
   turnOverChallenge?: TurnOverChallenge | undefined;
   createdAt: number;
   updatedAt: number;
+}
+
+export enum JobApplication_JobApplicationStatus {
+  UNKNOWN = 0,
+  PENDING = 1,
+  RUNNING = 2,
+  PASSED = 3,
+  FAILED = 4,
+  CANCELLED = 5,
+  UNRECOGNIZED = -1,
+}
+
+export function jobApplication_JobApplicationStatusFromJSON(object: any): JobApplication_JobApplicationStatus {
+  switch (object) {
+    case 0:
+    case "UNKNOWN":
+      return JobApplication_JobApplicationStatus.UNKNOWN;
+    case 1:
+    case "PENDING":
+      return JobApplication_JobApplicationStatus.PENDING;
+    case 2:
+    case "RUNNING":
+      return JobApplication_JobApplicationStatus.RUNNING;
+    case 3:
+    case "PASSED":
+      return JobApplication_JobApplicationStatus.PASSED;
+    case 4:
+    case "FAILED":
+      return JobApplication_JobApplicationStatus.FAILED;
+    case 5:
+    case "CANCELLED":
+      return JobApplication_JobApplicationStatus.CANCELLED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return JobApplication_JobApplicationStatus.UNRECOGNIZED;
+  }
+}
+
+export function jobApplication_JobApplicationStatusToJSON(object: JobApplication_JobApplicationStatus): string {
+  switch (object) {
+    case JobApplication_JobApplicationStatus.UNKNOWN:
+      return "UNKNOWN";
+    case JobApplication_JobApplicationStatus.PENDING:
+      return "PENDING";
+    case JobApplication_JobApplicationStatus.RUNNING:
+      return "RUNNING";
+    case JobApplication_JobApplicationStatus.PASSED:
+      return "PASSED";
+    case JobApplication_JobApplicationStatus.FAILED:
+      return "FAILED";
+    case JobApplication_JobApplicationStatus.CANCELLED:
+      return "CANCELLED";
+    case JobApplication_JobApplicationStatus.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
 }
 
 export interface JobApplicationDetail {
@@ -924,6 +982,7 @@ export interface JobApplicationDetail {
   endedAt?: number | undefined;
   applicationSource: string;
   memo: string;
+  status: JobApplication_JobApplicationStatus;
   isVisible: boolean;
   priority: number;
   applicationStages: ApplicationStage[];
@@ -6400,6 +6459,7 @@ function createBaseJobApplication(): JobApplication {
     endedAt: undefined,
     applicationSource: "",
     memo: "",
+    status: 0,
     isVisible: false,
     priority: 0,
     turnOverChallenge: undefined,
@@ -6436,6 +6496,9 @@ export const JobApplication: MessageFns<JobApplication> = {
     }
     if (message.memo !== "") {
       writer.uint32(74).string(message.memo);
+    }
+    if (message.status !== 0) {
+      writer.uint32(232).int32(message.status);
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
@@ -6534,6 +6597,14 @@ export const JobApplication: MessageFns<JobApplication> = {
           message.memo = reader.string();
           continue;
         }
+        case 29: {
+          if (tag !== 232) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -6594,6 +6665,7 @@ export const JobApplication: MessageFns<JobApplication> = {
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       applicationSource: isSet(object.applicationSource) ? globalThis.String(object.applicationSource) : "",
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      status: isSet(object.status) ? jobApplication_JobApplicationStatusFromJSON(object.status) : 0,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       turnOverChallenge: isSet(object.turnOverChallenge)
@@ -6633,6 +6705,9 @@ export const JobApplication: MessageFns<JobApplication> = {
     if (message.memo !== "") {
       obj.memo = message.memo;
     }
+    if (message.status !== 0) {
+      obj.status = jobApplication_JobApplicationStatusToJSON(message.status);
+    }
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
@@ -6665,6 +6740,7 @@ export const JobApplication: MessageFns<JobApplication> = {
     message.endedAt = object.endedAt ?? undefined;
     message.applicationSource = object.applicationSource ?? "";
     message.memo = object.memo ?? "";
+    message.status = object.status ?? 0;
     message.isVisible = object.isVisible ?? false;
     message.priority = object.priority ?? 0;
     message.turnOverChallenge = (object.turnOverChallenge !== undefined && object.turnOverChallenge !== null)
@@ -6687,6 +6763,7 @@ function createBaseJobApplicationDetail(): JobApplicationDetail {
     endedAt: undefined,
     applicationSource: "",
     memo: "",
+    status: 0,
     isVisible: false,
     priority: 0,
     applicationStages: [],
@@ -6723,6 +6800,9 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
     }
     if (message.memo !== "") {
       writer.uint32(74).string(message.memo);
+    }
+    if (message.status !== 0) {
+      writer.uint32(232).int32(message.status);
     }
     if (message.isVisible !== false) {
       writer.uint32(240).bool(message.isVisible);
@@ -6821,6 +6901,14 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
           message.memo = reader.string();
           continue;
         }
+        case 29: {
+          if (tag !== 232) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -6881,6 +6969,7 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
       endedAt: isSet(object.endedAt) ? globalThis.Number(object.endedAt) : undefined,
       applicationSource: isSet(object.applicationSource) ? globalThis.String(object.applicationSource) : "",
       memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      status: isSet(object.status) ? jobApplication_JobApplicationStatusFromJSON(object.status) : 0,
       isVisible: isSet(object.isVisible) ? globalThis.Boolean(object.isVisible) : false,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       applicationStages: globalThis.Array.isArray(object?.applicationStages)
@@ -6920,6 +7009,9 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
     if (message.memo !== "") {
       obj.memo = message.memo;
     }
+    if (message.status !== 0) {
+      obj.status = jobApplication_JobApplicationStatusToJSON(message.status);
+    }
     if (message.isVisible !== false) {
       obj.isVisible = message.isVisible;
     }
@@ -6952,6 +7044,7 @@ export const JobApplicationDetail: MessageFns<JobApplicationDetail> = {
     message.endedAt = object.endedAt ?? undefined;
     message.applicationSource = object.applicationSource ?? "";
     message.memo = object.memo ?? "";
+    message.status = object.status ?? 0;
     message.isVisible = object.isVisible ?? false;
     message.priority = object.priority ?? 0;
     message.applicationStages = object.applicationStages?.map((e) => ApplicationStage.fromPartial(e)) || [];

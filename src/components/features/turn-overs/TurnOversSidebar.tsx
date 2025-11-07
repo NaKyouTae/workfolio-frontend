@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TurnOver } from '@/generated/common';
+import { TurnOver, TurnOverDetail } from '@/generated/common';
 
 interface TurnOversSidebarProps {
   turnOvers: TurnOver[];

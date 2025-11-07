@@ -34,7 +34,7 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
     
     setTurnOverRequest({
       id: selectedTurnOver?.id || undefined,
-      name: selectedTurnOver?.name || '',
+      name: selectedTurnOver?.name || '제목 없음',
       turnOverGoal: {
         id: selectedTurnOver?.turnOverGoal?.id || undefined,
         reason: selectedTurnOver?.turnOverGoal?.reason || '',
@@ -75,7 +75,7 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
       // name을 업데이트하여 저장
       onSave({
         ...data,
-        name: name,
+        name: name || '제목 없음',
       });
     }
   };

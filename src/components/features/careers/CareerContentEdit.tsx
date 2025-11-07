@@ -194,7 +194,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
     try {
       const updateRequest: ResumeUpdateRequest = {
         id: selectedResumeDetail?.id || '',
-        title: title || '제목없는 이력서',
+        title: title || '제목 없음',
         name,
         phone,
         email,

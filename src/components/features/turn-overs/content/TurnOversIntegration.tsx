@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTurnOver } from '@/hooks/useTurnOver';
-import { TurnOverDetail } from '@/generated/common';
+import { TurnOverDetail, ApplicationStage_ApplicationStageStatus, JobApplication_JobApplicationStatus } from '@/generated/common';
 import styles from './TurnOversIntegration.module.css';
 
 interface TurnOversIntegrationProps {
@@ -13,6 +13,22 @@ interface TurnOversIntegrationProps {
 const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete }) => {
   const { turnOvers, isLoading } = useTurnOver();
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
+
+  // ApplicationStage 상태 레이블 변환
+  const getStatusLabel = (status: ApplicationStage_ApplicationStageStatus) => {
+    switch (status) {
+      case ApplicationStage_ApplicationStageStatus.PASSED:
+        return '합격';
+      case ApplicationStage_ApplicationStageStatus.FAILED:
+        return '불합격';
+      case ApplicationStage_ApplicationStageStatus.PENDING:
+        return '대기';
+      case ApplicationStage_ApplicationStageStatus.SCHEDULED:
+        return '예정';
+      default:
+        return '진행 중';
+    }
+  };
 
   // 통계 계산
   const statistics = useMemo(() => {
@@ -85,38 +101,10 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
 
   // 이직 활동 상태 계산
   const getTurnOverStatus = (turnOver: TurnOverDetail) => {
-    if (turnOver.turnOverRetrospective) {
+    if (turnOver.turnOverRetrospective?.name && turnOver.turnOverRetrospective.name !== '') {
       return { label: '완료', className: styles.statusCompleted };
     }
     return { label: '진행 중', className: styles.statusOngoing };
-  };
-
-  // 이직 활동 통계 계산
-  const getTurnOverStats = (turnOver: TurnOverDetail) => {
-    const jobApplications = turnOver.turnOverChallenge?.jobApplications || [];
-    const totalApplications = jobApplications.length;
-    
-    const ongoingApps = jobApplications.filter(app => 
-      !app.endedAt || app.endedAt > Date.now()
-    ).length;
-    
-    const completedApps = totalApplications - ongoingApps;
-    
-    const acceptedApps = jobApplications.filter(app => 
-      app.applicationStages?.some(stage => stage.status === 3) // ACCEPTED
-    ).length;
-
-    return {
-      totalApplications,
-      ongoingApps,
-      completedApps,
-      acceptedApps
-    };
-  };
-
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return `${date.getFullYear()}년 ${String(date.getMonth() + 1).padStart(2, '0')}월`;
   };
 
   if (isLoading) {
@@ -178,7 +166,6 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                     <ul className="summary-list">
                     {sortedTurnOvers.map((turnOver) => {
                         const status = getTurnOverStatus(turnOver);
-                        const stats = getTurnOverStats(turnOver);
 
                         return (
                         <li key={turnOver.id} onClick={() => onSelectTurnOver?.(turnOver.id)}>
@@ -216,26 +203,46 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                                     </ul>
                                 </div>
                                 <ul>
-                                    <li>총 지원 회사 {stats.totalApplications}개</li>
-                                    <li>만족도 평가 {stats.completedApps}점</li>
-                                    <li>진행 중 회사 {stats.ongoingApps}개</li>
-                                    <li>최종 합격 회사 {stats.acceptedApps}개</li>
+                                     <li>총 지원 회사 {turnOver.turnOverChallenge?.jobApplications.length ?? 0}개</li>
+                                     <li>만족도 평가 {turnOver.turnOverRetrospective?.score ?? 0}점</li>
+                                     <li>진행 중 회사 {turnOver.turnOverChallenge?.jobApplications.filter(app => 
+                                       app.status === JobApplication_JobApplicationStatus.PENDING).length ?? 0}개</li>
+                                     <li>최종 합격 회사 {turnOver.turnOverChallenge?.jobApplications.filter(app => app.status === JobApplication_JobApplicationStatus.PASSED).length ?? 0}개</li>
                                 </ul>
                             </div>
                             <div className="desc">
-                                {turnOver.turnOverGoal && (
+                                {turnOver.turnOverGoal && !turnOver.turnOverRetrospective && (
                                     <ul>
                                         <li><p>이직 목표</p><span>{turnOver.turnOverGoal.goal || '-'}</span></li>
-                                        <li><p>이직 회고</p><span>{turnOver.turnOverGoal.reason || '-'}</span></li>
+                                        {
+                                          turnOver.turnOverChallenge && turnOver.turnOverChallenge.jobApplications.length > 0 && (() => {
+                                            const lastApplication = turnOver.turnOverChallenge.jobApplications[turnOver.turnOverChallenge.jobApplications.length - 1];
+                                            const hasStages = lastApplication?.applicationStages && lastApplication.applicationStages.length > 0;
+                                            const lastStage = hasStages ? lastApplication.applicationStages[lastApplication.applicationStages.length - 1] : null;
+                                            
+                                            // 안전하게 문자열로 변환
+                                            const companyName = String(lastApplication?.name || '지원 회사');
+                                            const stageName = lastStage ? String(lastStage.name || '진행 단계') : null;
+                                            const statusLabel = lastStage ? getStatusLabel(lastStage.status) : null;
+                                            
+                                            return (
+                                              <li>
+                                                <p>최근 기록</p>
+                                                <span>
+                                                  {companyName}
+                                                  {stageName && statusLabel ? ` - ${stageName} (${statusLabel})` : ''}
+                                                </span>
+                                              </li>
+                                            );
+                                          })()
+                                        }
                                     </ul>
                                 )}
 
                                 {turnOver.turnOverRetrospective && (
                                     <ul>
                                         <li><p>최종 선택</p><span>{turnOver.turnOverRetrospective.name || '-'}</span></li>
-                                        <li><p>입사일</p><span>{turnOver.turnOverRetrospective.joinedAt 
-                                                ? formatDate(turnOver.turnOverRetrospective.joinedAt)
-                                                : '-'}</span></li>
+                                        <li><p>이직 회고</p><span>{turnOver.turnOverRetrospective.reason || '-'}</span></li>
                                     </ul>
                                 )}
                             </div>

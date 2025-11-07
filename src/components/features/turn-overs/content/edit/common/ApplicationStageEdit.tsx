@@ -11,11 +11,13 @@ import '@/styles/component-edit.css';
 interface ApplicationStageEditProps {
   applicationStages: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[];
   onUpdate: (stages: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[]) => void;
+  jobApplicationId?: string; // 고유 식별자 추가
 }
 
 interface ApplicationStageItemProps {
   stage: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest;
   index: number;
+  jobApplicationId?: string; // 고유 식별자 추가
   onUpdate: (
     index: number,
     field: keyof TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest,
@@ -27,9 +29,12 @@ interface ApplicationStageItemProps {
 const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
   stage,
   index,
+  jobApplicationId,
   onUpdate,
   onRemove,
 }) => {
+  const uniqueRadioName = `stage-status-${jobApplicationId || 'default'}-${index}`;
+  
   return (
     <DraggableItem
       id={stage.id || `applicationStage-${index}`}
@@ -61,30 +66,33 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
           <div className="edit-form-field">
             <label className="edit-label">진행 상태</label>
             <div className="edit-radio-group">
-              <label className="edit-radio-label">
+              <label className="edit-radio-label" htmlFor={`${uniqueRadioName}-pending`}>
                 <input
+                  id={`${uniqueRadioName}-pending`}
                   type="radio"
-                  name={`status-${index}`}
+                  name={uniqueRadioName}
                   value="pending"
                   checked={stage.status === ApplicationStage_ApplicationStageStatus.PENDING}
                   onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.PENDING)}
                 />
                 대기
               </label>
-              <label className="edit-radio-label">
+              <label className="edit-radio-label" htmlFor={`${uniqueRadioName}-passed`}>
                 <input
+                  id={`${uniqueRadioName}-passed`}
                   type="radio"
-                  name={`status-${index}`}
+                  name={uniqueRadioName}
                   value="passed"
                   checked={stage.status === ApplicationStage_ApplicationStageStatus.PASSED}
                   onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.PASSED)}
                 />
                 합격
               </label>
-              <label className="edit-radio-label">
+              <label className="edit-radio-label" htmlFor={`${uniqueRadioName}-failed`}>
                 <input
+                  id={`${uniqueRadioName}-failed`}
                   type="radio"
-                  name={`status-${index}`}
+                  name={uniqueRadioName}
                   value="failed"
                   checked={stage.status === ApplicationStage_ApplicationStageStatus.FAILED}
                   onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.FAILED)}
@@ -143,6 +151,7 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
 const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
   applicationStages,
   onUpdate,
+  jobApplicationId,
 }) => {
   const addApplicationStage = () => {
     const newItem: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest = {
@@ -171,17 +180,15 @@ const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
     field: keyof TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest,
     value: string | number | undefined
   ) => {
-    const updated = [...applicationStages];
-    const stage = updated[index];
-    if (field === 'name' && typeof value === 'string') {
-      stage.name = value;
-    } else if (field === 'startedAt' && typeof value === 'number') {
-      stage.startedAt = value;
-    } else if (field === 'status' && typeof value === 'number') {
-      stage.status = value;
-    } else if (field === 'memo' && typeof value === 'string') {
-      stage.memo = value;
-    }
+    const updated = applicationStages.map((stage, i) => {
+      if (i !== index) return stage;
+      
+      return {
+        ...stage,
+        [field]: value,
+      };
+    });
+
     onUpdate(updated);
   };
 
@@ -229,6 +236,7 @@ const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
                 key={stage.id || `applicationStage-${index}`}
                 stage={stage}
                 index={index}
+                jobApplicationId={jobApplicationId}
                 onUpdate={updateStage}
                 onRemove={removeApplicationStage}
               />

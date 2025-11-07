@@ -7,6 +7,7 @@ import DraggableItem from '@/components/ui/DraggableItem';
 import EmptyState from '@/components/ui/EmptyState';
 import ApplicationStageEdit from './ApplicationStageEdit';
 import '@/styles/component-edit.css';
+import { JobApplication_JobApplicationStatus } from '@/generated/common';
 
 interface JobApplicationEditProps {
   jobApplications: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[];
@@ -115,6 +116,55 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
               />
             </div>
           </div>
+          <div className="edit-form-field">
+            <label className="edit-label">진행 상태</label>
+            <div className="edit-radio-group">
+              <label className="edit-radio-label" htmlFor={`status-${index}-pending`}>
+                <input
+                  id={`status-${index}-pending`}
+                  type="radio"
+                  name={`status-${index}`}
+                  value="pending"
+                  checked={app.status === JobApplication_JobApplicationStatus.PENDING}
+                  onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.PENDING)}
+                />
+                대기
+              </label>
+              <label className="edit-radio-label" htmlFor={`status-${index}-running`}>
+                <input
+                  id={`status-${index}-running`}
+                  type="radio"
+                  name={`status-${index}`}
+                  value="running"
+                  checked={app.status === JobApplication_JobApplicationStatus.RUNNING}
+                  onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.RUNNING)}
+                />
+                진행 중
+              </label>
+              <label className="edit-radio-label" htmlFor={`status-${index}-passed`}>
+                <input
+                  id={`status-${index}-passed`}
+                  type="radio"
+                  name={`status-${index}`}
+                  value="passed"
+                  checked={app.status === JobApplication_JobApplicationStatus.PASSED}
+                  onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.PASSED)}
+                />
+                합격
+              </label>
+              <label className="edit-radio-label" htmlFor={`status-${index}-failed`}>
+                <input
+                  id={`status-${index}-failed`}
+                  type="radio"
+                  name={`status-${index}`}
+                  value="failed"
+                  checked={app.status === JobApplication_JobApplicationStatus.FAILED}
+                  onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.FAILED)}
+                />
+                불합격
+              </label>
+            </div>
+          </div>
 
           <div className="edit-form-field">
             <label className="edit-label">메모</label>
@@ -131,6 +181,7 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
           <ApplicationStageEdit
             applicationStages={app.applicationStages || []}
             onUpdate={(stages) => onUpdateApplicationStages(index, stages)}
+            jobApplicationId={app.id || `jobApp-${index}`}
           />
         </div>
       </div>
@@ -175,6 +226,7 @@ const JobApplicationEdit: React.FC<JobApplicationEditProps> = ({
   const addJobApplication = () => {
     const newItem: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest = {
       name: '',
+      status: JobApplication_JobApplicationStatus.PENDING,
       position: '',
       jobPostingTitle: '',
       jobPostingUrl: '',
@@ -204,26 +256,14 @@ const JobApplicationEdit: React.FC<JobApplicationEditProps> = ({
     field: keyof TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest,
     value: string | number | undefined
   ) => {
-    const updated = [...jobApplications];
-    const app = updated[index];
-
-    if (field === 'name' && typeof value === 'string') {
-      app.name = value;
-    } else if (field === 'position' && typeof value === 'string') {
-      app.position = value;
-    } else if (field === 'jobPostingTitle' && typeof value === 'string') {
-      app.jobPostingTitle = value;
-    } else if (field === 'jobPostingUrl' && typeof value === 'string') {
-      app.jobPostingUrl = value;
-    } else if (field === 'startedAt' && typeof value === 'number') {
-      app.startedAt = value;
-    } else if (field === 'endedAt' && typeof value === 'number') {
-      app.endedAt = value;
-    } else if (field === 'applicationSource' && typeof value === 'string') {
-      app.applicationSource = value;
-    } else if (field === 'memo' && typeof value === 'string') {
-      app.memo = value;
-    }
+    const updated = jobApplications.map((app, i) => {
+      if (i !== index) return app;
+      
+      return {
+        ...app,
+        [field]: value,
+      };
+    });
 
     onUpdate(updated);
   };
