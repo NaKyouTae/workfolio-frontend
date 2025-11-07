@@ -13,26 +13,11 @@ const TurnOverContentTab: React.FC<TurnOverContentTabProps> = ({
   onTabChange 
 }) => {
   return (
-    <div className={styles.tabs}>
-      <button
-        className={`${styles.tab} ${activeTab === 'goal' ? styles.tabActive : ''}`}
-        onClick={() => onTabChange('goal')}
-      >
-        목표
-      </button>
-      <button
-        className={`${styles.tab} ${activeTab === 'challenge' ? styles.tabActive : ''}`}
-        onClick={() => onTabChange('challenge')}
-      >
-        도전
-      </button>
-      <button
-        className={`${styles.tab} ${activeTab === 'retrospective' ? styles.tabActive : ''}`}
-        onClick={() => onTabChange('retrospective')}
-      >
-        회고
-      </button>
-    </div>
+    <ul className="tab-style1">
+        <li><button className={`${activeTab === 'goal' ? 'active' : ''}`} onClick={() => onTabChange('goal')}>목표</button></li>
+        <li><button className={`${activeTab === 'challenge' ? 'active' : ''}`} onClick={() => onTabChange('challenge')}>도전</button></li>
+        <li><button className={`${activeTab === 'retrospective' ? 'active' : ''}`} onClick={() => onTabChange('retrospective')}>회고</button></li>
+    </ul>
   );
 };
 

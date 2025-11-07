@@ -18,30 +18,22 @@ const TurnOverContentViewHeader: React.FC<TurnOverContentViewHeaderProps> = ({
   onDelete 
 }) => {
   return (
-    <div className={styles.header}>
-      <div className={styles.titleSection}>
-        <h1 className={styles.title}>{title}</h1>
-        <span className={styles.date}>
-          최종 수정일: {DateUtil.formatTimestamp(updatedAt, 'YYYY. MM. DD. HH:mm')}
-        </span>
-      </div>
-      <div className={styles.actions}>
-        {onEdit && (
-          <>
-            <a className={styles.actionButton} onClick={onEdit}>편집</a>
-            <span className={styles.divider}>|</span>
-          </>
-        )}
-        {onDuplicate && (
-          <>
-            <a className={styles.actionButton} onClick={onDuplicate}>복제</a>
-            <span className={styles.divider}>|</span>
-          </>
-        )}
-        {onDelete && (
-          <a className={styles.actionButton} onClick={onDelete}>삭제</a>
-        )}
-      </div>
+    <div className="page-title">
+        <div>
+            <h2>{title}</h2>
+            <p>최종 수정일 : {DateUtil.formatTimestamp(updatedAt, 'YYYY. MM. DD. HH:mm')}</p>
+        </div>
+        <ul>
+            {onEdit && (
+                <li onClick={onEdit}>편집</li>
+            )}
+            {onDuplicate && (
+                <li onClick={onDuplicate}>복제</li>
+            )}
+            {onDelete && (
+                <li onClick={onDelete}>삭제</li>
+            )}
+        </ul>
     </div>
   );
 };

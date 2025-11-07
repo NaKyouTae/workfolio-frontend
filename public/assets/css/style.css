@@ -387,3 +387,5 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 /* 이직 관리 - 메인 */
 .label.TurnOversIntegration-module__Ek6EBG__statusOngoing {background-color: #FDEAE9; color: var(--red);}
 .label.TurnOversIntegration-module__Ek6EBG__statusCompleted {background-color: #ECEDEF; color: var(--gray006);}
+
+/* 이직 관리 - 뷰어 */

@@ -26,34 +26,34 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
   }
     
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <TurnOverContentViewHeader
+    <div className="contents">
+        {/* Header */}
+        <TurnOverContentViewHeader
         title={selectedTurnOver.name}
         updatedAt={selectedTurnOver.updatedAt}
         onEdit={onEdit}
         onDuplicate={() => onDuplicate?.(selectedTurnOver.id)}
         onDelete={() => onDelete?.(selectedTurnOver.id)}
-      />
+        />
 
-      {/* Tabs */}
-      <TurnOverContentTab
-        activeTab={activeTab}
-        onTabChange={changeActiveTab}
-      />
+        <div className="page-cont">
+            <article>
+                <TurnOverContentTab
+                    activeTab={activeTab}
+                    onTabChange={changeActiveTab}
+                />
 
-      {/* Tab Content */}
-      <div className={styles.tabContent}>
-        {activeTab === 'goal' && (
-          <TurnOverGoalView turnOverGoal={selectedTurnOver?.turnOverGoal || null} />
-        )}
-        {activeTab === 'challenge' && (
-          <TurnOverChallengeView turnOverChallenge={selectedTurnOver?.turnOverChallenge || null} />
-        )}
-        {activeTab === 'retrospective' && (
-          <TurnOverRetrospectiveView turnOverRetrospective={selectedTurnOver?.turnOverRetrospective || null} />
-        )}
-      </div>
+                {activeTab === 'goal' && (
+                    <TurnOverGoalView turnOverGoal={selectedTurnOver?.turnOverGoal || null} />
+                )}
+                {activeTab === 'challenge' && (
+                    <TurnOverChallengeView turnOverChallenge={selectedTurnOver?.turnOverChallenge || null} />
+                )}
+                {activeTab === 'retrospective' && (
+                    <TurnOverRetrospectiveView turnOverRetrospective={selectedTurnOver?.turnOverRetrospective || null} />
+                )}
+            </article>
+        </div>
     </div>
   );
 };

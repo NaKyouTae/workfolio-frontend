@@ -286,7 +286,8 @@ button.line.gray {border-color: var(--gray003); background-color: var(--white); 
 
 /* tab */
 .tab-style1 {height: 3.2rem; padding: .2rem; display: flex; column-gap: .2rem; background-color: var(--gray002); border-radius: .6rem;}
-.tab-style1 > li > button {width: 4.5rem; height: 100%; padding: 0; border-radius: .4rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005); background-color: transparent;}
+.tab-style1 > li {flex: 1;}
+.tab-style1 > li > button {width: 100%; min-width: 4.5rem; height: 100%; padding: 0; border-radius: .4rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005); background-color: transparent;}
 .tab-style1 > li > button.active {background-color: var(--white); color: var(--black);}
 
 /* table */
