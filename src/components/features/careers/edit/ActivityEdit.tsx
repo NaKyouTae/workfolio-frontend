@@ -3,7 +3,6 @@ import { ResumeUpdateRequest_ActivityRequest } from '@/generated/resume';
 import { Activity_ActivityType } from '@/generated/common';
 import Input from '@/components/ui/Input';
 import Dropdown from '@/components/ui/Dropdown';
-import styles from '../CareerContentEdit.module.css';
 import DatePicker from '@/components/ui/DatePicker';
 import DateUtil from '@/utils/DateUtil';
 import { DateTime } from 'luxon';

@@ -3,7 +3,6 @@ import { ResumeUpdateRequest_ProjectRequest } from '@/generated/resume';
 import Input from '@/components/ui/Input';
 import DatePicker from '@/components/ui/DatePicker';
 import DateUtil from '@/utils/DateUtil';
-import styles from '../CareerContentEdit.module.css';
 import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import CardActions from '@/components/ui/CardActions';

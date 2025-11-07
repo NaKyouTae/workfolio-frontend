@@ -80,6 +80,8 @@ const SalaryItem: React.FC<SalaryItemProps> = ({
 interface CareerItemProps {
   careerRequest: ResumeUpdateRequest_CareerRequest;
   index: number;
+  careers: ResumeUpdateRequest_CareerRequest[];
+  onUpdate: (careers: ResumeUpdateRequest_CareerRequest[]) => void;
   handleCareerChange: (index: number, field: string, value: string | number | boolean | undefined) => void;
   toggleVisible: (index: number) => void;
   handleDeleteCareer: (index: number) => void;
@@ -92,6 +94,8 @@ interface CareerItemProps {
 const CareerItem: React.FC<CareerItemProps> = ({
   careerRequest,
   index,
+  careers,
+  onUpdate,
   handleCareerChange,
   toggleVisible,
   handleDeleteCareer,
@@ -100,6 +104,22 @@ const CareerItem: React.FC<CareerItemProps> = ({
   handleDeleteSalary,
   handleSalaryReorder,
 }) => {
+  const handleIsWorkingChange = (checked: boolean) => {
+    const newCareers = [...careers];
+    if (newCareers[index].career) {
+      newCareers[index].career = {
+        ...newCareers[index].career!,
+        isWorking: checked,
+        endedAt: checked ? undefined : newCareers[index].career!.endedAt
+      };
+    }
+    const updatedCareers = newCareers.map((career, idx) => ({
+      ...career,
+      career: career.career ? { ...career.career, priority: idx } : undefined
+    }));
+    onUpdate(updatedCareers);
+  };
+
   return (
     <DraggableItem 
         id={careerRequest.career?.id || `career-${index}`}
@@ -135,30 +155,24 @@ const CareerItem: React.FC<CareerItemProps> = ({
                             <p>입사년월 - 퇴사년월</p>
                             <div>
                                 <DatePicker
-                                    value={careerRequest.career.startedAt}
-                                    onChange={(date) => handleCareerChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
-                                    required={false}
+                                  value={careerRequest.career.startedAt}
+                                  onChange={(date) => handleCareerChange(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                                  required={false}
                                 />
                                 <span>-</span>
-                                {!careerRequest.career.isWorking && (
-                                    <DatePicker
-                                    value={careerRequest.career.endedAt}
-                                    onChange={(date) => handleCareerChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
-                                    required={false}
-                                    />
-                                )}
+                                <DatePicker
+                                  value={careerRequest.career.endedAt}
+                                  readOnly={careerRequest.career.isWorking}
+                                  onChange={(date) => handleCareerChange(index, 'endedAt', DateTime.fromISO(date).toMillis())}
+                                  required={false}
+                                />
                                 <input
                                     type="checkbox"
+                                    id={`isWorking-${index}`}
                                     checked={careerRequest.career.isWorking || false}
-                                    onChange={(e) => {
-                                        handleCareerChange(index, 'isWorking', e.target.checked);
-                                        if (e.target.checked) {
-                                        handleCareerChange(index, 'endedAt', undefined);
-                                        }
-                                    }}
-                                    id="isWorking"
+                                    onChange={(e) => handleIsWorkingChange(e.target.checked)}
                                 />
-                                <label htmlFor="isWorking">재직 중</label>
+                                <label htmlFor={`isWorking-${index}`}>재직 중</label>
                             </div>
                         </li>
                         <li>
@@ -457,6 +471,8 @@ const CareerEdit: React.FC<CareerEditProps> = ({ careers, onUpdate }) => {
                   key={careerRequest.career?.id || `career-${index}`}
                   careerRequest={careerRequest}
                   index={index}
+                  careers={careers}
+                  onUpdate={onUpdate}
                   handleCareerChange={handleCareerChange}
                   toggleVisible={toggleVisible}
                   handleDeleteCareer={handleDeleteCareer}
