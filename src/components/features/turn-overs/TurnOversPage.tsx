@@ -74,22 +74,22 @@ const TurnOversPage: React.FC = () => {
   };
 
   return (
-    <main style={{ display: 'flex', height: 'calc(100vh - 6.4rem)', backgroundColor: '#f8f9fa' }}>
-      <TurnOversSidebar 
-        turnOvers={turnOvers} 
-        onGoHome={onGoHome} 
-        refreshTurnOvers={refreshTurnOvers} 
-        onTurnOverSelect={onTurnOverSelect} 
-        onTurnOverCreated={onTurnOverCreated} 
-      />
-      <TurnOversContent 
-        selectedTurnOver={selectedTurnOver} 
-        isNewTurnOver={isNewTurnOver}
-        onTurnOverSelect={onTurnOverSelect} 
-        onSave={onSave} 
-        onDuplicate={onDuplicate} 
-        onDelete={onDelete} 
-      />
+    <main>
+        <TurnOversSidebar 
+            turnOvers={turnOvers} 
+            onGoHome={onGoHome} 
+            refreshTurnOvers={refreshTurnOvers} 
+            onTurnOverSelect={onTurnOverSelect} 
+            onTurnOverCreated={onTurnOverCreated} 
+        />
+        <TurnOversContent 
+            selectedTurnOver={selectedTurnOver} 
+            isNewTurnOver={isNewTurnOver}
+            onTurnOverSelect={onTurnOverSelect} 
+            onSave={onSave} 
+            onDuplicate={onDuplicate} 
+            onDelete={onDelete} 
+        />
     </main>
   );
 };

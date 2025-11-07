@@ -133,7 +133,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                     </div>
                     <ul className="summary-list">
                         {sortedResumes.map((resume) => (
-                        <li key={resume.id} onClick={() => handleView(resume)} style={{ cursor: 'pointer' }}>
+                        <li key={resume.id} onClick={() => handleView(resume)}>
                             <div className="info">
                                 <div>
                                     <div>

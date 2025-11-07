@@ -22,7 +22,7 @@ const EditFloatingNavigation: React.FC<EditFloatingNavigationProps> = ({
 
   const handleCancel = async () => {
     const result = await confirm({
-      icon: '/assets/img/ico/ic-warning.png',
+      icon: '/assets/img/ico/ic-warning.svg',
       title: '이력서 작성을 취소하시겠어요?',
       description: '지금까지 입력한 내용이 저장되지 않아요.\n지금 나가면 처음부터 다시 작성해야 할 수 있어요.',
       confirmText: '취소하기',

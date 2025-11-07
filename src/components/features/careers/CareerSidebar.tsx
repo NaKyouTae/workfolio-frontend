@@ -22,13 +22,13 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
       {/* 이력서 섹션 */}
       <div className="aside-cont">
         <div 
-          className={`career-home ${!selectedResumeDetail ? 'active' : ''}`}
+          className={`aside-home ${!selectedResumeDetail ? 'active' : ''}`}
           onClick={onGoHome}>
             내 이력 관리
         </div>
-        <div className="career-group">
-          <p className="career-group-title">내 이력서</p>
-          <ul className="career-group-list">
+        <div className="aside-group">
+          <p className="aside-group-title">내 이력서</p>
+          <ul className="aside-group-list">
             {resumeDetails.length > 0 ? (
               <>
                 {resumeDetails.map((resumeDetail) => {

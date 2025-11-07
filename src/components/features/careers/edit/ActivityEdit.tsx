@@ -57,7 +57,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
                             { value: Activity_ActivityType.EXTERNAL, label: '대외활동' },
                             { value: Activity_ActivityType.EDUCATION, label: '교육' },
                             { value: Activity_ActivityType.CERTIFICATION, label: '자격증' },
-                            { value: Activity_ActivityType.AWARD, label: '수상' },
+                            { value: Activity_ActivityType.AWARD, label: '대회' },
                             { value: Activity_ActivityType.ETC, label: '기타' },
                         ]}
                         setValue={(value) => handleActivityChange(index, 'type', normalizeEnumValue(value, Activity_ActivityType))}

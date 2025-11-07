@@ -128,185 +128,124 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>내 이직 관리</h1>
-      </div>
-
-      {/* 내 이직 현황 */}
-      <div className={styles.statisticsSection}>
-        <h2 className={styles.sectionTitle}>내 이직 현황</h2>
-        <div className={styles.statisticsCards}>
-          <div className={styles.statCard}>
-            <div className={styles.statLabel}>전체 이직 활동</div>
-            <div className={styles.statValue}>
-              <span className={styles.statNumber}>{statistics.totalTurnOvers}</span>
-              <span className={styles.statUnit}>개</span>
+    <div className="contents">
+        <div className="page-title">
+            <div>
+                <h2>내 이직 관리</h2>
             </div>
-          </div>
-          
-          <div className={styles.statCard}>
-            <div className={styles.statLabel}>진행 중인 지원</div>
-            <div className={styles.statValue}>
-              <span className={styles.statNumber}>{statistics.ongoingApplications}</span>
-              <span className={styles.statUnit}>개</span>
-            </div>
-          </div>
-          
-          <div className={styles.statCard}>
-            <div className={styles.statLabel}>평균 이직 기간</div>
-            <div className={styles.statValue}>
-              <span className={styles.statNumber}>{statistics.avgDuration}</span>
-              <span className={styles.statUnit}>개월</span>
-            </div>
-          </div>
         </div>
-      </div>
-
-      {/* 전체 이직 활동 */}
-      <div className={styles.turnOversSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>
-            전체 이직 활동 <span className={styles.count}>{turnOvers.length}개</span>
-          </h2>
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as 'recent' | 'oldest')}
-          >
-            <option value="recent">최근 수정일 순</option>
-            <option value="oldest">오래된 순</option>
-          </select>
-        </div>
-
-        {sortedTurnOvers.length === 0 ? (
-          <div className={styles.emptyState}>
-            <p>등록된 이직 활동이 없습니다.</p>
-          </div>
-        ) : (
-          <div className={styles.turnOversList}>
-            {sortedTurnOvers.map((turnOver) => {
-              const status = getTurnOverStatus(turnOver);
-              const stats = getTurnOverStats(turnOver);
-
-              return (
-                <div 
-                  key={turnOver.id} 
-                  className={styles.turnOverCard}
-                  onClick={() => onSelectTurnOver?.(turnOver.id)}
-                >
-                  <div className={styles.cardHeader}>
-                    <div className={styles.cardTitleRow}>
-                      <h3 className={styles.cardTitle}>{turnOver.name}</h3>
-                      <span className={`${styles.statusBadge} ${status.className}`}>
-                        {status.label}
-                      </span>
+        <div className="page-cont">
+            <div className="cont-box">
+                <div className="cont-tit">
+                    <div>
+                        <h3>내 이직 현황</h3>
                     </div>
-                    <div className={styles.cardActions}>
-                      <a 
-                        className={styles.actionButton} 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEdit?.(turnOver.id);
-                        }}
-                      >
-                        편집
-                      </a>
-                      <a 
-                        className={styles.actionButton} 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDuplicate?.(turnOver.id);
-                        }}
-                      >
-                        복제
-                      </a>
-                      <a 
-                        className={styles.actionButton} 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDelete?.(turnOver.id);
-                        }}
-                      >
-                        삭제
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className={styles.cardContent}>
-                    <div className={styles.infoRow}>
-                      <span className={styles.infoLabel}>총 지원 회사:</span>
-                      <span className={styles.infoValue}>{stats.totalApplications}개</span>
-                    </div>
-                    
-                    <div className={styles.infoRow}>
-                      <span className={styles.infoLabel}>진행 중인 지원:</span>
-                      <span className={styles.infoValue}>{stats.ongoingApps}개</span>
-                    </div>
-                    
-                    <div className={styles.infoRow}>
-                      <span className={styles.infoLabel}>만족도 평가 지원:</span>
-                      <span className={styles.infoValue}>{stats.completedApps}개</span>
-                    </div>
-                    
-                    <div className={styles.infoRow}>
-                      <span className={styles.infoLabel}>최종 합격 회사:</span>
-                      <span className={styles.infoValue}>{stats.acceptedApps}개</span>
-                    </div>
-
-                    {turnOver.turnOverGoal && (
-                      <>
-                        <div className={styles.divider} />
-                        <div className={styles.goalSection}>
-                          <div className={styles.infoRow}>
-                            <span className={styles.infoLabel}>이직 목표:</span>
-                            <span className={styles.infoValue}>
-                              {turnOver.turnOverGoal.goal || '-'}
-                            </span>
-                          </div>
-                          <div className={styles.infoRow}>
-                            <span className={styles.infoLabel}>이직 원고:</span>
-                            <span className={styles.infoValue}>
-                              {turnOver.turnOverGoal.reason || '-'}
-                            </span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {turnOver.turnOverRetrospective && (
-                      <>
-                        <div className={styles.divider} />
-                        <div className={styles.retrospectiveSection}>
-                          <div className={styles.infoRow}>
-                            <span className={styles.infoLabel}>최종 선택:</span>
-                            <span className={styles.infoValue}>
-                              {turnOver.turnOverRetrospective.name || '-'}
-                            </span>
-                          </div>
-                          <div className={styles.infoRow}>
-                            <span className={styles.infoLabel}>입사일:</span>
-                            <span className={styles.infoValue}>
-                              {turnOver.turnOverRetrospective.joinedAt 
-                                ? formatDate(turnOver.turnOverRetrospective.joinedAt)
-                                : '-'}
-                            </span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  <div className={styles.cardFooter}>
-                    <span className={styles.updateDate}>
-                      최근 기록: {formatDate(turnOver.updatedAt)}
-                    </span>
-                  </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                <ul className="stats-summary">
+                    <li>
+                        <p>전체 이직 활동</p>
+                        <div>{statistics.totalTurnOvers}<span>개</span></div>
+                    </li>
+                    <li>
+                        <p>진행 중인 지원</p>
+                        <div>{statistics.ongoingApplications}<span>개</span></div>
+                    </li>
+                    <li>
+                        <p>평균 이직 기간</p>
+                        <div>{statistics.avgDuration}<span>개월</span></div>
+                    </li>
+                </ul>
+            </div>
+            <div className="cont-box">
+                <div className="cont-tit">
+                    <div>
+                        <h3>전체 이직 활동</h3>
+                        <p>{turnOvers.length}개</p>
+                    </div>
+                    <select
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value as 'recent' | 'oldest')}
+                    >
+                        <option value="recent">최근 수정일 순</option>
+                        <option value="oldest">오래된 순</option>
+                    </select>
+                </div>
+                {sortedTurnOvers.length === 0 ? (
+                    <div className="empty">
+                        <p>등록된 이직 활동이 없습니다.</p>
+                    </div>
+                ) : (
+                    <ul className="summary-list">
+                    {sortedTurnOvers.map((turnOver) => {
+                        const status = getTurnOverStatus(turnOver);
+                        const stats = getTurnOverStats(turnOver);
+
+                        return (
+                        <li key={turnOver.id} onClick={() => onSelectTurnOver?.(turnOver.id)}>
+                            <div className="info">
+                                <div>
+                                    <div>
+                                        <p>{turnOver.name}</p>
+                                    </div>
+                                    <ul>
+                                        <li><span className={`label ${status.className}`}>{status.label}</span></li>
+                                        <li
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onEdit?.(turnOver.id);
+                                        }}
+                                        >
+                                            편집
+                                        </li>
+                                        <li
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onDuplicate?.(turnOver.id);
+                                        }}
+                                        >
+                                            복제
+                                        </li>
+                                        <li
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onDelete?.(turnOver.id);
+                                        }}
+                                        >
+                                            삭제
+                                        </li>
+                                    </ul>
+                                </div>
+                                <ul>
+                                    <li>총 지원 회사 {stats.totalApplications}개</li>
+                                    <li>만족도 평가 {stats.completedApps}점</li>
+                                    <li>진행 중 회사 {stats.ongoingApps}개</li>
+                                    <li>최종 합격 회사 {stats.acceptedApps}개</li>
+                                </ul>
+                            </div>
+                            <div className="desc">
+                                {turnOver.turnOverGoal && (
+                                    <ul>
+                                        <li><p>이직 목표</p><span>{turnOver.turnOverGoal.goal || '-'}</span></li>
+                                        <li><p>이직 회고</p><span>{turnOver.turnOverGoal.reason || '-'}</span></li>
+                                    </ul>
+                                )}
+
+                                {turnOver.turnOverRetrospective && (
+                                    <ul>
+                                        <li><p>최종 선택</p><span>{turnOver.turnOverRetrospective.name || '-'}</span></li>
+                                        <li><p>입사일</p><span>{turnOver.turnOverRetrospective.joinedAt 
+                                                ? formatDate(turnOver.turnOverRetrospective.joinedAt)
+                                                : '-'}</span></li>
+                                    </ul>
+                                )}
+                            </div>
+                        </li>
+                        );
+                    })}
+                    </ul>
+                )}
+            </div>
+        </div>
     </div>
   );
 };

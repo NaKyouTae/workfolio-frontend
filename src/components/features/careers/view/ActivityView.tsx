@@ -18,15 +18,15 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities, showHidden = fa
     const normalizedType = normalizeEnumValue(type, Activity_ActivityType);
     switch (normalizedType) {
       case Activity_ActivityType.EXTERNAL:
-        return '외부활동'; // 외부활동
+        return '대외활동'; // 대외활동
       case Activity_ActivityType.CERTIFICATION:
         return '자격증'; // 자격증
       case Activity_ActivityType.AWARD:
-        return '수상'; // 수상
+        return '대회'; // 대회
       case Activity_ActivityType.EDUCATION:
         return '교육'; // 교육
-      case Activity_ActivityType.COMPETITION:
-        return '대회'; // 대회
+      // case Activity_ActivityType.COMPETITION:
+      //   return '대회';
       case Activity_ActivityType.ETC:
         return '기타'; // 기타
       case Activity_ActivityType.UNRECOGNIZED:
@@ -36,25 +36,47 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities, showHidden = fa
     }
   };
 
-  const getActivityTypeBadgeColor = (type?: Activity_ActivityType) => {
+  const getActivityTypeBgColor = (type?: Activity_ActivityType) => {
     const normalizedType = normalizeEnumValue(type, Activity_ActivityType);
     switch (normalizedType) {
       case Activity_ActivityType.EXTERNAL:
-        return '#FF3B30'; // 외부활동
+        return '#FDEAE9'; // 대외활동
       case Activity_ActivityType.CERTIFICATION:
-        return '#FF9500'; // 자격증
+        return '#ECFAEE'; // 자격증
       case Activity_ActivityType.AWARD:
-        return '#30B0C7'; // 수상
+        return '#E6F2FF'; // 대회
       case Activity_ActivityType.EDUCATION:
-        return '#007AFF'; // 교육
-      case Activity_ActivityType.COMPETITION:
-        return '#AF52DE'; // 대회
+        return '#FFF5E9'; // 교육
+      // case Activity_ActivityType.COMPETITION:
+      //   return '#AF52DE'; //대회
       case Activity_ActivityType.ETC:
-        return '#B1B9C2'; // 기타
+        return '#ECEDEF'; // 기타
       case Activity_ActivityType.UNRECOGNIZED:
-        return '#B1B9C2'; // 미인식
+        return '#ECEDEF'; // 미인식
       default:
-        return '#B1B9C2'; // 미인식
+        return '#ECEDEF'; // 미인식
+    }
+  };
+
+  const getActivityTypeColor = (type?: Activity_ActivityType) => {
+    const normalizedType = normalizeEnumValue(type, Activity_ActivityType);
+    switch (normalizedType) {
+      case Activity_ActivityType.EXTERNAL:
+        return '#ff3b30'; // 대외활동
+      case Activity_ActivityType.CERTIFICATION:
+        return '#34c759'; // 자격증
+      case Activity_ActivityType.AWARD:
+        return '#007aff'; // 대회
+      case Activity_ActivityType.EDUCATION:
+        return '#ff9500'; // 교육
+      // case Activity_ActivityType.COMPETITION:
+      //   return '#AF52DE'; //대회
+      case Activity_ActivityType.ETC:
+        return '#515c66'; // 기타
+      case Activity_ActivityType.UNRECOGNIZED:
+        return '#515c66'; // 미인식
+      default:
+        return '#515c66'; // 미인식
     }
   };
 
@@ -114,7 +136,8 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities, showHidden = fa
                                 activity.type && (
                                     <li>
                                         <span className="label" style={{
-                                            backgroundColor: getActivityTypeBadgeColor(activity.type),
+                                            backgroundColor: getActivityTypeBgColor(activity.type),
+                                            color: getActivityTypeColor(activity.type),
                                         }}>
                                         {getActivityTypeLabel(activity.type)}
                                         </span>

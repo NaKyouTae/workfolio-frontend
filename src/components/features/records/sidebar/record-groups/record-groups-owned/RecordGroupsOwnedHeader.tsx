@@ -14,9 +14,9 @@ const RecordGroupsOwnedHeader: React.FC<RecordGroupsOwnedHeaderProps> = ({
     
     return (
         <div className="record-group-title">
-            <div>
+            <div onClick={onToggleGroups}>
                 <p>내 기록장</p>
-                <button className={`trans ${isGroupsExpanded ? 'active' : ''}`} onClick={onToggleGroups}>
+                <button className={`trans ${isGroupsExpanded ? 'active' : ''}`}>
                     <i className="ic-arrow-down-14" />
                 </button>
             </div>

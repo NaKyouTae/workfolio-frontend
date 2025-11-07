@@ -239,6 +239,12 @@ select.sm {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border
 /* label */
 .label {width: fit-content; height: 1.6rem; padding: 0 .5rem; display: flex; align-items: center; justify-content: center; border-radius: .2rem; font-size: 1rem; font-weight: 500; color: var(--white);}
 
+.label.red {background-color: #FDEAE9; color: var(--red);}
+.label.orange {background-color: #FFF5E9; color: var(--orange);}
+.label.green {background-color: #ECFAEE; color: var(--green);}
+.label.blue {background-color: #E6F2FF; color: var(--blue);}
+.label.gray {background-color: #ECEDEF; color: var(--gray006);}
+
 /* button */
 button {width: 100%; height: 5.2rem; padding: 0 1.6rem; border-radius: .8rem; display: flex; align-items: center; justify-content: center; column-gap: 1rem; font-size: 1.6rem; font-weight: 500; background-color: var(--yellow004); border: 1px solid transparent; color: var(--white); cursor: pointer;}
 button.md {height: 4rem; padding: 0 1.4rem; font-size: 1.4rem; border-radius: .6rem;}
@@ -304,7 +310,7 @@ table {width: 100%; border-spacing: 0; border-collapse: collapse;}
 .modal .modal-wrap .modal-cont .modal-notice > img {width: 4rem; height: 4rem;}
 .modal .modal-wrap .modal-cont .modal-notice > div {display: flex; flex-flow: column; row-gap: .6rem; align-items: center;}
 .modal .modal-wrap .modal-cont .modal-notice > div > h2 {text-align: center; font-size: 1.4rem; font-weight: 500; line-height: 1.6;}
-.modal .modal-wrap .modal-cont .modal-notice > div > p {text-align: center; font-size: 1.2rem; color: var(--gray005); line-height: 1.4; word-break: keep-all;}
+.modal .modal-wrap .modal-cont .modal-notice > div > p {text-align: center; font-size: 1.2rem; color: var(--gray005); line-height: 1.4; word-break: keep-all; white-space: pre-line;}
 
 .modal .modal-wrap .modal-btn {padding: 1.2rem 1.6rem; border-top: 1px solid var(--gray002); display: flex; align-items: center; column-gap: 1rem;}
 .modal .modal-wrap .modal-btn > button {flex: 1; height: 4rem; padding: 0 1.4rem; font-size: 1.4rem; border-radius: .6rem;}

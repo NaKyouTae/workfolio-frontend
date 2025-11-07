@@ -69,7 +69,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                     <div>
                         <h2>{title}</h2>
                         {description && (
-                            <p style={{ whiteSpace: 'pre-line' }}>{description}</p>
+                            <p>{description}</p>
                         )}
                     </div>
                 </div>

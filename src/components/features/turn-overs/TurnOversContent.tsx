@@ -6,6 +6,8 @@ import TurnOverContentEdit from './content/TurnOverContentEdit';
 import { TurnOverUpsertRequest } from '@/generated/turn_over';
 import { useConfirm } from '@/hooks/useConfirm';
 
+import Footer from "@/components/layouts/Footer"
+
 type ViewMode = 'home' | 'view' | 'edit';
 
 interface TurnOversContentProps {
@@ -89,7 +91,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
   const handleCancel = async () => {
     const result = await confirm({
       title: '이직 활동 기록을 취소하시겠어요?',
-      icon: '/assets/img/ico/ic-warning.png',
+      icon: '/assets/img/ico/ic-warning.svg',
       description: '지금까지 입력한 내용이 저장되지 않아요.\n지금 나가면 처음부터 다시 작성해야 할 수 있어요.',
       confirmText: '취소하기',
       cancelText: '돌아가기',
@@ -121,29 +123,30 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      {viewMode === 'home' && <TurnOversIntegration 
+    <section>
+        {viewMode === 'home' && <TurnOversIntegration 
         onSelectTurnOver={handleTurnOverSelect} 
         onEdit={handleTurnOverEdit} 
         onDuplicate={handleDuplicate} 
         onDelete={handleDelete} 
-      />}
-      {viewMode === 'view' && selectedTurnOver && (
+        />}
+        {viewMode === 'view' && selectedTurnOver && (
         <TurnOversContentView 
-          selectedTurnOver={selectedTurnOver} 
-          onEdit={handleEditCurrentTurnOver}
-          onDuplicate={handleDuplicate}
-          onDelete={handleDelete}
+            selectedTurnOver={selectedTurnOver} 
+            onEdit={handleEditCurrentTurnOver}
+            onDuplicate={handleDuplicate}
+            onDelete={handleDelete}
         />
-      )}
-      {viewMode === 'edit' && selectedTurnOver && (
+        )}
+        {viewMode === 'edit' && selectedTurnOver && (
         <TurnOverContentEdit 
-          selectedTurnOver={selectedTurnOver}
-          onCancel={handleCancel}
-          onSave={handleSave}
+            selectedTurnOver={selectedTurnOver}
+            onCancel={handleCancel}
+            onSave={handleSave}
         />
-      )}
-    </div>
+        )}
+        <Footer/>
+    </section>
   );
 };
 
