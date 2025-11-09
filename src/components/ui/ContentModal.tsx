@@ -1,13 +1,14 @@
 import React from 'react';
 import styles from './GuideModal.module.css';
 
-interface MemoDetailModalProps {
+interface ContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  memo: string;
+  content: string;
+  title?: string;
 }
 
-const MemoDetailModal: React.FC<MemoDetailModalProps> = ({ isOpen, onClose, memo }) => {
+const ContentModal: React.FC<ContentModalProps> = ({ isOpen, onClose, content, title = '내용 보기' }) => {
   if (!isOpen) return null;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -20,7 +21,7 @@ const MemoDetailModal: React.FC<MemoDetailModalProps> = ({ isOpen, onClose, memo
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>메모 상세보기</h2>
+          <h2 className={styles.title}>{title}</h2>
           <button
             className={styles.closeButton}
             onClick={onClose}
@@ -37,7 +38,7 @@ const MemoDetailModal: React.FC<MemoDetailModalProps> = ({ isOpen, onClose, memo
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word'
           }}>
-            {memo || '등록된 메모가 없습니다.'}
+            {content || '등록된 내용이 없습니다.'}
           </div>
         </div>
       </div>
@@ -45,5 +46,5 @@ const MemoDetailModal: React.FC<MemoDetailModalProps> = ({ isOpen, onClose, memo
   );
 };
 
-export default MemoDetailModal;
+export default ContentModal;
 

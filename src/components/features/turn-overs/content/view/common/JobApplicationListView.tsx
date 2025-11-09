@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { JobApplicationDetail, ApplicationStage_ApplicationStageStatus, JobApplication_JobApplicationStatus } from '@/generated/common';
 import EmptyState from '@/components/ui/EmptyState';
 import DateUtil from '@/utils/DateUtil';
-import MemoDetailModal from '@/components/ui/MemoDetailModal';
-import { useMemoDetail } from '@/hooks/useMemoDetail';
+import ContentModal from '@/components/ui/ContentModal';
+import { useModal } from '@/hooks/useModal';
 import '@/styles/component-view.css';
 
 interface JobApplicationListViewProps {
@@ -12,7 +12,7 @@ interface JobApplicationListViewProps {
 
 const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobApplications }) => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  const { isOpen: isMemoOpen, memo: selectedMemo, openMemoDetail, closeMemoDetail } = useMemoDetail();
+  const { isOpen: isMemoOpen, content: selectedMemo, title: memoTitle, openModal, closeModal } = useModal();
 
   const toggleRow = (id: string) => {
     setExpandedRows(prev => {
@@ -196,7 +196,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                     <td style={{ padding: '12px' }}>
                       {app.memo ? (
                         <a
-                          onClick={() => openMemoDetail(app.memo)}
+                          onClick={() => openModal(app.memo, '메모 상세보기')}
                           style={{
                             fontSize: '13px',
                             color: '#6b7280',
@@ -273,7 +273,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                                     )}
                                     {stage.memo && (
                                       <a
-                                        onClick={() => openMemoDetail(stage.memo)}
+                                        onClick={() => openModal(stage.memo, '메모 상세보기')}
                                         style={{
                                           fontSize: '11px',
                                           color: '#6b7280',
@@ -317,10 +317,11 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
       </div>
 
       {/* 메모 상세보기 모달 */}
-      <MemoDetailModal
+      <ContentModal
         isOpen={isMemoOpen}
-        onClose={closeMemoDetail}
-        memo={selectedMemo}
+        onClose={closeModal}
+        content={selectedMemo}
+        title={memoTitle}
       />
     </div>
   );
