@@ -45,6 +45,9 @@ const Footer = () => {
           </li>
           <li><a href="#">이용약관</a></li>
           <li><a href="#">개인정보처리방침</a></li>
+          <li>
+            <Link href="/plans">플랜구성</Link>
+          </li>
         </ul>
 
         <p>Ⓒ 2025 Spectrum. All rights reserved.</p>
