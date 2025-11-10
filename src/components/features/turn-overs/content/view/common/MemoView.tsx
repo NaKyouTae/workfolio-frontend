@@ -14,58 +14,31 @@ const MemoView: React.FC<MemoViewProps> = ({ memos }) => {
   const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
   return (
     <>
-      <div className="view-container">
-        <h3 className="view-title">
-          메모
-          <span 
-            onClick={openGuide}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '18px',
-              height: '18px',
-              background: '#e5e7eb',
-              color: '#6b7280',
-              borderRadius: '50%',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              marginLeft: '8px'
-            }}>?</span>
-        </h3>
-      
-      {!(memos && memos.length > 0) ? (
-        <EmptyState text="등록된 메모가 없습니다." />
-      ) : (
-        <div className="view-list-container">
-          {memos.map((memo) => (
-            <div className="view-item" key={memo.id}>
-              <div className="view-item-content">
-                <p style={{ 
-                  fontSize: '15px', 
-                  color: '#1a1a1a', 
-                  lineHeight: 1.8, 
-                  margin: 0,
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word'
-                }}>
-                  {memo.content}
-                </p>
-              </div>
+        <div className="cont-tit">
+            <div>
+                <h3>메모</h3>
+                <button onClick={openGuide}><i className="ic-question"></i></button>
             </div>
-          ))}
         </div>
-      )}
-      </div>
+        {!(memos && memos.length > 0) ? (
+        <EmptyState text="등록된 메모가 없습니다." />
+        ) : (
+        <ul className="view-list type2">
+            {memos.map((memo) => (
+            <li key={memo.id}>
+                <p>{memo.content}</p>
+            </li>
+            ))}
+        </ul>
+        )}
 
-      {/* 가이드 모달 */}
-      <GuideModal
-        isOpen={isGuideOpen}
-        onClose={closeGuide}
-        title="메모 가이드"
-        sections={memoGuide}
-      />
+        {/* 가이드 모달 */}
+        <GuideModal
+            isOpen={isGuideOpen}
+            onClose={closeGuide}
+            title="메모 가이드"
+            sections={memoGuide}
+        />
     </>
   );
 };

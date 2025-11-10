@@ -16,6 +16,8 @@ i {display: flex; align-items: center; justify-content: center; background-repea
 .ic-show {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-show.svg);}
 .ic-hide {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-hide.svg);}
 .ic-minus {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-minus.svg);}
+.ic-question {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-question.svg);}
+.ic-link {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-link.svg);}
 
 .ic-close {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-close-24.svg);}
 .ic-drag {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-drag.svg);}

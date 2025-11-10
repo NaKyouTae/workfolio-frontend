@@ -7,6 +7,8 @@ import JobApplicationListView from './common/JobApplicationListView';
 import { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import { TurnOverViewRef } from './TurnOverGoalView';
 
+import Image from 'next/image';
+
 interface TurnOverChallengeViewProps {
   turnOverChallenge: TurnOverChallengeDetail | null;
 }
@@ -65,31 +67,37 @@ const TurnOverChallengeView = forwardRef<TurnOverViewRef, TurnOverChallengeViewP
 
   if (!turnOverChallenge) {
     return (
-      <div className={styles.emptyState}>
-        <p>도전 정보가 없습니다.</p>
-      </div>
+        <div className="empty-cont">
+            <Image
+                src="/assets/img/ico/ic-empty.svg" 
+                alt="empty" 
+                width={1}
+                height={1}
+            />
+            <div>
+                <p>도전 정보가 없습니다.</p>
+            </div>
+        </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contentInner}>
+    <>
         {/* 지원 기록 */}
-        <div ref={jobApplicationRef}>
-          <JobApplicationListView jobApplications={turnOverChallenge.jobApplications || []} />
+        <div ref={jobApplicationRef} className="cont-box">
+            <JobApplicationListView jobApplications={turnOverChallenge.jobApplications || []} />
         </div>
 
         {/* 메모 */}
-        <div ref={memoRef}>
-          <MemoView memos={turnOverChallenge.memos || []} />
+        <div ref={memoRef} className="cont-box">
+            <MemoView memos={turnOverChallenge.memos || []} />
         </div>
 
         {/* 첨부 */}
-        <div ref={attachmentRef}>
-          <AttachmentView attachments={turnOverChallenge.attachments || []} />
+        <div ref={attachmentRef} className="cont-box">
+            <AttachmentView attachments={turnOverChallenge.attachments || []} />
         </div>
-      </div>
-    </div>
+    </>
   );
 });
 

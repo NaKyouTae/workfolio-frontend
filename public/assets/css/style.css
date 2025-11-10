@@ -287,7 +287,7 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 .stats-summary > li > div {display: flex; align-items: center; column-gap: .6rem; font-size: 2rem; font-weight: 600;}
 .stats-summary > li > div > span {font-size: 1.2rem; font-weight: initial;}
 
-.summary-list {display: flex; flex-flow: column; row-gap: 1.6rem;}
+.summary-list {display: flex; flex-flow: column; row-gap: 1.2rem;}
 .summary-list > li {padding: 2rem; display: flex; flex-flow: column; row-gap: 1.6rem; border: 1px solid var(--gray003); border-radius: 1rem; cursor: pointer;}
 .summary-list > li .info {display: flex; flex-flow: column; row-gap: 1rem;}
 .summary-list > li .info > div {display: flex; align-items: center; justify-content: space-between;}
@@ -305,7 +305,7 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 .summary-list > li .desc > ul > li {font-size: 1.2rem; color: var(--gray005); display: flex; align-items: center; column-gap: .6rem; line-height: 1.6;}
 .summary-list > li .desc > ul > li > p {width: 4.6rem;}
 .summary-list > li .desc > ul > li > p + span {display: flex; align-items: center; column-gap: .8rem;}
-.summary-list > li .desc > ul > li > p + span::before {content: ''; width: 1px; height: 1rem; background-color: var(--gray003);}
+.summary-list > li .desc > ul > li > p + span::before {content: ''; width: 1px; height: 1rem; background-color: var(--gray004);}
 
 .resume-intro {display: flex; flex-flow: column; row-gap: 2.4rem;}
 .resume-intro > div {display: flex; flex-flow: column; row-gap: 1.6rem;}
@@ -319,7 +319,7 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 .resume-intro > div + p::before {content: ''; width: 1rem; height: 1px; background-color: var(--gray003); display: block; margin-bottom: 2rem;}
 
 /* 이력 관리 - 뷰어 */
-.view-list {display: flex; flex-flow: column; row-gap: 1.6rem;}
+.view-list {display: flex; flex-flow: column; row-gap: 1.2rem;}
 .view-list > li {width: 100%; padding: 2.4rem 2rem 2rem; display: flex; flex-flow: column; row-gap: 1.6rem; border: 1px solid var(--gray003); border-radius: 1rem;}
 .view-list > li .info {display: flex; flex-flow: column; row-gap: 1rem;}
 .view-list > li .info > div {display: flex; align-items: center; justify-content: space-between;}
@@ -341,7 +341,7 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 .view-list > li .desc > ul > li > div > p {font-size: 1.2rem; font-weight: 500;}
 .view-list > li .desc > ul > li > div > span {font-size: 1.2rem; color: var(--gray005);}
 
-.view-file-list {display: flex; flex-flow: column; row-gap: 1.6rem;}
+.view-file-list {display: flex; flex-flow: column; row-gap: 1.2rem;}
 .view-file-list > li {width: 100%; padding: 2.4rem 2rem; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--gray003); border-radius: 1rem;}
 .view-file-list > li > a > div {display: flex; align-items: center; column-gap: 1rem;}
 .view-file-list > li > a > div > img {width: 1.6rem; height: 1.6rem;}
@@ -389,3 +389,35 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 .label.TurnOversIntegration-module__Ek6EBG__statusCompleted {background-color: #ECEDEF; color: var(--gray006);}
 
 /* 이직 관리 - 뷰어 */
+article {position: relative;}
+article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: sticky; top: -2.4rem; z-index: 10; background-color: var(--white);}
+
+.view-box {width: 100%; padding: 2.4rem 2rem 2rem; display: flex; flex-flow: column; row-gap: 1.2rem; border: 1px solid var(--gray003); border-radius: 1rem;}
+.view-box > li {display: flex; align-items: flex-start; column-gap: 1rem;}
+.view-box > li > p {width: 6.8rem; display: flex; align-items: center; column-gap: 1rem; font-size: 1.4rem; color: var(--gray005); line-height: 1.6;}
+.view-box > li > p::after {content: ''; display: block; width: 1px; height: 1rem; background-color: var(--gray004);}
+.view-box > li > span {flex: 1; font-size: 1.4rem; line-height: 1.6; display: block; word-break: keep-all;}
+.view-box > li > input:checked + label::before {background-color: var(--yellow004); border-color: var(--yellow004); background-image: url(../img/ico/ic-check-ov.svg);}
+
+.view-list.type2 > li {row-gap: 1.2rem;}
+.view-list.type2 > li > h4 {font-size: 1.4rem; font-weight: 600; word-break: keep-all;}
+.view-list.type2 > li > p {font-size: 1.4rem; line-height: 1.6; word-break: keep-all;}
+
+.modal .modal-wrap .modal-cont:has(.turnover-guide-wrap) {row-gap: 1.6rem;}
+.turnover-guide-wrap {display: flex; flex-flow: column; row-gap: 1.2rem;}
+.turnover-guide-wrap + .turnover-guide-wrap {border-top: 1px dashed var(--gray003); padding-top: 1.6rem;}
+.turnover-guide-wrap > h3 {font-size: 1.4rem; font-weight: 600; line-height: 1.6; word-break: keep-all;}
+.turnover-guide-wrap > div {display: flex; flex-flow: column; row-gap: .4rem;}
+.turnover-guide-wrap > div > h4 {font-size: 1.2rem; font-weight: 600; line-height: 1.6; word-break: keep-all;}
+.turnover-guide-wrap > div > p {font-size: 1.2rem; line-height: 1.6; word-break: keep-all;}
+.turnover-guide-wrap > div > ul > li {font-size: 1.2rem; line-height: 1.6; word-break: keep-all; text-indent: -1rem; padding-left: 1.2rem;}
+.turnover-guide-wrap > div > ul > li::before {content: ''; display: inline-block; width: .2rem; height: .2rem; margin-right: .8rem; background-color: var(--black); border-radius: 100%;}
+
+.turnover-table table thead th {height: 2.4rem; background-color: var(--gray002); font-size: 1.2rem; color: var(--gray005); text-align: center; vertical-align: middle;}
+.turnover-table table tbody td {height: 2.8rem; font-size: 1.2rem; text-align: center; vertical-align: middle; border-bottom: 1px solid var(--gray002);}
+.turnover-table table tbody td .label {margin: 0 auto;}
+.turnover-table table tbody td p {max-width: 12rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.turnover-table table tbody td > div {display: flex; align-items: center; justify-content: center; column-gap: .4rem;}
+.turnover-table table tbody td > div > p {max-width: 18rem;}
+.turnover-table table tbody td > button {width: fit-content; height: fit-content; margin: 0 auto; padding: 0; font-size: 1.2rem; font-weight: 400; color: var(--black); column-gap: .4rem; background-color: transparent;}
+.turnover-table table tbody td > a {color: var(--blue); text-decoration: underline; text-underline-offset: .2rem;}

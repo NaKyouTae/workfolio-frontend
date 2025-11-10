@@ -85,245 +85,194 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
 
   if (!jobApplications || jobApplications.length === 0) {
     return (
-      <div className="view-container">
-        <h3 className="view-title">지원 기록</h3>
-        <EmptyState text="등록된 지원 기록이 없습니다." />
-      </div>
+        <div className="view-container">
+            <h3 className="view-title">지원 기록</h3>
+            <EmptyState text="등록된 지원 기록이 없습니다." />
+        </div>
     );
   }
 
   return (
-    <div className="view-container">
-      <h3 className="view-title">지원 기록</h3>
-      
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          backgroundColor: 'white',
-          fontSize: '14px',
-        }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>회사명</th>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>직무</th>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>진행 상태</th>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>채용 절차</th>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>공고문</th>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>모집 기간</th>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>지원 경로</th>
-              <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600, color: '#374151', whiteSpace: 'nowrap' }}>메모</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobApplications.map((app, index) => {
-              const isExpanded = expandedRows.has(app.id || `app-${index}`);
-              const hasStages = app.applicationStages && app.applicationStages.length > 0;
-
-              return (
-                <React.Fragment key={app.id || `app-${index}`}>
-                  <tr style={{ 
-                    borderBottom: '1px solid #e5e7eb',
-                    transition: 'background-color 0.2s'
-                  }}>
-                    <td style={{ padding: '12px', fontWeight: 600, color: '#1a1a1a' }}>
-                      {app.name}
-                    </td>
-                    <td style={{ padding: '12px', color: '#1a1a1a' }}>
-                      {app.position}
-                    </td>
-                    <td style={{ padding: '12px', color: '#1a1a1a' }}>
-                      {getJobApplicationStatusLabel(app.status)}
-                    </td>
-                    <td style={{ padding: '12px' }}>
-                      {hasStages ? (
-                        <a
-                          onClick={() => toggleRow(app.id || `app-${index}`)}
-                          style={{
-                            fontSize: '13px',
-                            color: '#6b7280',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#f9fafb';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                          }}
-                        >
-                          상세보기 {isExpanded ? '▲' : '▼'}
-                        </a>
-                      ) : (
-                        <span style={{ color: '#9ca3af', fontSize: '13px' }}>-</span>
-                      )}
-                    </td>
-                    <td style={{ padding: '12px', color: '#1a1a1a' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ 
-                          maxWidth: '200px',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          {app.jobPostingTitle || '-'}
-                        </span>
-                        {app.jobPostingUrl && (
-                          <a 
-                            href={app.jobPostingUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            style={{
-                              fontSize: '16px',
-                              textDecoration: 'none',
-                              flexShrink: 0
-                            }}
-                          >
-                            🔗
-                          </a>
-                        )}
-                      </div>
-                    </td>
-                    <td style={{ padding: '12px', color: '#1a1a1a', whiteSpace: 'nowrap' }}>
-                      {app.startedAt && DateUtil.formatTimestamp(app.startedAt, 'YY.MM.DD.')}
-                      {app.startedAt && app.endedAt && ' - '}
-                      {app.endedAt && DateUtil.formatTimestamp(app.endedAt, 'YY.MM.DD.')}
-                      {!app.startedAt && !app.endedAt && '-'}
-                    </td>
-                    <td style={{ padding: '12px', color: '#1a1a1a' }}>
-                      {app.applicationSource || '-'}
-                    </td>
-                    <td style={{ padding: '12px' }}>
-                      {app.memo ? (
-                        <a
-                          onClick={() => openModal(app.memo, '메모 상세보기')}
-                          style={{
-                            fontSize: '13px',
-                            color: '#6b7280',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#f9fafb';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                          }}
-                        >
-                          상세보기
-                        </a>
-                      ) : (
-                        <span style={{ color: '#9ca3af', fontSize: '13px' }}>-</span>
-                      )}
-                    </td>
-                  </tr>
-                  
-                  {/* 확장된 채용 절차 행 */}
-                  {isExpanded && hasStages && (
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>지원 기록</h3>
+            </div>
+        </div>
+        <div className="turnover-table">
+            <table>
+                <colgroup>
+                    <col style={{width: '7.2rem'}} />
+                    <col style={{width: '14rem'}} />
+                    <col style={{width: '14rem'}} />
+                    <col style={{width: '8rem'}} />
+                    <col style={{width: 'auto'}} />
+                    <col style={{width: '12rem'}} />
+                    <col style={{width: '8rem'}} />
+                    <col style={{width: '7.2rem'}} />
+                </colgroup>
+                <thead>
                     <tr>
-                      <td colSpan={7} style={{ 
-                        padding: '20px 12px', 
-                        backgroundColor: '#f9fafb',
-                        borderBottom: '1px solid #e5e7eb'
-                      }}>
-                        <div style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '8px',
-                          overflowX: 'auto',
-                          padding: '8px 0'
-                        }}>
-                          {app.applicationStages!.map((stage, stageIndex) => (
-                            <React.Fragment key={stage.id || `stage-${stageIndex}`}>
-                              <div style={{ 
-                                display: 'flex', 
-                                flexDirection: 'column', 
-                                alignItems: 'center',
-                                minWidth: '120px',
-                                gap: '8px'
-                              }}>
-                                <div style={{ 
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '8px',
-                                  justifyContent: 'center'
-                                }}>
-                                  <div style={{ 
-                                    fontSize: '14px', 
-                                    fontWeight: 600, 
-                                    color: '#1a1a1a',
-                                    whiteSpace: 'nowrap'
-                                  }}>
-                                    {stage.name}
-                                  </div>
-                                  <div style={getStatusBadgeStyle(stage.status)}>
-                                    {getStatusLabel(stage.status)}
-                                  </div>
-                                </div>
-                                {(stage.startedAt || stage.memo) && (
-                                  <div style={{ 
-                                    fontSize: '12px', 
-                                    color: '#6b7280',
-                                    whiteSpace: 'nowrap',
-                                    textAlign: 'center'
-                                  }}>
-                                    {stage.startedAt && DateUtil.formatTimestamp(stage.startedAt, 'YY.MM.DD.')}
-                                    {stage.startedAt && stage.memo && (
-                                      <span style={{ margin: '0 6px', color: '#d1d5db' }}>|</span>
-                                    )}
-                                    {stage.memo && (
-                                      <a
-                                        onClick={() => openModal(stage.memo, '메모 상세보기')}
-                                        style={{
-                                          fontSize: '11px',
-                                          color: '#6b7280',
-                                          cursor: 'pointer',
-                                          transition: 'all 0.2s',
-                                          textDecoration: 'underline'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                          e.currentTarget.style.color = '#374151';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                          e.currentTarget.style.color = '#6b7280';
-                                        }}
-                                      >
-                                        메모
-                                      </a>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                              {stageIndex < app.applicationStages!.length - 1 && (
-                                <div style={{ 
-                                  fontSize: '18px', 
-                                  color: '#d1d5db',
-                                  flexShrink: 0
-                                }}>
-                                  →
-                                </div>
-                              )}
-                            </React.Fragment>
-                          ))}
-                        </div>
-                      </td>
+                        <th>진행 상태</th>
+                        <th>회사명</th>
+                        <th>직무</th>
+                        <th>채용 절차</th>
+                        <th>공고문</th>
+                        <th>모집 기간</th>
+                        <th>지원 경로</th>
+                        <th>메모</th>
                     </tr>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                </thead>
+                <tbody>
+                    {jobApplications.map((app, index) => {
+                        const isExpanded = expandedRows.has(app.id || `app-${index}`);
+                        const hasStages = app.applicationStages && app.applicationStages.length > 0;
 
-      {/* 메모 상세보기 모달 */}
-      <ContentModal
-        isOpen={isMemoOpen}
-        onClose={closeModal}
-        content={selectedMemo}
-        title={memoTitle}
-      />
-    </div>
+                        return (
+                        <React.Fragment key={app.id || `app-${index}`}>
+                            <tr>
+                                <td><span className="label">{getJobApplicationStatusLabel(app.status)}</span></td>
+                                <td><p>{app.name}</p></td>
+                                <td><p>{app.position}</p></td>
+                                <td>
+                                    {hasStages ? (
+                                    <button onClick={() => toggleRow(app.id || `app-${index}`)}>
+                                        상세보기 {isExpanded ? <i className="ic-arrow-up-14" /> : <i className="ic-arrow-down-14" />}
+                                    </button>
+                                    ) : (
+                                    <>-</>
+                                    )}
+                                </td>
+                                <td>
+                                    <div>
+                                        <p>{app.jobPostingTitle || '-'}</p>
+                                        {app.jobPostingUrl && (
+                                            <a href={app.jobPostingUrl} target="_blank" rel="noopener noreferrer"><i className="ic-link" /></a>
+                                        )}
+                                    </div>
+                                </td>
+                                <td>
+                                    {app.startedAt && DateUtil.formatTimestamp(app.startedAt, 'YY.MM.DD.')}
+                                    {app.startedAt && app.endedAt && ' - '}
+                                    {app.endedAt && DateUtil.formatTimestamp(app.endedAt, 'YY.MM.DD.')}
+                                    {!app.startedAt && !app.endedAt && '-'}
+                                </td>
+                                <td><p>{app.applicationSource || '-'}</p></td>
+                                <td>
+                                    {app.memo ? (
+                                    <a onClick={() => openModal(app.memo, '상세보기')}>상세보기</a>
+                                    ) : (
+                                    <>-</>
+                                    )}
+                                </td>
+                            </tr>
+                            
+                            {/* 확장된 채용 절차 행 */}
+                            {isExpanded && hasStages && (
+                            <tr>
+                                <td colSpan={7} style={{ 
+                                padding: '20px 12px', 
+                                backgroundColor: '#f9fafb',
+                                borderBottom: '1px solid #e5e7eb'
+                                }}>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '8px',
+                                    overflowX: 'auto',
+                                    padding: '8px 0'
+                                }}>
+                                    {app.applicationStages!.map((stage, stageIndex) => (
+                                    <React.Fragment key={stage.id || `stage-${stageIndex}`}>
+                                        <div style={{ 
+                                        display: 'flex', 
+                                        flexDirection: 'column', 
+                                        alignItems: 'center',
+                                        minWidth: '120px',
+                                        gap: '8px'
+                                        }}>
+                                        <div style={{ 
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            justifyContent: 'center'
+                                        }}>
+                                            <div style={{ 
+                                            fontSize: '14px', 
+                                            fontWeight: 600, 
+                                            color: '#1a1a1a',
+                                            whiteSpace: 'nowrap'
+                                            }}>
+                                            {stage.name}
+                                            </div>
+                                            <div style={getStatusBadgeStyle(stage.status)}>
+                                            {getStatusLabel(stage.status)}
+                                            </div>
+                                        </div>
+                                        {(stage.startedAt || stage.memo) && (
+                                            <div style={{ 
+                                            fontSize: '12px', 
+                                            color: '#6b7280',
+                                            whiteSpace: 'nowrap',
+                                            textAlign: 'center'
+                                            }}>
+                                            {stage.startedAt && DateUtil.formatTimestamp(stage.startedAt, 'YY.MM.DD.')}
+                                            {stage.startedAt && stage.memo && (
+                                                <span style={{ margin: '0 6px', color: '#d1d5db' }}>|</span>
+                                            )}
+                                            {stage.memo && (
+                                                <a
+                                                onClick={() => openModal(stage.memo, '메모 상세보기')}
+                                                style={{
+                                                    fontSize: '11px',
+                                                    color: '#6b7280',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s',
+                                                    textDecoration: 'underline'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.color = '#374151';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.color = '#6b7280';
+                                                }}
+                                                >
+                                                메모
+                                                </a>
+                                            )}
+                                            </div>
+                                        )}
+                                        </div>
+                                        {stageIndex < app.applicationStages!.length - 1 && (
+                                        <div style={{ 
+                                            fontSize: '18px', 
+                                            color: '#d1d5db',
+                                            flexShrink: 0
+                                        }}>
+                                            →
+                                        </div>
+                                        )}
+                                    </React.Fragment>
+                                    ))}
+                                </div>
+                                </td>
+                            </tr>
+                            )}
+                        </React.Fragment>
+                        );
+                    })}
+                </tbody>
+            </table>
+        </div>
+
+        {/* 메모 상세보기 모달 */}
+        <ContentModal
+            isOpen={isMemoOpen}
+            onClose={closeModal}
+            content={selectedMemo}
+            title={memoTitle}
+        />
+    </>
   );
 };
 

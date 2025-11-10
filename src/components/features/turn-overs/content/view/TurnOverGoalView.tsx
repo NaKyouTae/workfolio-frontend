@@ -102,42 +102,40 @@ const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ t
   }
     
   return (
-    <div className={styles.container}>
-      <div className={styles.contentInner}>
+    <>
         {/* 이직 방향 설정 */}
-        <div ref={directionRef}>
-          <TurnOverDirectionView
+        <div ref={directionRef} className="cont-box">
+            <TurnOverDirectionView
             reason={turnOverGoal.reason}
             goal={turnOverGoal.goal}
-          />
+            />
         </div>
 
         {/* 공통 자기소개서 */}
-        <div ref={selfIntroductionRef}>
-          <SelfIntroductionView selfIntroductions={turnOverGoal.selfIntroductions || []} />
+        <div ref={selfIntroductionRef} className="cont-box">
+            <SelfIntroductionView selfIntroductions={turnOverGoal.selfIntroductions || []} />
         </div>
 
         {/* 면접 예상 질문 */}
-        <div ref={interviewQuestionRef}>
-          <InterviewQuestionView interviewQuestions={turnOverGoal.interviewQuestions || []} />
+        <div ref={interviewQuestionRef} className="cont-box">
+            <InterviewQuestionView interviewQuestions={turnOverGoal.interviewQuestions || []} />
         </div>
 
         {/* 메모 */}
-        <div ref={memoRef}>
-          <MemoView memos={turnOverGoal.memos || []} />
+        <div ref={memoRef} className="cont-box">
+            <MemoView memos={turnOverGoal.memos || []} />
         </div>
 
         {/* 체크리스트 */}
-        <div ref={checkListRef}>
-          <CheckListView checkList={turnOverGoal.checkList || []} />
+        <div ref={checkListRef} className="cont-box">
+            <CheckListView checkList={turnOverGoal.checkList || []} />
         </div>
 
         {/* 첨부 */}
-        <div ref={attachmentRef}>
-          <AttachmentView attachments={turnOverGoal.attachments || []} />
+        <div ref={attachmentRef} className="cont-box">
+            <AttachmentView attachments={turnOverGoal.attachments || []} />
         </div>
-      </div>
-    </div>
+    </>
   );
 });
 

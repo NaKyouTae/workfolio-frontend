@@ -14,59 +14,36 @@ const CheckListView: React.FC<CheckListViewProps> = ({ checkList }) => {
   const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
   return (
     <>
-      <div className="view-container">
-        <h3 className="view-title">
-          체크리스트
-          <span 
-            onClick={openGuide}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '18px',
-              height: '18px',
-              background: '#e5e7eb',
-              color: '#6b7280',
-              borderRadius: '50%',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              marginLeft: '8px'
-            }}>?</span>
-        </h3>
-      
-      {!checkList || checkList.length === 0 ? (
+        <div className="cont-tit">
+            <div>
+                <h3>체크리스트</h3>
+                <button onClick={openGuide}><i className="ic-question"></i></button>
+            </div>
+        </div>
+        {!checkList || checkList.length === 0 ? (
         <EmptyState text="등록된 체크리스트가 없습니다." />
-      ) : (
-        <div className="view-list-container">
-          {checkList.map((item, index) => (
-            <div key={item.id || `checklist-${index}`} className="view-item">
-              <div className="view-item-content">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <input
+        ) : (
+        <ul className="view-box">
+            {checkList.map((item, index) => (
+            <li key={item.id || `checklist-${index}`}>
+                <input
                     type="checkbox"
                     checked={item.checked}
                     readOnly
-                    style={{ width: '20px', height: '20px', cursor: 'pointer', flexShrink: 0 }}
-                  />
-                  <label style={{ flex: 1, fontSize: '15px', color: '#333', lineHeight: 1.6, cursor: 'pointer' }}>
-                    {item.content}
-                  </label>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-      </div>
+                />
+                <label><p>{item.content}</p></label>
+            </li>
+            ))}
+        </ul>
+        )}
 
-      {/* 가이드 모달 */}
-      <GuideModal
+        {/* 가이드 모달 */}
+        <GuideModal
         isOpen={isGuideOpen}
         onClose={closeGuide}
         title="체크리스트 가이드"
         sections={checkListGuide}
-      />
+        />
     </>
   );
 };

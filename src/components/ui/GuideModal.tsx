@@ -28,46 +28,35 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, title, section
   };
 
   return (
-    <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <button
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label="닫기"
-          >
-            ×
-          </button>
-        </div>
-        <div className={styles.content}>
-          {sections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className={styles.section}>
-              <h3 className={styles.sectionTitle}>{section.title}</h3>
-              {section.content.map((item, itemIndex) => (
-                <div key={itemIndex} className={styles.subsection}>
-                  {item.title && (
-                    <div className={styles.subsectionTitle}>
-                      {item.emoji && <span className={styles.emoji}>{item.emoji}</span>}
-                      <span>{item.title}</span>
-                    </div>
-                  )}
-                  {item.text && <p className={styles.text}>{item.text}</p>}
-                  {item.list && (
-                    <ul className={styles.list}>
-                      {item.list.map((listItem, listIndex) => (
-                        <li key={listIndex} className={styles.listItem}>
-                          {listItem}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
+    <div className="modal" onClick={handleOverlayClick}>
+        <div className="modal-wrap">
+            <div className="modal-tit">
+                <h2>{title}</h2>
+                <button onClick={onClose}><i className="ic-close" /></button>
             </div>
-          ))}
+            <div className="modal-cont">
+            {sections.map((section, sectionIndex) => (
+                <div key={sectionIndex} className="turnover-guide-wrap">
+                    <h3>{section.title}</h3>
+                    {section.content.map((item, itemIndex) => (
+                        <div key={itemIndex}>
+                        {item.title && (
+                            <h4>{item.emoji && <>{item.emoji}</>} {item.title}</h4>
+                        )}
+                        {item.text && <p>{item.text}</p>}
+                        {item.list && (
+                            <ul>
+                            {item.list.map((listItem, listIndex) => (
+                                <li key={listIndex}>{listItem}</li>
+                            ))}
+                            </ul>
+                        )}
+                        </div>
+                    ))}
+                </div>
+            ))}
+            </div>
         </div>
-      </div>
     </div>
   );
 };

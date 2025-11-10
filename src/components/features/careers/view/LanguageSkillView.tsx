@@ -86,7 +86,7 @@ const LanguageSkillView: React.FC<LanguageSkillViewProps> = ({ languageSkills, s
             <EmptyState text="등록된 어학 정보가 없습니다." />
         ) : (
         
-        <ul className="view-list">
+        <ul className="view-list type1">
         {filteredLanguageSkills.map((languageSkill) => (
             <li 
                 key={languageSkill.id}
