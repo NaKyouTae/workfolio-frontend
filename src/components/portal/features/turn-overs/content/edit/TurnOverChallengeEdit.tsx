@@ -92,33 +92,31 @@ const TurnOverChallengeEdit: React.FC<TurnOverChallengeEditProps> = ({ turnOverR
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contentInner}>
-      {/* 지원 기록 (채용 절차 포함) */}
-      <div ref={jobApplicationRef}>
-        <JobApplicationEdit
-          jobApplications={jobApplications}
-          onUpdate={setJobApplications}
-        />
-      </div>
+    <>
+        {/* 지원 기록 (채용 절차 포함) */}
+        <div ref={jobApplicationRef} className="cont-box">
+            <JobApplicationEdit
+                jobApplications={jobApplications}
+                onUpdate={setJobApplications}
+            />
+        </div>
 
-      {/* 메모 */}
-      <div ref={memoRef}>
-        <MemoEdit memos={memos} onMemosChange={setMemos} />
-      </div>
+        {/* 메모 */}
+        <div ref={memoRef} className="cont-box">
+            <MemoEdit memos={memos} onMemosChange={setMemos} />
+        </div>
 
-      {/* 첨부 */}
-      <div ref={attachmentRef}>
-        <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
-      </div>
-      </div>
+        {/* 첨부 */}
+        <div ref={attachmentRef} className="cont-box">
+            <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+        </div>
 
-      <TurnOverFloatingActions 
-        navigationItems={getNavigationItems()}
-        onSave={handleSave}
-        onCancel={() => onCancel?.()}
-      />
-    </div>
+        {/* <TurnOverFloatingActions 
+            navigationItems={getNavigationItems()}
+            onSave={handleSave}
+            onCancel={() => onCancel?.()}
+        /> */}
+    </>
   );
 };
 
