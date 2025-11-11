@@ -54,7 +54,6 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
                 <li>
                     <p>진행 일자</p>
                     <DatePicker
-                        label="진행 일자"
                         value={stage.startedAt}
                         onChange={(date) => onUpdate(index, 'startedAt', DateTime.fromISO(date).toMillis())}
                         required={false}
