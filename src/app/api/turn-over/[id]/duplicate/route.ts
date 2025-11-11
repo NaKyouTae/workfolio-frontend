@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
@@ -19,7 +21,7 @@ export async function POST(
     }
     
     const res = await apiFetchHandler<SuccessResponse>(
-      `http://localhost:8080/api/turn-overs/${id}/duplicate`, 
+      `${API_BASE_URL}/api/turn-overs/${id}/duplicate`, 
       HttpMethod.POST, 
       null, 
       accessToken,

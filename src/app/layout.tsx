@@ -5,9 +5,9 @@ import "../../public/assets/css/font.css"
 import "../../public/assets/css/ico.css"
 import "../../public/assets/css/common.css"
 import "../../public/assets/css/style.css"
-import ConfirmDialogProvider from "@/components/ui/ConfirmDialogProvider"
-import NotificationProvider from "@/components/ui/NotificationProvider"
-import TokenRefreshProvider from "@/components/providers/TokenRefreshProvider"
+import ConfirmDialogProvider from "@/components/portal/ui/ConfirmDialogProvider"
+import NotificationProvider from "@/components/portal/ui/NotificationProvider"
+import TokenRefreshProvider from "@/components/portal/providers/TokenRefreshProvider"
 
 export const metadata = {
     title: "워크폴리오 - 나만의 기록장",

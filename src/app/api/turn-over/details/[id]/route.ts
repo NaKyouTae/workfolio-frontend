@@ -15,7 +15,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
     
     const res = await apiFetchHandler<TurnOverDetailResponse>(
-      `http://localhost:8080/api/turn-overs/details/${id}`, 
+      `${API_BASE_URL}/api/turn-overs/details/${id}`, 
       HttpMethod.GET, 
       undefined, 
       accessToken,

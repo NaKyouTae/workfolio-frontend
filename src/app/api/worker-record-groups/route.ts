@@ -4,6 +4,8 @@ import HttpMethod from "@/enums/HttpMethod";
 import { getCookie } from "@/utils/cookie";
 import { NextRequest, NextResponse } from "next/server";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function DELETE(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
@@ -15,7 +17,7 @@ export async function DELETE(request: NextRequest) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<SuccessResponse>(`http://localhost:8080/api/worker-record-groups?recordGroupId=${recordGroupId}&targetWorkerId=${targetWorkerId}`, HttpMethod.DELETE, null, accessToken);
+        const res = await apiFetchHandler<SuccessResponse>(`${API_BASE_URL}/api/worker-record-groups?recordGroupId=${recordGroupId}&targetWorkerId=${targetWorkerId}`, HttpMethod.DELETE, null, accessToken);
     
         const data = await res.json();
         

@@ -13,7 +13,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<SuccessResponse>(`http://localhost:8080/api/records/${id}`, HttpMethod.DELETE, null, accessToken);
+        const res = await apiFetchHandler<SuccessResponse>(`${API_BASE_URL}/api/records/${id}`, HttpMethod.DELETE, null, accessToken);
         const data = await res.json();
         
         return NextResponse.json(data)

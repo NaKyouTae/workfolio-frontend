@@ -4,6 +4,8 @@ import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { getCookie } from '@/utils/cookie';
 import { NextRequest, NextResponse } from 'next/server';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET(request: NextRequest) {
     try {
         const accessToken = await getCookie('accessToken');
@@ -16,7 +18,7 @@ export async function GET(request: NextRequest) {
         const keyword = request.nextUrl.searchParams.get('keyword');
         
         const res = await apiFetchHandler<ListRecordResponse[]>(
-            `http://localhost:8080/api/records/keywords?keyword=${keyword}`, 
+            `${API_BASE_URL}/api/records/keywords?keyword=${keyword}`, 
             HttpMethod.GET, 
             undefined, 
             accessToken,

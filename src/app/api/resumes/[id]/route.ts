@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
@@ -16,7 +18,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       }
     
     const res = await apiFetchHandler<SuccessResponse>(
-      `http://localhost:8080/api/resumes/${id}`, 
+      `${API_BASE_URL}/api/resumes/${id}`, 
       HttpMethod.PUT, 
       null, 
       accessToken,
@@ -46,7 +48,7 @@ export async function DELETE(
     }
     
     const res = await apiFetchHandler(
-      `http://localhost:8080/api/resumes/${id}`, 
+      `${API_BASE_URL}/api/resumes/${id}`, 
       HttpMethod.DELETE, 
       null, 
       accessToken,

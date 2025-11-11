@@ -14,7 +14,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<RecordGroupDetailResponse[]>(`http://localhost:8080/api/record-groups/details/${id}`, HttpMethod.GET, undefined, accessToken);
+        const res = await apiFetchHandler<RecordGroupDetailResponse[]>(`${API_BASE_URL}/api/record-groups/details/${id}`, HttpMethod.GET, undefined, accessToken);
         
         const data = await res.json()
         

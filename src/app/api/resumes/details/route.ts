@@ -15,7 +15,7 @@ export async function GET() {
     }
     
     const res = await apiFetchHandler<ResumeDetailListResponse>(
-      'http://localhost:8080/api/resumes/details', 
+      `${API_BASE_URL}/api/resumes/details`, 
       HttpMethod.GET, 
       null, 
       accessToken,

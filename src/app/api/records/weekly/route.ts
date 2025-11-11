@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     
 
         // 백엔드 API URL 구성
-        let backendUrl = `http://localhost:8080/api/records/weekly?startDate=${startDate}&endDate=${endDate}`;
+        let backendUrl = `${API_BASE_URL}/api/records/weekly?startDate=${startDate}&endDate=${endDate}`;
 
         // recordGroupIds가 있으면 추가
         if (recordGroupIds) {

@@ -13,7 +13,7 @@ export async function GET() {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<WorkerGetResponse>('http://localhost:8080/api/workers/me', HttpMethod.GET, undefined, accessToken);
+        const res = await apiFetchHandler<WorkerGetResponse>(`${API_BASE_URL}/api/workers/me`, HttpMethod.GET, undefined, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();
@@ -34,7 +34,7 @@ export async function DELETE() {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler('http://localhost:8080/api/workers/me', HttpMethod.DELETE, undefined, accessToken);
+        const res = await apiFetchHandler(`${API_BASE_URL}/api/workers/me`, HttpMethod.DELETE, undefined, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();

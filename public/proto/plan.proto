@@ -19,7 +19,7 @@ message PlanGetResponse {
 message PlanCreateRequest {
   string name = 1;
   Plan.PlanType type = 2;
-  int64 price = 3;
+  uint64 price = 3;
   string currency = 4;
   int32 priority = 5;
   optional string description = 6;
@@ -28,7 +28,7 @@ message PlanCreateRequest {
 message PlanUpdateRequest {
   string id = 1;
   string name = 2;
-  int64 price = 3;
+  uint64 price = 3;
   string currency = 4;
   int32 priority = 5;
   optional string description = 6;

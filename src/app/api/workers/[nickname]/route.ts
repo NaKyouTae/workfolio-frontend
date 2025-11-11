@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: { nickname: string
         const { nickname } = params;
         
         const res = await apiFetchHandler<WorkerListResponse>(
-            `http://localhost:8080/api/workers/${encodeURIComponent(nickname)}`, 
+            `${API_BASE_URL}/api/workers/${encodeURIComponent(nickname)}`, 
             HttpMethod.GET, 
             undefined, 
             accessToken
@@ -47,7 +47,7 @@ export async function PUT(
         const { nickname } = params;
         
         const res = await apiFetchHandler<WorkerUpdateNickNameResponse>(
-            `http://localhost:8080/api/workers/${encodeURIComponent(nickname)}`, 
+            `${API_BASE_URL}/api/workers/${encodeURIComponent(nickname)}`, 
             HttpMethod.PUT, 
             undefined, 
             accessToken
