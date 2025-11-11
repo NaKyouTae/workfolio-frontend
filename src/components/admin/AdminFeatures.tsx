@@ -196,7 +196,7 @@ export default function AdminFeatures() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  placeholder="예: 이력서 생성"
+                  placeholder="예) 이력서 생성"
                   style={{
                     width: '100%',
                     padding: '10px',
@@ -215,7 +215,7 @@ export default function AdminFeatures() {
                   value={formData.domain}
                   onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
                   required
-                  placeholder="예: resume"
+                  placeholder="예) resume"
                   style={{
                     width: '100%',
                     padding: '10px',
@@ -234,7 +234,7 @@ export default function AdminFeatures() {
                   value={formData.action}
                   onChange={(e) => setFormData({ ...formData, action: e.target.value })}
                   required
-                  placeholder="예: create"
+                  placeholder="예) create"
                   style={{
                     width: '100%',
                     padding: '10px',

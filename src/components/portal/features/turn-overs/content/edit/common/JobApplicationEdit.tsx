@@ -104,14 +104,14 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                         <Input
                             type="text"
                             label="지원 경로"
-                            placeholder="예: 원티드, 링크드인, 잡코리아 등"
+                            placeholder="예) 원티드, 링크드인, 잡코리아 등"
                             value={app.applicationSource || ''}
                             onChange={(e) => onUpdate(index, 'applicationSource', e.target.value)}
                         />
                     </li>
                     <li className="full">
                         <p>최종 진행 상태</p>
-                        <ul className="status-list">
+                        <ul className="input-list">
                             <li>
                                 <input
                                     id={`status-${index}-pending`}
@@ -161,7 +161,7 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                     <li className="full">
                         <p>메모</p>
                         <textarea
-                            placeholder="예: 지원 사유, 회사 장단점 등"
+                            placeholder="예) 지원 사유, 회사 장단점 등"
                             value={app.memo || ''}
                             onChange={(e) => onUpdate(index, 'memo', e.target.value)}
                         />
