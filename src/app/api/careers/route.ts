@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { CareerListResponse, CareerResponse } from '@/generated/career';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // GET /api/workers/companies - 회사 목록 조회
 export async function GET() {

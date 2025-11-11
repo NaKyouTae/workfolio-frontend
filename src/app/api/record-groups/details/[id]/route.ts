@@ -4,6 +4,8 @@ import { apiFetchHandler } from "@/utils/ApiFetchHandler";
 import HttpMethod from "@/enums/HttpMethod";
 import { RecordGroupDetailResponse } from "@/generated/record_group";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     try {
         const id = params.id;

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { TurnOverListResponse, TurnOverUpsertRequest } from '@/generated/turn_over';
 import { SuccessResponse } from '@/generated/common';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function GET() {
   try {

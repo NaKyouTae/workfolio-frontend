@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TurnOverDetail, TurnOverRetrospective_EmploymentType } from '@/generated/common';
-import TurnOverGoalEdit from './edit/TurnOverGoalEdit';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverGoalRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@/generated/turn_over';
-import TurnOverChallengeEdit from './edit/TurnOverChallengeEdit';
-import TurnOverRetrospectiveEdit from './edit/TurnOverRetrospectiveEdit';
-import TurnOverContentTab, { TabType } from './TurnOverContentTab';
-import Input from '@/components/portal/ui/Input';
+import TurnOverContentForm from './TurnOverContentForm';
 
 interface TurnOverContentEditProps {
   selectedTurnOver: TurnOverDetail | null;
@@ -20,12 +16,6 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
 }) => {
   const [name, setName] = useState('');
   const [turnOverRequest, setTurnOverRequest] = useState<TurnOverUpsertRequest | null>(null);
-
-  const [activeTab, setActiveTab] = useState<TabType>('goal');
-
-  const changeActiveTab = async (tab: TabType) => {
-    setActiveTab(tab);
-  };
 
   // selectedTurnOver가 변경될 때만 초기화
   useEffect(() => {
@@ -69,73 +59,19 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
     } as TurnOverUpsertRequest);
   }, [selectedTurnOver]);
 
-  const handleSave = (data: TurnOverUpsertRequest) => {
-    if (onSave) {
-      // name을 업데이트하여 저장
-      onSave({
-        ...data,
-        name: name || '제목 없음',
-      });
-    }
+  const handleTurnOverRequestChange = (data: TurnOverUpsertRequest) => {
+    setTurnOverRequest(data);
   };
 
   return (
-    <div className="contents">
-        {/* Header */}
-        <div className="page-title">
-            <div>
-                <div>
-                    <Input
-                        type="text"
-                        label="제목"
-                        placeholder="기록할 이직 활동명을 입력해 주세요.(예: 2025년 01월 이직 활동)"
-                        value={name}
-                    />
-                </div>
-                {/* <h1 
-                    className={styles.title}
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => setName(e.currentTarget.textContent || '')}
-                    onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        e.currentTarget.blur();
-                    }
-                    }}
-                >{name || '기록할 이직 활동명을 입력해 주세요 (예: 2025년 01월 이직 활동)'}</h1> */}
-            </div>
-        </div>
-        <div className="page-cont">
-            <article>
-                <TurnOverContentTab
-                    activeTab={activeTab}
-                    onTabChange={changeActiveTab}
-                />
-                {activeTab === 'goal' && (
-                    <TurnOverGoalEdit 
-                    turnOverRequest={turnOverRequest || null} 
-                    onSave={handleSave} 
-                    onCancel={onCancel} 
-                    />
-                )}
-                {activeTab === 'challenge' && (
-                    <TurnOverChallengeEdit 
-                    turnOverRequest={turnOverRequest || null} 
-                    onSave={handleSave} 
-                    onCancel={onCancel} 
-                    />
-                )}
-                {activeTab === 'retrospective' && (
-                    <TurnOverRetrospectiveEdit
-                    turnOverRequest={turnOverRequest || null}
-                    onSave={handleSave}
-                    onCancel={onCancel}
-                    />
-                )}
-            </article>
-        </div>
-    </div>
+    <TurnOverContentForm
+      name={name}
+      turnOverRequest={turnOverRequest}
+      onNameChange={setName}
+      onTurnOverRequestChange={handleTurnOverRequestChange}
+      onSave={onSave}
+      onCancel={onCancel}
+    />
   );
 };
 

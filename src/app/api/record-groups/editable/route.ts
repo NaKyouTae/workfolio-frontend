@@ -2,7 +2,9 @@ import { getCookie } from "@/utils/cookie"
 import { apiFetchHandler } from "@/utils/ApiFetchHandler"
 import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
-import { CreateRecordGroupResponse } from "@/generated/record_group"
+import { RecordGroupResponse } from "@/generated/record_group"
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function GET() {
     try {
@@ -13,7 +15,7 @@ export async function GET() {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<CreateRecordGroupResponse[]>(`${API_BASE_URL}/api/record-groups/editable`, HttpMethod.GET, undefined, accessToken);
+        const res = await apiFetchHandler<RecordGroupResponse[]>(`${API_BASE_URL}/api/record-groups/editable`, HttpMethod.GET, undefined, accessToken);
         
         const data = await res.json()
         

@@ -29,6 +29,7 @@ const CheckListView: React.FC<CheckListViewProps> = ({ checkList }) => {
                 <input
                     type="checkbox"
                     checked={item.checked}
+                    onChange={() => {}}
                     readOnly
                 />
                 <label><p>{item.content}</p></label>

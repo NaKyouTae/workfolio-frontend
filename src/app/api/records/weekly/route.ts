@@ -4,6 +4,8 @@ import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
 import { Record } from "@/generated/common"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET(request: Request) {
     try {
         const accessToken = await getCookie('accessToken');

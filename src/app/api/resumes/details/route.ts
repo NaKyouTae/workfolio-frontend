@@ -4,6 +4,8 @@ import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { ResumeDetailListResponse } from '@/generated/resume';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 // GET /api/workers/companies - 회사 목록 조회
 export async function GET() {
   try {

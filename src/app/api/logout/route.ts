@@ -3,6 +3,8 @@ import {apiFetchHandler} from "@/utils/ApiFetchHandler"
 import HttpMethod from "@/enums/HttpMethod"
 import {NextResponse} from "next/server"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET() {
     try {
         const accessToken = await getCookie('accessToken');

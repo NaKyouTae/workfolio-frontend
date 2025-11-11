@@ -4,6 +4,8 @@ import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
 import { Record } from "@/generated/common"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 /**
  * 월간 레코드 조회 API
  * Query Parameters:

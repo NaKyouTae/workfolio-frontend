@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import styles from './TurnOverChallengeEdit.module.css';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from '@/components/portal/features/turn-overs/content/edit/common/MemoEdit';
 import AttachmentEdit from '@/components/portal/features/common/AttachmentEdit';
-import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import JobApplicationEdit from './common/JobApplicationEdit';
+import { TurnOverEditRef } from './TurnOverGoalEdit';
 
 interface TurnOverChallengeEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
@@ -13,8 +14,7 @@ interface TurnOverChallengeEditProps {
   onCancel?: () => void;
 }
 
-
-const TurnOverChallengeEdit: React.FC<TurnOverChallengeEditProps> = ({ turnOverRequest, onSave, onCancel }) => {
+const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditProps>(({ turnOverRequest, onSave, onCancel }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('jobApplication');
   const [jobApplications, setJobApplications] = useState<TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[]>([]);
   const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
@@ -91,6 +91,12 @@ const TurnOverChallengeEdit: React.FC<TurnOverChallengeEditProps> = ({ turnOverR
     setAttachments(attachments);
   };
 
+  // ref를 통해 getNavigationItems와 handleSave 함수를 노출
+  useImperativeHandle(ref, () => ({
+    getNavigationItems,
+    handleSave,
+  }));
+
   return (
     <div className={styles.container}>
       <div className={styles.contentInner}>
@@ -112,15 +118,11 @@ const TurnOverChallengeEdit: React.FC<TurnOverChallengeEditProps> = ({ turnOverR
         <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
       </div>
       </div>
-
-      <TurnOverFloatingActions 
-        navigationItems={getNavigationItems()}
-        onSave={handleSave}
-        onCancel={() => onCancel?.()}
-      />
     </div>
   );
-};
+});
+
+TurnOverChallengeEdit.displayName = 'TurnOverChallengeEdit';
 
 export default TurnOverChallengeEdit;
 

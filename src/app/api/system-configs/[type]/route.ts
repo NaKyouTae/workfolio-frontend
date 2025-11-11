@@ -5,6 +5,8 @@ import HttpMethod from "@/enums/HttpMethod";
 import { SystemConfig_SystemConfigType } from "@/generated/common";
 import { SystemConfigGetResponse } from "@/generated/system_config";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET(req: Request, { params }: { params: { type: SystemConfig_SystemConfigType } }) {
     try {
         const type = params.type;

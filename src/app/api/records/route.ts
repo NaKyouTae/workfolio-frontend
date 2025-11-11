@@ -5,6 +5,8 @@ import {NextResponse} from "next/server"
 import { SuccessResponse } from "@/generated/common"
 import { RecordCreateRequest, RecordUpdateRequest } from "@/generated/record"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function POST(req: Request) {
     try {
         const requestData: RecordCreateRequest = await req.json();

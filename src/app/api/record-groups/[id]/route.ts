@@ -5,6 +5,8 @@ import HttpMethod from "@/enums/HttpMethod";
 import { RecordGroupResponse } from "@/generated/record_group";
 import { SuccessResponse } from "@/generated/common";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
     try {
         const requestData = await req.json();

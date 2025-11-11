@@ -4,8 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function GET(request: NextRequest) {
   try {
-    const apiGatewayUrl = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'https://api.workfolio.pro';
-    const url = `${apiGatewayUrl}/api/notices`;
+    const url = `${API_BASE_URL}/api/notices`;
 
     const accessToken = request.cookies.get('accessToken')?.value;
 

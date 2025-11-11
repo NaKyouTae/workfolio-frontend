@@ -4,6 +4,8 @@ import HttpMethod from "@/enums/HttpMethod"
 import {NextResponse} from "next/server"
 import {RecordGroupResponse} from "@/generated/record_group"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function POST(req: Request) {
     try {
         const requestData = await req.json();        

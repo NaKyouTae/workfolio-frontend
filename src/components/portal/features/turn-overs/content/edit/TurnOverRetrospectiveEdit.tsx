@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import styles from './TurnOverRetrospectiveEdit.module.css';
 import { DateUtil } from '@/utils/DateUtil';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from '@/components/portal/features/turn-overs/content/edit/common/MemoEdit';
 import AttachmentEdit from '@/components/portal/features/common/AttachmentEdit';
-import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import { TurnOverRetrospective_EmploymentType } from '@/generated/common';
+import { TurnOverEditRef } from './TurnOverGoalEdit';
 
 interface TurnOverRetrospectiveEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
@@ -14,11 +15,11 @@ interface TurnOverRetrospectiveEditProps {
   onCancel?: () => void;
 }
 
-const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
+const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospectiveEditProps>(({
   turnOverRequest,
   onSave,
   onCancel,
-}) => {
+}, ref) => {
   const [activeSection, setActiveSection] = useState<string>('finalChoice');
   
   // 각 섹션에 대한 ref
@@ -142,6 +143,12 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
       } as TurnOverUpsertRequest);
     }
   };
+
+  // ref를 통해 getNavigationItems와 handleSave 함수를 노출
+  useImperativeHandle(ref, () => ({
+    getNavigationItems,
+    handleSave,
+  }));
 
   return (
     <div className={styles.container}>
@@ -326,16 +333,11 @@ const TurnOverRetrospectiveEdit: React.FC<TurnOverRetrospectiveEditProps> = ({
         <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
       </div>
       </div>
-
-      {/* Floating Action Buttons */}
-      <TurnOverFloatingActions 
-        navigationItems={getNavigationItems()}
-        onSave={handleSave}
-        onCancel={() => onCancel?.()}
-      />
     </div>
   );
-};
+});
+
+TurnOverRetrospectiveEdit.displayName = 'TurnOverRetrospectiveEdit';
 
 export default TurnOverRetrospectiveEdit;
 

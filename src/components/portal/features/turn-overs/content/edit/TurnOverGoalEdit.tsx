@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest, TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest, TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from './common/MemoEdit';
@@ -18,7 +18,12 @@ interface TurnOverGoalEditProps {
   onCancel?: () => void;
 }
 
-const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, onSave, onCancel }) => {
+export interface TurnOverEditRef {
+  getNavigationItems: () => FloatingNavigationItem[];
+  handleSave: () => void;
+}
+
+const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ turnOverRequest, onSave, onCancel }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('direction');
   const [reason, setReason] = useState('');
   const [goal, setGoal] = useState('');
@@ -134,6 +139,12 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
     setAttachments(attachments);
   };
 
+  // ref를 통해 getNavigationItems와 handleSave 함수를 노출
+  useImperativeHandle(ref, () => ({
+    getNavigationItems,
+    handleSave,
+  }));
+
   return (
     <>
         {/* 이직 방향 설정 */}
@@ -202,13 +213,6 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
         <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
         </div>
 
-        {/* Floating Action Buttons */}
-        {/* <TurnOverFloatingActions 
-        navigationItems={getNavigationItems()}
-        onSave={handleSave}
-        onCancel={() => onCancel?.()}
-        /> */}
-
         {/* 가이드 모달 */}
         <GuideModal
         isOpen={isGuideOpen}
@@ -218,7 +222,9 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
         />
     </>
   );
-};
+});
+
+TurnOverGoalEdit.displayName = 'TurnOverGoalEdit';
 
 export default TurnOverGoalEdit;
 

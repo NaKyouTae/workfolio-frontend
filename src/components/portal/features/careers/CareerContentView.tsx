@@ -132,7 +132,14 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
         <div className="page-title">
             <div>
                 <div>
-                    <input type="checkbox" className="input-resume" checked={selectedResumeDetail?.isDefault || false} id="isDefault" readOnly />
+                    <input 
+                        type="checkbox" 
+                        className="input-resume" 
+                        checked={selectedResumeDetail?.isDefault || false} 
+                        onChange={() => {}}
+                        id="isDefault" 
+                        readOnly 
+                    />
                     <label htmlFor="isDefault"></label>
                     {
                         selectedResumeDetail?.title && (

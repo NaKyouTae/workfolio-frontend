@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET() {
     try {
         const cookieStore = await cookies();
@@ -17,14 +19,8 @@ export async function GET() {
             return NextResponse.json({ error: 'Refresh token not found' }, { status: 401 });
         }
         
-        // API Gateway URL 설정
-        const apiGatewayUrl = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'https://api.workfolio.pro';
-        const url = `${apiGatewayUrl}/api/token/reissue`;
-        
-        console.log('🔗 Calling:', url);
-        
         // 토큰 재발급 API 호출
-        const response = await fetch(url, {
+        const response = await fetch(`${API_BASE_URL}/api/token/reissue`, {
             method: 'GET',
             headers: {
                 'Authorization': accessToken ? `Bearer ${accessToken}` : '',

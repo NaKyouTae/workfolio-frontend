@@ -3,6 +3,7 @@ import TurnOversContentView from './content/TurnOverContentView';
 import { TurnOverDetail } from '@/generated/common';
 import TurnOversIntegration from './content/TurnOversIntegration';
 import TurnOverContentEdit from './content/TurnOverContentEdit';
+import TurnOverContentCreate from './content/TurnOverContentCreate';
 import { TurnOverUpsertRequest } from '@/generated/turn_over';
 import { useConfirm } from '@/hooks/useConfirm';
 
@@ -81,10 +82,10 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
     handleModeChange('edit');
   };
 
-  const handleSave = (data: TurnOverUpsertRequest) => {
+  const handleSave = (data: TurnOverUpsertRequest, mode: ViewMode = 'view') => {
     if (onSave) {
       onSave(data);
-      handleModeChange('view');
+      handleModeChange(mode);
     }
   };
 
@@ -138,11 +139,17 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
             onDelete={handleDelete}
         />
         )}
-        {viewMode === 'edit' && selectedTurnOver && (
+        {viewMode === 'edit' && isNewTurnOver && (
+        <TurnOverContentCreate 
+            onCancel={handleCancel}
+            onSave={(data) => handleSave(data, 'home')}
+        />
+        )}
+        {viewMode === 'edit' && !isNewTurnOver && selectedTurnOver && (
         <TurnOverContentEdit 
             selectedTurnOver={selectedTurnOver}
             onCancel={handleCancel}
-            onSave={handleSave}
+            onSave={(data) => handleSave(data, 'view')}
         />
         )}
         <Footer/>

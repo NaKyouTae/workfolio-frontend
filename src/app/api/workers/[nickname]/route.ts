@@ -4,6 +4,8 @@ import HttpMethod from "@/enums/HttpMethod"
 import { NextResponse } from "next/server"
 import { WorkerListResponse, WorkerUpdateNickNameResponse } from "@/generated/worker"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET(req: Request, { params }: { params: { nickname: string } }) {
     try {
         const accessToken = await getCookie('accessToken');
