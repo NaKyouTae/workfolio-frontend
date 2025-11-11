@@ -19,5 +19,9 @@ i {display: flex; align-items: center; justify-content: center; background-repea
 .ic-question {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-question.svg);}
 .ic-link {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-link.svg);}
 
+.ic-star {width: 1.8rem; height: 1.8rem; background-image: url(../img/ico/ic-star.svg);}
+.ic-star-ov {width: 1.8rem; height: 1.8rem; background-image: url(../img/ico/ic-star-ov.svg);}
+.ic-star-half-ov {width: 1.8rem; height: 1.8rem; background-image: url(../img/ico/ic-star-half-ov.svg);}
+
 .ic-close {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-close-24.svg);}
 .ic-drag {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-drag.svg);}

@@ -52,81 +52,48 @@ const NegotiationView: React.FC<NegotiationViewProps> = ({
   };
 
   return (
-    <div className="view-container">
-      <h3 className="view-title">자우 협의</h3>
-      
-      <div className="view-list-container">
-        <div className="view-item">
-          <div className="view-item-content">
-            {/* 직무 정보 */}
-            <div style={{ marginBottom: '16px' }}>
-              <h4 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
-                {position}
-              </h4>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#6b7280' }}>
-                {department && <span>{department}</span>}
-                {rank && (
-                  <>
-                    <span>|</span>
-                    <span>{rank}</span>
-                  </>
-                )}
-                {jobTitle && (
-                  <>
-                    <span>|</span>
-                    <span>{jobTitle}</span>
-                  </>
-                )}
-              </div>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>처우 협의</h3>
             </div>
-
-            {/* 연봉 정보 */}
-            {salary > 0 && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '16px',
-                background: '#f0f9ff',
-                borderRadius: '8px',
-                marginBottom: '16px'
-              }}>
-                <span style={{ fontSize: '15px', fontWeight: 600, color: '#1a1a1a' }}>연봉</span>
-                <span style={{ fontSize: '20px', fontWeight: 700, color: '#007bff' }}>
-                  {formatSalary(salary)}
-                </span>
-              </div>
-            )}
-
-            {/* 추가 정보 */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {workType && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#6b7280' }}>근무 형태</span>
-                  <span style={{ fontSize: '14px', color: '#1a1a1a' }}>{workType}</span>
-                </div>
-              )}
-              {employmentType && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#6b7280' }}>고용 형태</span>
-                  <span style={{ fontSize: '14px', color: '#1a1a1a' }}>
-                    {getEmploymentTypeLabel(employmentType)}
-                  </span>
-                </div>
-              )}
-              {joinedAt && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#6b7280' }}>입사 일자</span>
-                  <span style={{ fontSize: '14px', color: '#1a1a1a' }}>
-                    {DateUtil.formatTimestamp(joinedAt, 'YYYY. MM. DD.')}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
+        
+        <ul className="view-list type1">
+            <li>
+                <div className="info">
+                    <div>
+                        <div><h4>{position}</h4></div>
+                        <ul>
+                            {joinedAt && (
+                                <li>입사 일자 {DateUtil.formatTimestamp(joinedAt, 'YYYY. MM. DD.')}</li>
+                            )}
+                            {employmentType && (
+                                <li>{getEmploymentTypeLabel(employmentType)}</li>
+                            )}
+                            {workType && (
+                                <li>{workType}</li>
+                            )}
+                        </ul>
+                    </div>
+                    <ul>
+                        {department && <li>{department}</li>}
+                        {rank && (
+                            <li>{rank}</li>
+                        )}
+                        {jobTitle && (
+                            <li>{jobTitle}</li>
+                        )}
+                    </ul>
+                </div>
+                <div className="desc">
+                    {salary > 0 && (
+                        <p>연봉 {formatSalary(salary)}</p>
+                    )}
+                </div>
+            </li>
+        </ul>
+    </>
   );
 };
 
