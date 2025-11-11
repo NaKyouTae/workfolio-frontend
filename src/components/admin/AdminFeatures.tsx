@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useFeatures } from '@/hooks/useFeatures';
 import { FeatureCreateRequest, FeatureUpdateRequest } from '@/generated/feature';
 import { Feature } from '@/generated/common';
-import styles from '@/app/admin/dashboard/dashboard.module.css';
 
 export default function AdminFeatures() {
   const { features, loading, error, fetchFeatures, createFeature, updateFeature, deleteFeature } = useFeatures();
@@ -75,36 +74,33 @@ export default function AdminFeatures() {
   const domains = Array.from(new Set(features.map(f => f.domain))).filter(Boolean);
 
   return (
-    <div>
-      <div className={styles.pageHeader}>
-        <h1>기능 관리</h1>
-        <p>서비스 기능을 생성하고 관리합니다.</p>
+    <div className="contents">
+      <div className="page-title">
+        <div>
+          <h2>기능 관리</h2>
+          <p>서비스 기능을 생성하고 관리합니다.</p>
+        </div>
       </div>
 
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <h2>전체 기능 ({features.length}개)</h2>
-            <select
-              value={filterDomain}
-              onChange={(e) => setFilterDomain(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                border: '1px solid #ddd',
-                borderRadius: '6px',
-                fontSize: '14px',
-              }}
-            >
-              <option value="">전체 도메인</option>
-              {domains.map((domain) => (
-                <option key={domain} value={domain}>{domain}</option>
-              ))}
-            </select>
+      <div className="page-cont">
+        <div className="cont-box">
+          <div className="cont-tit">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <h3>전체 기능 ({features.length}개)</h3>
+              <select
+                value={filterDomain}
+                onChange={(e) => setFilterDomain(e.target.value)}
+              >
+                <option value="">전체 도메인</option>
+                {domains.map((domain) => (
+                  <option key={domain} value={domain}>{domain}</option>
+                ))}
+              </select>
+            </div>
+            <button onClick={() => handleOpenModal()}>
+              + 새 기능 추가
+            </button>
           </div>
-          <button className={styles.button} onClick={() => handleOpenModal()}>
-            + 새 기능 추가
-          </button>
-        </div>
 
         {loading && <div>로딩 중...</div>}
         {error && <div style={{ color: 'red' }}>에러: {error}</div>}
@@ -137,14 +133,14 @@ export default function AdminFeatures() {
                 <td style={{ padding: '12px' }}>{feature.action ?? ''}</td>
                 <td style={{ padding: '12px', textAlign: 'center' }}>
                   <button 
-                    className={styles.buttonSecondary} 
+                    className="line gray"
                     onClick={() => handleOpenModal(feature)}
                     style={{ marginRight: '8px' }}
                   >
                     편집
                   </button>
                   <button 
-                    className={styles.buttonDanger} 
+                    className="line red"
                     onClick={() => handleDelete(feature.id)}
                   >
                     삭제
@@ -160,6 +156,7 @@ export default function AdminFeatures() {
             등록된 기능이 없습니다.
           </div>
         )}
+        </div>
       </div>
 
       {showModal && (
@@ -248,17 +245,11 @@ export default function AdminFeatures() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  style={{
-                    padding: '10px 24px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    background: 'white',
-                    cursor: 'pointer',
-                  }}
+                  className="line gray"
                 >
                   취소
                 </button>
-                <button type="submit" className={styles.button}>
+                <button type="submit" className="dark-gray">
                   {editingFeature ? '수정' : '추가'}
                 </button>
               </div>

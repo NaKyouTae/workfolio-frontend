@@ -26,8 +26,11 @@ export default function LoginPage() {
             const accessToken = await getCookie('accessToken');
             const refreshToken = await getCookie('refreshToken');
             
-            // 쿠키에 accessToken과 refreshToken이 있다면 기록 관리 페이지로 리디렉션
+            // portal 로그인 성공 시 admin 토큰 제거
             if (accessToken && refreshToken) {
+                // admin 토큰 제거 (portal 로그인 시)
+                document.cookie = 'admin_access_token=; max-age=0; path=/';
+                document.cookie = 'admin_refresh_token=; max-age=0; path=/';
                 router.push('/records'); // 로그인 성공
             } else {
                 setIsLoading(false); // 로그인 실패

@@ -6,7 +6,7 @@ import { usePlans } from '@/hooks/usePlans';
 import { useFeatures } from '@/hooks/useFeatures';
 import { PlanFeatureCreateRequest, PlanFeatureUpdateRequest } from '@/generated/plan_feature';
 import { Plan_PlanType, PlanFeature } from '@/generated/common';
-import styles from '@/app/admin/dashboard/dashboard.module.css';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 export default function AdminPlanFeatures() {
   const { planFeatures, loading, error, fetchPlanFeatures, createPlanFeature, updatePlanFeature, deletePlanFeature } = usePlanFeatures();
@@ -85,7 +85,8 @@ export default function AdminPlanFeatures() {
   };
 
   const getPlanTypeLabel = (type: Plan_PlanType) => {
-    switch (type) {
+    const normalizedType = normalizeEnumValue(type, Plan_PlanType);
+    switch (normalizedType) {
       case Plan_PlanType.FREE:
         return 'FREE';
       case Plan_PlanType.PREMIUM:
@@ -100,51 +101,42 @@ export default function AdminPlanFeatures() {
   };
 
   return (
-    <div>
-      <div className={styles.pageHeader}>
-        <h1>플랜-기능 관리</h1>
-        <p>플랜에 기능을 연결하고 사용 제한을 설정합니다.</p>
+    <div className="contents">
+      <div className="page-title">
+        <div>
+          <h2>플랜-기능 관리</h2>
+          <p>플랜에 기능을 연결하고 사용 제한을 설정합니다.</p>
+        </div>
       </div>
 
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <h2>플랜-기능 연결 ({planFeatures.length}개)</h2>
-            <select
-              value={filterPlanId}
-              onChange={(e) => setFilterPlanId(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                border: '1px solid #ddd',
-                borderRadius: '6px',
-                fontSize: '14px',
-              }}
-            >
-              <option value="">전체 플랜</option>
-              {plans.map((plan) => (
-                <option key={plan.id} value={plan.id}>{plan.name ?? ''}</option>
-              ))}
-            </select>
-            <select
-              value={filterFeatureId}
-              onChange={(e) => setFilterFeatureId(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                border: '1px solid #ddd',
-                borderRadius: '6px',
-                fontSize: '14px',
-              }}
-            >
-              <option value="">전체 기능</option>
-              {features.map((feature) => (
-                <option key={feature.id} value={feature.id}>{feature.name ?? ''}</option>
-              ))}
-            </select>
+      <div className="page-cont">
+        <div className="cont-box">
+          <div className="cont-tit">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <h3>플랜-기능 연결 ({planFeatures.length}개)</h3>
+              <select
+                value={filterPlanId}
+                onChange={(e) => setFilterPlanId(e.target.value)}
+              >
+                <option value="">전체 플랜</option>
+                {plans.map((plan) => (
+                  <option key={plan.id} value={plan.id}>{plan.name ?? ''}</option>
+                ))}
+              </select>
+              <select
+                value={filterFeatureId}
+                onChange={(e) => setFilterFeatureId(e.target.value)}
+              >
+                <option value="">전체 기능</option>
+                {features.map((feature) => (
+                  <option key={feature.id} value={feature.id}>{feature.name ?? ''}</option>
+                ))}
+              </select>
+            </div>
+            <button onClick={() => handleOpenModal()}>
+              + 새 연결 추가
+            </button>
           </div>
-          <button className={styles.button} onClick={() => handleOpenModal()}>
-            + 새 연결 추가
-          </button>
-        </div>
 
         {loading && <div>로딩 중...</div>}
         {error && <div style={{ color: 'red' }}>에러: {error}</div>}
@@ -203,14 +195,14 @@ export default function AdminPlanFeatures() {
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center' }}>
                   <button 
-                    className={styles.buttonSecondary} 
+                    className="line gray"
                     onClick={() => handleOpenModal(planFeature)}
                     style={{ marginRight: '8px' }}
                   >
                     편집
                   </button>
                   <button 
-                    className={styles.buttonDanger} 
+                    className="line red"
                     onClick={() => handleDelete(planFeature.id)}
                   >
                     삭제
@@ -226,6 +218,7 @@ export default function AdminPlanFeatures() {
             등록된 플랜-기능 연결이 없습니다.
           </div>
         )}
+        </div>
       </div>
 
       {showModal && (
@@ -343,6 +336,7 @@ export default function AdminPlanFeatures() {
                       color: formData.limitCount === -1 ? 'white' : '#333',
                       cursor: 'pointer',
                       fontWeight: '600',
+                      width: '100px',
                     }}
                   >
                     무제한
@@ -357,17 +351,11 @@ export default function AdminPlanFeatures() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  style={{
-                    padding: '10px 24px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    background: 'white',
-                    cursor: 'pointer',
-                  }}
+                  className="line gray"
                 >
                   취소
                 </button>
-                <button type="submit" className={styles.button}>
+                <button type="submit" className="dark-gray">
                   {editingPlanFeature ? '수정' : '추가'}
                 </button>
               </div>

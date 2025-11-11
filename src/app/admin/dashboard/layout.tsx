@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminSidebar from '@/components/admin/AdminSidebar';
-import styles from './dashboard.module.css';
+import styles from './layout.module.css';
 
 export default function AdminDashboardLayout({
   children,
@@ -23,9 +23,11 @@ export default function AdminDashboardLayout({
   return (
     <div className={styles.container}>
       <AdminSidebar />
-      <main className={styles.main}>
-        {children}
-      </main>
+      <section className={styles.section}>
+        <div className={styles.contents}>
+          {children}
+        </div>
+      </section>
     </div>
   );
 }

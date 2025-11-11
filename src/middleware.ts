@@ -9,7 +9,19 @@ export function middleware(request: NextRequest) {
     
     // 로그인 페이지는 항상 허용
     if (request.nextUrl.pathname === '/login') {
-        return NextResponse.next();
+        const response = NextResponse.next();
+        
+        // portal 로그인 성공 시 (accessToken이 있는 경우) admin 토큰 제거
+        const accessToken = request.cookies.get('accessToken');
+        const refreshToken = request.cookies.get('refreshToken');
+        
+        if (accessToken && refreshToken) {
+            // admin 토큰 제거
+            response.cookies.delete('admin_access_token');
+            response.cookies.delete('admin_refresh_token');
+        }
+        
+        return response;
     }
     
     // 보호된 페이지들 (토큰이 필요한 페이지) - 현재는 없음

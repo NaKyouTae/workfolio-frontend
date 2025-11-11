@@ -14,13 +14,22 @@
 .logo {
   padding: 32px 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo img {
+  margin-bottom: 8px;
 }
 
 .logo h2 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   margin: 0;
   color: white;
+  text-align: center;
 }
 
 .nav {
@@ -39,7 +48,7 @@
   margin-bottom: 8px;
 }
 
-.nav a {
+.navLink {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -51,12 +60,12 @@
   font-weight: 500;
 }
 
-.nav a:hover {
+.navLink:hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
-.nav a.active {
+.navLinkActive {
   background: rgba(255, 255, 255, 0.15);
   color: white;
   font-weight: 600;

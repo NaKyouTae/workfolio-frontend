@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { usePlans } from '@/hooks/usePlans';
 import { PlanCreateRequest, PlanUpdateRequest } from '@/generated/plan';
 import { Plan_PlanType, Plan } from '@/generated/common';
-import styles from '@/app/admin/dashboard/dashboard.module.css';
+import { normalizeEnumValue } from '@/utils/commonUtils';
 
 export default function AdminPlans() {
   const { plans, loading, error, fetchPlans, createPlan, updatePlan, deletePlan } = usePlans();
@@ -80,7 +80,8 @@ export default function AdminPlans() {
   };
 
   const getPlanTypeLabel = (type: Plan_PlanType) => {
-    switch (type) {
+    const normalizedType = normalizeEnumValue(type, Plan_PlanType);
+    switch (normalizedType) {
       case Plan_PlanType.FREE:
         return 'FREE';
       case Plan_PlanType.PREMIUM:
@@ -91,19 +92,24 @@ export default function AdminPlans() {
   };
 
   return (
-    <div>
-      <div className={styles.pageHeader}>
-        <h1>플랜 관리</h1>
-        <p>서비스 플랜을 생성하고 관리합니다.</p>
+    <div className="contents">
+      <div className="page-title">
+        <div>
+          <h2>플랜 관리</h2>
+          <p>서비스 플랜을 생성하고 관리합니다.</p>
+        </div>
       </div>
 
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <h2>전체 플랜 ({plans.length}개)</h2>
-          <button className={styles.button} onClick={() => handleOpenModal()}>
-            + 새 플랜 추가
-          </button>
-        </div>
+      <div className="page-cont">
+        <div className="cont-box">
+          <div className="cont-tit">
+            <div>
+              <h3>전체 플랜 ({plans.length}개)</h3>
+            </div>
+            <button onClick={() => handleOpenModal()}>
+              + 새 플랜 추가
+            </button>
+          </div>
 
         {loading && <div>로딩 중...</div>}
         {error && <div style={{ color: 'red' }}>에러: {error}</div>}
@@ -144,14 +150,14 @@ export default function AdminPlans() {
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center' }}>
                   <button 
-                    className={styles.buttonSecondary} 
+                    className="line gray"
                     onClick={() => handleOpenModal(plan)}
                     style={{ marginRight: '8px' }}
                   >
                     편집
                   </button>
                   <button 
-                    className={styles.buttonDanger} 
+                    className="line red"
                     onClick={() => handleDelete(plan.id)}
                   >
                     삭제
@@ -167,6 +173,7 @@ export default function AdminPlans() {
             등록된 플랜이 없습니다.
           </div>
         )}
+        </div>
       </div>
 
       {showModal && (
@@ -309,17 +316,11 @@ export default function AdminPlans() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  style={{
-                    padding: '10px 24px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    background: 'white',
-                    cursor: 'pointer',
-                  }}
+                  className="line gray"
                 >
                   취소
                 </button>
-                <button type="submit" className={styles.button}>
+                <button type="submit" className="dark-gray">
                   {editingPlan ? '수정' : '추가'}
                 </button>
               </div>

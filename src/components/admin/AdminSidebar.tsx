@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import styles from './AdminSidebar.module.css';
 
 export default function AdminSidebar() {
@@ -55,6 +56,13 @@ export default function AdminSidebar() {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
+        <Image
+          src="/workfolio-logo.png"
+          alt="Workfolio Logo"
+          width={120}
+          height={40}
+          style={{ objectFit: 'contain' }}
+        />
         <h2>Workfolio Admin</h2>
       </div>
 
@@ -64,7 +72,7 @@ export default function AdminSidebar() {
             <li key={item.path}>
               <a
                 href={item.path}
-                className={pathname === item.path ? styles.active : ''}
+                className={pathname === item.path ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink}
                 onClick={(e) => {
                   e.preventDefault();
                   router.push(item.path);

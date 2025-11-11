@@ -29,7 +29,11 @@ export async function POST(request: NextRequest) {
     // 로그인 성공 시에만 토큰을 쿠키에 저장
     const res = NextResponse.json(data);
     
-    // accessToken 쿠키 설정 (httpOnly, secure)
+    // portal 토큰 제거 (admin 로그인 시)
+    res.cookies.delete('accessToken');
+    res.cookies.delete('refreshToken');
+    
+    // admin accessToken 쿠키 설정 (httpOnly, secure)
     res.cookies.set('admin_access_token', data.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -38,7 +42,7 @@ export async function POST(request: NextRequest) {
       path: '/',
     });
     
-    // refreshToken 쿠키 설정
+    // admin refreshToken 쿠키 설정
     res.cookies.set('admin_refresh_token', data.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
