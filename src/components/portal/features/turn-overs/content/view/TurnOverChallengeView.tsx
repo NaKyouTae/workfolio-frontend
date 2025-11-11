@@ -2,7 +2,7 @@ import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react'
 import { TurnOverChallengeDetail } from '@/generated/common';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/portal/features/common/AttachmentView';
-import JobApplicationListView from './common/JobApplicationListView';
+import JobApplicationView from './common/JobApplicationView';
 import { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import { TurnOverViewRef } from './TurnOverGoalView';
 
@@ -84,7 +84,7 @@ const TurnOverChallengeView = forwardRef<TurnOverViewRef, TurnOverChallengeViewP
     <>
         {/* 지원 기록 */}
         <div ref={jobApplicationRef} className="cont-box">
-            <JobApplicationListView jobApplications={turnOverChallenge.jobApplications || []} />
+            <JobApplicationView jobApplications={turnOverChallenge.jobApplications || []} />
         </div>
 
         {/* 메모 */}

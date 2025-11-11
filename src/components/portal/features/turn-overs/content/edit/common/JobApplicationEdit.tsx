@@ -6,10 +6,11 @@ import DraggableList from '@/components/portal/ui/DraggableList';
 import DraggableItem from '@/components/portal/ui/DraggableItem';
 import EmptyState from '@/components/portal/ui/EmptyState';
 import ApplicationStageEdit from './ApplicationStageEdit';
-import { DateTime } from 'luxon';
 import '@/styles/component-edit.css';
 import { JobApplication_JobApplicationStatus } from '@/generated/common';
 import Image from 'next/image';
+import DateUtil from '@/utils/DateUtil';
+import { compareEnumValue } from '@/utils/commonUtils';
 
 interface JobApplicationEditProps {
   jobApplications: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[];
@@ -87,14 +88,14 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                         <p>모집 기간</p>
                         <div>
                             <DatePicker
-                                value={app.startedAt}
-                                onChange={(date) => onUpdate(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                                value={DateUtil.formatTimestamp(app.startedAt || 0)}
+                                onChange={(date) => onUpdate(index, 'startedAt', date)}
                                 required={false}
                             />
                             <span>-</span>
                             <DatePicker
-                                value={app.endedAt}
-                                onChange={(date) => onUpdate(index, 'endedAt', DateTime.fromISO(date).toMillis())}
+                                value={DateUtil.formatTimestamp(app.endedAt || 0)}
+                                onChange={(date) => onUpdate(index, 'endedAt', date)}
                                 required={false}
                             />
                         </div>
@@ -114,11 +115,22 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                         <ul className="input-list">
                             <li>
                                 <input
+                                    id={`status-${index}-cancelled`}
+                                    type="radio"
+                                    name={`status-${index}`}
+                                    value="cancelled"
+                                    checked={compareEnumValue(app.status, JobApplication_JobApplicationStatus.CANCELLED, JobApplication_JobApplicationStatus)}
+                                    onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.CANCELLED)}
+                                />
+                                <label htmlFor={`status-${index}-cancelled`}><p>취소</p></label>
+                            </li>
+                            <li>
+                                <input
                                     id={`status-${index}-pending`}
                                     type="radio"
                                     name={`status-${index}`}
                                     value="pending"
-                                    checked={app.status === JobApplication_JobApplicationStatus.PENDING}
+                                    checked={compareEnumValue(app.status, JobApplication_JobApplicationStatus.PENDING, JobApplication_JobApplicationStatus)}
                                     onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.PENDING)}
                                 />
                                 <label htmlFor={`status-${index}-pending`}><p>대기</p></label>
@@ -129,7 +141,7 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                                     type="radio"
                                     name={`status-${index}`}
                                     value="running"
-                                    checked={app.status === JobApplication_JobApplicationStatus.RUNNING}
+                                    checked={compareEnumValue(app.status, JobApplication_JobApplicationStatus.RUNNING, JobApplication_JobApplicationStatus)}
                                     onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.RUNNING)}
                                 />
                                 <label htmlFor={`status-${index}-running`}><p>진행 중</p></label>
@@ -140,7 +152,7 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                                     type="radio"
                                     name={`status-${index}`}
                                     value="passed"
-                                    checked={app.status === JobApplication_JobApplicationStatus.PASSED}
+                                    checked={compareEnumValue(app.status, JobApplication_JobApplicationStatus.PASSED, JobApplication_JobApplicationStatus)}
                                     onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.PASSED)}
                                 />
                                 <label htmlFor={`status-${index}-passed`}><p>합격</p></label>
@@ -151,7 +163,7 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                                     type="radio"
                                     name={`status-${index}`}
                                     value="failed"
-                                    checked={app.status === JobApplication_JobApplicationStatus.FAILED}
+                                    checked={compareEnumValue(app.status, JobApplication_JobApplicationStatus.FAILED, JobApplication_JobApplicationStatus)}
                                     onChange={() => onUpdate(index, 'status', JobApplication_JobApplicationStatus.FAILED)}
                                 />
                                 <label htmlFor={`status-${index}-failed`}><p>불합격</p></label>

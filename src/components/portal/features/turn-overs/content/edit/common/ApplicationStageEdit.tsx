@@ -9,6 +9,8 @@ import EmptyState from '@/components/portal/ui/EmptyState';
 import { DateTime } from 'luxon';
 import '@/styles/component-edit.css';
 import Image from 'next/image';
+import DateUtil from '@/utils/DateUtil';
+import { compareEnumValue } from '@/utils/commonUtils';
 
 interface ApplicationStageEditProps {
   applicationStages: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest[];
@@ -54,7 +56,7 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
                 <li>
                     <p>진행 일자</p>
                     <DatePicker
-                        value={stage.startedAt}
+                        value={DateUtil.formatTimestamp(stage.startedAt || 0)}
                         onChange={(date) => onUpdate(index, 'startedAt', DateTime.fromISO(date).toMillis())}
                         required={false}
                     />
@@ -68,10 +70,21 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
                                 type="radio"
                                 name={uniqueRadioName}
                                 value="pending"
-                                checked={stage.status === ApplicationStage_ApplicationStageStatus.PENDING}
+                                checked={compareEnumValue(stage.status, ApplicationStage_ApplicationStageStatus.PENDING, ApplicationStage_ApplicationStageStatus)}
                                 onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.PENDING)}
                             />
                             <label htmlFor={`${uniqueRadioName}-pending`}><p>대기</p></label>
+                        </li>
+                        <li>
+                            <input
+                                id={`${uniqueRadioName}-scheduled`}
+                                type="radio"
+                                name={uniqueRadioName}
+                                value="scheduled"
+                                checked={compareEnumValue(stage.status, ApplicationStage_ApplicationStageStatus.SCHEDULED, ApplicationStage_ApplicationStageStatus)}
+                                onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.SCHEDULED)}
+                            />
+                            <label htmlFor={`${uniqueRadioName}-scheduled`}><p>예정</p></label>
                         </li>
                         <li>
                             <input
@@ -79,7 +92,7 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
                                 type="radio"
                                 name={uniqueRadioName}
                                 value="passed"
-                                checked={stage.status === ApplicationStage_ApplicationStageStatus.PASSED}
+                                checked={compareEnumValue(stage.status, ApplicationStage_ApplicationStageStatus.PASSED, ApplicationStage_ApplicationStageStatus)}
                                 onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.PASSED)}
                             />
                             <label htmlFor={`${uniqueRadioName}-passed`}><p>합격</p></label>
@@ -90,7 +103,7 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
                                 type="radio"
                                 name={uniqueRadioName}
                                 value="failed"
-                                checked={stage.status === ApplicationStage_ApplicationStageStatus.FAILED}
+                                checked={compareEnumValue(stage.status, ApplicationStage_ApplicationStageStatus.FAILED, ApplicationStage_ApplicationStageStatus)}
                                 onChange={() => onUpdate(index, 'status', ApplicationStage_ApplicationStageStatus.FAILED)}
                             />
                             <label htmlFor={`${uniqueRadioName}-failed`}><p>불합격</p></label>
@@ -202,12 +215,12 @@ const ApplicationStageEdit: React.FC<ApplicationStageEditProps> = ({
                 getItemId={(stage, idx) => stage.id || `applicationStage-${idx}`}
                 renderItem={(stage, index) => (
                     <ApplicationStageItem
-                    key={stage.id || `applicationStage-${index}`}
-                    stage={stage}
-                    index={index}
-                    jobApplicationId={jobApplicationId}
-                    onUpdate={updateStage}
-                    onRemove={removeApplicationStage}
+                      key={stage.id || `applicationStage-${index}`}
+                      stage={stage}
+                      index={index}
+                      jobApplicationId={jobApplicationId}
+                      onUpdate={updateStage}
+                      onRemove={removeApplicationStage}
                     />
                 )}
             />
