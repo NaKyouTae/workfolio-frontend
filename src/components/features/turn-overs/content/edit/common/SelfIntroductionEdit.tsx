@@ -5,6 +5,7 @@ import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import EmptyState from '@/components/ui/EmptyState';
 import '@/styles/component-edit.css';
+import Image from 'next/image';
 
 interface SelfIntroductionEditProps {
   selfIntroductions: TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[];
@@ -25,60 +26,44 @@ const SelfIntroductionItem: React.FC<SelfIntroductionItemProps> = ({
   onRemove,
 }) => {
   return (
-    <DraggableItem
-      id={`selfIntroduction-${index}`}
-      className="edit-card-wrapper"
-    >
-      <div className="edit-card">
-        <div className="edit-grid-container-1">
-          <div className="edit-form-field">
-            <Input
-              type="text"
-              label="문항"
-              placeholder="문항을 입력해 주세요."
-              value={item.question || ''}
-              onChange={(e) => onUpdate(index, 'question', e.target.value)}
-            />
-          </div>
-          <div className="edit-form-field">
-            <label className="edit-label">내용</label>
-            <textarea
-              className="edit-textarea"
-              placeholder="내용을 입력해 주세요."
-              value={item.content || ''}
-              onChange={(e) => onUpdate(index, 'content', e.target.value)}
-              rows={4}
-            />
-          </div>
+    <DraggableItem id={`selfIntroduction-${index}`}>
+        <div className="card">
+            <ul className="edit-cont type2">
+                <li>
+                    <p>문항</p>
+                    <Input
+                        type="text"
+                        label="문항"
+                        placeholder="문항을 입력해 주세요."
+                        value={item.question || ''}
+                        onChange={(e) => onUpdate(index, 'question', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>내용</p>
+                    <textarea
+                        placeholder="내용을 입력해 주세요."
+                        value={item.content || ''}
+                        onChange={(e) => onUpdate(index, 'content', e.target.value)}                        
+                    ></textarea>
+                </li>
+            </ul>
+            <div className="edit-btn">
+                <button
+                    onClick={() => onRemove(index)}
+                    title="삭제"
+                    type="button"
+                    className="gray"
+                >
+                    <Image
+                        src="/assets/img/ico/ic-minus.svg"
+                        alt="삭제"
+                        width={1}
+                        height={1}
+                    />
+                </button>
+            </div>
         </div>
-      </div>
-
-      <button
-        onClick={() => onRemove(index)}
-        style={{
-          width: '60px',
-          padding: '8px 4px',
-          backgroundColor: '#fff',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '16px',
-          color: '#999',
-          height: 'fit-content',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#ffebee';
-          e.currentTarget.style.borderColor = '#f44336';
-          e.currentTarget.style.color = '#f44336';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = '#fff';
-          e.currentTarget.style.borderColor = '#ddd';
-          e.currentTarget.style.color = '#999';
-        }}
-      >
-        삭제
-      </button>
     </DraggableItem>
   );
 };
@@ -126,40 +111,34 @@ const SelfIntroductionEdit: React.FC<SelfIntroductionEditProps> = ({
   };
 
   return (
-    <div className="edit-section">
-      <div className="edit-section-header">
-        <h3 className="edit-section-title-counter">
-          공통 자기소개서 | {selfIntroductions.length}개
-        </h3>
-        <div className="edit-add-button-container">
-          <button
-            onClick={addSelfIntroduction}
-            className="edit-add-button"
-          >
-            <span>+ 문항 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>공통 자기소개서</h3>
+                {/* <p>{selfIntroductions.length}개</p> */}
+            </div>
+            <button onClick={addSelfIntroduction}><i className="ic-add" />문항 추가</button>
         </div>
-      </div>
 
-      {selfIntroductions.length === 0 ? (
-        <EmptyState text="문항을 추가해 주세요." />
-      ) : (
+        {selfIntroductions.length === 0 ? (
+        <EmptyState text="자기소개서 문항을 추가해 주세요." />
+        ) : (
         <DraggableList
-          items={selfIntroductions}
-          onReorder={handleReorder}
-          getItemId={(_, idx) => `selfIntroduction-${idx}`}
-          renderItem={(item, index) => (
+            items={selfIntroductions}
+            onReorder={handleReorder}
+            getItemId={(_, idx) => `selfIntroduction-${idx}`}
+            renderItem={(item, index) => (
             <SelfIntroductionItem
-              key={`selfIntroduction-${index}`}
-              item={item}
-              index={index}
-              onUpdate={updateSelfIntroduction}
-              onRemove={removeSelfIntroduction}
+                key={`selfIntroduction-${index}`}
+                item={item}
+                index={index}
+                onUpdate={updateSelfIntroduction}
+                onRemove={removeSelfIntroduction}
             />
-          )}
+            )}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 

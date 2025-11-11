@@ -72,7 +72,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
                 <h3>기본 정보</h3>
             </div>
         </div>
-        <ul className="edit-list">
+        <ul className="edit-list type1">
             <li>
                 <p>이름</p>
                 <Input 

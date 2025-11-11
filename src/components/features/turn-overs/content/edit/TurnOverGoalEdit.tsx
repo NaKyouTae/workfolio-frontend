@@ -11,6 +11,7 @@ import CheckListEdit from './common/CheckListEdit';
 import GuideModal from '@/components/ui/GuideModal';
 import { useGuide } from '@/hooks/useGuide';
 import { turnOverDirectionGuide } from '@/utils/turnOverGuideData';
+import Input from '@/components/ui/Input';
 
 interface TurnOverGoalEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
@@ -135,90 +136,88 @@ const TurnOverGoalEdit: React.FC<TurnOverGoalEditProps> = ({ turnOverRequest, on
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contentInner}>
-      {/* 이직 방향 설정 */}
-      <div ref={directionRef} className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>
-            이직 방향 설정
-            <span className={styles.helpIcon} onClick={openGuide}>?</span>
-          </h2>
+    <>
+        {/* 이직 방향 설정 */}
+        <div ref={directionRef} className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>이직 방향 설정</h3>
+                    <button onClick={openGuide}><i className="ic-question"></i></button>
+                </div>
+            </div>
+            <ul className="edit-list type2">
+                <li>
+                    <p>이직 사유</p>
+                    <Input 
+                        type="text"
+                        label="이직 사유"
+                        value={reason}
+                        placeholder="왜 이직을 고민하게 되었나요? (예: 성장 기회 부족, 새로운 환경 필요 등)"
+                        onChange={(e) => setReason(e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>이직 목표</p>
+                    <Input 
+                        type="text"
+                        label="이직 목표"
+                        value={goal}
+                        placeholder="이직을 통해 이루고 싶은 목표는 무엇인가요? (예: 직무 전환, 연봉 인상, 원격 근무 가능한 회사 등)"
+                        onChange={(e) => setGoal(e.target.value)}
+                    />
+                </li>
+            </ul>
         </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.field}>
-            <label className={styles.label}>이직 사유</label>
-            <textarea
-              className={styles.textarea}
-              placeholder="왜 이직을 고민하게 되었나요? (예: 성장 기회 부족, 새로운 환경 필요 등)"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              rows={3}
+
+        {/* 공통 자기소개서 */}
+        <div ref={selfIntroductionRef} className="cont-box">
+            <SelfIntroductionEdit 
+                selfIntroductions={selfIntroductions}
+                onUpdate={setSelfIntroductions}
             />
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label}>이직 목표</label>
-            <textarea
-              className={styles.textarea}
-              placeholder="이직을 통해 이루고 싶은 목표는 무엇인가요? (예: 직무 전환, 연봉 인상, 원격 근무 가능한 회사 등)"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              rows={3}
-            />
-          </div>
         </div>
-      </div>
 
-      {/* 공통 자기소개서 */}
-      <div ref={selfIntroductionRef}>
-        <SelfIntroductionEdit 
-          selfIntroductions={selfIntroductions}
-          onUpdate={setSelfIntroductions}
-        />
-      </div>
+        {/* 면접 예상 질문 */}
+        <div ref={interviewQuestionRef} className="cont-box">
+            <InterviewQuestionEdit
+                interviewQuestions={interviewQuestions}
+                onUpdate={setInterviewQuestions}
+            />
+        </div>
 
-      {/* 면접 예상 질문 */}
-      <div ref={interviewQuestionRef}>
-        <InterviewQuestionEdit
-          interviewQuestions={interviewQuestions}
-          onUpdate={setInterviewQuestions}
-        />
-      </div>
+        {/* 메모 */}
+        <div ref={memoRef} className="cont-box">
+            <MemoEdit memos={memos} onMemosChange={setMemos} />
+        </div>
 
-      {/* 메모 */}
-      <div ref={memoRef}>
-        <MemoEdit memos={memos} onMemosChange={setMemos} />
-      </div>
+        {/* 체크리스트 */}
+        <div ref={checklistRef} className="cont-box">
+            <CheckListEdit
+                checkList={checkList}
+                onUpdate={setCheckList}
+            />
+        </div>
 
-      {/* 체크리스트 */}
-      <div ref={checklistRef}>
-        <CheckListEdit
-          checkList={checkList}
-          onUpdate={setCheckList}
-        />
-      </div>
-
-      {/* 첨부 */}
-      <div ref={attachmentRef}>
+        {/* 첨부 */}
+        <div ref={attachmentRef} className="cont-box">
         <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
-      </div>
-      </div>
+        </div>
 
-      {/* Floating Action Buttons */}
-      <TurnOverFloatingActions 
+        {/* Floating Action Buttons */}
+        {/* <TurnOverFloatingActions 
         navigationItems={getNavigationItems()}
         onSave={handleSave}
         onCancel={() => onCancel?.()}
-      />
+        /> */}
 
-      {/* 가이드 모달 */}
-      <GuideModal
+        {/* 가이드 모달 */}
+        <GuideModal
         isOpen={isGuideOpen}
         onClose={closeGuide}
         title="이직 방향 설정 가이드"
         sections={turnOverDirectionGuide}
-      />
-    </div>
+        />
+    </>
   );
 };
 

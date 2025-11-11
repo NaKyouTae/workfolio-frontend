@@ -7,6 +7,7 @@ import { TurnOverUpsertRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, 
 import TurnOverChallengeEdit from './edit/TurnOverChallengeEdit';
 import TurnOverRetrospectiveEdit from './edit/TurnOverRetrospectiveEdit';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
+import Input from '@/components/ui/Input';
 
 interface TurnOverContentEditProps {
   selectedTurnOver: TurnOverDetail | null;
@@ -81,65 +82,61 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
   };
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.titleSection}>
-          <h1 
-            className={styles.title}
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={(e) => setName(e.currentTarget.textContent || '')}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                e.currentTarget.blur();
-              }
-            }}
-            style={{
-              outline: 'none',
-              cursor: 'text',
-              color: name ? '#1a1a1a' : '#9ca3af',
-            }}
-          >
-            {name || '기록할 이직 활동명을 입력해 주세요 (예: 2025년 01월 이직 활동)'}
-          </h1>
-          <span className={styles.date}>
-            최종 수정일: {DateUtil.formatTimestamp(selectedTurnOver?.updatedAt || 0, 'YYYY. MM. DD. HH:mm')}
-          </span>
+    <div className="contents">
+        {/* Header */}
+        <div className="page-title">
+            <div>
+                <div>
+                    <Input
+                        type="text"
+                        label="제목"
+                        placeholder="기록할 이직 활동명을 입력해 주세요.(예: 2025년 01월 이직 활동)"
+                        value={name}
+                    />
+                </div>
+                {/* <h1 
+                    className={styles.title}
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => setName(e.currentTarget.textContent || '')}
+                    onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        e.currentTarget.blur();
+                    }
+                    }}
+                >{name || '기록할 이직 활동명을 입력해 주세요 (예: 2025년 01월 이직 활동)'}</h1> */}
+            </div>
         </div>
-      </div>
-
-      {/* Tabs */}
-      <TurnOverContentTab
-        activeTab={activeTab}
-        onTabChange={changeActiveTab}
-      />
-
-      {/* Tab Content */}
-      <div className={styles.tabContent}>
-        {activeTab === 'goal' && (
-          <TurnOverGoalEdit 
-            turnOverRequest={turnOverRequest || null} 
-            onSave={handleSave} 
-            onCancel={onCancel} 
-          />
-        )}
-        {activeTab === 'challenge' && (
-          <TurnOverChallengeEdit 
-            turnOverRequest={turnOverRequest || null} 
-            onSave={handleSave} 
-            onCancel={onCancel} 
-          />
-        )}
-        {activeTab === 'retrospective' && (
-          <TurnOverRetrospectiveEdit
-            turnOverRequest={turnOverRequest || null}
-            onSave={handleSave}
-            onCancel={onCancel}
-          />
-        )}
-      </div>
+        <div className="page-cont">
+            <article>
+                <TurnOverContentTab
+                    activeTab={activeTab}
+                    onTabChange={changeActiveTab}
+                />
+                {activeTab === 'goal' && (
+                    <TurnOverGoalEdit 
+                    turnOverRequest={turnOverRequest || null} 
+                    onSave={handleSave} 
+                    onCancel={onCancel} 
+                    />
+                )}
+                {activeTab === 'challenge' && (
+                    <TurnOverChallengeEdit 
+                    turnOverRequest={turnOverRequest || null} 
+                    onSave={handleSave} 
+                    onCancel={onCancel} 
+                    />
+                )}
+                {activeTab === 'retrospective' && (
+                    <TurnOverRetrospectiveEdit
+                    turnOverRequest={turnOverRequest || null}
+                    onSave={handleSave}
+                    onCancel={onCancel}
+                    />
+                )}
+            </article>
+        </div>
     </div>
   );
 };

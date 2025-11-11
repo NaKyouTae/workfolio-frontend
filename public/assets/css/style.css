@@ -437,3 +437,7 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 .turnover-table .stage-wrap td > ul > li > ul > li + li::before {content: ''; width: 1px; height: 1rem; background-color: var(--gray004);}
 .turnover-table .stage-wrap td > ul > li > ul > li > a {color: var(--blue); text-decoration: underline; text-underline-offset: .2rem;}
 
+/* 이직 관리 - 편집 */
+.edit-list.type2 {grid-template-columns: repeat(1, 1fr);}
+
+.edit-drag-list .card .edit-cont.type2 {grid-template-columns: repeat(1, 1fr);}

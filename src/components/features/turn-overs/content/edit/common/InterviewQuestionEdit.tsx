@@ -5,6 +5,7 @@ import DraggableList from '@/components/ui/DraggableList';
 import DraggableItem from '@/components/ui/DraggableItem';
 import EmptyState from '@/components/ui/EmptyState';
 import '@/styles/component-edit.css';
+import Image from 'next/image';
 
 interface InterviewQuestionEditProps {
   interviewQuestions: TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest[];
@@ -25,60 +26,44 @@ const InterviewQuestionItem: React.FC<InterviewQuestionItemProps> = ({
   onRemove,
 }) => {
   return (
-    <DraggableItem
-      id={`interviewQuestion-${index}`}
-      className="edit-card-wrapper"
-    >
-      <div className="edit-card">
-        <div className="edit-grid-container-1">
-          <div className="edit-form-field">
-            <Input
-              type="text"
-              label="질문"
-              placeholder="질문을 입력해 주세요."
-              value={item.question || ''}
-              onChange={(e) => onUpdate(index, 'question', e.target.value)}
-            />
-          </div>
-          <div className="edit-form-field">
-            <label className="edit-label">답변</label>
-            <textarea
-              className="edit-textarea"
-              placeholder="답변을 입력해 주세요."
-              value={item.answer || ''}
-              onChange={(e) => onUpdate(index, 'answer', e.target.value)}
-              rows={4}
-            />
-          </div>
+    <DraggableItem id={`interviewQuestion-${index}`}>
+        <div className="card">
+            <ul className="edit-cont type2">
+                <li>
+                    <p>질문</p>
+                    <Input
+                        type="text"
+                        label="질문"
+                        placeholder="질문을 입력해 주세요."
+                        value={item.question || ''}
+                        onChange={(e) => onUpdate(index, 'question', e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>답변</p>
+                    <textarea 
+                        placeholder="답변을 입력해 주세요."
+                        value={item.question || ''}
+                        onChange={(e) => onUpdate(index, 'question', e.target.value)}                    
+                        ></textarea>
+                </li>
+            </ul>
+            <div className="edit-btn">
+                <button
+                    onClick={() => onRemove(index)}
+                    title="삭제"
+                    type="button"
+                    className="gray"
+                >
+                    <Image
+                        src="/assets/img/ico/ic-minus.svg"
+                        alt="삭제"
+                        width={1}
+                        height={1}
+                    />
+                </button>
+            </div>
         </div>
-      </div>
-
-      <button
-        onClick={() => onRemove(index)}
-        style={{
-          width: '60px',
-          padding: '8px 4px',
-          backgroundColor: '#fff',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '16px',
-          color: '#999',
-          height: 'fit-content',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#ffebee';
-          e.currentTarget.style.borderColor = '#f44336';
-          e.currentTarget.style.color = '#f44336';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = '#fff';
-          e.currentTarget.style.borderColor = '#ddd';
-          e.currentTarget.style.color = '#999';
-        }}
-      >
-        삭제
-      </button>
     </DraggableItem>
   );
 };
@@ -126,40 +111,34 @@ const InterviewQuestionEdit: React.FC<InterviewQuestionEditProps> = ({
   };
 
   return (
-    <div className="edit-section">
-      <div className="edit-section-header">
-        <h3 className="edit-section-title-counter">
-          면접 예상 질문 | {interviewQuestions.length}개
-        </h3>
-        <div className="edit-add-button-container">
-          <button
-            onClick={addInterviewQuestion}
-            className="edit-add-button"
-          >
-            <span>+ 질문 추가</span>
-          </button>
+    <>
+        <div className="cont-tit">
+            <div>
+                <h3>면접 예상 질문</h3>
+                {/* <p>{interviewQuestions.length}개</p> */}
+            </div>
+            <button onClick={addInterviewQuestion}><i className="ic-add" />질문 추가</button>
         </div>
-      </div>
 
-      {interviewQuestions.length === 0 ? (
-        <EmptyState text="질문을 추가해 주세요." />
-      ) : (
+        {interviewQuestions.length === 0 ? (
+        <EmptyState text="면접 예상 질문을 추가해 주세요." />
+        ) : (
         <DraggableList
-          items={interviewQuestions}
-          onReorder={handleReorder}
-          getItemId={(_, idx) => `interviewQuestion-${idx}`}
-          renderItem={(item, index) => (
+            items={interviewQuestions}
+            onReorder={handleReorder}
+            getItemId={(_, idx) => `interviewQuestion-${idx}`}
+            renderItem={(item, index) => (
             <InterviewQuestionItem
-              key={`interviewQuestion-${index}`}
-              item={item}
-              index={index}
-              onUpdate={updateInterviewQuestion}
-              onRemove={removeInterviewQuestion}
+                key={`interviewQuestion-${index}`}
+                item={item}
+                index={index}
+                onUpdate={updateInterviewQuestion}
+                onRemove={removeInterviewQuestion}
             />
-          )}
+            )}
         />
-      )}
-    </div>
+        )}
+    </>
   );
 };
 

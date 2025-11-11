@@ -204,10 +204,10 @@ input.input-resume + label::before {background-image: url(../img/ico/ic-resume-c
 input:checked.input-resume + label::before {background-image: url(../img/ico/ic-resume-check-ov.svg);}
 
 .page-title input.input-resume + label::before {width: 1.8rem; height: 1.8rem;}
-.page-title input.input-resume ~ input {width: 100%; font-size: 1.8rem; font-weight: 600; padding: 0; border: 0;}
+.page-title input[type="text"] {width: 100%; font-size: 1.8rem; font-weight: 600; padding: 0; border: 0;}
 
 /* input : file */
-.file {display: flex; align-items: center; column-gap: .6rem;}
+.file {display: flex; align-items: center; column-gap: 1rem;}
 .file > input[type="file"] {display: none;}
 .file > input {cursor: pointer;}
 .file > button {width: 10rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; background-color: var(--gray004);}
