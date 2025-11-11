@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import TurnOversContentView from './content/TurnOverContentView';
 import { TurnOverDetail } from '@/generated/common';
 import TurnOversIntegration from './content/TurnOversIntegration';
@@ -23,29 +23,20 @@ interface TurnOversContentProps {
 const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver, isNewTurnOver = false, 
   onTurnOverSelect, onSave, onDuplicate, onDelete }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('home');
-  const isEditModeRequestedRef = useRef(false);
   const { confirm } = useConfirm();
 
-  // selectedTurnOver 변경 시 모드 자동 업데이트
-  useEffect(() => {
-    if (selectedTurnOver) {
-      // edit 모드가 요청된 경우 edit 모드로, 새로운 턴오버면 edit 모드로, 아니면 view 모드로
-      if (isEditModeRequestedRef.current) {
-        console.log('Setting mode to EDIT (ref flag is true)');
-        setViewMode('edit');
-        isEditModeRequestedRef.current = false; // 플래그 초기화
-      } else if (isNewTurnOver) {
-        console.log('Setting mode to EDIT (isNewTurnOver is true)');
-        setViewMode('edit');
-      } else {
-        console.log('Setting mode to VIEW');
-        setViewMode('view');
-      }
-    } else {
-      console.log('Setting mode to HOME');
-      setViewMode('home'); // 선택 해제되면 home 모드로
+  // props 변경에 따라 모드 결정
+  const getViewMode = (): ViewMode => {
+    if (!selectedTurnOver) {
+      return 'home';
     }
-  }, [selectedTurnOver, isNewTurnOver]);
+    if (isNewTurnOver) {
+      return 'edit';
+    }
+    return viewMode; // 수동으로 설정된 모드 유지 (view 또는 edit)
+  };
+
+  const currentViewMode = getViewMode();
 
   const handleModeChange = (mode: ViewMode) => {
     setViewMode(mode);
@@ -53,7 +44,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
 
   const handleTurnOverSelect = (id: string) => {
     console.log('handleTurnOverSelect', id);
-    isEditModeRequestedRef.current = false; // view 모드로 선택
+    handleModeChange('view');
     if (onTurnOverSelect) {
       onTurnOverSelect(id);
     }
@@ -67,9 +58,9 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
       console.log('Already selected, switching to edit mode directly');
       handleModeChange('edit');
     } else {
-      // 다른 turnOver 선택 시 edit 모드 플래그 설정 (ref 사용으로 즉시 반영)
+      // 다른 turnOver 선택 시 edit 모드로 설정하고 선택
       console.log('Selecting new turnOver with edit mode');
-      isEditModeRequestedRef.current = true;
+      handleModeChange('edit');
       if (onTurnOverSelect) {
         onTurnOverSelect(id);
       }
@@ -125,13 +116,13 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
 
   return (
     <section>
-        {viewMode === 'home' && <TurnOversIntegration 
+        {currentViewMode === 'home' && <TurnOversIntegration 
         onSelectTurnOver={handleTurnOverSelect} 
         onEdit={handleTurnOverEdit} 
         onDuplicate={handleDuplicate} 
         onDelete={handleDelete} 
         />}
-        {viewMode === 'view' && selectedTurnOver && (
+        {currentViewMode === 'view' && selectedTurnOver && (
           <TurnOversContentView 
               selectedTurnOver={selectedTurnOver} 
               onEdit={handleEditCurrentTurnOver}
@@ -139,13 +130,13 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
               onDelete={handleDelete}
           />
         )}
-        {viewMode === 'edit' && isNewTurnOver && (
+        {currentViewMode === 'edit' && isNewTurnOver && (
           <TurnOverContentCreate 
               onCancel={handleCancel}
               onSave={(data) => handleSave(data, 'home')}
           />
         )}
-        {viewMode === 'edit' && !isNewTurnOver && selectedTurnOver && (
+        {currentViewMode === 'edit' && !isNewTurnOver && selectedTurnOver && (
           <TurnOverContentEdit 
               selectedTurnOver={selectedTurnOver}
               onCancel={handleCancel}

@@ -1,11 +1,12 @@
 import React from 'react';
 import { TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest } from '@/generated/turn_over';
-import { DateUtil } from '@/utils/DateUtil';
 import Input from '@/components/portal/ui/Input';
+import DatePicker from '@/components/portal/ui/DatePicker';
 import DraggableList from '@/components/portal/ui/DraggableList';
 import DraggableItem from '@/components/portal/ui/DraggableItem';
 import EmptyState from '@/components/portal/ui/EmptyState';
 import ApplicationStageEdit from './ApplicationStageEdit';
+import { DateTime } from 'luxon';
 import '@/styles/component-edit.css';
 import { JobApplication_JobApplicationStatus } from '@/generated/common';
 import Image from 'next/image';
@@ -85,18 +86,16 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                     <li>
                         <p>모집 기간</p>
                         <div>
-                            <input
-                                type="text"
-                                placeholder="YYYY. MM. DD."
-                                value={app.startedAt ? DateUtil.formatTimestamp(app.startedAt) : ''}
-                                onChange={(e) => onUpdate(index, 'startedAt', DateUtil.normalizeTimestamp(e.target.value))}
+                            <DatePicker
+                                value={app.startedAt}
+                                onChange={(date) => onUpdate(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                                required={false}
                             />
                             <span>-</span>
-                            <input
-                                type="text"
-                                placeholder="YYYY. MM. DD."
-                                value={app.endedAt ? DateUtil.formatTimestamp(app.endedAt) : ''}
-                                onChange={(e) => onUpdate(index, 'endedAt', DateUtil.normalizeTimestamp(e.target.value))}
+                            <DatePicker
+                                value={app.endedAt}
+                                onChange={(date) => onUpdate(index, 'endedAt', DateTime.fromISO(date).toMillis())}
+                                required={false}
                             />
                         </div>
                     </li>
