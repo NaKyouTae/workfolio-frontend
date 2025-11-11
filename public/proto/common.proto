@@ -672,10 +672,25 @@ message Plan {
   string id = 1;
   string name = 2;
   PlanType type = 3;
-  int64 price = 4;
+  uint64 price = 4;
   string currency = 5;
   int32 priority = 6;
   optional string description = 7;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message PlanSubscription {
+  string id = 1;
+  string duration_months = 2;
+  uint64 total_price = 3;
+  uint64 monthly_equivalent = 4;
+  uint64 savings_amount = 5;
+  uint32 discount_rate = 6;
+  uint32 priority = 7;
+
+  Plan plan = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -686,13 +701,12 @@ message Feature {
   string name = 2;
   string domain = 3;
   string action = 4;
-  int32 limit = 5;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
 }
 
-message Subscription {
+message WorkerSubscription {
   enum SubscriptionStatus {
     UNKNOWN = 0;
     ACTIVE = 1;
@@ -715,11 +729,24 @@ message Subscription {
   uint64 updated_at = 99;
 }
 
+message WorkerFeatureUsage {
+  string id = 1;
+  uint32 current_count = 2;
+  optional uint32 limit_count = 3;
+  uint64 last_used_at = 4;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
 message PlanFeature {
   string id = 1;
 
   Plan plan = 50;
   Feature feature = 51;
+  int32 limit_count = 52;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -784,4 +811,16 @@ message PaymentTransaction {
   Payment payment = 50;
 
   uint64 created_at = 98;
+}
+
+message Staff {
+  string id = 1;
+  string username = 2;
+  string name = 3;
+  string email = 4;
+  optional string phone = 5;
+  bool is_active = 6;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
 }

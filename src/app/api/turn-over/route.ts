@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
@@ -15,7 +17,7 @@ export async function GET() {
     }
     
     const res = await apiFetchHandler<TurnOverListResponse>(
-      'http://localhost:8080/api/turn-overs', 
+      `${API_BASE_URL}/api/turn-overs`, 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -42,7 +44,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<SuccessResponse>(
-      'http://localhost:8080/api/turn-overs', 
+      `${API_BASE_URL}/api/turn-overs`, 
       HttpMethod.POST, 
       body, 
       accessToken,

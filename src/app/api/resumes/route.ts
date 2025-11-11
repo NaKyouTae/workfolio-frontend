@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
@@ -15,7 +17,7 @@ export async function GET() {
     }
     
     const res = await apiFetchHandler<ResumeListResponse>(
-      'http://localhost:8080/api/resumes', 
+      `${API_BASE_URL}/api/resumes`, 
       HttpMethod.GET, 
       null, 
       accessToken,
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<ResumeResponse>(
-      'http://localhost:8080/api/resumes', 
+      `${API_BASE_URL}/api/resumes`, 
       HttpMethod.POST, 
       body, 
       accessToken,
@@ -70,7 +72,7 @@ export async function PUT(request: NextRequest) {
       }
     
     const res = await apiFetchHandler<ResumeResponse>(
-      'http://localhost:8080/api/resumes', 
+      `${API_BASE_URL}/api/resumes`, 
       HttpMethod.PUT, 
       body, 
       accessToken,

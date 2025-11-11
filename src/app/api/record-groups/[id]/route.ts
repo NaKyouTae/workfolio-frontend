@@ -15,7 +15,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<RecordGroupResponse>(`http://localhost:8080/api/record-groups/${id}`, HttpMethod.PUT, requestData, accessToken);
+        const res = await apiFetchHandler<RecordGroupResponse>(`${API_BASE_URL}/api/record-groups/${id}`, HttpMethod.PUT, requestData, accessToken);
         const data = await res.json();
         
         return NextResponse.json(data)
@@ -36,7 +36,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
         console.log('id', id);
         
-        const res = await apiFetchHandler<SuccessResponse>(`http://localhost:8080/api/record-groups/${id}`, HttpMethod.DELETE, null, accessToken);
+        const res = await apiFetchHandler<SuccessResponse>(`${API_BASE_URL}/api/record-groups/${id}`, HttpMethod.DELETE, null, accessToken);
         const data = await res.json();
         
         console.log('data', data);

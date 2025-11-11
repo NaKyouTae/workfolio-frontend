@@ -15,7 +15,7 @@ export async function POST(req: Request) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<SuccessResponse>('http://localhost:8080/api/records', HttpMethod.POST, requestData, accessToken);
+        const res = await apiFetchHandler<SuccessResponse>(`${API_BASE_URL}/api/records`, HttpMethod.POST, requestData, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();
@@ -37,7 +37,7 @@ export async function PUT(req: Request) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<SuccessResponse>('http://localhost:8080/api/records', HttpMethod.PUT, requestData, accessToken);
+        const res = await apiFetchHandler<SuccessResponse>(`${API_BASE_URL}/api/records`, HttpMethod.PUT, requestData, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();

@@ -1,4 +1,4 @@
-import { GuideSection } from '@/components/ui/GuideModal';
+import { GuideSection } from '@/components/portal/ui/GuideModal';
 
 export const checkListGuide: GuideSection[] = [
   {

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET(request: NextRequest) {
   try {
     const apiGatewayUrl = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'https://api.workfolio.pro';

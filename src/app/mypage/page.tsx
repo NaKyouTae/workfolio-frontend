@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useUser } from '@/hooks/useUser';
-import Header from '@/components/layouts/Header';
-import ProfileManagement from '@/components/features/mypage/ProfileManagement';
+import Header from '@/components/portal/layouts/Header';
+import ProfileManagement from '@/components/portal/features/mypage/ProfileManagement';
 
 const Mypage: React.FC = () => {
     const { deleteAccount, isLoading, isLoggedIn } = useUser();

@@ -44,7 +44,7 @@ export async function GET(request: Request) {
         }
         
         // 백엔드 API URL 구성
-        let backendUrl = `http://localhost:8080/api/records/monthly?year=${yearNum}&month=${monthNum}`;
+        let backendUrl = `${API_BASE_URL}/api/records/monthly?year=${yearNum}&month=${monthNum}`;
         
         // recordGroupIds가 있으면 추가
         if (recordGroupIds) {

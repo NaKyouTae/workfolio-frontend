@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { getCookie } from "@/utils/cookie";
 import { apiFetchHandler } from "@/utils/ApiFetchHandler";
 import HttpMethod from "@/enums/HttpMethod";
@@ -17,7 +19,7 @@ export async function PUT(request: NextRequest) {
       }
     
       const res = await apiFetchHandler<SuccessResponse>(
-        `http://localhost:8080/api/system-configs`, 
+        `${API_BASE_URL}/api/system-configs`, 
         HttpMethod.PUT, 
         body, 
         accessToken,

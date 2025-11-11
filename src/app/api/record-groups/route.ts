@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
         console.log('requestData', requestData);
         
-        const res = await apiFetchHandler<RecordGroupResponse>('http://localhost:8080/api/record-groups', HttpMethod.POST, requestData, accessToken);
+        const res = await apiFetchHandler<RecordGroupResponse>(`${API_BASE_URL}/api/record-groups`, HttpMethod.POST, requestData, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();

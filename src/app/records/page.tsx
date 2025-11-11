@@ -1,7 +1,7 @@
 "use client";
 
-import Header from "@/components/layouts/Header";
-import Contents from "@/components/features/records/sidebar/Contents";
+import Header from "@/components/portal/layouts/Header";
+import Contents from "@/components/portal/features/records/sidebar/Contents";
 
 export default function Records() {
     return (

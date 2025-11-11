@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import HttpMethod from '@/enums/HttpMethod';
 import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
@@ -20,7 +22,7 @@ export async function POST(
     }
     
     const res = await apiFetchHandler<ResumeResponse>(
-      `http://localhost:8080/api/resumes/${id}/duplicate`, 
+      `${API_BASE_URL}/api/resumes/${id}/duplicate`, 
       HttpMethod.POST, 
       null, 
       accessToken,

@@ -15,7 +15,7 @@ export async function GET(req: Request, { params }: { params: { type: SystemConf
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<SystemConfigGetResponse>(`http://localhost:8080/api/system-configs/${type}`, HttpMethod.GET, undefined, accessToken);
+        const res = await apiFetchHandler<SystemConfigGetResponse>(`${API_BASE_URL}/api/system-configs/${type}`, HttpMethod.GET, undefined, accessToken);
         
         const data = await res.json()
         

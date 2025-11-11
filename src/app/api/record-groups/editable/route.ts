@@ -13,7 +13,7 @@ export async function GET() {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
-        const res = await apiFetchHandler<CreateRecordGroupResponse[]>('http://localhost:8080/api/record-groups/editable', HttpMethod.GET, undefined, accessToken);
+        const res = await apiFetchHandler<CreateRecordGroupResponse[]>(`${API_BASE_URL}/api/record-groups/editable`, HttpMethod.GET, undefined, accessToken);
         
         const data = await res.json()
         
