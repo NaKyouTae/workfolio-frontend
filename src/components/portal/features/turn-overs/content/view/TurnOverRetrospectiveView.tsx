@@ -100,20 +100,19 @@ const TurnOverRetrospectiveView = forwardRef<TurnOverViewRef, TurnOverRetrospect
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contentInner}>
+    <>
         {/* 최종 선택 */}
-        <div ref={finalChoiceRef}>
-          <FinalChoiceView
+        <div ref={finalChoiceRef} className="cont-box">
+            <FinalChoiceView
             name={turnOverRetrospective.name}
             position={turnOverRetrospective.position}
             reason={turnOverRetrospective.reason}
-          />
+            />
         </div>
 
-        {/* 자우 협의 */}
-        <div ref={negotiationRef}>
-          <NegotiationView
+        {/* 처우 협의 */}
+        <div ref={negotiationRef} className="cont-box">
+            <NegotiationView
             position={turnOverRetrospective.position}
             department={turnOverRetrospective.department}
             rank={turnOverRetrospective.rank}
@@ -122,28 +121,27 @@ const TurnOverRetrospectiveView = forwardRef<TurnOverViewRef, TurnOverRetrospect
             workType={turnOverRetrospective.workType}
             employmentType={turnOverRetrospective.employmentType}
             joinedAt={turnOverRetrospective.joinedAt}
-          />
+            />
         </div>
 
         {/* 만족도 평가 */}
-        <div ref={satisfactionRef}>
-          <SatisfactionView
+        <div ref={satisfactionRef} className="cont-box">
+            <SatisfactionView
             score={turnOverRetrospective.score}
             reviewSummary={turnOverRetrospective.reviewSummary}
-          />
+            />
         </div>
 
         {/* 메모 */}
-        <div ref={memoRef}>
-          <MemoView memos={turnOverRetrospective.memos || []} />
+        <div ref={memoRef} className="cont-box">
+            <MemoView memos={turnOverRetrospective.memos || []} />
         </div>
 
         {/* 첨부 */}
-        <div ref={attachmentRef}>
-          <AttachmentView attachments={turnOverRetrospective.attachments || []} />
+        <div ref={attachmentRef} className="cont-box">
+            <AttachmentView attachments={turnOverRetrospective.attachments || []} />
         </div>
-      </div>
-    </div>
+    </>
   );
 });
 
