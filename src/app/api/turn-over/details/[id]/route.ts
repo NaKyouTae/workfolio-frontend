@@ -4,6 +4,8 @@ import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { TurnOverDetailResponse } from '@/generated/turn_over';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
     const id = params.id;

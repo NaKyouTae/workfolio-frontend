@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './TurnOverFloatingActions.module.css';
 
 export interface FloatingNavigationItem {
   id: string;

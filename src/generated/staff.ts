@@ -50,6 +50,7 @@ export interface StaffLoginResponse {
   accessToken: string;
   refreshToken: string;
 }
+
 function createBaseStaffListResponse(): StaffListResponse {
   return { staffs: [] };
 }
@@ -698,4 +699,3 @@ export interface MessageFns<T> {
   create<I extends Exact<DeepPartial<T>, I>>(base?: I): T;
   fromPartial<I extends Exact<DeepPartial<T>, I>>(object: I): T;
 }
-

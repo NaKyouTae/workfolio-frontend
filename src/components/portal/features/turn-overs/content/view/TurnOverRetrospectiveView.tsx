@@ -1,6 +1,5 @@
 import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { TurnOverRetrospectiveDetail } from '@/generated/common';
-import styles from './TurnOverRetrospectiveView.module.css';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/portal/features/common/AttachmentView';
 import FinalChoiceView from './common/FinalChoiceView';

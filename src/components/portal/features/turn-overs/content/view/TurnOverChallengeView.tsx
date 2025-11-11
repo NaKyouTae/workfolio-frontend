@@ -1,6 +1,5 @@
 import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { TurnOverChallengeDetail } from '@/generated/common';
-import styles from './TurnOverChallengeView.module.css';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/portal/features/common/AttachmentView';
 import JobApplicationListView from './common/JobApplicationListView';

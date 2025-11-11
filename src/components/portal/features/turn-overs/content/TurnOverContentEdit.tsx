@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { TurnOverDetail, TurnOverRetrospective_EmploymentType } from '@/generated/common';
 import TurnOverGoalEdit from './edit/TurnOverGoalEdit';
-import DateUtil from '@/utils/DateUtil';
-import styles from './TurnOverContentEdit.module.css';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverGoalRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@/generated/turn_over';
 import TurnOverChallengeEdit from './edit/TurnOverChallengeEdit';
 import TurnOverRetrospectiveEdit from './edit/TurnOverRetrospectiveEdit';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
-import Input from '@/components/ui/Input';
+import Input from '@/components/portal/ui/Input';
 
 interface TurnOverContentEditProps {
   selectedTurnOver: TurnOverDetail | null;

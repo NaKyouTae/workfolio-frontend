@@ -1,11 +1,11 @@
 import React from 'react';
-import { JobApplication } from '@/generated/common';
+import { JobApplicationDetail } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
 import ApplicationStageView from './ApplicationStageView';
 import '@/styles/component-view.css';
 
 interface JobApplicationViewProps {
-  jobApplication: JobApplication;
+  jobApplication: JobApplicationDetail;
 }
 
 const JobApplicationView: React.FC<JobApplicationViewProps> = ({ jobApplication }) => {
@@ -80,7 +80,7 @@ const JobApplicationView: React.FC<JobApplicationViewProps> = ({ jobApplication 
         </div>
 
         {/* 지원 단계 타임라인 */}
-        {jobApplication.applicationStages && jobApplication.applicationStages.length > 0 && (
+        {jobApplication.applicationStages && jobApplication.applicationStages?.length > 0 && (
           <div style={{ marginBottom: '16px' }}>
             <ApplicationStageView 
               applicationStages={jobApplication.applicationStages}

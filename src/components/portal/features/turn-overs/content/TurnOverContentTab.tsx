@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './TurnOverContentTab.module.css';
 
 export type TabType = 'goal' | 'challenge' | 'retrospective';
 

@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './TurnOverGoalEdit.module.css';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest, TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest, TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from './common/MemoEdit';
 import AttachmentEdit from '@/components/portal/features/common/AttachmentEdit';
-import TurnOverFloatingActions, { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import SelfIntroductionEdit from './common/SelfIntroductionEdit';
 import InterviewQuestionEdit from './common/InterviewQuestionEdit';
 import CheckListEdit from './common/CheckListEdit';
 import GuideModal from '@/components/portal/ui/GuideModal';
 import { useGuide } from '@/hooks/useGuide';
 import { turnOverDirectionGuide } from '@/utils/turnOverGuideData';
-import Input from '@/components/ui/Input';
+import Input from '@/components/portal/ui/Input';
 
 interface TurnOverGoalEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;

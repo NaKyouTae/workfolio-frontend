@@ -1,6 +1,5 @@
 import React from 'react';
 import DateUtil from '@/utils/DateUtil';
-import styles from './TurnOverContentViewHeader.module.css';
 
 interface TurnOverContentViewHeaderProps {
   title: string;
