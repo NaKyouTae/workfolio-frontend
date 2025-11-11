@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import styles from './TurnOverRetrospectiveEdit.module.css';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { DateUtil } from '@/utils/DateUtil';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from '@/components/portal/features/turn-overs/content/edit/common/MemoEdit';
 import AttachmentEdit from '@/components/portal/features/common/AttachmentEdit';
 import { FloatingNavigationItem } from '../TurnOverFloatingActions';
-import { TurnOverRetrospective_EmploymentType } from '@/generated/common';
+import { TurnOverRetrospective_EmploymentType, JobApplication_JobApplicationStatus } from '@/generated/common';
 import { TurnOverEditRef } from './TurnOverGoalEdit';
+import Dropdown from '@/components/portal/ui/Dropdown';
+import DatePicker from '@/components/portal/ui/DatePicker';
+import { normalizeEnumValue, compareEnumValue } from '@/utils/commonUtils';
+import { DateTime } from 'luxon';
 
 interface TurnOverRetrospectiveEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
@@ -94,6 +97,16 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     ];
   };
 
+  // 합격한 지원 기록만 필터링
+  const passedJobApplications = useMemo(() => {
+    if (!turnOverRequest?.turnOverChallenge?.jobApplications) {
+      return [];
+    }
+    return turnOverRequest.turnOverChallenge.jobApplications.filter(app =>
+      compareEnumValue(app.status, JobApplication_JobApplicationStatus.PASSED, JobApplication_JobApplicationStatus)
+    );
+  }, [turnOverRequest]);
+
   // turnOverRetrospective가 변경될 때마다 state 업데이트
   useEffect(() => {
     if (turnOverRequest) {
@@ -101,7 +114,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
       setPosition(turnOverRequest.turnOverRetrospective?.position || '');
       setReason(turnOverRequest.turnOverRetrospective?.reason || '');
       setSalary(turnOverRequest.turnOverRetrospective?.salary || 0);
-      setJoinDate(turnOverRequest.turnOverRetrospective?.joinedAt ? DateUtil.normalizeTimestamp(turnOverRequest.turnOverRetrospective.joinedAt) : undefined);
+      setJoinDate(turnOverRequest.turnOverRetrospective?.joinedAt || 0);
       setDepartment(turnOverRequest.turnOverRetrospective?.department || '');
       setJobTitle(turnOverRequest.turnOverRetrospective?.jobTitle || '');
       setRank(turnOverRequest.turnOverRetrospective?.rank || '');
@@ -160,9 +173,23 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
             <ul className="edit-list type1">
                 <li>
                     <p>회사명</p>
-                    <select value={companyName} onChange={(e) => setCompanyName(e.target.value)}>
-                        <option value="">선택</option>
-                    </select>
+                    <Dropdown
+                        selectedOption={companyName || ''}
+                        options={[
+                            { value: '', label: '선택' },
+                            ...passedJobApplications.map(app => ({
+                                value: app.name || '',
+                                label: app.name || '',
+                            })),
+                        ]}
+                        setValue={(value) => {
+                            const selectedApp = passedJobApplications.find(app => app.name === value);
+                            setCompanyName(value as string);
+                            if (selectedApp) {
+                                setPosition(selectedApp.position || '');
+                            }
+                        }}
+                    />
                 </li>
                 <li>
                     <p>직무</p>
@@ -171,6 +198,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
                         placeholder="직무를 입력해 주세요."
                         value={position}
                         onChange={(e) => setPosition(e.target.value)}
+                        readOnly={true}
                     />
                 </li>
                 <li className="full">
@@ -194,22 +222,25 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
             <ul className="edit-list type1">
                 <li>
                     <p>입사 일자</p>
-                    <input
-                        type="text"
-                        placeholder="YYYY. MM. DD."
-                        value={joinDate}
-                        onChange={(e) => setJoinDate(DateUtil.normalizeTimestamp(e.target.value))}
+                    <DatePicker
+                      value={DateUtil.formatTimestamp(joinDate || 0)}
+                      onChange={(date) => setJoinDate(DateTime.fromISO(date).toMillis())}
+                      required={false}
                     />
                 </li>
                 <li>
                     <p>재직 형태</p>
-                    <select value={employmentType} onChange={(e) => setEmploymentType(e.target.value as unknown as TurnOverRetrospective_EmploymentType)}>
-                        <option value={TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN.toString()}>선택</option>
-                        <option value={TurnOverRetrospective_EmploymentType.FULL_TIME.toString()}>정규직</option>
-                        <option value={TurnOverRetrospective_EmploymentType.CONTRACT.toString()}>계약직</option>
-                        <option value={TurnOverRetrospective_EmploymentType.FREELANCER.toString()}>프리랜서</option>
-                        <option value={TurnOverRetrospective_EmploymentType.INTERN.toString()}>인턴</option>
-                    </select>
+                    <Dropdown
+                        selectedOption={normalizeEnumValue(employmentType, TurnOverRetrospective_EmploymentType)}
+                        options={[
+                            { value: TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN, label: '선택' },
+                            { value: TurnOverRetrospective_EmploymentType.FULL_TIME, label: '정규직' },
+                            { value: TurnOverRetrospective_EmploymentType.CONTRACT, label: '계약직' },
+                            { value: TurnOverRetrospective_EmploymentType.FREELANCER, label: '프리랜서' },
+                            { value: TurnOverRetrospective_EmploymentType.INTERN, label: '인턴' },
+                        ]}
+                        setValue={(value) => setEmploymentType(normalizeEnumValue(value, TurnOverRetrospective_EmploymentType) || TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN)}
+                    />
                 </li>
                 <li>
                     <p>부서</p>
@@ -227,6 +258,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
                         placeholder="직무를 입력해 주세요."
                         value={position}
                         onChange={(e) => setPosition(e.target.value)}
+                        readOnly={true}
                     />
                 </li>
                 <li>
@@ -282,18 +314,22 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
                 <li>
                     <p>점수</p>
                     <ul className="input-list">
-                        {[1, 2, 3, 4, 5].map((value) => (
-                        <li key={value}>
-                            <input
-                                type="radio"
-                                name="score"
-                                value={value}
-                                checked={score === value}
-                                onChange={() => setScore(value)}
-                            />
-                            <label htmlFor=""><p>{value}점</p></label>
-                        </li>
-                        ))}
+                        {[1, 2, 3, 4, 5].map((value) => {
+                          const radioId = `score-${value}`;
+                          return (
+                            <li key={value}>
+                                <input
+                                    id={radioId}
+                                    type="radio"
+                                    name="score"
+                                    value={value}
+                                    checked={Number(score) === value}
+                                    onChange={() => setScore(value)}
+                                />
+                                <label htmlFor={radioId}><p>{value}점</p></label>
+                            </li>
+                          );
+                        })}
                     </ul>
                 </li>
                 <li>

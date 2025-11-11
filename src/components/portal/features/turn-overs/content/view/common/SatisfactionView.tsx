@@ -7,13 +7,14 @@ interface SatisfactionViewProps {
 }
 
 const SatisfactionView: React.FC<SatisfactionViewProps> = ({ score, reviewSummary }) => {
-  const renderStars = () => {
+  const renderStars = (score: number) => {
     return Array.from({ length: 5 }, (_, index) => (
-      <li 
-        key={index} 
-      >
-        <i className="ic-star-ov" />
-        {/* <i className="ic-star" /> */}
+      <li key={index}>
+        {index < score ? (
+          <i className="ic-star-ov" />
+        ) : (
+          <i className="ic-star" />
+        )}
       </li>
     ));
   };
@@ -28,7 +29,7 @@ const SatisfactionView: React.FC<SatisfactionViewProps> = ({ score, reviewSummar
         <ul className="view-box">
             <li>
                 <p>점수</p>
-                <div className="score"><p>{score}점</p><ul>{renderStars()}</ul></div>
+                <div className="score"><p>{score}점</p><ul>{renderStars(score)}</ul></div>
             </li>
             {reviewSummary && (
                 <li>

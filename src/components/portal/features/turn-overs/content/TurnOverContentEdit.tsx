@@ -49,6 +49,7 @@ const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
         rank: selectedTurnOver?.turnOverRetrospective?.rank || '',
         reason: selectedTurnOver?.turnOverRetrospective?.reason || '',
         score: selectedTurnOver?.turnOverRetrospective?.score || 0,
+        joinedAt: selectedTurnOver?.turnOverRetrospective?.joinedAt || 0,
         reviewSummary: selectedTurnOver?.turnOverRetrospective?.reviewSummary || '',
         department: selectedTurnOver?.turnOverRetrospective?.department || '',
         memos: selectedTurnOver?.turnOverRetrospective?.memos || [],

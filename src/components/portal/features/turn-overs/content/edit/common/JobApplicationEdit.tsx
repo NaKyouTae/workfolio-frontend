@@ -11,6 +11,7 @@ import { JobApplication_JobApplicationStatus } from '@/generated/common';
 import Image from 'next/image';
 import DateUtil from '@/utils/DateUtil';
 import { compareEnumValue } from '@/utils/commonUtils';
+import { DateTime } from 'luxon';
 
 interface JobApplicationEditProps {
   jobApplications: TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[];
@@ -89,13 +90,13 @@ const JobApplicationItem: React.FC<JobApplicationItemProps> = ({
                         <div>
                             <DatePicker
                                 value={DateUtil.formatTimestamp(app.startedAt || 0)}
-                                onChange={(date) => onUpdate(index, 'startedAt', date)}
+                                onChange={(date) => onUpdate(index, 'startedAt', DateTime.fromISO(date).toMillis())}
                                 required={false}
                             />
                             <span>-</span>
                             <DatePicker
                                 value={DateUtil.formatTimestamp(app.endedAt || 0)}
-                                onChange={(date) => onUpdate(index, 'endedAt', date)}
+                                onChange={(date) => onUpdate(index, 'endedAt', DateTime.fromISO(date).toMillis())}
                                 required={false}
                             />
                         </div>

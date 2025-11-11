@@ -81,6 +81,9 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
   const handleEditCurrentTurnOver = () => {
     if (onEnterEdit) {
       onEnterEdit('view');
+      if (selectedTurnOver && onTurnOverSelectAndEdit) {
+        onTurnOverSelectAndEdit(selectedTurnOver.id, 'view');
+      }
     }
   };
 
@@ -129,12 +132,14 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
 
   return (
     <section>
-        {currentViewMode === 'home' && <TurnOversIntegration 
-        onSelectTurnOver={handleTurnOverSelect} 
-        onEdit={handleTurnOverEdit} 
-        onDuplicate={handleDuplicate} 
-        onDelete={handleDelete} 
-        />}
+        {currentViewMode === 'home' && (
+          <TurnOversIntegration 
+            onSelectTurnOver={handleTurnOverSelect} 
+            onEdit={handleTurnOverEdit} 
+            onDuplicate={handleDuplicate} 
+            onDelete={handleDelete} 
+          />
+        )}
         {currentViewMode === 'view' && selectedTurnOver && (
           <TurnOversContentView 
               selectedTurnOver={selectedTurnOver} 
