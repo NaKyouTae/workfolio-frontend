@@ -61,7 +61,7 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
                 </li>
                 <li className="full">
                     <p>진행 상태</p>
-                    <ul className="status-list">
+                    <ul className="input-list">
                         <li>
                             <input
                                 id={`${uniqueRadioName}-pending`}
@@ -100,7 +100,7 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
                 <li className="full">
                     <p>메모</p>
                     <textarea
-                        placeholder="예: 제출 서류, 과제 내용, 면접 유형, 면접 질문 등"
+                        placeholder="예) 제출 서류, 과제 내용, 면접 유형, 면접 질문 등"
                         value={stage.memo || ''}
                         onChange={(e) => onUpdate(index, 'memo', e.target.value)}
                     />

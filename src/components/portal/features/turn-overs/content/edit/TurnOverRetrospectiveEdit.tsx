@@ -149,189 +149,174 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
   }));
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contentInner}>
-      {/* 최종 선택 */}
-      <div ref={finalChoiceRef} className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>최종 선택</h2>
-        </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.inputRow}>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>회사명</label>
-              <select className={styles.select} value={companyName} onChange={(e) => setCompanyName(e.target.value)}>
-                <option value="">선택</option>
-              </select>
+    <>
+        {/* 최종 선택 */}
+        <div ref={finalChoiceRef} className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>최종 선택</h3>
+                </div>
             </div>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>직무</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="직무를 입력해 주세요."
-                value={position}
-                onChange={(e) => setPosition(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>선택 사유</label>
-            <textarea
-              className={styles.textarea}
-              placeholder="선택 사유를 입력해 주세요."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              rows={3}
-            />
-          </div>
+            <ul className="edit-list type1">
+                <li>
+                    <p>회사명</p>
+                    <select value={companyName} onChange={(e) => setCompanyName(e.target.value)}>
+                        <option value="">선택</option>
+                    </select>
+                </li>
+                <li>
+                    <p>직무</p>
+                    <input
+                        type="text"
+                        placeholder="직무를 입력해 주세요."
+                        value={position}
+                        onChange={(e) => setPosition(e.target.value)}
+                    />
+                </li>
+                <li className="full">
+                    <p>선택 사유</p>
+                    <textarea
+                        placeholder="선택 사유를 입력해 주세요."
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                    />
+                </li>
+            </ul>
         </div>
-      </div>
 
-      {/* 처우 협의 */}
-      <div ref={negotiationRef} className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>자우 협의</h2>
+        {/* 처우 협의 */}
+        <div ref={negotiationRef} className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>처우 협의</h3>
+                </div>
+            </div>
+            <ul className="edit-list type1">
+                <li>
+                    <p>입사 일자</p>
+                    <input
+                        type="text"
+                        placeholder="YYYY. MM. DD."
+                        value={joinDate}
+                        onChange={(e) => setJoinDate(DateUtil.normalizeTimestamp(e.target.value))}
+                    />
+                </li>
+                <li>
+                    <p>재직 형태</p>
+                    <select value={employmentType} onChange={(e) => setEmploymentType(e.target.value as unknown as TurnOverRetrospective_EmploymentType)}>
+                        <option value={TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN.toString()}>선택</option>
+                        <option value={TurnOverRetrospective_EmploymentType.FULL_TIME.toString()}>정규직</option>
+                        <option value={TurnOverRetrospective_EmploymentType.CONTRACT.toString()}>계약직</option>
+                        <option value={TurnOverRetrospective_EmploymentType.FREELANCER.toString()}>프리랜서</option>
+                        <option value={TurnOverRetrospective_EmploymentType.INTERN.toString()}>인턴</option>
+                    </select>
+                </li>
+                <li>
+                    <p>부서</p>
+                    <input
+                        type="text"
+                        placeholder="부서를 입력해 주세요."
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>직무</p>
+                    <input
+                        type="text"
+                        placeholder="직무를 입력해 주세요."
+                        value={position}
+                        onChange={(e) => setPosition(e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>직책</p>
+                    <input
+                        type="text"
+                        placeholder="예) 파트장, 팀장, 분부장 등"
+                        value={jobTitle}
+                        onChange={(e) => setJobTitle(e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>직급</p>
+                    <input
+                        type="text"
+                        placeholder="예) 사원, 대리, 과장 등"
+                        value={rank}
+                        onChange={(e) => setRank(e.target.value)}
+                    />
+                </li>
+                <li>
+                    <p>계약 연봉(만 원)</p>
+                    <div className="input-desc">
+                        <input 
+                            type="text"
+                            placeholder="예) 계약 연봉을 입력해 주세요."
+                            value={salary}
+                            onChange={(e) => setSalary(Number(e.target.value))}
+                        />
+                        <span>만 원</span>
+                    </div>
+                </li>
+                <li>
+                    <p>근무 형태</p>
+                    <input
+                        type="text"
+                        placeholder="예) 재택, 유연근무 등"
+                        value={workType}
+                        onChange={(e) => setWorkType(e.target.value)}
+                    />
+                </li>
+            </ul>
         </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.inputRow}>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>입사 일자</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="YYYY. MM. DD."
-                value={joinDate}
-                onChange={(e) => setJoinDate(DateUtil.normalizeTimestamp(e.target.value))}
-              />
-            </div>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>재직 형태</label>
-              <select className={styles.select} value={employmentType} onChange={(e) => setEmploymentType(e.target.value as unknown as TurnOverRetrospective_EmploymentType)}>
-                <option value={TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN.toString()}>선택</option>
-                <option value={TurnOverRetrospective_EmploymentType.FULL_TIME.toString()}>정규직</option>
-                <option value={TurnOverRetrospective_EmploymentType.CONTRACT.toString()}>계약직</option>
-                <option value={TurnOverRetrospective_EmploymentType.FREELANCER.toString()}>프리랜서</option>
-                <option value={TurnOverRetrospective_EmploymentType.INTERN.toString()}>인턴</option>
-              </select>
-            </div>
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>부서</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="부서를 입력해 주세요."
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-              />
-            </div>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>직무</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="직무를 입력해 주세요."
-                value={position}
-                onChange={(e) => setPosition(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>직책</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="(예) 파트장, 팀장, 분부장 등"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-              />
-            </div>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>직급</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="(예) 사원, 대리, 과장 등"
-                value={rank}
-                onChange={(e) => setRank(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>계약 연봉(만원)</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="(예) 10000"
-                value={salary}
-                onChange={(e) => setSalary(Number(e.target.value))}
-              />
-            </div>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>근무 형태</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="(예) 재택, 출퇴근자유 등"
-                value={workType}
-                onChange={(e) => setWorkType(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* 만족도 평가 */}
-      <div ref={satisfactionRef} className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>만족도 평가</h2>
-        </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>점수</label>
-            <div className={styles.scoreGroup}>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <label key={value} className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="score"
-                    value={value}
-                    checked={score === value}
-                    onChange={() => setScore(value)}
-                  />
-                  {value}점
-                </label>
-              ))}
+        {/* 만족도 평가 */}
+        <div ref={satisfactionRef} className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>만족도 평가</h3>
+                </div>
             </div>
-          </div>
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>한 줄 회고</label>
-            <textarea
-              className={styles.textarea}
-              placeholder="회고 내용을 입력해 주세요."
-              value={reviewSummary}
-              onChange={(e) => setReviewSummary(e.target.value)}
-              rows={3}
-            />
-          </div>
+            <ul className="edit-list type2">
+                <li>
+                    <p>점수</p>
+                    <ul className="input-list">
+                        {[1, 2, 3, 4, 5].map((value) => (
+                        <li key={value}>
+                            <input
+                                type="radio"
+                                name="score"
+                                value={value}
+                                checked={score === value}
+                                onChange={() => setScore(value)}
+                            />
+                            <label htmlFor=""><p>{value}점</p></label>
+                        </li>
+                        ))}
+                    </ul>
+                </li>
+                <li>
+                    <p>한 줄 회고</p>
+                    <input
+                        placeholder="회고 내용을 입력해 주세요."
+                        value={reviewSummary}
+                        onChange={(e) => setReviewSummary(e.target.value)}
+                    />
+                </li>
+            </ul>
         </div>
-      </div>
 
-      {/* 메모 */}
-      <div ref={memoRef}>
-        <MemoEdit memos={memos} onMemosChange={setMemos} />
-      </div>
+        {/* 메모 */}
+        <div ref={memoRef} className="cont-box">
+            <MemoEdit memos={memos} onMemosChange={setMemos} />
+        </div>
 
-      {/* 첨부 */}
-      <div ref={attachmentRef}>
-        <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
-      </div>
-      </div>
-    </div>
+        {/* 첨부 */}
+        <div ref={attachmentRef} className="cont-box">
+            <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+        </div>
+    </>
   );
 });
 

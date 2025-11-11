@@ -350,10 +350,11 @@ table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; di
 
 /* 이력 관리 - 편집 */
 .edit-list {display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1rem 2rem;}
-.edit-list > li {display: flex; align-items: center; column-gap: 1rem;}
-.edit-list > li > p {width: 10rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005);}
+.edit-list > li {display: flex; column-gap: 1rem;}
+.edit-list > li > p {width: 10rem; height: 4rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005); display: flex; align-items: center;}
 .edit-list > li > *:not(p) {flex: 1;}
 .edit-list > li input {height: 4rem; padding: 0 1.5rem; font-size: 1.4rem; border-radius: .6rem;}
+.edit-list > li textarea {height: 10rem; padding: 1.2rem 1.4rem; font-size: 1.4rem; border-radius: .6rem;}
 .edit-list > li.full {grid-column: 1 / span 2;}
 
 .edit-drag-list {display: flex; column-gap: 1rem;}
@@ -441,4 +442,4 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 .edit-list.type2 {grid-template-columns: repeat(1, 1fr);}
 .edit-drag-list .card .edit-cont.type2 {grid-template-columns: repeat(1, 1fr);}
 
-.status-list {display: flex; align-items: center; column-gap: 2rem;}
+.input-list {display: flex; align-items: center; column-gap: 2rem;}
