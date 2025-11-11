@@ -39,9 +39,28 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
       case JobApplication_JobApplicationStatus.CANCELLED:
         return '취소';
       case JobApplication_JobApplicationStatus.UNKNOWN:
-        return '알 수 없음';
+        return '미확인';
       default:
-        return '알 수 없음';
+        return '미확인';
+    }
+  };
+
+  const getJobApplicationStatusBadgeStyle = (status: JobApplication_JobApplicationStatus) => {
+    switch (status) {
+        case JobApplication_JobApplicationStatus.PENDING:
+            return { background: '#ECFAEE', color: '#34C759' }; //대기
+        case JobApplication_JobApplicationStatus.RUNNING:
+            return { background: '#FFF5E9', color: '#FF9500' }; //진행 중
+        case JobApplication_JobApplicationStatus.PASSED:
+            return { background: '#E6F2FF', color: '#007AFF' }; //합격
+        case JobApplication_JobApplicationStatus.FAILED:
+            return { background: '#FDEAE9', color: '#FF3B30' }; //불합격
+        case JobApplication_JobApplicationStatus.CANCELLED:
+            return { background: '#ECEDEF', color: '#515C66' }; //취소
+        case JobApplication_JobApplicationStatus.UNKNOWN:
+            return { background: '#ECEDEF', color: '#515C66' }; //미확인
+        default:
+            return { background: '#ECEDEF', color: '#515C66' }; //미확인
     }
   };
 
@@ -63,23 +82,15 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
   };
 
   const getStatusBadgeStyle = (status: ApplicationStage_ApplicationStageStatus) => {
-    const baseStyle = {
-      padding: '2px 8px',
-      borderRadius: '12px',
-      fontSize: '11px',
-      fontWeight: 600,
-      display: 'inline-block',
-    };
-    
     switch (status) {
       case ApplicationStage_ApplicationStageStatus.PASSED:
-        return { ...baseStyle, background: '#d1fae5', color: '#065f46' };
+        return { background: '#007AFF' };
       case ApplicationStage_ApplicationStageStatus.FAILED:
-        return { ...baseStyle, background: '#fee2e2', color: '#991b1b' };
+        return { background: '#FF3B30' };
       case ApplicationStage_ApplicationStageStatus.PENDING:
-        return { ...baseStyle, background: '#fef3c7', color: '#92400e' };
+        return { background: '#34C759' };
       default:
-        return { ...baseStyle, background: '#f3f4f6', color: '#6b7280' };
+        return { background: '#515C66' };
     }
   };
 
@@ -131,7 +142,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                         return (
                         <React.Fragment key={app.id || `app-${index}`}>
                             <tr>
-                                <td><span className="label">{getJobApplicationStatusLabel(app.status)}</span></td>
+                                <td><span className="label" style={getJobApplicationStatusBadgeStyle(app.status)}>{getJobApplicationStatusLabel(app.status)}</span></td>
                                 <td><p>{app.name}</p></td>
                                 <td><p>{app.position}</p></td>
                                 <td>
@@ -160,7 +171,7 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                                 <td><p>{app.applicationSource || '-'}</p></td>
                                 <td>
                                     {app.memo ? (
-                                    <a onClick={() => openModal(app.memo, '상세보기')}>상세보기</a>
+                                    <a onClick={() => openModal(app.memo, '메모 상세보기')}>상세보기</a>
                                     ) : (
                                     <>-</>
                                     )}
@@ -169,92 +180,39 @@ const JobApplicationListView: React.FC<JobApplicationListViewProps> = ({ jobAppl
                             
                             {/* 확장된 채용 절차 행 */}
                             {isExpanded && hasStages && (
-                            <tr>
-                                <td colSpan={7} style={{ 
-                                padding: '20px 12px', 
-                                backgroundColor: '#f9fafb',
-                                borderBottom: '1px solid #e5e7eb'
-                                }}>
-                                <div style={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    gap: '8px',
-                                    overflowX: 'auto',
-                                    padding: '8px 0'
-                                }}>
-                                    {app.applicationStages!.map((stage, stageIndex) => (
-                                    <React.Fragment key={stage.id || `stage-${stageIndex}`}>
-                                        <div style={{ 
-                                        display: 'flex', 
-                                        flexDirection: 'column', 
-                                        alignItems: 'center',
-                                        minWidth: '120px',
-                                        gap: '8px'
-                                        }}>
-                                        <div style={{ 
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '8px',
-                                            justifyContent: 'center'
-                                        }}>
+                            <tr className="stage-wrap">
+                                <td colSpan={8}>
+                                    <ul>
+                                        {app.applicationStages!.map((stage, stageIndex) => (
+                                        <React.Fragment key={stage.id || `stage-${stageIndex}`}>
+                                            <li>
+                                                <div>
+                                                    <p>{stage.name}</p>
+                                                    <span className="label" style={getStatusBadgeStyle(stage.status)}>{getStatusLabel(stage.status)}</span>
+                                                </div>
+                                                {(stage.startedAt || stage.memo) && (
+                                                    <ul>
+                                                        <li>{stage.startedAt && DateUtil.formatTimestamp(stage.startedAt, 'YY.MM.DD.')}</li>
+                                                        <li>
+                                                        {stage.memo && (
+                                                            <a onClick={() => openModal(stage.memo, '메모 상세보기')}>메모</a>
+                                                        )}
+                                                        </li>
+                                                    </ul>
+                                                )}
+                                            </li>
+                                            {/* {stageIndex < app.applicationStages!.length - 1 && (
                                             <div style={{ 
-                                            fontSize: '14px', 
-                                            fontWeight: 600, 
-                                            color: '#1a1a1a',
-                                            whiteSpace: 'nowrap'
+                                                fontSize: '18px', 
+                                                color: '#d1d5db',
+                                                flexShrink: 0
                                             }}>
-                                            {stage.name}
+                                                →
                                             </div>
-                                            <div style={getStatusBadgeStyle(stage.status)}>
-                                            {getStatusLabel(stage.status)}
-                                            </div>
-                                        </div>
-                                        {(stage.startedAt || stage.memo) && (
-                                            <div style={{ 
-                                            fontSize: '12px', 
-                                            color: '#6b7280',
-                                            whiteSpace: 'nowrap',
-                                            textAlign: 'center'
-                                            }}>
-                                            {stage.startedAt && DateUtil.formatTimestamp(stage.startedAt, 'YY.MM.DD.')}
-                                            {stage.startedAt && stage.memo && (
-                                                <span style={{ margin: '0 6px', color: '#d1d5db' }}>|</span>
-                                            )}
-                                            {stage.memo && (
-                                                <a
-                                                onClick={() => openModal(stage.memo, '메모 상세보기')}
-                                                style={{
-                                                    fontSize: '11px',
-                                                    color: '#6b7280',
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.2s',
-                                                    textDecoration: 'underline'
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    e.currentTarget.style.color = '#374151';
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.currentTarget.style.color = '#6b7280';
-                                                }}
-                                                >
-                                                메모
-                                                </a>
-                                            )}
-                                            </div>
-                                        )}
-                                        </div>
-                                        {stageIndex < app.applicationStages!.length - 1 && (
-                                        <div style={{ 
-                                            fontSize: '18px', 
-                                            color: '#d1d5db',
-                                            flexShrink: 0
-                                        }}>
-                                            →
-                                        </div>
-                                        )}
-                                    </React.Fragment>
-                                    ))}
-                                </div>
+                                            )} */}
+                                        </React.Fragment>
+                                        ))}
+                                    </ul>
                                 </td>
                             </tr>
                             )}

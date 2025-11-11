@@ -75,7 +75,7 @@ const TurnOverChallengeView = forwardRef<TurnOverViewRef, TurnOverChallengeViewP
                 height={1}
             />
             <div>
-                <p>도전 정보가 없습니다.</p>
+                <p>도전 내용이 없습니다.</p>
             </div>
         </div>
     );

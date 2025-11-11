@@ -9,6 +9,8 @@ import SatisfactionView from './common/SatisfactionView';
 import { FloatingNavigationItem } from '../TurnOverFloatingActions';
 import { TurnOverViewRef } from './TurnOverGoalView';
 
+import Image from 'next/image';
+
 interface TurnOverRetrospectiveViewProps {
   turnOverRetrospective: TurnOverRetrospectiveDetail | null;
 }
@@ -83,9 +85,17 @@ const TurnOverRetrospectiveView = forwardRef<TurnOverViewRef, TurnOverRetrospect
 
   if (!turnOverRetrospective) {
     return (
-      <div className={styles.emptyState}>
-        <p>회고 정보가 없습니다.</p>
-      </div>
+        <div className="empty-cont">
+            <Image
+                src="/assets/img/ico/ic-empty.svg" 
+                alt="empty" 
+                width={1}
+                height={1}
+            />
+            <div>
+                <p>회고 내용이 없습니다.</p>
+            </div>
+        </div>
     );
   }
 

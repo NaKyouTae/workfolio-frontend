@@ -18,30 +18,18 @@ const ContentModal: React.FC<ContentModalProps> = ({ isOpen, onClose, content, t
   };
 
   return (
-    <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <button
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label="닫기"
-          >
-            ×
-          </button>
+    <div className="modal" onClick={handleOverlayClick}>
+        <div className="modal-wrap">
+            <div className="modal-tit">
+                <h2>{title}</h2>
+                <button onClick={onClose}><i className="ic-close" /></button>
+            </div>
+            <div className="modal-cont">
+                <div className="modal-notice">
+                    <p>{content || '등록된 내용이 없습니다.'}</p>
+                </div>
+            </div>
         </div>
-        <div className={styles.content}>
-          <div style={{ 
-            fontSize: '15px', 
-            lineHeight: 1.8, 
-            color: '#1a1a1a',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word'
-          }}>
-            {content || '등록된 내용이 없습니다.'}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
