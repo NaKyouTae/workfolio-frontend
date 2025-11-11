@@ -107,7 +107,6 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                     ref={goalEditRef}
                     turnOverRequest={turnOverRequest || null} 
                     onSave={handleSave} 
-                    onCancel={onCancel} 
                     />
                 )}
                 {activeTab === 'challenge' && (
@@ -115,7 +114,6 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                     ref={challengeEditRef}
                     turnOverRequest={turnOverRequest || null} 
                     onSave={handleSave} 
-                    onCancel={onCancel} 
                     />
                 )}
                 {activeTab === 'retrospective' && (
@@ -123,7 +121,6 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                     ref={retrospectiveEditRef}
                     turnOverRequest={turnOverRequest || null}
                     onSave={handleSave}
-                    onCancel={onCancel}
                     />
                 )}
             </article>

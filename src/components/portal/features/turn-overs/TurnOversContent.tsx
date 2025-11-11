@@ -99,7 +99,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
     });
 
     if (result) {
-      handleModeChange('view');
+      handleModeChange('home');
     }
   };
 
@@ -132,25 +132,25 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
         onDelete={handleDelete} 
         />}
         {viewMode === 'view' && selectedTurnOver && (
-        <TurnOversContentView 
-            selectedTurnOver={selectedTurnOver} 
-            onEdit={handleEditCurrentTurnOver}
-            onDuplicate={handleDuplicate}
-            onDelete={handleDelete}
-        />
+          <TurnOversContentView 
+              selectedTurnOver={selectedTurnOver} 
+              onEdit={handleEditCurrentTurnOver}
+              onDuplicate={handleDuplicate}
+              onDelete={handleDelete}
+          />
         )}
         {viewMode === 'edit' && isNewTurnOver && (
-        <TurnOverContentCreate 
-            onCancel={handleCancel}
-            onSave={(data) => handleSave(data, 'home')}
-        />
+          <TurnOverContentCreate 
+              onCancel={handleCancel}
+              onSave={(data) => handleSave(data, 'home')}
+          />
         )}
         {viewMode === 'edit' && !isNewTurnOver && selectedTurnOver && (
-        <TurnOverContentEdit 
-            selectedTurnOver={selectedTurnOver}
-            onCancel={handleCancel}
-            onSave={(data) => handleSave(data, 'view')}
-        />
+          <TurnOverContentEdit 
+              selectedTurnOver={selectedTurnOver}
+              onCancel={handleCancel}
+              onSave={(data) => handleSave(data, 'view')}
+          />
         )}
         <Footer/>
     </section>

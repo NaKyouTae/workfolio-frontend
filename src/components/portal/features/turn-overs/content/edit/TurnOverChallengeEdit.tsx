@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import styles from './TurnOverChallengeEdit.module.css';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from '@/components/portal/features/turn-overs/content/edit/common/MemoEdit';
@@ -11,10 +10,9 @@ import { TurnOverEditRef } from './TurnOverGoalEdit';
 interface TurnOverChallengeEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
   onSave?: (data: TurnOverUpsertRequest) => void;
-  onCancel?: () => void;
 }
 
-const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditProps>(({ turnOverRequest, onSave, onCancel }, ref) => {
+const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditProps>(({ turnOverRequest, onSave }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('jobApplication');
   const [jobApplications, setJobApplications] = useState<TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[]>([]);
   const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
@@ -98,27 +96,25 @@ const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditP
   }));
 
   return (
-    <div className={styles.container}>
-      <div className={styles.contentInner}>
-      {/* 지원 기록 (채용 절차 포함) */}
-      <div ref={jobApplicationRef}>
-        <JobApplicationEdit
-          jobApplications={jobApplications}
-          onUpdate={setJobApplications}
-        />
-      </div>
+    <>
+        {/* 지원 기록 (채용 절차 포함) */}
+        <div ref={jobApplicationRef} className="cont-box">
+            <JobApplicationEdit
+                jobApplications={jobApplications}
+                onUpdate={setJobApplications}
+            />
+        </div>
 
-      {/* 메모 */}
-      <div ref={memoRef}>
-        <MemoEdit memos={memos} onMemosChange={setMemos} />
-      </div>
+        {/* 메모 */}
+        <div ref={memoRef} className="cont-box">
+            <MemoEdit memos={memos} onMemosChange={setMemos} />
+        </div>
 
-      {/* 첨부 */}
-      <div ref={attachmentRef}>
-        <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
-      </div>
-      </div>
-    </div>
+        {/* 첨부 */}
+        <div ref={attachmentRef} className="cont-box">
+            <AttachmentEdit attachments={attachments} onUpdate={handleUpdateAttachments} />
+        </div>
+    </>
   );
 });
 

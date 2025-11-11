@@ -15,7 +15,6 @@ import Input from '@/components/portal/ui/Input';
 interface TurnOverGoalEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
   onSave?: (data: TurnOverUpsertRequest) => void;
-  onCancel?: () => void;
 }
 
 export interface TurnOverEditRef {
@@ -23,7 +22,7 @@ export interface TurnOverEditRef {
   handleSave: () => void;
 }
 
-const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ turnOverRequest, onSave, onCancel }, ref) => {
+const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ turnOverRequest, onSave }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('direction');
   const [reason, setReason] = useState('');
   const [goal, setGoal] = useState('');

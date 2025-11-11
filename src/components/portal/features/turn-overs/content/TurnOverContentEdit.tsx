@@ -5,14 +5,14 @@ import TurnOverContentForm from './TurnOverContentForm';
 
 interface TurnOverContentEditProps {
   selectedTurnOver: TurnOverDetail | null;
-  onCancel?: () => void;
   onSave?: (data: TurnOverUpsertRequest) => void;
+  onCancel?: () => void;
 }
 
 const TurnOverContentEdit: React.FC<TurnOverContentEditProps> = ({
   selectedTurnOver,
-  onCancel,
   onSave,
+  onCancel,
 }) => {
   const [name, setName] = useState('');
   const [turnOverRequest, setTurnOverRequest] = useState<TurnOverUpsertRequest | null>(null);

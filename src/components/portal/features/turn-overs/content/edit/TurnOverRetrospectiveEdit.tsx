@@ -12,13 +12,11 @@ import { TurnOverEditRef } from './TurnOverGoalEdit';
 interface TurnOverRetrospectiveEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
   onSave?: (data: TurnOverUpsertRequest) => void;
-  onCancel?: () => void;
 }
 
 const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospectiveEditProps>(({
   turnOverRequest,
   onSave,
-  onCancel,
 }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('finalChoice');
   

@@ -439,5 +439,6 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 
 /* 이직 관리 - 편집 */
 .edit-list.type2 {grid-template-columns: repeat(1, 1fr);}
-
 .edit-drag-list .card .edit-cont.type2 {grid-template-columns: repeat(1, 1fr);}
+
+.status-list {display: flex; align-items: center; column-gap: 2rem;}
