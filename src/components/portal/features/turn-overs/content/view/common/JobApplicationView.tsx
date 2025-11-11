@@ -70,10 +70,14 @@ const JobApplicationView: React.FC<JobApplicationViewProps> = ({ jobApplications
 
   if (!jobApplications || jobApplications.length === 0) {
     return (
-        <div className="view-container">
-            <h3 className="view-title">지원 기록</h3>
-            <EmptyState text="등록된 지원 기록이 없습니다." />
-        </div>
+        <>
+          <div className="cont-tit">
+            <div>
+              <h3>지원 기록</h3>
+            </div>
+          </div>
+          <EmptyState text="등록된 지원 기록이 없습니다." />
+        </>
     );
   }
 

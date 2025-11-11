@@ -69,7 +69,7 @@ main {display: grid; grid-template-columns: 28rem auto; height: calc(100vh - 6.4
 
 /* 레이아웃 - 사이드바 */
 aside {border-right: 1px solid var(--gray002); display: flex; flex-flow: column;}
-.aside-button {padding: 1.6rem 2rem; border-bottom: 1px solid var(--gray002);}
+.aside-button {height: 7.2rem; padding: 1.6rem 2rem; border-bottom: 1px solid var(--gray002);}
 
 .aside-cont {flex: 1; display: flex; flex-flow: column; row-gap: 2.4rem; padding: 2.4rem 2rem;}
 .aside-cont > * + * {border-top: 1px solid var(--gray002);}
@@ -126,7 +126,7 @@ section {height: calc(100vh - 6.4rem); display: flex; flex-flow: column;}
 section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flow: column;}
 
 /* 레이아웃 - 본문 - 타이틀 */
-.page-title {height: 7.3rem; padding: 0 2rem; border-bottom: 1px solid var(--gray002); display: flex; align-items: center; justify-content: space-between; column-gap: 2.4rem; position: sticky; top: 0; background-color: var(--white); z-index: 10;}
+.page-title {height: 7.2rem; padding: 0 2rem; border-bottom: 1px solid var(--gray002); display: flex; align-items: center; justify-content: space-between; column-gap: 2.4rem; position: sticky; top: 0; background-color: var(--white); z-index: 10;}
 .page-title > div {display: flex; align-items: center; column-gap: 1.2rem; flex: 1;}
 .page-title > div > div {display: flex; align-items: center; column-gap: .8rem;}
 .page-title > div > div:nth-child(1):nth-last-child(1) {flex: 1;}
