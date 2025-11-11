@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TurnOversContentView from './content/TurnOverContentView';
 import { TurnOverDetail } from '@/generated/common';
 import TurnOversIntegration from './content/TurnOversIntegration';
@@ -14,69 +14,82 @@ type ViewMode = 'home' | 'view' | 'edit';
 interface TurnOversContentProps {
   selectedTurnOver: TurnOverDetail | null;
   isNewTurnOver?: boolean;
+  viewMode: ViewMode;
   onTurnOverSelect?: (id: string) => void;
+  onTurnOverSelectAndEdit?: (id: string, fromMode: ViewMode) => void;
   onSave?: (data: TurnOverUpsertRequest) => void;
   onDuplicate?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onEnterEdit?: (fromMode: ViewMode) => void;
+  onCancelEdit?: () => void;
+  onSaveComplete?: (mode: ViewMode) => void;
 }
 
-const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver, isNewTurnOver = false, 
-  onTurnOverSelect, onSave, onDuplicate, onDelete }) => {
-  const [viewMode, setViewMode] = useState<ViewMode>('home');
+const TurnOversContent  : React.FC<TurnOversContentProps> = ({ 
+  selectedTurnOver, 
+  isNewTurnOver = false, 
+  viewMode,
+  onTurnOverSelect, 
+  onTurnOverSelectAndEdit,
+  onSave, 
+  onDuplicate, 
+  onDelete,
+  onEnterEdit,
+  onCancelEdit,
+  onSaveComplete,
+}) => {
   const { confirm } = useConfirm();
 
-  // props 변경에 따라 모드 결정
-  const getViewMode = (): ViewMode => {
+  // 현재 표시할 모드 결정
+  const getCurrentViewMode = (): ViewMode => {
     if (!selectedTurnOver) {
       return 'home';
     }
     if (isNewTurnOver) {
       return 'edit';
     }
-    return viewMode; // 수동으로 설정된 모드 유지 (view 또는 edit)
+    return viewMode;
   };
 
-  const currentViewMode = getViewMode();
-
-  const handleModeChange = (mode: ViewMode) => {
-    setViewMode(mode);
-  };
+  const currentViewMode = getCurrentViewMode();
 
   const handleTurnOverSelect = (id: string) => {
-    console.log('handleTurnOverSelect', id);
-    handleModeChange('view');
     if (onTurnOverSelect) {
       onTurnOverSelect(id);
     }
   };
 
   const handleTurnOverEdit = (id: string) => {
-    console.log('handleTurnOverEdit', id);
+    // 현재 모드 저장 (home 또는 view)
+    const fromMode = currentViewMode === 'view' ? 'view' : 'home';
     
-    // 이미 선택된 turnOver인 경우 바로 edit 모드로 전환
-    if (selectedTurnOver && selectedTurnOver.id === id) {
-      console.log('Already selected, switching to edit mode directly');
-      handleModeChange('edit');
+    // 다른 turnOver 선택 시
+    if (!selectedTurnOver || selectedTurnOver.id !== id) {
+      // turnOver를 선택하면서 동시에 edit 모드로 전환
+      if (onTurnOverSelectAndEdit) {
+        onTurnOverSelectAndEdit(id, fromMode);
+      }
     } else {
-      // 다른 turnOver 선택 시 edit 모드로 설정하고 선택
-      console.log('Selecting new turnOver with edit mode');
-      handleModeChange('edit');
-      if (onTurnOverSelect) {
-        onTurnOverSelect(id);
+      // 이미 선택된 turnOver인 경우 바로 edit 모드로 전환
+      if (onEnterEdit) {
+        onEnterEdit(fromMode);
       }
     }
   };
 
-  // 이미 선택된 상태에서 edit 모드로 전환 (id 필요 없음)
+  // 이미 선택된 상태에서 edit 모드로 전환
   const handleEditCurrentTurnOver = () => {
-    console.log('handleEditCurrentTurnOver');
-    handleModeChange('edit');
+    if (onEnterEdit) {
+      onEnterEdit('view');
+    }
   };
 
   const handleSave = (data: TurnOverUpsertRequest, mode: ViewMode = 'view') => {
     if (onSave) {
       onSave(data);
-      handleModeChange(mode);
+    }
+    if (onSaveComplete) {
+      onSaveComplete(mode);
     }
   };
 
@@ -89,8 +102,8 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
       cancelText: '돌아가기',
     });
 
-    if (result) {
-      handleModeChange('home');
+    if (result && onCancelEdit) {
+      onCancelEdit();
     }
   };
 
@@ -140,7 +153,10 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({ selectedTurnOver,
           <TurnOverContentEdit 
               selectedTurnOver={selectedTurnOver}
               onCancel={handleCancel}
-              onSave={(data) => handleSave(data, 'view')}
+              onSave={(data) => {
+                // 저장 후 view 모드로 돌아가기 (이전 모드는 TurnOversPage에서 관리)
+                handleSave(data, 'view');
+              }}
           />
         )}
         <Footer/>
