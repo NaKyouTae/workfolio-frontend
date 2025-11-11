@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest, TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest, TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from './common/MemoEdit';
@@ -56,7 +56,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   }, [turnOverRequest]);
 
   // 섹션으로 스크롤하는 함수
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = useCallback((sectionId: string) => {
     const refMap: { [key: string]: React.RefObject<HTMLDivElement | null> } = {
       direction: directionRef,
       selfIntroduction: selfIntroductionRef,
@@ -68,13 +68,41 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
 
     const ref = refMap[sectionId];
     if (ref?.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveSection(sectionId);
+      const element = ref.current;
+      
+      // page-cont 스크롤 컨테이너 찾기
+      const scrollContainer = element.closest('.page-cont') as HTMLElement;
+      
+      if (scrollContainer) {
+        // 스크롤 컨테이너 내에서의 상대 위치 계산
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        const offset = sectionId === 'direction' ? 80 : 30; // 상단에서 100px 떨어진 위치로 스크롤
+        
+        const scrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - offset;
+        
+        scrollContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth',
+        });
+      } else {
+        // page-cont를 찾지 못한 경우 window 스크롤 사용
+        requestAnimationFrame(() => {
+          const elementTop = element.getBoundingClientRect().top + (window.pageYOffset || window.scrollY);
+          const offset = sectionId === 'direction' ? 80 : 30; // 상단에서 100px 떨어진 위치로 스크롤
+          
+          window.scrollTo({
+            top: elementTop - offset,
+            behavior: 'smooth',
+          });
+        });
+      }
     }
-  };
+  }, []);
 
   // 네비게이션 항목 정의
-  const getNavigationItems = (): FloatingNavigationItem[] => {
+  const getNavigationItems = useCallback((): FloatingNavigationItem[] => {
     return [
       {
         id: 'direction',
@@ -113,7 +141,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
         onClick: () => scrollToSection('attachment'),
       },
     ];
-  };
+  }, [activeSection, scrollToSection]);
 
   const handleSave = () => {
     if (onSave) {

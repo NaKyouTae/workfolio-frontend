@@ -1,4 +1,4 @@
-import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useRef, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { TurnOverChallengeDetail } from '@/generated/common';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/portal/features/common/AttachmentView';
@@ -21,7 +21,7 @@ const TurnOverChallengeView = forwardRef<TurnOverViewRef, TurnOverChallengeViewP
   const attachmentRef = useRef<HTMLDivElement>(null);
 
   // 섹션으로 스크롤하는 함수
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = useCallback((sectionId: string) => {
     const refMap: { [key: string]: React.RefObject<HTMLDivElement | null> } = {
       jobApplication: jobApplicationRef,
       memo: memoRef,
@@ -30,13 +30,41 @@ const TurnOverChallengeView = forwardRef<TurnOverViewRef, TurnOverChallengeViewP
 
     const ref = refMap[sectionId];
     if (ref?.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveSection(sectionId);
+      const element = ref.current;
+      
+      // page-cont 스크롤 컨테이너 찾기
+      const scrollContainer = element.closest('.page-cont') as HTMLElement;
+      
+      if (scrollContainer) {
+        // 스크롤 컨테이너 내에서의 상대 위치 계산
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        const offset = sectionId === 'jobApplication' ? 80 : 30; // 상단에서 100px 떨어진 위치로 스크롤
+        
+        const scrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - offset;
+        
+        scrollContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth',
+        });
+      } else {
+        // page-cont를 찾지 못한 경우 window 스크롤 사용
+        requestAnimationFrame(() => {
+          const elementTop = element.getBoundingClientRect().top + (window.pageYOffset || window.scrollY);
+          const offset = sectionId === 'jobApplication' ? 80 : 30; // 상단에서 100px 떨어진 위치로 스크롤
+          
+          window.scrollTo({
+            top: elementTop - offset,
+            behavior: 'smooth',
+          });
+        });
+      }
     }
-  };
+  }, []);
 
   // 네비게이션 아이템 생성 함수
-  const getNavigationItems = (): FloatingNavigationItem[] => {
+  const getNavigationItems = useCallback((): FloatingNavigationItem[] => {
     return [
       {
         id: 'jobApplication',
@@ -57,7 +85,7 @@ const TurnOverChallengeView = forwardRef<TurnOverViewRef, TurnOverChallengeViewP
         onClick: () => scrollToSection('attachment'),
       },
     ];
-  };
+  }, [activeSection, scrollToSection]);
 
   // ref를 통해 getNavigationItems 함수를 노출
   useImperativeHandle(ref, () => ({

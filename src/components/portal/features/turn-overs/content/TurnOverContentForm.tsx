@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { TurnOverUpsertRequest } from '@/generated/turn_over';
 import TurnOverGoalEdit, { TurnOverEditRef } from './edit/TurnOverGoalEdit';
 import TurnOverChallengeEdit from './edit/TurnOverChallengeEdit';
@@ -36,30 +36,40 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
     setActiveTab(tab);
   };
 
+  // 네비게이션 아이템 업데이트 함수
+  const updateNavigationItems = useCallback(() => {
+    let items: FloatingNavigationItem[] = [];
+
+    switch (activeTab) {
+      case 'goal':
+        items = goalEditRef.current?.getNavigationItems() || [];
+        break;
+      case 'challenge':
+        items = challengeEditRef.current?.getNavigationItems() || [];
+        break;
+      case 'retrospective':
+        items = retrospectiveEditRef.current?.getNavigationItems() || [];
+        break;
+    }
+
+    setNavigationItems(items);
+  }, [activeTab]);
+
   // 탭이 변경되거나 컴포넌트가 마운트될 때 네비게이션 아이템 업데이트
   useEffect(() => {
-    const updateNavigationItems = () => {
-      let items: FloatingNavigationItem[] = [];
-
-      switch (activeTab) {
-        case 'goal':
-          items = goalEditRef.current?.getNavigationItems() || [];
-          break;
-        case 'challenge':
-          items = challengeEditRef.current?.getNavigationItems() || [];
-          break;
-        case 'retrospective':
-          items = retrospectiveEditRef.current?.getNavigationItems() || [];
-          break;
-      }
-
-      setNavigationItems(items);
-    };
-
     // 약간의 지연을 두고 네비게이션 아이템 업데이트 (컴포넌트 렌더링 완료 후)
     const timer = setTimeout(updateNavigationItems, 0);
     return () => clearTimeout(timer);
-  }, [activeTab]);
+  }, [activeTab, updateNavigationItems]);
+
+  // activeSection 변경 감지를 위한 주기적 업데이트
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateNavigationItems();
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [updateNavigationItems]);
 
   const handleSave = (data: TurnOverUpsertRequest) => {
     // turnOverRequest 업데이트
@@ -106,14 +116,14 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                     <TurnOverGoalEdit 
                     ref={goalEditRef}
                     turnOverRequest={turnOverRequest || null} 
-                    onSave={handleSave} 
+                    onSave={handleSave}
                     />
                 )}
                 {activeTab === 'challenge' && (
                     <TurnOverChallengeEdit 
                         ref={challengeEditRef}
                         turnOverRequest={turnOverRequest || null} 
-                        onSave={handleSave} 
+                        onSave={handleSave}
                     />
                 )}
                 {activeTab === 'retrospective' && (

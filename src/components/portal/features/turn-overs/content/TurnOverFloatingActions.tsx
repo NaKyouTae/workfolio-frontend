@@ -32,7 +32,7 @@ const TurnOverFloatingActions: React.FC<TurnOverFloatingActionsProps> = ({
                 {navigationItems.map((item) => (
                     <li
                         key={item.id}
-                        className={`${item.isActive ? 'active' : ''}`}
+                        className={item.isActive ? 'active' : ''}
                         onClick={item.onClick}
                     >
                     {item.label}
