@@ -1,11 +1,12 @@
 import React from 'react';
 import { ApplicationStage_ApplicationStageStatus } from '@/generated/common';
 import { TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest_ApplicationStageRequest } from '@/generated/turn_over';
-import { DateUtil } from '@/utils/DateUtil';
 import Input from '@/components/portal/ui/Input';
+import DatePicker from '@/components/portal/ui/DatePicker';
 import DraggableList from '@/components/portal/ui/DraggableList';
 import DraggableItem from '@/components/portal/ui/DraggableItem';
 import EmptyState from '@/components/portal/ui/EmptyState';
+import { DateTime } from 'luxon';
 import '@/styles/component-edit.css';
 
 interface ApplicationStageEditProps {
@@ -53,12 +54,11 @@ const ApplicationStageItem: React.FC<ApplicationStageItemProps> = ({
               />
             </div>
             <div className="edit-form-field">
-              <Input
-                type="text"
+              <DatePicker
                 label="진행 일자"
-                placeholder="YYYY. MM. DD."
-                value={stage.startedAt ? DateUtil.formatTimestamp(stage.startedAt) : ''}
-                onChange={(e) => onUpdate(index, 'startedAt', DateUtil.normalizeTimestamp(e.target.value))}
+                value={stage.startedAt}
+                onChange={(date) => onUpdate(index, 'startedAt', DateTime.fromISO(date).toMillis())}
+                required={false}
               />
             </div>
           </div>
