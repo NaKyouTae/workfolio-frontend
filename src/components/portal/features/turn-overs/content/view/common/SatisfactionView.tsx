@@ -13,7 +13,6 @@ const SatisfactionView: React.FC<SatisfactionViewProps> = ({ score, reviewSummar
         key={index} 
       >
         <i className="ic-star-ov" />
-        {/* <i className="ic-star-half-ov" /> */}
         {/* <i className="ic-star-ov" /> */}
       </li>
     ));
