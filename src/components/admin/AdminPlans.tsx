@@ -3,13 +3,27 @@
 import { useEffect, useState } from 'react';
 import { usePlans } from '@/hooks/usePlans';
 import { PlanCreateRequest, PlanUpdateRequest } from '@/generated/plan';
-import { Plan_PlanType, Plan } from '@/generated/common';
+import { Plan_PlanType, Plan, PlanSubscription } from '@/generated/common';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import styles from './AdminPlans.module.css';
 
 export default function AdminPlans() {
-  const { plans, loading, error, fetchPlans, createPlan, updatePlan, deletePlan } = usePlans();
+  const { plans, loading, error, fetchPlans, createPlan, updatePlan } = usePlans();
   const [showModal, setShowModal] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan | undefined>(undefined);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [subscriptions, setSubscriptions] = useState<PlanSubscription[]>([]);
+  const [loadingSubscriptions, setLoadingSubscriptions] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [editingSubscription, setEditingSubscription] = useState<PlanSubscription | undefined>(undefined);
+  const [subscriptionFormData, setSubscriptionFormData] = useState({
+    durationMonths: '',
+    totalPrice: 0,
+    monthlyEquivalent: 0,
+    savingsAmount: 0,
+    discountRate: 0,
+    priority: 0,
+  });
   const [formData, setFormData] = useState({
     name: '',
     type: Plan_PlanType.FREE,
@@ -22,6 +36,150 @@ export default function AdminPlans() {
   useEffect(() => {
     fetchPlans();
   }, [fetchPlans]);
+
+  const fetchPlanSubscriptions = async (planId: string) => {
+    setLoadingSubscriptions(true);
+    try {
+      const response = await fetch(`/api/plan-subscriptions?planId=${planId}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Plan subscriptions response:', data);
+        // 응답 형식 확인: planSubscriptions (camelCase) 또는 plan_subscriptions (snake_case) 또는 subscriptions
+        const subscriptionsData = data.planSubscriptions || data.plan_subscriptions || data.subscriptions || [];
+        console.log('Parsed subscriptions:', subscriptionsData);
+        
+        // 숫자 필드가 문자열로 온 경우 숫자로 변환
+        const normalizedSubscriptions = subscriptionsData.map((sub: PlanSubscription | Record<string, unknown>) => ({
+          ...sub,
+          totalPrice: typeof sub.totalPrice === 'string' ? parseInt(sub.totalPrice) || 0 : (sub.totalPrice as number) || 0,
+          monthlyEquivalent: typeof sub.monthlyEquivalent === 'string' ? parseInt(sub.monthlyEquivalent) || 0 : (sub.monthlyEquivalent as number) || 0,
+          savingsAmount: typeof sub.savingsAmount === 'string' ? parseInt(sub.savingsAmount) || 0 : (sub.savingsAmount as number) || 0,
+          discountRate: typeof sub.discountRate === 'string' ? parseInt(sub.discountRate) || 0 : (sub.discountRate as number) || 0,
+          priority: typeof sub.priority === 'string' ? parseInt(sub.priority) || 0 : (sub.priority as number) || 0,
+          createdAt: typeof sub.createdAt === 'string' ? parseInt(sub.createdAt) || 0 : (sub.createdAt as number) || 0,
+          updatedAt: typeof sub.updatedAt === 'string' ? parseInt(sub.updatedAt) || 0 : (sub.updatedAt as number) || 0,
+        })) as PlanSubscription[];
+        
+        console.log('Normalized subscriptions:', normalizedSubscriptions);
+        setSubscriptions(normalizedSubscriptions);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Failed to fetch plan subscriptions:', response.status, errorData);
+        setSubscriptions([]);
+      }
+    } catch (error) {
+      console.error('Error fetching plan subscriptions:', error);
+      setSubscriptions([]);
+    } finally {
+      setLoadingSubscriptions(false);
+    }
+  };
+
+  const handlePlanClick = (plan: Plan) => {
+    setSelectedPlan(plan);
+    fetchPlanSubscriptions(plan.id);
+  };
+
+  const handleOpenSubscriptionModal = (subscription?: PlanSubscription | undefined) => {
+    if (subscription) {
+      setEditingSubscription(subscription);
+      setSubscriptionFormData({
+        durationMonths: subscription.durationMonths,
+        totalPrice: subscription.totalPrice,
+        monthlyEquivalent: subscription.monthlyEquivalent,
+        savingsAmount: subscription.savingsAmount,
+        discountRate: subscription.discountRate,
+        priority: subscription.priority,
+      });
+    } else {
+      setEditingSubscription(undefined);
+      setSubscriptionFormData({
+        durationMonths: '',
+        totalPrice: 0,
+        monthlyEquivalent: 0,
+        savingsAmount: 0,
+        discountRate: 0,
+        priority: 0,
+      });
+    }
+    setShowSubscriptionModal(true);
+  };
+
+  const handleCloseSubscriptionModal = () => {
+    setShowSubscriptionModal(false);
+    setEditingSubscription(undefined);
+  };
+
+  const handleSubscriptionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPlan) return;
+
+    try {
+      let response;
+      if (editingSubscription) {
+        // 수정 - PUT /api/plan-subscriptions (id와 plan_id를 body에 포함)
+        response = await fetch(`/api/plan-subscriptions`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: editingSubscription.id,
+            plan_id: selectedPlan.id,
+            ...subscriptionFormData,
+          }),
+        });
+      } else {
+        // 생성 - POST /api/plan-subscriptions (plan_id를 body에 포함)
+        response = await fetch(`/api/plan-subscriptions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            plan_id: selectedPlan.id,
+            ...subscriptionFormData,
+          }),
+        });
+      }
+
+      if (response.ok) {
+        handleCloseSubscriptionModal();
+        // 목록 새로고침
+        if (selectedPlan) {
+          fetchPlanSubscriptions(selectedPlan.id);
+        }
+      } else {
+        const error = await response.json();
+        alert(`오류: ${error.error || '요청 실패'}`);
+      }
+    } catch (error) {
+      console.error('Error saving subscription:', error);
+      alert('오류가 발생했습니다.');
+    }
+  };
+
+  const handleDeleteSubscription = async (subscriptionId: string) => {
+    if (!selectedPlan) return;
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+    try {
+      const response = await fetch(`/api/plan-subscriptions/${subscriptionId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // 목록 새로고침
+        fetchPlanSubscriptions(selectedPlan.id);
+      } else {
+        const error = await response.json();
+        alert(`오류: ${error.error || '삭제 실패'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting subscription:', error);
+      alert('오류가 발생했습니다.');
+    }
+  };
 
   const handleOpenModal = (plan?: Plan | undefined) => {
     if (plan) {
@@ -73,11 +231,6 @@ export default function AdminPlans() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm('정말 삭제하시겠습니까?')) {
-      await deletePlan(id);
-    }
-  };
 
   const getPlanTypeLabel = (type: Plan_PlanType) => {
     const normalizedType = normalizeEnumValue(type, Plan_PlanType);
@@ -91,6 +244,10 @@ export default function AdminPlans() {
     }
   };
 
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString('ko-KR');
+  };
+
   return (
     <div className="contents">
       <div className="page-title">
@@ -100,219 +257,228 @@ export default function AdminPlans() {
         </div>
       </div>
 
-      <div className="page-cont">
-        <div className="cont-box">
-          <div className="cont-tit">
-            <div>
-              <h3>전체 플랜 ({plans.length}개)</h3>
-            </div>
-            <button onClick={() => handleOpenModal()}>
-              + 새 플랜 추가
+      <div className={styles.container}>
+        {/* 좌측: 플랜 목록 */}
+        <div className={styles.leftPanel}>
+          <div className={styles.leftPanelHeader}>
+            <h3>플랜 목록 ({plans.length}개)</h3>
+            <button onClick={() => handleOpenModal()} className="dark-gray" 
+            style={{ padding: '8px 16px', fontSize: '14px', width: '60px', height: '30px' }}>
+              + 추가
             </button>
           </div>
-
-        {loading && <div>로딩 중...</div>}
-        {error && <div style={{ color: 'red' }}>에러: {error}</div>}
-
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #eee' }}>
-              <th style={{ padding: '12px', textAlign: 'left' }}>이름</th>
-              <th style={{ padding: '12px', textAlign: 'left' }}>타입</th>
-              <th style={{ padding: '12px', textAlign: 'right' }}>가격</th>
-              <th style={{ padding: '12px', textAlign: 'center' }}>우선순위</th>
-              <th style={{ padding: '12px', textAlign: 'left' }}>설명</th>
-              <th style={{ padding: '12px', textAlign: 'center' }}>작업</th>
-            </tr>
-          </thead>
-          <tbody>
+          
+          <div className={styles.planList}>
+            {loading && <div style={{ padding: '20px', textAlign: 'center' }}>로딩 중...</div>}
+            {error && <div style={{ padding: '20px', color: 'red' }}>에러: {error}</div>}
+            
             {plans.map((plan) => (
-              <tr key={plan.id} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '12px' }}>{plan.name ?? ''}</td>
-                <td style={{ padding: '12px' }}>
-                  <span style={{
-                    padding: '4px 12px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    background: plan.type === Plan_PlanType.FREE ? '#e3f2fd' : '#f3e5f5',
-                    color: plan.type === Plan_PlanType.FREE ? '#1976d2' : '#7b1fa2',
-                  }}>
-                    {getPlanTypeLabel(plan.type)}
-                  </span>
-                </td>
-                <td style={{ padding: '12px', textAlign: 'right' }}>
-                  {plan.price.toLocaleString()} {plan.currency ?? ''}
-                </td>
-                <td style={{ padding: '12px', textAlign: 'center' }}>{plan.priority}</td>
-                <td style={{ padding: '12px', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {plan.description || '-'}
-                </td>
-                <td style={{ padding: '12px', textAlign: 'center' }}>
-                  <button 
-                    className="line gray"
-                    onClick={() => handleOpenModal(plan)}
-                    style={{ marginRight: '8px' }}
-                  >
-                    편집
-                  </button>
-                  <button 
-                    className="line red"
-                    onClick={() => handleDelete(plan.id)}
-                  >
-                    삭제
-                  </button>
-                </td>
-              </tr>
+              <div
+                key={plan.id}
+                className={`${styles.planRow} ${selectedPlan?.id === plan.id ? styles.selected : ''}`}
+                onClick={() => handlePlanClick(plan)}
+              >
+                <div className={styles.planRowContent}>
+                  <div>
+                    <div className={styles.planName}>{plan.name ?? ''}</div>
+                    <span className={`${styles.planType} ${plan.type === Plan_PlanType.FREE ? styles.free : styles.premium}`}>
+                      {getPlanTypeLabel(plan.type)}
+                    </span>
+                  </div>
+                  <div className={styles.planPrice}>
+                    {plan.price.toLocaleString()} {plan.currency ?? ''}
+                  </div>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-
-        {plans.length === 0 && !loading && (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
-            등록된 플랜이 없습니다.
+            
+            {plans.length === 0 && !loading && (
+              <div className={styles.emptyState}>
+                <p>등록된 플랜이 없습니다.</p>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+
+        {/* 우측: 플랜 그룹 (PlanSubscription) 테이블 */}
+        <div className={styles.rightPanel}>
+          <div className={styles.rightPanelHeader}>
+            <h3>
+              플랜 구독 옵션 
+              {selectedPlan && ` - ${selectedPlan.name}`}
+              {selectedPlan && ` (${subscriptions.length}개)`}
+            </h3>
+            {selectedPlan && (
+              <button 
+                onClick={() => handleOpenSubscriptionModal()} 
+                className="dark-gray" 
+                style={{ padding: '8px 16px', fontSize: '14px', width: '60px', height: '30px' }}
+              >
+                + 구독 추가
+              </button>
+            )}
+          </div>
+          
+          <div className={styles.subscriptionTable}>
+            {!selectedPlan ? (
+              <div className={styles.emptyState}>
+                <p>좌측에서 플랜을 선택하세요.</p>
+              </div>
+            ) : loadingSubscriptions ? (
+              <div className={styles.emptyState}>
+                <p>로딩 중...</p>
+              </div>
+            ) : subscriptions.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>등록된 플랜 그룹이 없습니다.</p>
+                <p style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
+                  디버그: subscriptions.length = {subscriptions.length}
+                </p>
+              </div>
+            ) : (
+              <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>기간 (개월)</th>
+                      <th>총 가격</th>
+                      <th>월간 등가</th>
+                      <th>절약 금액</th>
+                      <th>할인율 (%)</th>
+                      <th>우선순위</th>
+                      <th>생성일</th>
+                      <th>작업</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {subscriptions.map((subscription) => {
+                      const totalPrice = typeof subscription.totalPrice === 'number' ? subscription.totalPrice : parseInt(subscription.totalPrice) || 0;
+                      const monthlyEquivalent = typeof subscription.monthlyEquivalent === 'number' ? subscription.monthlyEquivalent : parseInt(subscription.monthlyEquivalent) || 0;
+                      const savingsAmount = typeof subscription.savingsAmount === 'number' ? subscription.savingsAmount : parseInt(subscription.savingsAmount) || 0;
+                      const discountRate = typeof subscription.discountRate === 'number' ? subscription.discountRate : parseInt(subscription.discountRate) || 0;
+                      const priority = typeof subscription.priority === 'number' ? subscription.priority : parseInt(subscription.priority) || 0;
+                      const createdAt = typeof subscription.createdAt === 'number' ? subscription.createdAt : parseInt(subscription.createdAt) || 0;
+                      const currency = subscription.plan?.currency || selectedPlan?.currency || 'KRW';
+                      
+                      return (
+                        <tr key={subscription.id || Math.random()}>
+                          <td>{subscription.durationMonths || '-'}</td>
+                          <td>{totalPrice.toLocaleString()} {currency}</td>
+                          <td>{monthlyEquivalent.toLocaleString()} {currency}</td>
+                          <td>{savingsAmount.toLocaleString()} {currency}</td>
+                          <td>{discountRate}%</td>
+                          <td>{priority}</td>
+                          <td>{createdAt ? formatDate(createdAt) : '-'}</td>
+                          <td>
+                            <div className={styles.actionButtons}>
+                              <button
+                                className={`${styles.button} ${styles.edit}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenSubscriptionModal(subscription);
+                                }}
+                              >
+                                편집
+                              </button>
+                              <button
+                                className={`${styles.button} ${styles.delete}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteSubscription(subscription.id);
+                                }}
+                              >
+                                삭제
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+            )}
+          </div>
         </div>
       </div>
 
       {showModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000,
-        }}>
-          <div style={{
-            background: 'white',
-            borderRadius: '12px',
-            padding: '32px',
-            width: '90%',
-            maxWidth: '500px',
-          }}>
-            <h2 style={{ marginBottom: '24px', fontSize: '24px', fontWeight: '700' }}>
-              {editingPlan ? '플랜 수정' : '새 플랜 추가'}
-            </h2>
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>{editingPlan ? '플랜 수정' : '새 플랜 추가'}</h2>
+            </div>
 
             <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                  플랜 이름 *
-                </label>
+              <div className={styles.formGroup}>
+                <label>플랜 이름 *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                  }}
                 />
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                  타입 *
-                </label>
+              <div className={styles.formGroup}>
+                <label>타입 *</label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: parseInt(e.target.value) as Plan_PlanType })}
                   required
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                  }}
                 >
                   <option value={Plan_PlanType.FREE}>FREE</option>
                   <option value={Plan_PlanType.PREMIUM}>PREMIUM</option>
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                    가격 *
-                  </label>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>가격 *</label>
                   <input
                     type="number"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) })}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #ddd',
-                      borderRadius: '6px',
+                    value={formData.price || ''}
+                    onChange={(e) => {
+                      const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                      setFormData({ ...formData, price: isNaN(val) ? 0 : val });
                     }}
+                    required
+                    min="0"
                   />
                 </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                    통화 *
-                  </label>
+                <div className={styles.formGroup}>
+                  <label>통화 *</label>
                   <input
                     type="text"
                     value={formData.currency}
                     onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                     required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #ddd',
-                      borderRadius: '6px',
-                    }}
                   />
                 </div>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                  우선순위 *
-                </label>
+              <div className={styles.formGroup}>
+                <label>우선순위 *</label>
                 <input
                   type="number"
-                  value={formData.priority}
-                  onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
+                  value={formData.priority || ''}
+                  onChange={(e) => {
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                    setFormData({ ...formData, priority: isNaN(val) ? 0 : val });
                   }}
+                  required
+                  min="0"
                 />
               </div>
 
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                  설명
-                </label>
+              <div className={styles.formGroup}>
+                <label>설명</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={4}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    resize: 'vertical',
-                  }}
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <div className={styles.modalActions}>
                 <button
                   type="button"
                   onClick={handleCloseModal}
@@ -322,6 +488,115 @@ export default function AdminPlans() {
                 </button>
                 <button type="submit" className="dark-gray">
                   {editingPlan ? '수정' : '추가'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 플랜 구독 모달 */}
+      {showSubscriptionModal && selectedPlan && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>{editingSubscription ? '플랜 구독 수정' : '새 플랜 구독 추가'}</h2>
+            </div>
+
+            <form onSubmit={handleSubscriptionSubmit}>
+              <div className={styles.formGroup}>
+                <label>기간 (개월) *</label>
+                <input
+                  type="text"
+                  value={subscriptionFormData.durationMonths}
+                  onChange={(e) => setSubscriptionFormData({ ...subscriptionFormData, durationMonths: e.target.value })}
+                  required
+                  placeholder="예: 1, 3, 6, 12"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>총 가격 *</label>
+                <input
+                  type="number"
+                  value={subscriptionFormData.totalPrice || ''}
+                  onChange={(e) => {
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                    setSubscriptionFormData({ ...subscriptionFormData, totalPrice: isNaN(val) ? 0 : val });
+                  }}
+                  required
+                  min="0"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>월간 등가 *</label>
+                <input
+                  type="number"
+                  value={subscriptionFormData.monthlyEquivalent || ''}
+                  onChange={(e) => {
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                    setSubscriptionFormData({ ...subscriptionFormData, monthlyEquivalent: isNaN(val) ? 0 : val });
+                  }}
+                  required
+                  min="0"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>절약 금액 *</label>
+                <input
+                  type="number"
+                  value={subscriptionFormData.savingsAmount || ''}
+                  onChange={(e) => {
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                    setSubscriptionFormData({ ...subscriptionFormData, savingsAmount: isNaN(val) ? 0 : val });
+                  }}
+                  required
+                  min="0"
+                />
+              </div>
+
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>할인율 (%) *</label>
+                  <input
+                    type="number"
+                    value={subscriptionFormData.discountRate || ''}
+                    onChange={(e) => {
+                      const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                      setSubscriptionFormData({ ...subscriptionFormData, discountRate: isNaN(val) ? 0 : val });
+                    }}
+                    required
+                    min="0"
+                    max="100"
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>우선순위 *</label>
+                  <input
+                    type="number"
+                    value={subscriptionFormData.priority || ''}
+                    onChange={(e) => {
+                      const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                      setSubscriptionFormData({ ...subscriptionFormData, priority: isNaN(val) ? 0 : val });
+                    }}
+                    required
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  onClick={handleCloseSubscriptionModal}
+                  className="line gray"
+                >
+                  취소
+                </button>
+                <button type="submit" className="dark-gray">
+                  {editingSubscription ? '수정' : '추가'}
                 </button>
               </div>
             </form>

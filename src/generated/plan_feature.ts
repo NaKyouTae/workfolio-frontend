@@ -22,6 +22,7 @@ export interface PlanFeatureCreateRequest {
   planId: string;
   featureId: string;
   limitCount: number;
+  description: string;
 }
 
 export interface PlanFeatureUpdateRequest {
@@ -29,6 +30,7 @@ export interface PlanFeatureUpdateRequest {
   planId: string;
   featureId: string;
   limitCount: number;
+  description: string;
 }
 
 function createBasePlanFeatureListResponse(): PlanFeatureListResponse {
@@ -154,7 +156,7 @@ export const PlanFeatureGetResponse: MessageFns<PlanFeatureGetResponse> = {
 };
 
 function createBasePlanFeatureCreateRequest(): PlanFeatureCreateRequest {
-  return { planId: "", featureId: "", limitCount: 0 };
+  return { planId: "", featureId: "", limitCount: 0, description: "" };
 }
 
 export const PlanFeatureCreateRequest: MessageFns<PlanFeatureCreateRequest> = {
@@ -167,6 +169,9 @@ export const PlanFeatureCreateRequest: MessageFns<PlanFeatureCreateRequest> = {
     }
     if (message.limitCount !== 0) {
       writer.uint32(24).int32(message.limitCount);
+    }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
     }
     return writer;
   },
@@ -202,6 +207,14 @@ export const PlanFeatureCreateRequest: MessageFns<PlanFeatureCreateRequest> = {
           message.limitCount = reader.int32();
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -216,6 +229,7 @@ export const PlanFeatureCreateRequest: MessageFns<PlanFeatureCreateRequest> = {
       planId: isSet(object.planId) ? globalThis.String(object.planId) : "",
       featureId: isSet(object.featureId) ? globalThis.String(object.featureId) : "",
       limitCount: isSet(object.limitCount) ? globalThis.Number(object.limitCount) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
     };
   },
 
@@ -230,6 +244,9 @@ export const PlanFeatureCreateRequest: MessageFns<PlanFeatureCreateRequest> = {
     if (message.limitCount !== 0) {
       obj.limitCount = Math.round(message.limitCount);
     }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
     return obj;
   },
 
@@ -241,12 +258,13 @@ export const PlanFeatureCreateRequest: MessageFns<PlanFeatureCreateRequest> = {
     message.planId = object.planId ?? "";
     message.featureId = object.featureId ?? "";
     message.limitCount = object.limitCount ?? 0;
+    message.description = object.description ?? "";
     return message;
   },
 };
 
 function createBasePlanFeatureUpdateRequest(): PlanFeatureUpdateRequest {
-  return { id: "", planId: "", featureId: "", limitCount: 0 };
+  return { id: "", planId: "", featureId: "", limitCount: 0, description: "" };
 }
 
 export const PlanFeatureUpdateRequest: MessageFns<PlanFeatureUpdateRequest> = {
@@ -262,6 +280,9 @@ export const PlanFeatureUpdateRequest: MessageFns<PlanFeatureUpdateRequest> = {
     }
     if (message.limitCount !== 0) {
       writer.uint32(32).int32(message.limitCount);
+    }
+    if (message.description !== "") {
+      writer.uint32(42).string(message.description);
     }
     return writer;
   },
@@ -305,6 +326,14 @@ export const PlanFeatureUpdateRequest: MessageFns<PlanFeatureUpdateRequest> = {
           message.limitCount = reader.int32();
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -320,6 +349,7 @@ export const PlanFeatureUpdateRequest: MessageFns<PlanFeatureUpdateRequest> = {
       planId: isSet(object.planId) ? globalThis.String(object.planId) : "",
       featureId: isSet(object.featureId) ? globalThis.String(object.featureId) : "",
       limitCount: isSet(object.limitCount) ? globalThis.Number(object.limitCount) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
     };
   },
 
@@ -337,6 +367,9 @@ export const PlanFeatureUpdateRequest: MessageFns<PlanFeatureUpdateRequest> = {
     if (message.limitCount !== 0) {
       obj.limitCount = Math.round(message.limitCount);
     }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
     return obj;
   },
 
@@ -349,6 +382,7 @@ export const PlanFeatureUpdateRequest: MessageFns<PlanFeatureUpdateRequest> = {
     message.planId = object.planId ?? "";
     message.featureId = object.featureId ?? "";
     message.limitCount = object.limitCount ?? 0;
+    message.description = object.description ?? "";
     return message;
   },
 };

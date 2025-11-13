@@ -23,6 +23,11 @@ export async function apiFetchHandler<T>(
         if (additionalHeaders) {
             Object.assign(headers, additionalHeaders);
         }
+
+        console.log('url', url);
+        console.log('method', method);
+        console.log('headers', headers);
+        console.log('body', body);
         
         const response = await fetch(url, {
             method,
@@ -30,12 +35,13 @@ export async function apiFetchHandler<T>(
             headers,
             body: body ? JSON.stringify(body) : undefined,
         });
-        
-        const status = response.status
-        const contentType = response.headers.get('content-type');
+
+        const status = response.status;
 
         if (status === 401 && accessToken) {
             const cookieStore = await cookies();
+            cookieStore.delete('admin_access_token');
+            cookieStore.delete('admin_refresh_token');
             cookieStore.delete('accessToken');
             cookieStore.delete('refreshToken');
             redirect("http://localhost:3000/login");

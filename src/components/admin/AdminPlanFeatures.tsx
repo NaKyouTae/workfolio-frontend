@@ -20,6 +20,7 @@ export default function AdminPlanFeatures() {
     planId: '',
     featureId: '',
     limitCount: -1, // -1은 무제한
+    description: '',
   });
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function AdminPlanFeatures() {
         planId: planFeature.plan?.id || '',
         featureId: planFeature.feature?.id ?? '',
         limitCount: planFeature.limitCount,
+        description: planFeature.description || '',
       });
     } else {
       setEditingPlanFeature(null);
@@ -48,6 +50,7 @@ export default function AdminPlanFeatures() {
         planId: '',
         featureId: '',
         limitCount: -1,
+        description: '',
       });
     }
     setShowModal(true);
@@ -148,6 +151,7 @@ export default function AdminPlanFeatures() {
               <th style={{ padding: '12px', textAlign: 'left' }}>타입</th>
               <th style={{ padding: '12px', textAlign: 'left' }}>기능</th>
               <th style={{ padding: '12px', textAlign: 'left' }}>도메인</th>
+              <th style={{ padding: '12px', textAlign: 'left' }}>설명</th>
               <th style={{ padding: '12px', textAlign: 'center' }}>사용 제한</th>
               <th style={{ padding: '12px', textAlign: 'center' }}>작업</th>
             </tr>
@@ -155,17 +159,17 @@ export default function AdminPlanFeatures() {
           <tbody>
             {planFeatures.map((planFeature) => (
               <tr key={planFeature.id} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '12px' }}>{planFeature.plan.name}</td>
+                <td style={{ padding: '12px' }}>{planFeature.plan?.name ?? ''}</td>
                 <td style={{ padding: '12px' }}>
                   <span style={{
                     padding: '4px 12px',
                     borderRadius: '4px',
                     fontSize: '12px',
                     fontWeight: '600',
-                    background: planFeature.plan.type === Plan_PlanType.FREE ? '#e3f2fd' : '#f3e5f5',
-                    color: planFeature.plan.type === Plan_PlanType.FREE ? '#1976d2' : '#7b1fa2',
+                    background: planFeature.plan?.type === Plan_PlanType.FREE ? '#e3f2fd' : '#f3e5f5',
+                    color: planFeature.plan?.type === Plan_PlanType.FREE ? '#1976d2' : '#7b1fa2',
                   }}>
-                    {getPlanTypeLabel(planFeature.plan.type)}
+                    {getPlanTypeLabel(planFeature.plan?.type || Plan_PlanType.UNKNOWN)}
                   </span>
                 </td>
                 <td style={{ padding: '12px' }}>{planFeature.feature?.name ?? ''}</td>
@@ -181,6 +185,9 @@ export default function AdminPlanFeatures() {
                     {planFeature.feature?.domain ?? ''}
                   </span>
                 </td>
+                <td style={{ padding: '12px', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {planFeature.description || '-'}
+                </td>
                 <td style={{ padding: '12px', textAlign: 'center' }}>
                   <span style={{
                     padding: '4px 12px',
@@ -193,17 +200,23 @@ export default function AdminPlanFeatures() {
                     {getLimitCountLabel(planFeature.limitCount)}
                   </span>
                 </td>
-                <td style={{ padding: '12px', textAlign: 'center' }}>
+                <td style={{ padding: '4px 8px', textAlign: 'center',
+                  display: 'flex',
+                  justifyContent: 'right',
+                  alignItems: 'center',
+                  gap: '8px',
+                 }}>
                   <button 
                     className="line gray"
                     onClick={() => handleOpenModal(planFeature)}
-                    style={{ marginRight: '8px' }}
+                    style={{ width: '60px', height: '30px' }}
                   >
                     편집
                   </button>
                   <button 
                     className="line red"
                     onClick={() => handleDelete(planFeature.id)}
+                    style={{ width: '60px', height: '30px' }}
                   >
                     삭제
                   </button>
@@ -308,7 +321,7 @@ export default function AdminPlanFeatures() {
                 )}
               </div>
 
-              <div style={{ marginBottom: '24px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
                   사용 제한 *
                 </label>
@@ -345,6 +358,26 @@ export default function AdminPlanFeatures() {
                 <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
                   * -1은 무제한을 의미합니다.
                 </div>
+              </div>
+
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
+                  설명
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={4}
+                  placeholder="플랜-기능 연결에 대한 설명을 입력하세요"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '6px',
+                    resize: 'vertical',
+                    fontFamily: 'inherit',
+                  }}
+                />
               </div>
 
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>

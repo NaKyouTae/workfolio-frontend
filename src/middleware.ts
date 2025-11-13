@@ -7,6 +7,23 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/records', request.url));
     }
     
+    // 어드민 페이지 보호
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+        // 어드민 로그인 페이지는 허용
+        if (request.nextUrl.pathname === '/admin') {
+            return NextResponse.next();
+        }
+        
+        // 어드민 대시보드 및 하위 페이지는 토큰 확인
+        const adminAccessToken = request.cookies.get('admin_access_token');
+        const adminRefreshToken = request.cookies.get('admin_refresh_token');
+        
+        if (!adminAccessToken && !adminRefreshToken) {
+            // 토큰이 없으면 어드민 로그인 페이지로 리다이렉트
+            return NextResponse.redirect(new URL('/admin', request.url));
+        }
+    }
+    
     // 로그인 페이지는 항상 허용
     if (request.nextUrl.pathname === '/login') {
         const response = NextResponse.next();
@@ -51,6 +68,7 @@ export const config = {
         '/company-history/:path*',
         '/mypage/:path*',
         '/login',
+        '/admin/:path*',
         // 필요한 다른 경로들도 추가 가능
     ],
 };

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useUser } from '@/hooks/useUser';
 import { sampleNotices } from '@/utils/sampleNoticesData';
 
 export interface Notice {
@@ -13,42 +12,30 @@ export interface Notice {
 }
 
 export const useNotices = () => {
-  const { isLoggedIn } = useUser();
   const [notices, setNotices] = useState<Notice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchNotices = useCallback(async () => {
-    // 로그인되지 않은 경우 샘플 데이터 사용
-    if (!isLoggedIn) {
-      setNotices(sampleNotices);
-      setIsLoading(false);
-      return;
-    }
-
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch('/api/notices', {
+      const response = await fetch('/api/release/notices', {
         method: 'GET',
       });
 
       if (!response.ok) {
-        // 401 에러인 경우 샘플 데이터 사용
-        if (response.status === 401) {
-          setNotices(sampleNotices);
-          setIsLoading(false);
-          return;
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // 에러 발생 시 샘플 데이터 사용
+        setNotices(sampleNotices);
+        setIsLoading(false);
+        return;
       }
 
       const data = await response.json();
       
-      // API 응답 구조에 맞게 데이터 매핑
-      // 실제 API 응답 구조에 따라 수정 필요
-      const noticesData: Notice[] = Array.isArray(data) ? data : data.notices || [];
+      // ReleaseNoticeListResponse 구조: { notices: Notice[] }
+      const noticesData: Notice[] = data.notices || [];
       
       setNotices(noticesData);
     } catch (err) {
@@ -59,7 +46,7 @@ export const useNotices = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoggedIn]);
+  }, []);
 
   useEffect(() => {
     fetchNotices();
@@ -70,7 +57,7 @@ export const useNotices = () => {
     isLoading,
     error,
     refreshNotices: fetchNotices,
-    isSampleData: !isLoggedIn,
+    isSampleData: false, // 인증 불필요하므로 항상 false
   };
 };
 

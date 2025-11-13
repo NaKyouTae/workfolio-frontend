@@ -10,13 +10,17 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 // GET /api/plans - 전체 플랜 목록 조회
 export async function GET() {
   try {
-    const accessToken = await getCookie('admin_access_token');
+    // admin 토큰 우선, 없으면 일반 사용자 토큰 사용
+    let accessToken = await getCookie('admin_access_token');
+    if (!accessToken) {
+      accessToken = await getCookie('accessToken');
+    }
     
     const response = await apiFetchHandler<PlanListResponse>(
       `${API_BASE_URL}/api/plans`,
       HttpMethod.GET,
       null,
-      accessToken
+      accessToken || undefined
     );
 
     const data = await response.json();

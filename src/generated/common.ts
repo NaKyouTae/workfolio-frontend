@@ -1584,6 +1584,7 @@ export interface PlanFeature {
   plan?: Plan | undefined;
   feature?: Feature | undefined;
   limitCount: number;
+  description: string;
   createdAt: number;
   updatedAt: number;
 }
@@ -9782,7 +9783,7 @@ export const WorkerFeatureUsage: MessageFns<WorkerFeatureUsage> = {
 };
 
 function createBasePlanFeature(): PlanFeature {
-  return { id: "", plan: undefined, feature: undefined, limitCount: 0, createdAt: 0, updatedAt: 0 };
+  return { id: "", plan: undefined, feature: undefined, limitCount: 0, description: "", createdAt: 0, updatedAt: 0 };
 }
 
 export const PlanFeature: MessageFns<PlanFeature> = {
@@ -9798,6 +9799,9 @@ export const PlanFeature: MessageFns<PlanFeature> = {
     }
     if (message.limitCount !== 0) {
       writer.uint32(416).int32(message.limitCount);
+    }
+    if (message.description !== "") {
+      writer.uint32(426).string(message.description);
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -9847,6 +9851,14 @@ export const PlanFeature: MessageFns<PlanFeature> = {
           message.limitCount = reader.int32();
           continue;
         }
+        case 53: {
+          if (tag !== 426) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
         case 98: {
           if (tag !== 784) {
             break;
@@ -9878,6 +9890,7 @@ export const PlanFeature: MessageFns<PlanFeature> = {
       plan: isSet(object.plan) ? Plan.fromJSON(object.plan) : undefined,
       feature: isSet(object.feature) ? Feature.fromJSON(object.feature) : undefined,
       limitCount: isSet(object.limitCount) ? globalThis.Number(object.limitCount) : 0,
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -9896,6 +9909,9 @@ export const PlanFeature: MessageFns<PlanFeature> = {
     }
     if (message.limitCount !== 0) {
       obj.limitCount = Math.round(message.limitCount);
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
     }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
@@ -9917,6 +9933,7 @@ export const PlanFeature: MessageFns<PlanFeature> = {
       ? Feature.fromPartial(object.feature)
       : undefined;
     message.limitCount = object.limitCount ?? 0;
+    message.description = object.description ?? "";
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;

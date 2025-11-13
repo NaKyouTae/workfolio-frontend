@@ -131,17 +131,23 @@ export default function AdminFeatures() {
                   </span>
                 </td>
                 <td style={{ padding: '12px' }}>{feature.action ?? ''}</td>
-                <td style={{ padding: '12px', textAlign: 'center' }}>
+                <td style={{ padding: '4px 8px', textAlign: 'center',
+                  display: 'flex',
+                  justifyContent: 'right',
+                  alignItems: 'center',
+                  gap: '8px',
+                 }}>
                   <button 
                     className="line gray"
                     onClick={() => handleOpenModal(feature)}
-                    style={{ marginRight: '8px' }}
+                    style={{ width: '60px', height: '30px' }}
                   >
                     편집
                   </button>
                   <button 
                     className="line red"
                     onClick={() => handleDelete(feature.id)}
+                    style={{ width: '60px', height: '30px' }}
                   >
                     삭제
                   </button>

@@ -7,24 +7,39 @@ import {
   PlanUpdateRequest,
 } from '@/generated/plan';
 import { SuccessResponse } from '@/generated/common';
+import { ReleasePlanListResponse, ReleasePlanDetail } from '@/generated/release';
 
 export const usePlans = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 전체 플랜 목록 조회
+  // 전체 플랜 목록 조회 (인증 불필요한 release API 사용)
   const fetchPlans = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/plans');
+      const response = await fetch('/api/release/plans');
       if (!response.ok) {
         throw new Error('Failed to fetch plans');
       }
-      const data: PlanListResponse = await response.json();
-      setPlans(data.plans || []);
-      return data.plans;
+      const data: ReleasePlanListResponse = await response.json();
+      
+      // ReleasePlanDetail을 Plan으로 변환
+      const convertedPlans: Plan[] = (data.plans || []).map((releasePlan: ReleasePlanDetail) => ({
+        id: releasePlan.id,
+        name: releasePlan.name,
+        type: releasePlan.type,
+        price: releasePlan.price,
+        currency: releasePlan.currency,
+        priority: releasePlan.priority,
+        description: releasePlan.description || '',
+        createdAt: releasePlan.createdAt,
+        updatedAt: releasePlan.updatedAt,
+      }));
+      
+      setPlans(convertedPlans);
+      return convertedPlans;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
