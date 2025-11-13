@@ -1,12 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useModal } from '@/hooks/useModal';
 import ContentModal from '@/components/portal/ui/ContentModal';
+import PlanInfoModal from '@/components/portal/features/plans/PlanInfoModal';
 
 const Footer = () => {
   const { isOpen, content, title, openModal, closeModal } = useModal();
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
 
   const handleCustomerInquiry = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -31,6 +33,17 @@ const Footer = () => {
     openModal(inquiryContent, '고객 문의');
   };
 
+  const handlePlanClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsPlanModalOpen(true);
+  };
+
+  const handlePlanSelect = (durationMonths: number, totalPrice: number) => {
+    console.log(`Selected plan: ${durationMonths} months, total: ${totalPrice}원`);
+    // TODO: 결제 로직 구현
+    setIsPlanModalOpen(false);
+  };
+
   return (
     <>
       <footer>
@@ -46,7 +59,9 @@ const Footer = () => {
           <li><a href="#">이용약관</a></li>
           <li><a href="#">개인정보처리방침</a></li>
           <li>
-            <Link href="/plans">플랜구성</Link>
+            <a href="#" onClick={handlePlanClick}>
+              플랜구성
+            </a>
           </li>
         </ul>
 
@@ -58,6 +73,12 @@ const Footer = () => {
         onClose={closeModal}
         content={content}
         title={title}
+      />
+
+      <PlanInfoModal
+        isOpen={isPlanModalOpen}
+        onClose={() => setIsPlanModalOpen(false)}
+        onSelectPlan={handlePlanSelect}
       />
     </>
   );

@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/portal/layouts/Header';
-import PlanSelectionModal from '@/components/portal/features/plans/PlanSelectionModal';
-import { Plan, PlanSubscription } from '@/generated/common';
+import PlanInfoModal from '@/components/portal/features/plans/PlanInfoModal';
 
 export default function PlansPage() {
   const router = useRouter();
@@ -15,9 +14,8 @@ export default function PlansPage() {
     setIsModalOpen(true);
   }, []);
 
-  const handlePlanSelect = (plan: Plan, subscription?: PlanSubscription) => {
-    console.log('Selected plan:', plan);
-    console.log('Selected subscription:', subscription);
+  const handlePlanSelect = (durationMonths: number, totalPrice: number) => {
+    console.log('Selected plan:', { durationMonths, totalPrice });
     // TODO: 플랜 선택 및 구독 처리 로직 구현
     // 예: 결제 페이지로 이동, 구독 생성 등
   };
@@ -31,7 +29,7 @@ export default function PlansPage() {
   return (
     <>
       <Header />
-      <PlanSelectionModal
+      <PlanInfoModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSelectPlan={handlePlanSelect}
