@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './PlanInfoModal.module.css';
 import { ReleasePlanListResponse, ReleasePlanSubscription } from '@/generated/release';
 import { Plan_PlanType } from '@/generated/common';
+import { compareEnumValue } from '@/utils/commonUtils';
 
 interface PlanInfoModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface PlanInfoModalProps {
 
 const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelectPlan }) => {
   const [membershipOptions, setMembershipOptions] = useState<ReleasePlanSubscription[]>([]);
+  const [premiumPlanPrice, setPremiumPlanPrice] = useState<number>(9900); // 기본값
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,16 +33,34 @@ const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelect
         throw new Error('Failed to fetch plans');
       }
       const data: ReleasePlanListResponse = await response.json();
+
+      console.log('data', data);
       
+
+
       // 완성 플랜(PREMIUM) 찾기
-      const completePlan = data.plans?.find(plan => plan.type === Plan_PlanType.PREMIUM);
+      const completePlan = data.plans?.find(plan => compareEnumValue(plan.type, Plan_PlanType.PREMIUM, Plan_PlanType));
       
-      if (completePlan && completePlan.planSubscriptions) {
-        // priority 순으로 정렬 (낮은 숫자가 먼저)
-        const sortedSubscriptions = [...completePlan.planSubscriptions].sort(
-          (a, b) => a.priority - b.priority
-        );
-        setMembershipOptions(sortedSubscriptions);
+      if (completePlan) {
+        // PREMIUM 플랜의 가격 저장 (원래 월 가격)
+        const price = typeof completePlan.price === 'string' 
+          ? parseInt(completePlan.price) || 9900 
+          : completePlan.price || 9900;
+        setPremiumPlanPrice(price);
+        
+        if (completePlan.planSubscriptions && completePlan.planSubscriptions.length > 0) {
+          // durationMonths 역순으로 정렬 (12개월, 6개월, 3개월, 1개월)
+          const sortedSubscriptions = [...completePlan.planSubscriptions].sort(
+            (a, b) => {
+              const aDuration = parseInt(a.durationMonths) || 0;
+              const bDuration = parseInt(b.durationMonths) || 0;
+              return bDuration - aDuration; // 큰 숫자부터
+            }
+          );
+          setMembershipOptions(sortedSubscriptions);
+        } else {
+          setMembershipOptions([]);
+        }
       } else {
         setMembershipOptions([]);
       }
@@ -64,26 +84,37 @@ const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelect
 
   const handlePayment = (subscription: ReleasePlanSubscription) => {
     const durationMonths = parseInt(subscription.durationMonths) || 0;
+    const totalPrice = typeof subscription.totalPrice === 'string'
+      ? parseInt(subscription.totalPrice) || 0
+      : subscription.totalPrice || 0;
     if (onSelectPlan) {
-      onSelectPlan(durationMonths, subscription.totalPrice);
+      onSelectPlan(durationMonths, totalPrice);
     }
     // TODO: 결제 로직 구현
   };
 
   const formatMembershipOption = (subscription: ReleasePlanSubscription) => {
     const duration = parseInt(subscription.durationMonths) || 1;
-    // 원래 월 가격 = 할인된 월 가격 + (절약 금액 / 기간)
-    const originalMonthly = duration > 0 
-      ? subscription.monthlyEquivalent + (subscription.savingsAmount / duration)
-      : subscription.monthlyEquivalent;
-    const discountedMonthly = subscription.monthlyEquivalent;
-    const totalPrice = subscription.totalPrice;
-    const discountRate = subscription.discountRate;
+    // 원래 월 가격은 PREMIUM 플랜의 price 사용
+    const originalMonthly = premiumPlanPrice;
+    // 할인된 월 가격
+    const monthlyEquivalent = typeof subscription.monthlyEquivalent === 'string'
+      ? parseInt(subscription.monthlyEquivalent) || 0
+      : subscription.monthlyEquivalent || 0;
+    const discountedMonthly = monthlyEquivalent > 0 ? monthlyEquivalent : originalMonthly;
+    // 총 가격
+    const totalPrice = typeof subscription.totalPrice === 'string'
+      ? parseInt(subscription.totalPrice) || 0
+      : subscription.totalPrice || 0;
+    // 할인율
+    const discountRate = typeof subscription.discountRate === 'string'
+      ? parseInt(subscription.discountRate) || 0
+      : subscription.discountRate || 0;
 
     return {
       duration,
-      originalMonthly: Math.round(originalMonthly),
-      discountedMonthly: Math.round(discountedMonthly),
+      originalMonthly,
+      discountedMonthly,
       totalPrice,
       discountRate,
       subscription,
@@ -135,7 +166,7 @@ const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelect
 
             <div className={styles.planCard}>
               <div className={styles.planHeader}>
-                <span className={styles.planIcon}>🔥</span>
+                <span className={styles.planIcon}>❤️</span>
                 <h3 className={styles.planName}>완성 플랜</h3>
               </div>
               <p className={styles.planIntro}>
@@ -166,6 +197,7 @@ const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelect
 
           {/* 멤버십 옵션 섹션 */}
           <div className={styles.membershipSection}>
+            <h3 className={styles.membershipTitle}>완성 플랜 멤버십</h3>
             <p className={styles.membershipIntro}>나에게 딱 맞는 플랜을 선택해 보세요.</p>
             {loading ? (
               <div className={styles.loading}>로딩 중...</div>
@@ -184,21 +216,22 @@ const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelect
                       </div>
                       <div className={styles.priceInfo}>
                         <div className={styles.priceRow}>
-                          {option.discountRate > 0 && (
-                            <span className={styles.crossedPrice}>월 {option.originalMonthly.toLocaleString()}원</span>
-                          )}
-                          {option.discountRate === 0 && (
+                          {option.discountRate > 0 ? (
+                            <>
+                              <span className={styles.crossedPrice}>월 {option.originalMonthly.toLocaleString()}원</span>
+                            </>
+                          ) : (
                             <span className={styles.originalMonthlyPrice}>월 {option.originalMonthly.toLocaleString()}원</span>
                           )}
                         </div>
-                        <div className={styles.priceRow}>
-                          <span className={styles.monthlyPrice}>
-                            월 {option.discountRate > 0 ? option.discountedMonthly.toLocaleString() : option.originalMonthly.toLocaleString()}원
-                          </span>
-                          {option.discountRate > 0 && (
+                        {option.discountRate > 0 && (
+                          <div className={styles.priceRow}>
+                            <span className={styles.monthlyPrice}>
+                              {option.discountedMonthly.toLocaleString()}원
+                            </span>
                             <span className={styles.discountBadge}>약 {option.discountRate}% 할인</span>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                       <button
                         className={styles.paymentButton}
