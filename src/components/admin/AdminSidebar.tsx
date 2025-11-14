@@ -29,6 +29,11 @@ export default function AdminSidebar() {
       path: '/admin/dashboard/plan-features',
       icon: '🔗',
     },
+    {
+      name: '공지사항 관리',
+      path: '/admin/dashboard/notices',
+      icon: '📢',
+    },
   ];
 
   const handleLogout = async () => {

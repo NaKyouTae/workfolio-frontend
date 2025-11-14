@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
 import {
-  Plan,
-  PlanListResponse,
+
   PlanGetResponse,
   PlanCreateRequest,
   PlanUpdateRequest,
 } from '@/generated/plan';
-import { SuccessResponse } from '@/generated/common';
+import { Plan, SuccessResponse } from '@/generated/common';
 import { ReleasePlanListResponse, ReleasePlanDetail } from '@/generated/release';
 
 export const usePlans = () => {
@@ -51,7 +50,7 @@ export const usePlans = () => {
   }, []);
 
   // 플랜 상세 조회
-  const getPlanById = useCallback(async (id: string): Promise<Plan | null> => {
+  const getPlanById = useCallback(async (id: string): Promise<Plan | undefined> => {
     setLoading(true);
     setError(null);
     try {
@@ -65,7 +64,7 @@ export const usePlans = () => {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       console.error('Error fetching plan:', err);
-      return null;
+      return undefined;
     } finally {
       setLoading(false);
     }

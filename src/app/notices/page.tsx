@@ -2,13 +2,13 @@
 
 import React from 'react';
 import Header from '@/components/portal/layouts/Header';
-import NoticesIntegration from '@/components/portal/features/notices/NoticesIntegration';
+import CustomerServicePage from '@/components/portal/features/notices/CustomerServicePage';
 
-export default function NoticesPage() {
+export default function NoticesPageWrapper() {
   return (
     <>
       <Header />
-      <NoticesIntegration />
+      <CustomerServicePage />
     </>
   );
 }

@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 60px); /* Header 높이 제외 */
+}
+
+.content {
+  flex: 1;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
