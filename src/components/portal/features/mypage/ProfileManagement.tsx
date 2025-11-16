@@ -199,83 +199,87 @@ const ProfileManagement: React.FC = () => {
   };
 
   return (
-    <div className="cont-box">
-        <div className="cont-tit">
-            <div>
-                <h3>프로필 관리</h3>
-            </div>
-        </div>
-        <form onSubmit={handleSubmit}>
-            <ul className="setting-list">
-                <li>
-                    <p>닉네임<span>*</span></p>
+    <>
+        <article>
+            <div className="cont-box">
+                <div className="cont-tit">
                     <div>
-                        <input 
-                            type="text" 
-                            name="nickName" 
-                            value={nickName} 
-                            onChange={(e) => setNickName(e.target.value)} 
-                            placeholder="닉네임을 입력해주세요" 
-                        />
-                        <button 
-                            type="button"
-                            onClick={handleCheckNickName}
-                            disabled={!isLoggedIn || isCheckingNickName || !nickName.trim() || nickName === originalNickName}
-                        >
-                            {isCheckingNickName ? '확인 중...' : '중복 확인'}
-                        </button>
+                        <h3>프로필 관리</h3>
                     </div>
-                     <div>
-                       {hasCheckedNickName && isNickNameChecked && (
-                           <>
-                               {isNickNameAvailable === false && (
-                                   <p style={{ color: 'red', marginTop: '5px', fontSize: '14px' }}>
-                                       이미 사용 중인 닉네임입니다.
-                                   </p>
-                               )}
-                               {isNickNameAvailable === true && (
-                                   <p style={{ color: 'green', marginTop: '5px', fontSize: '14px' }}>
-                                       사용 가능한 닉네임입니다.
-                                   </p>
-                               )}
-                           </>
-                       )}
-                     </div>
-                </li>
-                <li>
-                    <p>전화번호</p>
-                    <input type="tel" name="phone" value={phone} onChange={handlePhoneChange} disabled={!isLoggedIn} placeholder="010-1234-5678" />
-                </li>
-                <li>
-                    <p>이메일</p>
-                    <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={!isLoggedIn} />
-                </li>
-                <li>
-                    <p>생년월일</p>
-                    <DatePicker
-                        value={birthDate}
-                        onChange={(date) => setBirthDate(DateTime.fromISO(date).toMillis())}
-                        required={false}
-                    />
-                </li>
-                <li>
-                    <p>성별</p>
-                    <Dropdown
-                        selectedOption={normalizeEnumValue(gender, Worker_Gender)}
-                        options={[
-                            { value: Worker_Gender.MALE, label: '남성' },
-                            { value: Worker_Gender.FEMALE, label: '여성' },
-                        ]}
-                        setValue={(value) => setGender(normalizeEnumValue(value, Worker_Gender))}
-                    />
-                </li>
-            </ul>
-            <div className="btn-wrap">
-                <button>취소</button>
-                <button type="submit" disabled={!isLoggedIn || isUpdating || isLoading}>저장</button>
+                </div>
+                <form onSubmit={handleSubmit}>
+                    <ul className="setting-list grid-2">
+                        <li className="full">
+                            <p>닉네임<span>*</span></p>
+                            <div>
+                                <input 
+                                    type="text" 
+                                    name="nickName" 
+                                    value={nickName} 
+                                    onChange={(e) => setNickName(e.target.value)} 
+                                    placeholder="닉네임을 입력해주세요" 
+                                />
+                                <button 
+                                    type="button"
+                                    onClick={handleCheckNickName}
+                                    disabled={!isLoggedIn || isCheckingNickName || !nickName.trim() || nickName === originalNickName}
+                                >중복 확인</button>
+                                <span>닉네임 중복 여부를 확인해 주세요.</span>
+                                {hasCheckedNickName && isNickNameChecked && (
+                                    <>
+                                        {isNickNameAvailable === false && (
+                                            <span className="font-red">이미 사용하고 있는 닉네임이에요.</span>
+                                        )}
+                                        {isNickNameAvailable === true && (
+                                            <span className="font-blue">사용 가능한 닉네임이에요!</span>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        </li>
+                        <li>
+                            <p>전화번호</p>
+                            <input type="tel" name="phone" value={phone} onChange={handlePhoneChange} disabled={!isLoggedIn} placeholder="010-1234-5678" />
+                        </li>
+                        <li>
+                            <p>이메일</p>
+                            <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={!isLoggedIn} />
+                        </li>
+                        <li>
+                            <p>생년월일</p>
+                            <DatePicker
+                                value={birthDate}
+                                onChange={(date) => setBirthDate(DateTime.fromISO(date).toMillis())}
+                                required={false}
+                            />
+                        </li>
+                        <li>
+                            <p>성별</p>
+                            <Dropdown
+                                selectedOption={normalizeEnumValue(gender, Worker_Gender)}
+                                options={[
+                                    { value: Worker_Gender.MALE, label: '남성' },
+                                    { value: Worker_Gender.FEMALE, label: '여성' },
+                                ]}
+                                setValue={(value) => setGender(normalizeEnumValue(value, Worker_Gender))}
+                            />
+                        </li>
+                    </ul>
+                    <div className="btn-wrap">
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
+        </article>
+        <nav>
+            <ul className="nav-wrap">
+                <li className="active">프로필 관리</li>  
+            </ul>
+            <div className="nav-btn">
+                <button className="dark-gray" type="submit" disabled={!isLoggedIn || isUpdating || isLoading}>저장하기</button>
+                <button className="line gray">취소</button>
+            </div>
+        </nav>
+    </>
   );
 };
 
