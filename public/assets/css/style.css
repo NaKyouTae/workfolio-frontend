@@ -144,6 +144,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .cont-tit > div {display: flex; align-items: center; column-gap: 1rem;}
 .cont-tit > div > h3 {font-size: 1.6rem; font-weight: 600;}
 .cont-tit > div > p {font-size: 1.4rem; color: var(--gray005);}
+.cont-tit > div > p > span {color: var(--black); font-weight: 500;}
 .cont-tit > select {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border: 0; background-image: url(../img/ico/ic-select-bl.svg); background-position: center right;}
 .cont-tit button {width: fit-content; height: 1.6rem; padding: 0; column-gap: .6rem; font-size: 1.4rem; color: var(--gray005); border-radius: 0; background-color: transparent;}
 
@@ -447,6 +448,7 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 .edit-list.type2 {grid-template-columns: repeat(1, 1fr);}
 .edit-drag-list .card .edit-cont.type2 {grid-template-columns: repeat(1, 1fr);}
 
+
 /* 마이페이지 */
 .aside-menu {display: flex; flex-flow: column; row-gap: .8rem; margin-top: -.4rem;}
 .aside-menu > li {height: 3.2rem; display: flex; align-items: center; margin: 0 -2rem; padding: 0 2rem; font-size: 1.4rem; cursor: pointer;}
@@ -489,3 +491,21 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 .setting-list + .btn-wrap {margin-top: 2.4rem; width: 100%; max-width: 56rem; display: flex; align-items: center; column-gap: 1rem; justify-content: flex-end;}
 .setting-list + .btn-wrap button {max-width: 10rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
 .setting-list + .btn-wrap button:nth-last-child(2) {border-color: var(--gray003); background-color: var(--white); color: var(--black);}
+
+
+/* 공지사항 */
+.notice-list {display: flex; flex-flow: column; row-gap: 1rem;}
+.notice-list > li {width: 100%; padding: 1.6rem; border-radius: 1rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: 1.2rem;}
+.notice-list > li .question {cursor: pointer; display: flex; justify-content: space-between; column-gap: 2.4rem;}
+.notice-list > li .question .info {display: flex; column-gap: .6rem; flex: 1;}
+.notice-list > li .question .info .label {margin-top: .3rem;}
+.notice-list > li .question .info > p {flex: 1; font-size: 1.4rem; line-height: 1.6; font-weight: 500; word-break: keep-all;}
+.notice-list > li .question .option {height: fit-content; display: flex; align-items: center; column-gap: 1.6rem;}
+.notice-list > li .question .option > span {height: 2.2rem; display: flex; align-items: center; font-size: 1.2rem; color: var(--gray005);}
+.notice-list > li .answer {background-color: var(--gray001); padding: 1.6rem; border-radius: .8rem; font-size: 1.2rem; line-height: 1.6; word-break: keep-all; white-space: pre-line; color: var(--black);}
+
+
+/* 이용약관, 개인정보 처리방침 */
+.page-cont:has(nav.terms) {grid-template-columns: calc(100% - 40rem) 38rem;}
+
+.terms-desc {font-size: 1.4rem; line-height: 1.6; word-break: keep-all;}

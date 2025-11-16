@@ -25,3 +25,9 @@ i {display: flex; align-items: center; justify-content: center; background-repea
 
 .ic-close {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-close-24.svg);}
 .ic-drag {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-drag.svg);}
+
+.ic-pagination {width: 2rem; height: 2rem;}
+.ic-pagination.first {background-image: url(../img/ico/ic-pagination-first.svg);}
+.ic-pagination.prev {background-image: url(../img/ico/ic-pagination-prev.svg);}
+.ic-pagination.next {background-image: url(../img/ico/ic-pagination-next.svg);}
+.ic-pagination.last {background-image: url(../img/ico/ic-pagination-last.svg);}

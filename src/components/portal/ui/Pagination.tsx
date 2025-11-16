@@ -86,83 +86,77 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className={styles.paginationContainer}>
-      <div className={styles.itemsPerPageContainer}>
-        <button
-          className={styles.itemsPerPageButton}
-          onClick={() => setShowItemsPerPage(!showItemsPerPage)}
-        >
-          {itemsPerPage}개
-        </button>
-        {showItemsPerPage && (
-          <div className={styles.itemsPerPageDropdown}>
-            {itemsPerPageOptions.map((option) => (
-              <button
-                key={option}
-                className={`${styles.itemsPerPageOption} ${itemsPerPage === option ? styles.active : ''}`}
-                onClick={() => {
-                  onItemsPerPageChange(option);
-                  setShowItemsPerPage(false);
-                }}
-              >
-                {option}개
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+    <div className="pagination">
+        {/* <div className={styles.itemsPerPageContainer}>
+            <button
+                className={styles.itemsPerPageButton}
+                onClick={() => setShowItemsPerPage(!showItemsPerPage)}
+            >
+                {itemsPerPage}개
+            </button>
+            {showItemsPerPage && (
+                <div className={styles.itemsPerPageDropdown}>
+                {itemsPerPageOptions.map((option) => (
+                    <button
+                    key={option}
+                    className={`${styles.itemsPerPageOption} ${itemsPerPage === option ? styles.active : ''}`}
+                    onClick={() => {
+                        onItemsPerPageChange(option);
+                        setShowItemsPerPage(false);
+                    }}
+                    >
+                    {option}개
+                    </button>
+                ))}
+                </div>
+            )}
+        </div> */}
 
-      <div className={styles.pagination}>
         <button
-          className={styles.navButton}
-          onClick={handleFirstPage}
-          disabled={currentPage === 1}
+            onClick={handleFirstPage}
+            disabled={currentPage === 1}
         >
-          &lt;&lt;
+            <i className="ic-pagination first" />
         </button>
         <button
-          className={styles.navButton}
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
         >
-          &lt;
+            <i className="ic-pagination prev" />
         </button>
         
         {getPageNumbers().map((page, index) => {
-          if (page === '...') {
+            if (page === '...') {
             return (
-              <span key={`ellipsis-${index}`} className={styles.ellipsis}>
+                <span key={`ellipsis-${index}`} className={styles.ellipsis}>
                 ...
-              </span>
+                </span>
             );
-          }
-          
-          return (
+            }
+            
+            return (
             <button
-              key={page}
-              className={`${styles.pageButton} ${currentPage === page ? styles.active : ''}`}
-              onClick={() => handlePageClick(page as number)}
+                key={page}
+                className={`${currentPage === page ? 'active' : ''}`}
+                onClick={() => handlePageClick(page as number)}
             >
-              {page}
+                {page}
             </button>
-          );
+            );
         })}
         
         <button
-          className={styles.navButton}
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
         >
-          &gt;
+            <i className="ic-pagination next" />
         </button>
         <button
-          className={styles.navButton}
-          onClick={handleLastPage}
-          disabled={currentPage === totalPages}
+            onClick={handleLastPage}
+            disabled={currentPage === totalPages}
         >
-          &gt;&gt;
+            <i className="ic-pagination last" />
         </button>
-      </div>
     </div>
   );
 };

@@ -13,10 +13,10 @@ interface ServiceGuidesContentProps {
 
 const ServiceGuidesContent: React.FC<ServiceGuidesContentProps> = ({ selectedMenu }) => {
   return (
-    <div>
-      {selectedMenu === 'notices' && <Notices />}
-      {selectedMenu === 'terms' && <TermsOfService />}
-      {selectedMenu === 'privacy' && <PrivacyPolicy />}
+    <div className="contents">
+        {selectedMenu === 'notices' && <Notices />}
+        {selectedMenu === 'terms' && <TermsOfService />}
+        {selectedMenu === 'privacy' && <PrivacyPolicy />}
     </div>
   );
 };
