@@ -1,18 +1,19 @@
-// src/components/layouts/Contents.tsx
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+// src/components/portal/features/records/RecordsPage.tsx
+import React, { useRef, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from "@/components/portal/features/records/sidebar/Sidebar"
-import BodyRight, { BodyRightRef } from "@/components/portal/features/records/sidebar/BodyRight"
+import RecordContents, { RecordContentsRef } from "@/components/portal/features/records/RecordContents"
+import RecordConfig from './sidebar/records-config/RecordConfig';
 
 import Footer from "@/components/portal/layouts/Footer"
 import { useSystemConfigStore } from '@/store/systemConfigStore';
 import { SystemConfig_SystemConfigType } from '@/generated/common';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
-import RecordConfig from './records-config/RecordConfig';
 
-const Contents = React.memo(() => {
-    const bodyRightRef = useRef<BodyRightRef>(null);
-    const [isConfigMode, setIsConfigMode] = useState(false);
-    const [isConfigLoaded, setIsConfigLoaded] = useState(false);
+const RecordsPage = React.memo(() => {
+    const router = useRouter();
+    const pathname = usePathname();
+    const recordContentsRef = useRef<RecordContentsRef>(null);
     
     // 🔥 최상위에서 useRecordGroups 한 번만 호출
     const recordGroupsData = useRecordGroups();
@@ -20,46 +21,34 @@ const Contents = React.memo(() => {
     // 최초 접근 시 systemConfig 로드
     const { fetchSystemConfig, getSystemConfig } = useSystemConfigStore();
     
+    // URL 경로에 따라 모드 결정
+    const isConfigMode = pathname === '/records/config';
+    
     useEffect(() => {
         const loadConfig = async () => {
             // DEFAULT_RECORD_TYPE 미리 로드
             await fetchSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
-            setIsConfigLoaded(true);
         };
         
         // 이미 로드되어 있으면 바로 설정
         const existingConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
-        if (existingConfig) {
-            setIsConfigLoaded(true);
-        } else {
+        if (!existingConfig) {
             loadConfig();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // 마운트 시 한 번만 실행 - Zustand store 함수들은 안정적
 
-    const handleConfigToggle = useCallback(() => {
-        setIsConfigMode(prev => !prev);
-    }, []);
+    const handleConfigToggle = () => {
+        if (isConfigMode) {
+            router.push('/records');
+        } else {
+            router.push('/records/config');
+        }
+    };
 
-    const handleConfigClose = useCallback(() => {
-        setIsConfigMode(false);
-    }, []);
-
-    // systemConfig 로드 중에는 로딩 표시
-    if (!isConfigLoaded) {
-        return (
-            <main>
-                <Sidebar 
-                    onConfigToggle={handleConfigToggle}
-                    recordGroupsData={recordGroupsData}
-                />
-                <section>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}></div>
-                    <Footer/>
-                </section>
-            </main>
-        );
-    }
+    const handleConfigClose = () => {
+        router.push('/records');
+    };
 
     return (
         <main>
@@ -74,8 +63,8 @@ const Contents = React.memo(() => {
                         recordGroupsData={recordGroupsData}
                     />
                 ) : (
-                    <BodyRight 
-                        ref={bodyRightRef}
+                    <RecordContents 
+                        ref={recordContentsRef}
                         recordGroupsData={recordGroupsData}
                     />
                 )}
@@ -85,6 +74,7 @@ const Contents = React.memo(() => {
     );
 });
 
-Contents.displayName = 'Contents';
+RecordsPage.displayName = 'RecordsPage';
 
-export default Contents;
+export default RecordsPage;
+

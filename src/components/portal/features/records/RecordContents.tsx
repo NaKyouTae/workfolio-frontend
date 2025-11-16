@@ -9,17 +9,17 @@ import { parseCalendarViewType } from '@/utils/commonUtils'
 import { RecordGroupDetailResponse } from '@/generated/record_group'
 import { ListRecordResponse } from '@/generated/record'
 import dayjs from 'dayjs'
-import CalendarHeader from '../calendar/CalendarHeader'
-import ListCalendar from '../calendar/list/ListCalendar'
-import MonthlyCalendar from '../calendar/monthly/MonthlyCalendar'
-import WeeklyCalendar from '../calendar/weekly/WeeklyCalendar'
-import RecordSearch from '../search/RecordSearch'
+import CalendarHeader from './calendar/CalendarHeader'
+import ListCalendar from './calendar/list/ListCalendar'
+import MonthlyCalendar from './calendar/monthly/MonthlyCalendar'
+import WeeklyCalendar from './calendar/weekly/WeeklyCalendar'
+import RecordSearch from './search/RecordSearch'
 
-export interface BodyRightRef {
+export interface RecordContentsRef {
     refreshRecords: () => void;
 }
 
-interface BodyRightProps {
+interface RecordContentsProps {
     recordGroupsData: {
         ownedRecordGroups: RecordGroup[];
         sharedRecordGroups: RecordGroup[];
@@ -30,10 +30,10 @@ interface BodyRightProps {
     };
 }
 
-const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGroupsData }, ref) => {
+const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProps>(({ recordGroupsData }, ref) => {
     const searchParams = useSearchParams()
     
-    // 시스템 설정 store에서 가져오기 (이미 Contents에서 로드됨)
+    // 시스템 설정 store에서 가져오기 (이미 RecordsPage에서 로드됨)
     const { getSystemConfig } = useSystemConfigStore();
     const systemConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
     
@@ -48,6 +48,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     const [recordType, setRecordType] = useState<CalendarViewType>(initialRecordType)
     const [date, setDate] = useState<Date>(urlDate)
     const [searchResults, setSearchResults] = useState<ListRecordResponse | null>(null)
+    const [searchKeyword, setSearchKeyword] = useState<string>('')
     
     // 초기 URL 설정 여부 추적
     const isInitialURLSet = useRef(false)
@@ -164,27 +165,31 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
         updateURL(recordType, today)
     }, [recordType, updateURL])
 
-    const handleSearchChange = useCallback(async (term: string) => {
+    const handleSearchChange = useCallback(async (keyword: string) => {
         // 키워드 검색 API 호출 (엔터 키를 눌렀을 때 호출됨)
-        if (term && term.trim() !== '') {
+        if (keyword && keyword.trim() !== '') {
             // 체크된 recordGroupIds 추출
             const recordGroupIds = checkedRecordGroups.map(group => group.id).filter(Boolean) as string[];
             
-            const result = await searchRecordsByKeyword(term, recordGroupIds.length > 0 ? recordGroupIds : undefined)
+            const result = await searchRecordsByKeyword(keyword, recordGroupIds.length > 0 ? recordGroupIds : undefined)
 
             console.log('result', result);
             if (result) {
                 setSearchResults(result)
+                setSearchKeyword(keyword.trim())
             } else {
                 setSearchResults(null)
+                setSearchKeyword('')
             }
         } else {
             setSearchResults(null)
+            setSearchKeyword('')
         }
     }, [searchRecordsByKeyword, checkedRecordGroups])
 
     const handleCloseSearch = useCallback(() => {
         setSearchResults(null)
+        setSearchKeyword('')
     }, [])
 
     // URL 파라미터 변경 시 상태 업데이트 (외부에서 URL이 변경된 경우만)
@@ -246,6 +251,8 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                 onNextMonth={handleNextMonth}
                 onTodayMonth={handleTodayMonth}
                 onSearchChange={handleSearchChange}
+                onCloseSearch={handleCloseSearch}
+                searchResults={searchResults}
             />
             
             {/* 검색 결과가 있으면 검색 결과 표시, 없으면 캘린더 표시 */}
@@ -253,7 +260,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                 <RecordSearch
                     searchResults={searchResults}
                     allRecordGroups={allRecordGroups}
-                    onClose={handleCloseSearch}
+                    keyword={searchKeyword}
                 />
             ) : (
                 <div className="calendar-wrap">
@@ -289,6 +296,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     );
 });
 
-BodyRightComponent.displayName = 'BodyRightComponent';
+RecordContentsComponent.displayName = 'RecordContentsComponent';
 
-export default React.memo(BodyRightComponent);
+export default React.memo(RecordContentsComponent);
+

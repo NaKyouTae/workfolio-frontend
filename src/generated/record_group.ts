@@ -12,6 +12,9 @@ import {
   recordGroup_RecordGroupTypeFromJSON,
   recordGroup_RecordGroupTypeToJSON,
   Worker,
+  WorkerRecordGroup_RecordGroupRole,
+  workerRecordGroup_RecordGroupRoleFromJSON,
+  workerRecordGroup_RecordGroupRoleToJSON,
 } from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
@@ -35,6 +38,7 @@ export interface RecordGroupDetailResponse {
 export interface RecordGroupJoinRequest {
   recordGroupId: string;
   workerId: string;
+  role: WorkerRecordGroup_RecordGroupRole;
 }
 
 export interface RecordGroupUpdateRequest {
@@ -294,7 +298,7 @@ export const RecordGroupDetailResponse: MessageFns<RecordGroupDetailResponse> = 
 };
 
 function createBaseRecordGroupJoinRequest(): RecordGroupJoinRequest {
-  return { recordGroupId: "", workerId: "" };
+  return { recordGroupId: "", workerId: "", role: 0 };
 }
 
 export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
@@ -304,6 +308,9 @@ export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
     }
     if (message.workerId !== "") {
       writer.uint32(18).string(message.workerId);
+    }
+    if (message.role !== 0) {
+      writer.uint32(24).int32(message.role);
     }
     return writer;
   },
@@ -331,6 +338,14 @@ export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
           message.workerId = reader.string();
           continue;
         }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.role = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -344,6 +359,7 @@ export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
     return {
       recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
       workerId: isSet(object.workerId) ? globalThis.String(object.workerId) : "",
+      role: isSet(object.role) ? workerRecordGroup_RecordGroupRoleFromJSON(object.role) : 0,
     };
   },
 
@@ -355,6 +371,9 @@ export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
     if (message.workerId !== "") {
       obj.workerId = message.workerId;
     }
+    if (message.role !== 0) {
+      obj.role = workerRecordGroup_RecordGroupRoleToJSON(message.role);
+    }
     return obj;
   },
 
@@ -365,6 +384,7 @@ export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
     const message = createBaseRecordGroupJoinRequest();
     message.recordGroupId = object.recordGroupId ?? "";
     message.workerId = object.workerId ?? "";
+    message.role = object.role ?? 0;
     return message;
   },
 };

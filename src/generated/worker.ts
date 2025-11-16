@@ -13,10 +13,10 @@ export const protobufPackage = "com.spectrum.workfolio.proto";
 export interface WorkerUpdateRequest {
   id: string;
   nickName: string;
-  phone: string;
-  email: string;
-  birthDate: number;
-  gender: Worker_Gender;
+  phone?: string | undefined;
+  email?: string | undefined;
+  birthDate?: number | undefined;
+  gender?: Worker_Gender | undefined;
 }
 
 export interface WorkerGetResponse {
@@ -31,8 +31,12 @@ export interface WorkerUpdateNickNameResponse {
   isSuccess: boolean;
 }
 
+export interface WorkerCheckNickNameResponse {
+  isAvailable: boolean;
+}
+
 function createBaseWorkerUpdateRequest(): WorkerUpdateRequest {
-  return { id: "", nickName: "", phone: "", email: "", birthDate: 0, gender: 0 };
+  return { id: "", nickName: "", phone: undefined, email: undefined, birthDate: undefined, gender: undefined };
 }
 
 export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
@@ -43,16 +47,16 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
     if (message.nickName !== "") {
       writer.uint32(18).string(message.nickName);
     }
-    if (message.phone !== "") {
+    if (message.phone !== undefined) {
       writer.uint32(26).string(message.phone);
     }
-    if (message.email !== "") {
+    if (message.email !== undefined) {
       writer.uint32(34).string(message.email);
     }
-    if (message.birthDate !== 0) {
+    if (message.birthDate !== undefined) {
       writer.uint32(40).uint64(message.birthDate);
     }
-    if (message.gender !== 0) {
+    if (message.gender !== undefined) {
       writer.uint32(48).int32(message.gender);
     }
     return writer;
@@ -126,10 +130,10 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       nickName: isSet(object.nickName) ? globalThis.String(object.nickName) : "",
-      phone: isSet(object.phone) ? globalThis.String(object.phone) : "",
-      email: isSet(object.email) ? globalThis.String(object.email) : "",
-      birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : 0,
-      gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : 0,
+      phone: isSet(object.phone) ? globalThis.String(object.phone) : undefined,
+      email: isSet(object.email) ? globalThis.String(object.email) : undefined,
+      birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : undefined,
+      gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : undefined,
     };
   },
 
@@ -141,16 +145,16 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
     if (message.nickName !== "") {
       obj.nickName = message.nickName;
     }
-    if (message.phone !== "") {
+    if (message.phone !== undefined) {
       obj.phone = message.phone;
     }
-    if (message.email !== "") {
+    if (message.email !== undefined) {
       obj.email = message.email;
     }
-    if (message.birthDate !== 0) {
+    if (message.birthDate !== undefined) {
       obj.birthDate = Math.round(message.birthDate);
     }
-    if (message.gender !== 0) {
+    if (message.gender !== undefined) {
       obj.gender = worker_GenderToJSON(message.gender);
     }
     return obj;
@@ -163,10 +167,10 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
     const message = createBaseWorkerUpdateRequest();
     message.id = object.id ?? "";
     message.nickName = object.nickName ?? "";
-    message.phone = object.phone ?? "";
-    message.email = object.email ?? "";
-    message.birthDate = object.birthDate ?? 0;
-    message.gender = object.gender ?? 0;
+    message.phone = object.phone ?? undefined;
+    message.email = object.email ?? undefined;
+    message.birthDate = object.birthDate ?? undefined;
+    message.gender = object.gender ?? undefined;
     return message;
   },
 };
@@ -345,6 +349,64 @@ export const WorkerUpdateNickNameResponse: MessageFns<WorkerUpdateNickNameRespon
   fromPartial<I extends Exact<DeepPartial<WorkerUpdateNickNameResponse>, I>>(object: I): WorkerUpdateNickNameResponse {
     const message = createBaseWorkerUpdateNickNameResponse();
     message.isSuccess = object.isSuccess ?? false;
+    return message;
+  },
+};
+
+function createBaseWorkerCheckNickNameResponse(): WorkerCheckNickNameResponse {
+  return { isAvailable: false };
+}
+
+export const WorkerCheckNickNameResponse: MessageFns<WorkerCheckNickNameResponse> = {
+  encode(message: WorkerCheckNickNameResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.isAvailable !== false) {
+      writer.uint32(8).bool(message.isAvailable);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WorkerCheckNickNameResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkerCheckNickNameResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isAvailable = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkerCheckNickNameResponse {
+    return { isAvailable: isSet(object.isAvailable) ? globalThis.Boolean(object.isAvailable) : false };
+  },
+
+  toJSON(message: WorkerCheckNickNameResponse): unknown {
+    const obj: any = {};
+    if (message.isAvailable !== false) {
+      obj.isAvailable = message.isAvailable;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WorkerCheckNickNameResponse>, I>>(base?: I): WorkerCheckNickNameResponse {
+    return WorkerCheckNickNameResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WorkerCheckNickNameResponse>, I>>(object: I): WorkerCheckNickNameResponse {
+    const message = createBaseWorkerCheckNickNameResponse();
+    message.isAvailable = object.isAvailable ?? false;
     return message;
   },
 };

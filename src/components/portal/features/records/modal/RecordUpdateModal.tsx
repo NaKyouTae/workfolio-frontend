@@ -90,20 +90,21 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
         if (!record) return;
 
         try {
-            const createRecordRequest: RecordUpdateRequest = {
+            const updateRecordRequest: RecordUpdateRequest = {  
                 id: record.id,
                 title: title,
                 description: description,
+                attachments: [],
                 startedAt: DateUtil.parseToTimestamp(startedAt),
                 endedAt: DateUtil.parseToTimestamp(endedAt),
             };
 
-            const response = await fetch('/api/records', {
+            const response = await fetch(`/api/records/${record.id}`, {
                 method: HttpMethod.PUT,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(createRecordRequest),
+                body: JSON.stringify(updateRecordRequest),
             });
             if (!response.ok) throw new Error('Failed to update record');
             

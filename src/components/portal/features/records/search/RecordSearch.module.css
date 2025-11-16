@@ -6,13 +6,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.searchHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .searchTitle {
   font-size: 18px;
   font-weight: 700;
@@ -112,14 +105,10 @@
 }
 
 .contentLink {
-  color: #2563eb;
   cursor: pointer;
-  text-decoration: none;
-  transition: color 0.2s;
 }
 
 .contentLink:hover {
   color: #1d4ed8;
-  text-decoration: underline;
 }
 

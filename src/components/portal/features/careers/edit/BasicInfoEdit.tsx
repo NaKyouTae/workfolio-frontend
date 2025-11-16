@@ -2,7 +2,8 @@ import React from 'react';
 import { Resume_Gender } from '@/generated/common';
 import Input from '@/components/portal/ui/Input';
 import DatePicker from '@/components/portal/ui/DatePicker';
-import { getResumeGenderLabel } from '@/utils/commonUtils';
+import { normalizeEnumValue } from '@/utils/commonUtils';
+import Dropdown from '@/components/portal/ui/Dropdown';
 
 interface BasicInfoEditProps {
   name: string;
@@ -64,6 +65,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   description,
   onPositionChange,
   onDescriptionChange,
+  onGenderChange,
 }) => {
   return (
     <>
@@ -102,11 +104,13 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             </li>
             <li>
                 <p>성별</p>
-                <Input 
-                    type="text"
-                    label="성별"
-                    readOnly={true}
-                    value={getResumeGenderLabel(gender)}
+                <Dropdown
+                    selectedOption={normalizeEnumValue(gender, Resume_Gender)}
+                    options={[
+                        { value: Resume_Gender.MALE, label: '남성' },
+                        { value: Resume_Gender.FEMALE, label: '여성' },
+                    ]}
+                    setValue={(value) => onGenderChange(normalizeEnumValue(value, Resume_Gender))}
                 />
             </li>
             <li>

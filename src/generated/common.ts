@@ -14,24 +14,28 @@ export interface Worker {
   nickName: string;
   phone: string;
   email: string;
-  birthDate: number;
-  gender: Worker_Gender;
+  birthDate?: number | undefined;
+  gender?: Worker_Gender | undefined;
   createdAt: number;
   updatedAt: number;
 }
 
 export enum Worker_Gender {
-  MALE = 0,
-  FEMALE = 1,
+  UNKNOWN = 0,
+  MALE = 1,
+  FEMALE = 2,
   UNRECOGNIZED = -1,
 }
 
 export function worker_GenderFromJSON(object: any): Worker_Gender {
   switch (object) {
     case 0:
+    case "UNKNOWN":
+      return Worker_Gender.UNKNOWN;
+    case 1:
     case "MALE":
       return Worker_Gender.MALE;
-    case 1:
+    case 2:
     case "FEMALE":
       return Worker_Gender.FEMALE;
     case -1:
@@ -43,6 +47,8 @@ export function worker_GenderFromJSON(object: any): Worker_Gender {
 
 export function worker_GenderToJSON(object: Worker_Gender): string {
   switch (object) {
+    case Worker_Gender.UNKNOWN:
+      return "UNKNOWN";
     case Worker_Gender.MALE:
       return "MALE";
     case Worker_Gender.FEMALE:
@@ -755,10 +761,50 @@ export function recordGroup_RecordGroupTypeToJSON(object: RecordGroup_RecordGrou
 export interface WorkerRecordGroup {
   id: string;
   publicId: string;
+  role: WorkerRecordGroup_RecordGroupRole;
   worker?: Worker | undefined;
   recordGroup?: RecordGroup | undefined;
   createdAt: number;
   updatedAt: number;
+}
+
+export enum WorkerRecordGroup_RecordGroupRole {
+  UNKNOWN = 0,
+  FULL = 1,
+  VIEW = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function workerRecordGroup_RecordGroupRoleFromJSON(object: any): WorkerRecordGroup_RecordGroupRole {
+  switch (object) {
+    case 0:
+    case "UNKNOWN":
+      return WorkerRecordGroup_RecordGroupRole.UNKNOWN;
+    case 1:
+    case "FULL":
+      return WorkerRecordGroup_RecordGroupRole.FULL;
+    case 2:
+    case "VIEW":
+      return WorkerRecordGroup_RecordGroupRole.VIEW;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WorkerRecordGroup_RecordGroupRole.UNRECOGNIZED;
+  }
+}
+
+export function workerRecordGroup_RecordGroupRoleToJSON(object: WorkerRecordGroup_RecordGroupRole): string {
+  switch (object) {
+    case WorkerRecordGroup_RecordGroupRole.UNKNOWN:
+      return "UNKNOWN";
+    case WorkerRecordGroup_RecordGroupRole.FULL:
+      return "FULL";
+    case WorkerRecordGroup_RecordGroupRole.VIEW:
+      return "VIEW";
+    case WorkerRecordGroup_RecordGroupRole.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
 }
 
 export interface SuccessResponse {
@@ -1777,7 +1823,16 @@ export interface Staff {
 }
 
 function createBaseWorker(): Worker {
-  return { id: "", nickName: "", phone: "", email: "", birthDate: 0, gender: 0, createdAt: 0, updatedAt: 0 };
+  return {
+    id: "",
+    nickName: "",
+    phone: "",
+    email: "",
+    birthDate: undefined,
+    gender: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
 }
 
 export const Worker: MessageFns<Worker> = {
@@ -1794,10 +1849,10 @@ export const Worker: MessageFns<Worker> = {
     if (message.email !== "") {
       writer.uint32(34).string(message.email);
     }
-    if (message.birthDate !== 0) {
+    if (message.birthDate !== undefined) {
       writer.uint32(40).uint64(message.birthDate);
     }
-    if (message.gender !== 0) {
+    if (message.gender !== undefined) {
       writer.uint32(48).int32(message.gender);
     }
     if (message.createdAt !== 0) {
@@ -1895,8 +1950,8 @@ export const Worker: MessageFns<Worker> = {
       nickName: isSet(object.nickName) ? globalThis.String(object.nickName) : "",
       phone: isSet(object.phone) ? globalThis.String(object.phone) : "",
       email: isSet(object.email) ? globalThis.String(object.email) : "",
-      birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : 0,
-      gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : 0,
+      birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : undefined,
+      gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -1916,10 +1971,10 @@ export const Worker: MessageFns<Worker> = {
     if (message.email !== "") {
       obj.email = message.email;
     }
-    if (message.birthDate !== 0) {
+    if (message.birthDate !== undefined) {
       obj.birthDate = Math.round(message.birthDate);
     }
-    if (message.gender !== 0) {
+    if (message.gender !== undefined) {
       obj.gender = worker_GenderToJSON(message.gender);
     }
     if (message.createdAt !== 0) {
@@ -1940,8 +1995,8 @@ export const Worker: MessageFns<Worker> = {
     message.nickName = object.nickName ?? "";
     message.phone = object.phone ?? "";
     message.email = object.email ?? "";
-    message.birthDate = object.birthDate ?? 0;
-    message.gender = object.gender ?? 0;
+    message.birthDate = object.birthDate ?? undefined;
+    message.gender = object.gender ?? undefined;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;
@@ -4965,7 +5020,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
 };
 
 function createBaseWorkerRecordGroup(): WorkerRecordGroup {
-  return { id: "", publicId: "", worker: undefined, recordGroup: undefined, createdAt: 0, updatedAt: 0 };
+  return { id: "", publicId: "", role: 0, worker: undefined, recordGroup: undefined, createdAt: 0, updatedAt: 0 };
 }
 
 export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
@@ -4975,6 +5030,9 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
     }
     if (message.publicId !== "") {
       writer.uint32(18).string(message.publicId);
+    }
+    if (message.role !== 0) {
+      writer.uint32(24).int32(message.role);
     }
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(402).fork()).join();
@@ -5012,6 +5070,14 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
           }
 
           message.publicId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.role = reader.int32() as any;
           continue;
         }
         case 50: {
@@ -5059,6 +5125,7 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
+      role: isSet(object.role) ? workerRecordGroup_RecordGroupRoleFromJSON(object.role) : 0,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       recordGroup: isSet(object.recordGroup) ? RecordGroup.fromJSON(object.recordGroup) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
@@ -5073,6 +5140,9 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
     }
     if (message.publicId !== "") {
       obj.publicId = message.publicId;
+    }
+    if (message.role !== 0) {
+      obj.role = workerRecordGroup_RecordGroupRoleToJSON(message.role);
     }
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
@@ -5096,6 +5166,7 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
     const message = createBaseWorkerRecordGroup();
     message.id = object.id ?? "";
     message.publicId = object.publicId ?? "";
+    message.role = object.role ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
       : undefined;

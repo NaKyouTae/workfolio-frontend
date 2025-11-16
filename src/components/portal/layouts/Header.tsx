@@ -67,7 +67,7 @@ const Header = () => {
             </h1>
             <div>
                 <ul className="menu">
-                    <li className={pathname === '/records' ? 'active' : ''}>
+                    <li className={pathname.includes('/records') ? 'active' : ''}>
                         <Link 
                             href="/records" 
                             prefetch={false}
@@ -76,16 +76,16 @@ const Header = () => {
                             기록 관리
                         </Link>
                     </li>
-                    <li className={pathname === '/career' ? 'active' : ''}>
-                        <Link 
-                            href="/career" 
+                    <li className={pathname.includes('/career') ? 'active' : ''}>
+                        <Link
+                            href="/career"
                             prefetch={false}
                             onClick={(e) => handleMenuClick(e, '/career')}
                         >
                             이력 관리
                         </Link>
                     </li>
-                    <li className={pathname === '/turn-overs' ? 'active' : ''}>
+                    <li className={pathname.includes('/turn-overs') ? 'active' : ''}>
                         <Link 
                             href="/turn-overs" 
                             prefetch={false}

@@ -4,86 +4,142 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import { Worker_Gender } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
-import { normalizeEnumValue } from '@/utils/commonUtils';
+import { normalizeEnumValue, formatPhoneNumber } from '@/utils/commonUtils';
+import Dropdown from '../../ui/Dropdown';
+import DatePicker from '../../ui/DatePicker';
+import { DateTime } from 'luxon';
+import { WorkerUpdateRequest, WorkerCheckNickNameResponse } from '@/generated/worker';
 
 const ProfileManagement: React.FC = () => {
   const { user, isLoading, isLoggedIn, refreshUser } = useUser();
-  const [formData, setFormData] = useState({
-    nickName: '',
-    phone: '',
-    email: '',
-    birthDate: '',
-    gender: Worker_Gender.MALE,
-  });
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  const [nickName, setNickName] = useState<string>('');
+  const [originalNickName, setOriginalNickName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [birthDate, setBirthDate] = useState<number | undefined>(undefined);
+  const [gender, setGender] = useState<Worker_Gender | undefined>(undefined);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [isCheckingNickName, setIsCheckingNickName] = useState(false);
+  const [isNickNameChecked, setIsNickNameChecked] = useState(false);
+  const [isNickNameAvailable, setIsNickNameAvailable] = useState<boolean | null>(null);
+  const [hasCheckedNickName, setHasCheckedNickName] = useState(false); // 실제로 중복 확인을 수행했는지 여부
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    setPhone(formatted);
+  };
 
   // 사용자 정보 로드
   useEffect(() => {
     if (user) {
-      setFormData({
-        nickName: user.nickName || '',
-        phone: user.phone || '',
-        email: user.email || '',
-        birthDate: user.birthDate ? DateUtil.formatTimestamp(user.birthDate, 'YYYY-MM-DD') : '',
-        gender: normalizeEnumValue<Worker_Gender>(user.gender, Worker_Gender) ?? Worker_Gender.MALE,
-      });
+      const userNickName = user.nickName || '';
+      setNickName(userNickName);
+      setOriginalNickName(userNickName);
+      setPhone(formatPhoneNumber(user.phone || ''));
+      setEmail(user.email || '');
+      setBirthDate(user.birthDate ? DateUtil.normalizeTimestamp(user.birthDate) : undefined);
+      setGender(normalizeEnumValue<Worker_Gender>(user.gender, Worker_Gender) ?? undefined);
+      // 원래 닉네임과 동일하면 중복 확인 완료로 간주 (하지만 메시지는 표시하지 않음)
+      setIsNickNameChecked(true);
+      setIsNickNameAvailable(true);
+      setHasCheckedNickName(false); // 최초 로드 시에는 중복 확인을 수행하지 않았으므로 false
     } else if (!isLoggedIn) {
       // 샘플 데이터
-      setFormData({
-        nickName: '샘플 사용자',
-        phone: '010-1234-5678',
-        email: 'sample@example.com',
-        birthDate: '1990-01-01',
-        gender: Worker_Gender.MALE,
-      });
+      setNickName('샘플 사용자');
+      setOriginalNickName('샘플 사용자');
+      setPhone('010-1234-5678');
+      setEmail('sample@example.com');
+      setBirthDate(new Date('1990-01-01').getTime());
+      setGender(Worker_Gender.MALE);
+      setIsNickNameChecked(true);
+      setIsNickNameAvailable(true);
+      setHasCheckedNickName(false); // 샘플 데이터도 마찬가지
     }
   }, [user, isLoggedIn]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'gender' ? parseInt(value) : value,
-    }));
-    
-    // 입력 시 에러 메시지 제거
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+  // 닉네임이 변경되면 중복 확인 상태 초기화
+  useEffect(() => {
+    if (nickName !== originalNickName) {
+      setIsNickNameChecked(false);
+      setIsNickNameAvailable(null);
+      setHasCheckedNickName(false); // 닉네임이 변경되면 중복 확인 상태 초기화
+    } else {
+      setIsNickNameChecked(true);
+      setIsNickNameAvailable(true);
+      setHasCheckedNickName(false); // 원래 닉네임으로 돌아가면 중복 확인 상태 초기화
     }
-    
-    // 성공 메시지 제거
-    if (successMessage) {
-      setSuccessMessage('');
+  }, [nickName, originalNickName]);
+
+  const handleCheckNickName = async () => {
+    if (!nickName.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    try {
+      setIsCheckingNickName(true);
+      const response = await fetch(`/api/workers/check/${encodeURIComponent(nickName.trim())}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('닉네임 중복 확인에 실패했습니다.');
+      }
+
+      const data: WorkerCheckNickNameResponse = await response.json();
+      setIsNickNameAvailable(data.isAvailable);
+      setIsNickNameChecked(true);
+      setHasCheckedNickName(true); // 중복 확인을 수행했음을 표시
+    } catch (error) {
+      console.error('닉네임 중복 확인 오류:', error);
+      alert('닉네임 중복 확인 중 오류가 발생했습니다.');
+    } finally {
+      setIsCheckingNickName(false);
     }
   };
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
-
-    if (!formData.nickName.trim()) {
-      newErrors.nickName = '닉네임을 입력해주세요.';
+    if (!nickName.trim()) {
+      return '닉네임을 입력해주세요.';
     }
 
-    if (!formData.phone.trim()) {
-      newErrors.phone = '전화번호를 입력해주세요.';
-    } else if (!/^[0-9-]+$/.test(formData.phone)) {
-      newErrors.phone = '올바른 전화번호 형식이 아닙니다.';
+    // 닉네임이 변경되었는데 중복 확인을 하지 않은 경우
+    if (nickName !== originalNickName && !isNickNameChecked) {
+      return '닉네임 중복 확인을 완료해주세요.';
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = '이메일을 입력해주세요.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = '올바른 이메일 형식이 아닙니다.';
+    // 닉네임이 중복된 경우
+    if (isNickNameChecked && isNickNameAvailable === false) {
+      return '이미 사용 중인 닉네임입니다.';
     }
 
-    if (!formData.birthDate) {
-      newErrors.birthDate = '생년월일을 입력해주세요.';
+    if (!phone.trim()) {
+      return '전화번호를 입력해주세요.';
+    } else if (!/^[0-9-]+$/.test(phone)) {
+      return '올바른 전화번호 형식이 아닙니다.';
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!email.trim()) {
+      return '이메일을 입력해주세요.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return '올바른 이메일 형식이 아닙니다.';
+    }
+
+    if (!birthDate) {
+      return '생년월일을 입력해주세요.';
+    }
+
+    if (!gender) {
+      return '성별을 선택해주세요.';
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,31 +150,34 @@ const ProfileManagement: React.FC = () => {
       return;
     }
 
-    if (!validateForm()) {
+    const validationResult = validateForm();
+    if (validationResult !== true) {
+      alert(validationResult);
       return;
     }
 
     try {
       setIsUpdating(true);
-      setErrors({});
-      setSuccessMessage('');
 
       // 날짜를 timestamp로 변환
-      const birthDateTimestamp = new Date(formData.birthDate).getTime();
+      const birthDateTimestamp = birthDate ? new Date(birthDate).getTime() : undefined;
+      const genderValue = gender ? normalizeEnumValue(gender, Worker_Gender) : undefined;
+
+      const requestBody: WorkerUpdateRequest = {
+        id: user?.id ?? '',
+        nickName: nickName,
+        phone: phone.replace(/-/g, ''),
+        email: email,
+        birthDate: birthDateTimestamp,
+        gender: genderValue,
+      };
 
       const response = await fetch('/api/workers', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: user?.id,
-          nickName: formData.nickName,
-          phone: formData.phone,
-          email: formData.email,
-          birthDate: birthDateTimestamp,
-          gender: formData.gender,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -127,17 +186,13 @@ const ProfileManagement: React.FC = () => {
 
       // 프로필 업데이트 성공 시 user 정보 새로고침
       await refreshUser();
-
-      setSuccessMessage('프로필이 성공적으로 업데이트되었습니다.');
       
-      // 3초 후 성공 메시지 제거
-      setTimeout(() => {
-        setSuccessMessage('');
-      }, 3000);
+      // 원래 닉네임 업데이트 (중복 확인 상태 유지)
+      setOriginalNickName(nickName);
 
     } catch (error) {
       console.error('프로필 업데이트 오류:', error);
-      setErrors({ submit: '프로필 업데이트 중 오류가 발생했습니다.' });
+      alert('프로필 업데이트 중 오류가 발생했습니다.');
     } finally {
       setIsUpdating(false);
     }
@@ -155,33 +210,64 @@ const ProfileManagement: React.FC = () => {
                 <li>
                     <p>닉네임<span>*</span></p>
                     <div>
-                        <input type="text" name="nickName" value={formData.nickName} onChange={handleInputChange} placeholder="닉네임을 입력해주세요" />
-                        <button>중복 확인</button>
+                        <input 
+                            type="text" 
+                            name="nickName" 
+                            value={nickName} 
+                            onChange={(e) => setNickName(e.target.value)} 
+                            placeholder="닉네임을 입력해주세요" 
+                        />
+                        <button 
+                            type="button"
+                            onClick={handleCheckNickName}
+                            disabled={!isLoggedIn || isCheckingNickName || !nickName.trim() || nickName === originalNickName}
+                        >
+                            {isCheckingNickName ? '확인 중...' : '중복 확인'}
+                        </button>
                     </div>
-                </li>
-                {/* {errors.nickName && (
-                    <li>
-                        <p></p>
-                        <span className="font-red">{errors.nickName}</span>
-                    </li>
-                )} */}
-                <li>
-                    <p>전화번호<span>*</span></p>
-                    <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} disabled={!isLoggedIn} />
-                </li>
-                <li>
-                    <p>이메일<span>*</span></p>
-                    <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={!isLoggedIn} />
-                </li>
-                <li>
-                    <p>생년월일<span>*</span></p>
-                    <input type="date" name="birthDate" value={formData.birthDate} onChange={handleInputChange} disabled={!isLoggedIn} />
+                     <div>
+                       {hasCheckedNickName && isNickNameChecked && (
+                           <>
+                               {isNickNameAvailable === false && (
+                                   <p style={{ color: 'red', marginTop: '5px', fontSize: '14px' }}>
+                                       이미 사용 중인 닉네임입니다.
+                                   </p>
+                               )}
+                               {isNickNameAvailable === true && (
+                                   <p style={{ color: 'green', marginTop: '5px', fontSize: '14px' }}>
+                                       사용 가능한 닉네임입니다.
+                                   </p>
+                               )}
+                           </>
+                       )}
+                     </div>
                 </li>
                 <li>
-                    <p>성별<span>*</span></p>
-                    <input type="text" name="gender" value={formData.gender} onChange={handleInputChange} disabled={!isLoggedIn} />
-                    {/* <option value={Worker_Gender.MALE}>남성</option>
-                    <option value={Worker_Gender.FEMALE}>여성</option> */}
+                    <p>전화번호</p>
+                    <input type="tel" name="phone" value={phone} onChange={handlePhoneChange} disabled={!isLoggedIn} placeholder="010-1234-5678" />
+                </li>
+                <li>
+                    <p>이메일</p>
+                    <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={!isLoggedIn} />
+                </li>
+                <li>
+                    <p>생년월일</p>
+                    <DatePicker
+                        value={birthDate}
+                        onChange={(date) => setBirthDate(DateTime.fromISO(date).toMillis())}
+                        required={false}
+                    />
+                </li>
+                <li>
+                    <p>성별</p>
+                    <Dropdown
+                        selectedOption={normalizeEnumValue(gender, Worker_Gender)}
+                        options={[
+                            { value: Worker_Gender.MALE, label: '남성' },
+                            { value: Worker_Gender.FEMALE, label: '여성' },
+                        ]}
+                        setValue={(value) => setGender(normalizeEnumValue(value, Worker_Gender))}
+                    />
                 </li>
             </ul>
             <div className="btn-wrap">

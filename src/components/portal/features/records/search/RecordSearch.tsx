@@ -20,13 +20,13 @@ dayjs.tz.setDefault('Asia/Seoul');
 interface RecordSearchProps {
   searchResults: ListRecordResponse | null;
   allRecordGroups: RecordGroup[];
-  onClose?: () => void;
+  keyword?: string;
 }
 
 const RecordSearch: React.FC<RecordSearchProps> = ({
   searchResults,
   allRecordGroups,
-  onClose,
+  keyword = '',
 }) => {
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -42,7 +42,8 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
     return searchResults.records;
   }, [searchResults]);
 
-  if (normalizedRecords.length === 0) {
+  // searchResults가 없으면 아무것도 렌더링하지 않음
+  if (!searchResults) {
     return null;
   }
 
@@ -61,6 +62,29 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
 
   const getCalendarName = (record: Record) => {
     return record.recordGroup?.title || '';
+  };
+
+  // 키워드 하이라이트 함수
+  const highlightKeyword = (text: string, keyword: string) => {
+    if (!keyword || !text) {
+      return text;
+    }
+
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, index) => {
+      // 대소문자 구분 없이 비교
+      if (part.toLowerCase() === keyword.toLowerCase()) {
+        return (
+          <span key={index} style={{ color: 'red' }}>
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
   };
 
   const handleRecordClick = (record: Record, e: React.MouseEvent) => {
@@ -114,10 +138,6 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
       if (response.ok) {
         handleCloseDetailModal();
         handleCloseUpdateModal();
-        // 검색 결과 새로고침을 위해 부모 컴포넌트에 알림
-        if (onClose) {
-          onClose();
-        }
       } else {
         console.error('Failed to delete record');
       }
@@ -129,15 +149,6 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
   return (
     <>
       <div className={styles.searchResults}>
-        <div className={styles.searchHeader}>
-          <h3 className={styles.searchTitle}>검색 결과 {normalizedRecords.length}건</h3>
-          {onClose && (
-            <button className={styles.closeButton} onClick={onClose}>
-              ✕
-            </button>
-          )}
-        </div>
-
         <table className={styles.searchTable}>
           <thead>
             <tr>
@@ -148,28 +159,47 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
             </tr>
           </thead>
           <tbody>
-            {normalizedRecords.map((record, index) => (
-              <tr key={record.id || index} className={styles.tableRow}>
-                <td className={styles.dateCell}>{formatDate(parseInt(record.startedAt.toString()))}</td>
-                <td className={styles.timeCell}>{formatTime(record)}</td>
-                <td className={styles.calendarCell}>
-                  <div 
-                    className={styles.calendarBar}
-                    style={{ backgroundColor: getCalendarColor(record) }}
-                  >
-                    {getCalendarName(record)}
-                  </div>
-                </td>
-                <td className={styles.contentCell}>
-                  <span 
-                    className={styles.contentLink}
-                    onClick={(e) => handleRecordClick(record, e)}
-                  >
-                    {record.title}
-                  </span>
+            {normalizedRecords.length === 0 ? (
+              <tr>
+                <td colSpan={4} style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
+                  앗, 검색된 결과가 없어요.
                 </td>
               </tr>
-            ))}
+            ) : (
+              normalizedRecords.map((record, index) => {
+                const startTimestamp = parseInt(record.startedAt.toString());
+                const startDate = dayjs(startTimestamp);
+                const isWeekend = startDate.day() === 0 || startDate.day() === 6; // 0: 일요일, 6: 토요일
+                
+                return (
+                <tr key={record.id || index} className={styles.tableRow}>
+                  <td 
+                    className={styles.dateCell}
+                    style={isWeekend ? { color: 'red' } : {}}
+                  >
+                    {formatDate(startTimestamp)}
+                  </td>
+                  <td className={styles.timeCell}>{formatTime(record)}</td>
+                  <td className={styles.calendarCell}>
+                    <div
+                      className={styles.calendarBar}
+                      style={{ backgroundColor: getCalendarColor(record) }}
+                    >
+                      {getCalendarName(record)}
+                    </div>
+                  </td>
+                  <td className={styles.contentCell}>
+                    <span 
+                      className={styles.contentLink}
+                      onClick={(e) => handleRecordClick(record, e)}
+                    >
+                      {highlightKeyword(record.title, keyword)}
+                    </span>
+                  </td>
+                </tr>
+              );
+              })
+            )}
           </tbody>
         </table>
       </div>
