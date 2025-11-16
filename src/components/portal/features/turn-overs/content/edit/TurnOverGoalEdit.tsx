@@ -3,7 +3,7 @@ import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpser
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from './common/MemoEdit';
 import AttachmentEdit from '@/components/portal/features/common/AttachmentEdit';
-import { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
 import SelfIntroductionEdit from './common/SelfIntroductionEdit';
 import InterviewQuestionEdit from './common/InterviewQuestionEdit';
 import CheckListEdit from './common/CheckListEdit';

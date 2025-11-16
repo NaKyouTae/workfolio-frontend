@@ -16,7 +16,7 @@ import EducationEdit from './edit/EducationEdit';
 import ActivityEdit from './edit/ActivityEdit';
 import LanguageSkillEdit from './edit/LanguageSkillEdit';
 import AttachmentEdit from '@/components/portal/features/common/AttachmentEdit';
-import EditFloatingNavigation from './EditFloatingNavigation';
+import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
 import Input from '@/components/portal/ui/Input';
 import { AttachmentRequest } from '@/generated/attachment';
 
@@ -193,9 +193,26 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
                     </div>
                 </article>
                 
-                <EditFloatingNavigation
+                <FloatingNavigation
+                    navigationItems={[
+                        { id: 'basic-info', label: '기본 정보' },
+                        { id: 'education', label: '학력' },
+                        { id: 'career', label: '경력' },
+                        { id: 'project', label: '프로젝트' },
+                        { id: 'activity', label: '활동' },
+                        { id: 'language', label: '언어' },
+                        { id: 'attachment', label: '첨부' },
+                    ]}
                     onSave={onSave}
-                    {...(onCancel && { onCancel })}
+                    onCancel={onCancel}
+                    showCancelConfirm={!!onCancel}
+                    cancelConfirmConfig={{
+                        icon: '/assets/img/ico/ic-warning.svg',
+                        title: '이력서 작성을 취소하시겠어요?',
+                        description: '지금까지 입력한 내용이 저장되지 않아요.\n지금 나가면 처음부터 다시 작성해야 할 수 있어요.',
+                        confirmText: '취소하기',
+                        cancelText: '돌아가기',
+                    }}
                 />
             </div>
         </div>

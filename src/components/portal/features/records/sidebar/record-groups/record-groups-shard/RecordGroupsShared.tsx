@@ -4,7 +4,7 @@ import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import NewRecordGroupItem from '../NewRecordGroupItem';
-import { RecordGroup_RecordGroupType, RecordGroup } from '@/generated/common';
+import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common';
 
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;

@@ -78,7 +78,13 @@ function DraggableList<T>({
             items={items.map((item, idx) => getItemId(item, idx))}
             strategy={verticalListSortingStrategy}
         >
-            {children || items.map((item, index) => renderItem(item, index))}
+            {children || items.map((item, index) => {
+                const itemElement = renderItem(item, index);
+                const itemId = getItemId(item, index);
+                return React.isValidElement(itemElement)
+                    ? React.cloneElement(itemElement, { key: itemId, ...(itemElement.props as React.HTMLAttributes<HTMLElement>) })
+                    : <React.Fragment key={itemId}>{itemElement}</React.Fragment>;
+            })}
         </SortableContext>
     </DndContext>
   );

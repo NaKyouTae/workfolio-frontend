@@ -8,13 +8,13 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import {
   RecordGroup,
+  RecordGroup_RecordGroupRole,
+  recordGroup_RecordGroupRoleFromJSON,
+  recordGroup_RecordGroupRoleToJSON,
   RecordGroup_RecordGroupType,
   recordGroup_RecordGroupTypeFromJSON,
   recordGroup_RecordGroupTypeToJSON,
   Worker,
-  WorkerRecordGroup_RecordGroupRole,
-  workerRecordGroup_RecordGroupRoleFromJSON,
-  workerRecordGroup_RecordGroupRoleToJSON,
 } from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
@@ -38,7 +38,7 @@ export interface RecordGroupDetailResponse {
 export interface RecordGroupJoinRequest {
   recordGroupId: string;
   workerId: string;
-  role: WorkerRecordGroup_RecordGroupRole;
+  role: RecordGroup_RecordGroupRole;
 }
 
 export interface RecordGroupUpdateRequest {
@@ -359,7 +359,7 @@ export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
     return {
       recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
       workerId: isSet(object.workerId) ? globalThis.String(object.workerId) : "",
-      role: isSet(object.role) ? workerRecordGroup_RecordGroupRoleFromJSON(object.role) : 0,
+      role: isSet(object.role) ? recordGroup_RecordGroupRoleFromJSON(object.role) : 0,
     };
   },
 
@@ -372,7 +372,7 @@ export const RecordGroupJoinRequest: MessageFns<RecordGroupJoinRequest> = {
       obj.workerId = message.workerId;
     }
     if (message.role !== 0) {
-      obj.role = workerRecordGroup_RecordGroupRoleToJSON(message.role);
+      obj.role = recordGroup_RecordGroupRoleToJSON(message.role);
     }
     return obj;
   },

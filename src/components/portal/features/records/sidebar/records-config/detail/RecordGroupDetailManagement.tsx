@@ -3,9 +3,10 @@ import '@/styles/records-config.css';
 import { RecordGroupJoinRequest, RecordGroupDetailResponse } from '@/generated/record_group';
 import { WorkerListResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
-import Dropdown from '@/components/portal/ui/Dropdown';
-import { RecordGroup, Worker } from '@/generated/common';
+import { RecordGroup, RecordGroup_RecordGroupRole, RecordGroup_RecordGroupType, Worker } from '@/generated/common';
 import { createSampleWorkers, createSampleRecordGroupDetails } from '@/utils/sampleRecordData';
+import { compareEnumValue } from '@/utils/commonUtils';
+import Dropdown from '@/components/portal/ui/Dropdown';
 
 interface RecordGroupDetailManagementProps {
     recordGroupsData: {
@@ -16,10 +17,12 @@ interface RecordGroupDetailManagementProps {
         refreshRecordGroups: () => void;
         fetchRecordGroupDetails: (recordGroupId: string) => Promise<RecordGroupDetailResponse | null>;
     };
+    initialRecordGroup?: RecordGroup | null;
+    onBack?: () => void;
 }
 
-const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = ({ recordGroupsData }) => {
-    const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
+const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = ({ recordGroupsData, initialRecordGroup, onBack }) => {
+    const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(initialRecordGroup || null);
     const [shareNickname, setShareNickname] = useState('');
     const [searchedWorkers, setSearchedWorkers] = useState<Worker[]>([]);
     const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
@@ -27,25 +30,20 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
     const [isComposing, setIsComposing] = useState(false);
     const [selectedNewWorkers, setSelectedNewWorkers] = useState<Worker[]>([]);
 
+    const [defaultRole, setDefaultRole] = useState<RecordGroup_RecordGroupRole | null>(null);
+    const [recordType, setRecordType] = useState<RecordGroup_RecordGroupType | null>(null);
+
     // props로 받은 recordGroupsData 사용
     const { allRecordGroups, refreshRecordGroups, fetchRecordGroupDetails } = recordGroupsData;
-    
-    // dropdownOptions를 useMemo로 메모이제이션
-    const dropdownOptions = React.useMemo(() => 
-        allRecordGroups.map(group => ({
-            value: group.id,
-            label: group.title,
-            color: group.color
-        })),
-        [allRecordGroups]
-    );
 
-    // 첫 렌더링 시 첫 번째 레코드 그룹 선택
+    // initialRecordGroup이 변경되면 selectedRecordGroup 업데이트
     useEffect(() => {
-        if (allRecordGroups.length > 0 && !selectedRecordGroup) {
-            setSelectedRecordGroup(allRecordGroups[0]);
+        if (initialRecordGroup) {
+            setSelectedRecordGroup(initialRecordGroup);
+            setDefaultRole(initialRecordGroup?.role || null);
+            setRecordType(initialRecordGroup?.type || null);
         }
-    }, [allRecordGroups, selectedRecordGroup]);
+    }, [initialRecordGroup, allRecordGroups, selectedRecordGroup]);
 
     // 선택된 레코드 그룹이 변경될 때 상세 정보 조회
     useEffect(() => {
@@ -71,14 +69,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             }
         }
     }, [selectedRecordGroup, fetchRecordGroupDetails]);
-
-    // 드롭다운 변경 핸들러 메모이제이션
-    const handleRecordGroupChange = useCallback((value: string | number) => {
-        const group = allRecordGroups.find(g => g.id === String(value));
-        if (group) {
-            setSelectedRecordGroup(group);
-        }
-    }, [allRecordGroups]);
 
     // 닉네임으로 워커 검색 함수
     const searchWorkerByNickname = useCallback(async (nickname: string) => {
@@ -234,6 +224,7 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
     }, []);
 
     // 워커 공유 함수
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleShareWorker = useCallback(async () => {
         if (!selectedWorker || !selectedRecordGroup) {
             return;
@@ -283,23 +274,23 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
     return (
         <div className="cont-box">
             <div className="cont-tit">
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {onBack && (
+                        <button 
+                            onClick={onBack}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}
+                        >
+                            ←
+                        </button>
+                    )}
                     <h3>기록장 관리</h3>
                 </div>
             </div>
             <ul className="setting-list">
                 <li>
-                    <p>기록장 선택</p>
-                    <Dropdown
-                        options={dropdownOptions}
-                        selectedOption={selectedRecordGroup?.id || ''}
-                        setValue={handleRecordGroupChange}
-                    />
-                </li>
-                <li>
                     <p>기록장 이름 및 색상</p>
                     <div>
-                        {/* <p>{getRecordGroupTypeLabel(selectedRecordGroup?.type || RecordGroup_RecordGroupType.UNKNOWN)}</p> */}
+                        <div className="color-picker" style={{ backgroundColor: selectedRecordGroup?.color || '#fff' }}></div>
                         <input 
                             type="text" 
                             value={selectedRecordGroup?.title || ''}
@@ -312,15 +303,35 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                                 }
                             }}
                         />
-                        <div className="color-picker" style={{ backgroundColor: selectedRecordGroup?.color || '#fff' }}></div>
                     </div>
                 </li>
                 <li>
                     <p>기록장 공유 설정</p>
                     <ul className="input-list">
-                        <li><input type="radio" name="share" id="private" /><label htmlFor="private"><p>개인 기록장</p></label></li>
-                        <li><input type="radio" name="share" id="shared" /><label htmlFor="shared"><p>공유 기록장</p></label></li>
+                        <li>
+                            <input
+                                id="type-private"
+                                type="radio"
+                                name="recordGroupType"
+                                value={RecordGroup_RecordGroupType.PRIVATE}
+                                checked={compareEnumValue(recordType, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType)}
+                                onChange={() => setRecordType(RecordGroup_RecordGroupType.PRIVATE)}
+                            />
+                            <label htmlFor="type-private"><p>개인 기록장</p></label>
+                        </li>
+                        <li>
+                            <input
+                                id="type-shared"
+                                type="radio"
+                                name="recordGroupType"
+                                value={RecordGroup_RecordGroupType.SHARED}
+                                checked={compareEnumValue(recordType, RecordGroup_RecordGroupType.SHARED, RecordGroup_RecordGroupType)}
+                                onChange={() => setRecordType(RecordGroup_RecordGroupType.SHARED)}
+                            />
+                            <label htmlFor="type-shared"><p>공유 기록장</p></label>
+                        </li>
                     </ul>
+                    <span className="info-text">기본 기록장은 공유 기록장으로 변경할 수 없어요.</span>
                 </li>
                 <li>
                     <p>기록장 공유 멤버</p>
@@ -389,10 +400,14 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                                         <p>{worker.nickName || ''}</p>
                                     </div>
                                     <div className="option">
-                                        <select>
-                                            <option>전체 권한</option>
-                                            <option>보기 권한</option>
-                                        </select>
+                                        <Dropdown
+                                            selectedOption={RecordGroup_RecordGroupRole.FULL}
+                                            options={[{ value: RecordGroup_RecordGroupRole.FULL, label: '전체 권한' }, { value: RecordGroup_RecordGroupRole.VIEW, label: '보기 권한' }]}
+                                            setValue={(value) => {
+                                                // TODO: worker의 role 업데이트 API 호출 필요
+                                                console.log('Worker role update:', worker.id, value);
+                                            }}
+                                        />
                                         <button onClick={() => handleRemoveWorker(worker.id)}><i className="ic-delete" /></button>
                                     </div>
                                 </li>
@@ -412,37 +427,48 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                     <p className="info-text">공유 멤버가 있으면 기록장을 삭제할 수 없어요.</p>
                 </div>
             </div>
-            {/* <div className="config-row">
+            <div className="config-row">
                 <label>기록장 공유 기본 권한</label>
-                <div className="radio-group">
-                    <label className="radio-option">
+                <ul className="radio-group">
+                    <li>
                         <input 
+                            id="role-full"
                             type="radio"
-                            name="defaultPermission"
+                            name="default-role"
                             value="full"
-                            checked={defaultPermission === 'full'}
-                            onChange={(e) => setDefaultPermission(e.target.value)}
+                            checked={compareEnumValue(defaultRole, RecordGroup_RecordGroupRole.FULL, RecordGroup_RecordGroupRole)}
+                            onChange={() => {
+                                setDefaultRole(RecordGroup_RecordGroupRole.FULL);
+                            }}
                         />
-                        <span>전체 권한</span>
-                    </label>
-                    <label className="radio-option">
+                        <label htmlFor="role-full">전체 권한</label>
+                    </li>  
+                    <li>
                         <input 
+                            id="role-view"
                             type="radio" 
-                            name="defaultPermission"
-                            value="view"
-                            checked={defaultPermission === 'view'}
-                            onChange={(e) => setDefaultPermission(e.target.value)}
+                            name="default-role"
+                            value={RecordGroup_RecordGroupRole.VIEW}
+                            checked={compareEnumValue(defaultRole, RecordGroup_RecordGroupRole.VIEW, RecordGroup_RecordGroupRole)}
+                            onChange={() => {
+                                setDefaultRole(RecordGroup_RecordGroupRole.VIEW);
+                            }}
                         />
-                        <span>보기 권한</span>
-                    </label>
-                </div>
+                        <label htmlFor="role-view">보기 권한</label>
+                    </li>  
+                </ul>
             </div>
             <div className="config-row">
                 <label>기록장 삭제</label>
                 <div className="delete-section">
-                    <p className="info-text">기본 기록장은 삭제할 수 없어요.</p>
-                    <button className="delete-btn" disabled>삭제하기</button>
-                    <p className="info-text">기록장에 있는 모든 기록이 삭제돼요.</p>
+                    {selectedRecordGroup?.isDefault ? (
+                        <p className="info-text">기본 기록장은 삭제할 수 없어요.</p>
+                    ): (
+                        <>
+                            <button className="delete-btn">삭제하기</button>
+                            <p className="info-text">기록장에 있는 모든 기록이 삭제돼요.</p>
+                        </>
+                    )}
                 </div>
             </div>
             <div className="config-row">
@@ -451,7 +477,7 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                     <button className="leave-btn">탈퇴하기</button>
                     <p className="info-text">탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.</p>
                 </div>
-            </div> */}
+            </div>
         </div>
     );
 };

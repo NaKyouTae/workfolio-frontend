@@ -6,7 +6,7 @@ import EducationView from './view/EducationView';
 import ActivityView from './view/ActivityView';
 import LanguageSkillView from './view/LanguageSkillView';
 import AttachmentView from '@/components/portal/features/common/AttachmentView';
-import ViewFloatingNavigation from './ViewFloatingNavigation';
+import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import DateUtil from '@/utils/DateUtil';
 
@@ -236,11 +236,33 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                     <AttachmentView attachments={selectedResumeDetail?.attachments || []} showHidden={showHidden} />
                 </div>
             </article>
-            <ViewFloatingNavigation 
-                showHidden={showHidden}
-                onTogglePrivateInfo={handleTogglePrivateInfo}
-                onExportPDF={handleExportPDF}
-                onCopyURL={handleCopyURL}
+            <FloatingNavigation
+                navigationItems={[
+                    { id: 'basic-info', label: '기본 정보' },
+                    { id: 'education', label: '학력' },
+                    { id: 'career', label: '경력' },
+                    { id: 'project', label: '프로젝트' },
+                    { id: 'activity', label: '활동' },
+                    { id: 'language', label: '언어' },
+                    { id: 'attachment', label: '첨부' },
+                ]}
+                actionButtons={[
+                    {
+                        label: showHidden ? '비공개 정보 숨기기' : '비공개 정보 보기',
+                        onClick: handleTogglePrivateInfo,
+                        className: 'line gray',
+                    },
+                    {
+                        label: 'PDF 내보내기',
+                        onClick: handleExportPDF,
+                        className: 'dark-gray',
+                    },
+                    {
+                        label: 'URL 공유하기',
+                        onClick: handleCopyURL,
+                        className: 'dark-gray',
+                    },
+                ]}
             />
         </div>
 

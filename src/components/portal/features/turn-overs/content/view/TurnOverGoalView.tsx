@@ -7,7 +7,7 @@ import TurnOverDirectionView from './common/TurnOverDirectionView';
 import SelfIntroductionView from './common/SelfIntroductionView';
 import InterviewQuestionView from './common/InterviewQuestionView';
 import CheckListView from './common/CheckListView';
-import { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
 
 interface TurnOverGoalViewProps {
   turnOverGoal: TurnOverGoalDetail | null;

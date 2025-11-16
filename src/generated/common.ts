@@ -707,6 +707,7 @@ export interface RecordGroup {
   isDefault: boolean;
   publicId: string;
   color: string;
+  role: RecordGroup_RecordGroupRole;
   priority: number;
   worker?: Worker | undefined;
   createdAt: number;
@@ -753,6 +754,45 @@ export function recordGroup_RecordGroupTypeToJSON(object: RecordGroup_RecordGrou
     case RecordGroup_RecordGroupType.SHARED:
       return "SHARED";
     case RecordGroup_RecordGroupType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum RecordGroup_RecordGroupRole {
+  ROLE_UNKNOWN = 0,
+  FULL = 1,
+  VIEW = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function recordGroup_RecordGroupRoleFromJSON(object: any): RecordGroup_RecordGroupRole {
+  switch (object) {
+    case 0:
+    case "ROLE_UNKNOWN":
+      return RecordGroup_RecordGroupRole.ROLE_UNKNOWN;
+    case 1:
+    case "FULL":
+      return RecordGroup_RecordGroupRole.FULL;
+    case 2:
+    case "VIEW":
+      return RecordGroup_RecordGroupRole.VIEW;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return RecordGroup_RecordGroupRole.UNRECOGNIZED;
+  }
+}
+
+export function recordGroup_RecordGroupRoleToJSON(object: RecordGroup_RecordGroupRole): string {
+  switch (object) {
+    case RecordGroup_RecordGroupRole.ROLE_UNKNOWN:
+      return "ROLE_UNKNOWN";
+    case RecordGroup_RecordGroupRole.FULL:
+      return "FULL";
+    case RecordGroup_RecordGroupRole.VIEW:
+      return "VIEW";
+    case RecordGroup_RecordGroupRole.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -4810,6 +4850,7 @@ function createBaseRecordGroup(): RecordGroup {
     isDefault: false,
     publicId: "",
     color: "",
+    role: 0,
     priority: 0,
     worker: undefined,
     createdAt: 0,
@@ -4836,6 +4877,9 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     }
     if (message.color !== "") {
       writer.uint32(50).string(message.color);
+    }
+    if (message.role !== 0) {
+      writer.uint32(56).int32(message.role);
     }
     if (message.priority !== 0) {
       writer.uint32(240).uint64(message.priority);
@@ -4907,6 +4951,14 @@ export const RecordGroup: MessageFns<RecordGroup> = {
           message.color = reader.string();
           continue;
         }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.role = reader.int32() as any;
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -4956,6 +5008,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
       isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : false,
       publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       color: isSet(object.color) ? globalThis.String(object.color) : "",
+      role: isSet(object.role) ? recordGroup_RecordGroupRoleFromJSON(object.role) : 0,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
@@ -4983,6 +5036,9 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     if (message.color !== "") {
       obj.color = message.color;
     }
+    if (message.role !== 0) {
+      obj.role = recordGroup_RecordGroupRoleToJSON(message.role);
+    }
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
     }
@@ -5009,6 +5065,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     message.isDefault = object.isDefault ?? false;
     message.publicId = object.publicId ?? "";
     message.color = object.color ?? "";
+    message.role = object.role ?? 0;
     message.priority = object.priority ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)

@@ -5,7 +5,7 @@ import TurnOverRetrospectiveView from './view/TurnOverRetrospectiveView';
 import TurnOverChallengeView from './view/TurnOverChallengeView';
 import TurnOverContentViewHeader from './TurnOverContentViewHeader';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
-import TurnOverFloatingActions, { FloatingNavigationItem } from './TurnOverFloatingActions';
+import FloatingNavigation, { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
 
 interface TurnOversContentViewProps {
   selectedTurnOver: TurnOverDetail | null;
@@ -105,7 +105,7 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
             </article>
             
             {/* Floating Navigation */}
-            <TurnOverFloatingActions navigationItems={navigationItems} />
+            <FloatingNavigation navigationItems={navigationItems} />
         </div>
     </div>
   );

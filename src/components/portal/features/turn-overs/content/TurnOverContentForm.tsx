@@ -4,7 +4,7 @@ import TurnOverGoalEdit, { TurnOverEditRef } from './edit/TurnOverGoalEdit';
 import TurnOverChallengeEdit from './edit/TurnOverChallengeEdit';
 import TurnOverRetrospectiveEdit from './edit/TurnOverRetrospectiveEdit';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
-import TurnOverFloatingActions, { FloatingNavigationItem } from './TurnOverFloatingActions';
+import FloatingNavigation, { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
 import Input from '@/components/portal/ui/Input';
 
 interface TurnOverContentFormProps {
@@ -135,7 +135,7 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                 )}
             </article>
             
-            <TurnOverFloatingActions
+            <FloatingNavigation
                 navigationItems={navigationItems}
                 onSave={onSave ? () => {
                   // 현재 활성 탭의 handleSave 호출

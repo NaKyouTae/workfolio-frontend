@@ -67,7 +67,8 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         // 현재는 owned만 편집 가능
         return ownedRecordGroups
     }, [ownedRecordGroups])
-    
+
+
     // records hook 사용 - recordType에 따라 적절한 파라미터 전달
     const { records, refreshRecords, searchRecordsByKeyword } = useRecords(
         recordType, 

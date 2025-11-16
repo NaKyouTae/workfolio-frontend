@@ -5,6 +5,7 @@ import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common';
 import { compareEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/portal/ui/DraggableList';
 import DraggableItem from '@/components/portal/ui/DraggableItem';
+import { useUserStore } from '@/store/userStore';
 
 interface RecordGroupManagementProps {
     recordGroupsData: {
@@ -15,15 +16,17 @@ interface RecordGroupManagementProps {
         refreshRecordGroups: () => void;
         fetchRecordGroupDetails: (recordGroupId: string) => Promise<RecordGroupDetailResponse | null>;
     };
+    onGroupSettingsClick?: (group: RecordGroup) => void;
 }
 
-const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGroupsData }) => {
+const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGroupsData, onGroupSettingsClick }) => {
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
     const [recordGroups, setRecordGroups] = useState<RecordGroup[]>([]);
     
     // props로 받은 recordGroupsData 사용
-    const { allRecordGroups, ownedRecordGroups, sharedRecordGroups } = recordGroupsData;
-
+    const { allRecordGroups, sharedRecordGroups } = recordGroupsData;
+    const { user } = useUserStore();
+    
     // allRecordGroups가 변경되면 로컬 state 업데이트
     useEffect(() => {
         setRecordGroups(allRecordGroups);
@@ -56,21 +59,10 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
             return '개인 기록장';
         } else if (compareEnumValue(group.type, RecordGroup_RecordGroupType.SHARED, RecordGroup_RecordGroupType)) {
             // 공유 기록장인 경우, ownedRecordGroups에 있으면 관리자, sharedRecordGroups에 있으면 멤버
-            const isOwner = ownedRecordGroups.some(g => g.id === group.id);
-            return `공유 기록장(${isOwner ? '관리자' : '멤버'})`;
+            const isMaster = user?.id === group.worker?.id;
+            return `공유 기록장(${isMaster ? '관리자' : '멤버'})`;
         }
         return '';
-    };
-
-    // 기록장 전체 라벨 생성
-    const getRecordGroupLabel = (group: RecordGroup): string => {
-        const title = getRecordGroupTitle(group);
-        const typeLabel = getRecordGroupTypeLabel(group);
-        
-        if (typeLabel) {
-            return `${title} ${typeLabel}`;
-        }
-        return title;
     };
 
     return (
@@ -105,14 +97,50 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                                         flexShrink: 0
                                     }} 
                                 />
-                                <span style={{ flex: 1 }}>{getRecordGroupLabel(group)}</span>
-                                <div style={{ display: 'flex', gap: '10px' }}>
+                                <h3 style={{ fontSize: '16px', fontWeight: 'bold' }}>{getRecordGroupTitle(group)}</h3>
+                                <span style={{ fontSize: '14px', color: '#666' }}>{getRecordGroupTypeLabel(group)}</span>
+                                <div style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
                                     {compareEnumValue(group.type, RecordGroup_RecordGroupType.SHARED, RecordGroup_RecordGroupType) && 
-                                     sharedRecordGroups.some(g => g.id === group.id) ? (
-                                        <a href="#" style={{ color: '#666' }}>탈퇴</a>
+                                     sharedRecordGroups.some((sharedGroup: RecordGroup) => sharedGroup.id === group.id) ? (
+                                        <>
+                                            <a href="#" style={{ color: '#666' }}>탈퇴</a>
+                                            {
+                                                user?.id === group.worker?.id && (
+                                                    <>
+                                                        <span>|</span>
+                                                        <a 
+                                                            href="#" 
+                                                            style={{ color: '#666', cursor: 'pointer' }}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                if (onGroupSettingsClick) {
+                                                                    onGroupSettingsClick(group);
+                                                                }
+                                                            }}
+                                                        >
+                                                            설정
+                                                        </a>
+                                                        <span>|</span>
+                                                        <a href="#" style={{ color: '#666' }}>삭제</a>
+                                                    </>
+                                                )
+                                            }
+                                            
+                                        </>
                                     ) : (
                                         <>
-                                            <a href="#" style={{ color: '#666' }}>설정</a>
+                                            <a 
+                                                href="#" 
+                                                style={{ color: '#666', cursor: 'pointer' }}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (onGroupSettingsClick) {
+                                                        onGroupSettingsClick(group);
+                                                    }
+                                                }}
+                                            >
+                                                설정
+                                            </a>
                                             <span>|</span>
                                             <a href="#" style={{ color: '#666' }}>삭제</a>
                                         </>

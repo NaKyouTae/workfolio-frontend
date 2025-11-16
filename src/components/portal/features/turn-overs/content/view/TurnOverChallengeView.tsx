@@ -3,7 +3,7 @@ import { TurnOverChallengeDetail } from '@/generated/common';
 import MemoView from './common/MemoView';
 import AttachmentView from '@/components/portal/features/common/AttachmentView';
 import JobApplicationView from './common/JobApplicationView';
-import { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
 import { TurnOverViewRef } from './TurnOverGoalView';
 
 import Image from 'next/image';

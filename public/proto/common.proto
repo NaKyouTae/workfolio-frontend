@@ -302,6 +302,11 @@ message RecordGroup {
     PRIVATE = 2;
     SHARED = 3;
   }
+  enum RecordGroupRole {
+    ROLE_UNKNOWN = 0;
+    FULL = 1;
+    VIEW = 2;
+  }
 
   string id = 1;
   RecordGroupType type = 2;
@@ -309,6 +314,7 @@ message RecordGroup {
   bool is_default = 4;
   string public_id = 5;
   string color = 6;
+  RecordGroupRole role = 7;
 
   uint64 priority = 30;
 

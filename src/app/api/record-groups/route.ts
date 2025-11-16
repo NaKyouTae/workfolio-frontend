@@ -15,15 +15,11 @@ export async function POST(req: Request) {
         if (accessToken == null) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
-
-        console.log('requestData', requestData);
         
         const res = await apiFetchHandler<RecordGroupResponse>(`${API_BASE_URL}/api/record-groups`, HttpMethod.POST, requestData, accessToken);
         
         // 응답이 정상적인 경우
         const data = await res.json();
-
-        console.log('data', data);
         
         return NextResponse.json(data)
     } catch (error) {

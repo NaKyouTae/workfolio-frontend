@@ -5,7 +5,7 @@ import AttachmentView from '@/components/portal/features/common/AttachmentView';
 import FinalChoiceView from './common/FinalChoiceView';
 import NegotiationView from './common/NegotiationView';
 import SatisfactionView from './common/SatisfactionView';
-import { FloatingNavigationItem } from '../TurnOverFloatingActions';
+import { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
 import { TurnOverViewRef } from './TurnOverGoalView';
 
 import Image from 'next/image';
