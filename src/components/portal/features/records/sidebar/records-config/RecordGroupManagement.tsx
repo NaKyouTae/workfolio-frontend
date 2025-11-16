@@ -5,7 +5,7 @@ import { WorkerListResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
 import Dropdown from '@/components/portal/ui/Dropdown';
 import { RecordGroup, Worker } from '@/generated/common';
-import { createSampleWorkers } from '@/utils/sampleRecordData';
+import { createSampleWorkers, createSampleRecordGroupDetails } from '@/utils/sampleRecordData';
 
 interface RecordGroupManagementProps {
     recordGroupsData: {
@@ -25,6 +25,7 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
     const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
     const [recordGroupDetails, setRecordGroupDetails] = useState<RecordGroupDetailResponse | null>(null);
     const [isComposing, setIsComposing] = useState(false);
+    const [selectedNewWorkers, setSelectedNewWorkers] = useState<Worker[]>([]);
 
     // props로 받은 recordGroupsData 사용
     const { allRecordGroups, refreshRecordGroups, fetchRecordGroupDetails } = recordGroupsData;
@@ -49,9 +50,25 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
     // 선택된 레코드 그룹이 변경될 때 상세 정보 조회
     useEffect(() => {
         if (selectedRecordGroup) {
-            fetchRecordGroupDetails(selectedRecordGroup.id).then(details => {
-                setRecordGroupDetails(details);
-            });
+            // 로그인 상태 확인 (쿠키에서 accessToken 확인)
+            const hasToken = document.cookie.includes('accessToken=');
+            
+            // 로그인 안되어있을 때 샘플 데이터 사용
+            if (!hasToken) {
+                console.log('로그인 안되어있음, 샘플 데이터 사용');
+                const sampleDetails = createSampleRecordGroupDetails(selectedRecordGroup);
+                setRecordGroupDetails(sampleDetails);
+            } else {
+                // 로그인되어있을 때 API 호출
+                fetchRecordGroupDetails(selectedRecordGroup.id).then(details => {
+                    setRecordGroupDetails(details);
+                }).catch(error => {
+                    console.error('레코드 그룹 상세 정보 조회 실패:', error);
+                    // 에러 발생 시에도 샘플 데이터 사용
+                    const sampleDetails = createSampleRecordGroupDetails(selectedRecordGroup);
+                    setRecordGroupDetails(sampleDetails);
+                });
+            }
         }
     }, [selectedRecordGroup, fetchRecordGroupDetails]);
 
@@ -62,16 +79,6 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
             setSelectedRecordGroup(group);
         }
     }, [allRecordGroups]);
-
-    // 워커 드롭다운 옵션 생성
-    const workerDropdownOptions = React.useMemo(() => 
-        searchedWorkers.map(worker => ({
-            value: worker.id,
-            label: worker.nickName || '',
-            color: '#888'
-        })),
-        [searchedWorkers]
-    );
 
     // 닉네임으로 워커 검색 함수
     const searchWorkerByNickname = useCallback(async (nickname: string) => {
@@ -330,36 +337,52 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                         <button >공유하기</button>
                     </div>
                 </li>
+                <li>
+                    <div>
+                        {searchedWorkers.map((worker: Worker, index: number) => {
+                            const isSelected = selectedNewWorkers.some(w => w.id === worker.id);
+                            return (
+                                <div key={worker.id || index} className="shared-member">
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={(e) => {
+                                            if (e.target.checked) {
+                                                setSelectedNewWorkers([...selectedNewWorkers, worker]);
+                                            } else {
+                                                setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
+                                            }
+                                        }}
+                                        style={{ marginRight: '8px' }}
+                                    />
+                                    <span className="member-name">{worker.nickName || ''}</span>
+                                    <button className="remove-btn" onClick={() => handleRemoveWorker(worker.id)}>×</button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </li>
             </ul>
             <div className="config-row">
                 <label>기록장 공유</label>
                 <div className="share-container">
-                    <div className="share-input-row">
-                        
-                    </div>
-                    <div style={{ marginTop: '12px' }}>
-                        <label style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px', display: 'block' }}>
-                            검색된 워커 선택 ({searchedWorkers.length}명)
-                        </label>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            <div style={{ flex: 1 }}>
-                                <Dropdown
-                                    options={workerDropdownOptions}
-                                    selectedOption={selectedWorker?.id || ''}
-                                    setValue={(value: string | number) => {
-                                        const worker = searchedWorkers.find(w => w.id === String(value));
-                                        setSelectedWorker(worker || null);
-                                    }}
-                                />
-                            </div>
-                            <button 
-                                className="share-btn" 
-                                onClick={handleShareWorker}
-                                disabled={!selectedWorker}
-                            >
-                                공유하기
-                            </button>
-                        </div>
+                    <div className="new-shared-members">
+                        {selectedNewWorkers.length > 0 ? (
+                            selectedNewWorkers.map((worker: Worker, index: number) => (
+                                <div key={worker.id || index} className="shared-member">
+                                    <span className="member-name" style={{ color: 'red' }}>{worker.nickName || ''}</span>
+                                    <div className="permission-tag">
+                                        <span>전체 권한</span>
+                                        <i className="ic-arrow-down-14"></i>
+                                    </div>
+                                    <button className="remove-btn" onClick={() => {
+                                        setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
+                                    }}>×</button>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="info-text">선택된 멤버가 없습니다.</p>
+                        )}
                     </div>
                     <div className="shared-members">
                         {recordGroupDetails?.workers && recordGroupDetails.workers.length > 0 ? (

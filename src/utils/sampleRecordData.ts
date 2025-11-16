@@ -1,4 +1,5 @@
 import { RecordGroup, RecordGroup_RecordGroupType, Worker, Worker_Gender } from '@/generated/common'
+import { RecordGroupDetailResponse } from '@/generated/record_group'
 import dayjs from 'dayjs'
 
 export const createSampleRecordGroups = (): RecordGroup[] => {
@@ -1577,4 +1578,20 @@ export const createSampleWorkers = (): Worker[] => {
             updatedAt: now - 30 * 24 * 60 * 60 * 1000
         },
     ];
+};
+
+// 샘플 RecordGroupDetailResponse 데이터 (로그인 안되어있을 때 사용)
+export const createSampleRecordGroupDetails = (recordGroup: RecordGroup | null): RecordGroupDetailResponse | null => {
+    if (!recordGroup) {
+        return null;
+    }
+    
+    // 일부 샘플 워커를 공유 멤버로 설정 (3-5명 정도)
+    const sampleWorkers = createSampleWorkers();
+    const sharedWorkers = sampleWorkers.slice(0, 4); // 처음 4명을 공유 멤버로
+    
+    return {
+        groups: recordGroup,
+        workers: sharedWorkers
+    };
 };
