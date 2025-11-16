@@ -1,7 +1,5 @@
 /* 오늘 날짜 배경색 */
-.today {
-    background-color: #FFFAF0;
-}
+
 
 /* 이전/다음 달 날짜 스타일 */
 .day.other-month {
