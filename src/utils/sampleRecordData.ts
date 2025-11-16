@@ -1,4 +1,4 @@
-import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common'
+import { RecordGroup, RecordGroup_RecordGroupType, Worker, Worker_Gender } from '@/generated/common'
 import dayjs from 'dayjs'
 
 export const createSampleRecordGroups = (): RecordGroup[] => {
@@ -1441,3 +1441,140 @@ export const createSampleRecords = (recordGroups: object[]) => {
         }
     ]
 }
+
+// 샘플 Worker 데이터 (로그인 안되어있을 때 사용)
+export const createSampleWorkers = (): Worker[] => {
+    const now = Date.now();
+    return [
+        {
+            id: 'worker-sample-1',
+            nickName: '김철수',
+            phone: '010-1111-2222',
+            email: 'kim.cheolsu@example.com',
+            birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-2',
+            nickName: '이영희',
+            phone: '010-2222-3333',
+            email: 'lee.younghee@example.com',
+            birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.FEMALE,
+            createdAt: now - 300 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 20 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-3',
+            nickName: '박민수',
+            phone: '010-3333-4444',
+            email: 'park.minsu@example.com',
+            birthDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 500 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 15 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-4',
+            nickName: '최지은',
+            phone: '010-4444-5555',
+            email: 'choi.jieun@example.com',
+            birthDate: now - 24 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.FEMALE,
+            createdAt: now - 200 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 10 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-5',
+            nickName: '정대현',
+            phone: '010-5555-6666',
+            email: 'jung.daehyun@example.com',
+            birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 400 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 25 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-6',
+            nickName: '한소영',
+            phone: '010-6666-7777',
+            email: 'han.soyoung@example.com',
+            birthDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.FEMALE,
+            createdAt: now - 250 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 5 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-7',
+            nickName: '윤성호',
+            phone: '010-7777-8888',
+            email: 'yoon.sungho@example.com',
+            birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 350 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 18 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-8',
+            nickName: '강미래',
+            phone: '010-8888-9999',
+            email: 'kang.mirae@example.com',
+            birthDate: now - 25 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.FEMALE,
+            createdAt: now - 180 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 8 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-9',
+            nickName: '나규태',
+            phone: '010-1111-2222',
+            email: 'kim.cheolsu@example.com',
+            birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-10',
+            nickName: '최보영',
+            phone: '010-1111-2222',
+            email: 'kim.cheolsu@example.com',
+            birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-11',
+            nickName: '최진원',
+            phone: '010-1111-2222',
+            email: 'kim.cheolsu@example.com',
+            birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-12',
+            nickName: '최윤영',
+            phone: '010-1111-2222',
+            email: 'kim.cheolsu@example.com',
+            birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 30 * 24 * 60 * 60 * 1000
+        },
+        {
+            id: 'worker-sample-13',
+            nickName: '최봉준',
+            phone: '010-1111-2222',
+            email: 'kim.cheolsu@example.com',
+            birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
+            gender: Worker_Gender.MALE,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 30 * 24 * 60 * 60 * 1000
+        },
+    ];
+};

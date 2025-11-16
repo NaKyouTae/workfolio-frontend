@@ -4,8 +4,8 @@ import { RecordGroupJoinRequest, RecordGroupDetailResponse } from '@/generated/r
 import { WorkerListResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
 import Dropdown from '@/components/portal/ui/Dropdown';
-import { RecordGroup, RecordGroup_RecordGroupType, Worker } from '@/generated/common';
-import { getRecordGroupTypeLabel } from '@/utils/commonUtils';
+import { RecordGroup, Worker } from '@/generated/common';
+import { createSampleWorkers } from '@/utils/sampleRecordData';
 
 interface RecordGroupManagementProps {
     recordGroupsData: {
@@ -56,8 +56,8 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
     }, [selectedRecordGroup, fetchRecordGroupDetails]);
 
     // 드롭다운 변경 핸들러 메모이제이션
-    const handleRecordGroupChange = useCallback((value: string) => {
-        const group = allRecordGroups.find(g => g.id === value);
+    const handleRecordGroupChange = useCallback((value: string | number) => {
+        const group = allRecordGroups.find(g => g.id === String(value));
         if (group) {
             setSelectedRecordGroup(group);
         }
@@ -67,7 +67,7 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
     const workerDropdownOptions = React.useMemo(() => 
         searchedWorkers.map(worker => ({
             value: worker.id,
-            label: worker.nickName || worker.name,
+            label: worker.nickName || '',
             color: '#888'
         })),
         [searchedWorkers]
@@ -78,6 +78,31 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
         if (!nickname.trim()) {
             console.warn('닉네임을 입력해주세요.');
             return [];
+        }
+        
+        // 로그인 상태 확인 (쿠키에서 accessToken 확인)
+        const hasToken = document.cookie.includes('accessToken=');
+        
+        // 로그인 안되어있을 때 샘플 데이터 사용
+        if (!hasToken) {
+            console.log('로그인 안되어있음, 샘플 데이터 사용');
+            const sampleWorkers = createSampleWorkers();
+            // 닉네임으로 필터링 (부분 일치)
+            const filteredWorkers = sampleWorkers.filter(worker => 
+                worker.nickName.toLowerCase().includes(nickname.toLowerCase())
+            );
+            
+            if (filteredWorkers.length > 0) {
+                setSearchedWorkers(filteredWorkers);
+                setSelectedWorker(filteredWorkers[0]); // 첫 번째 워커를 기본 선택
+                console.log('샘플 워커 검색 성공:', filteredWorkers);
+                return filteredWorkers;
+            } else {
+                console.warn('해당 닉네임의 워커를 찾을 수 없습니다.');
+                setSearchedWorkers([]);
+                setSelectedWorker(null);
+                return [];
+            }
         }
         
         try {
@@ -98,6 +123,24 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                     setSelectedWorker(null);
                     return [];
                 }
+            } else if (response.status === 401 || response.status === 403) {
+                // 인증 실패 시 샘플 데이터 사용
+                console.log('인증 실패, 샘플 데이터 사용');
+                const sampleWorkers = createSampleWorkers();
+                const filteredWorkers = sampleWorkers.filter(worker => 
+                    worker.nickName.toLowerCase().includes(nickname.toLowerCase())
+                );
+                
+                if (filteredWorkers.length > 0) {
+                    setSearchedWorkers(filteredWorkers);
+                    setSelectedWorker(filteredWorkers[0]);
+                    console.log('샘플 워커 검색 성공:', filteredWorkers);
+                    return filteredWorkers;
+                } else {
+                    setSearchedWorkers([]);
+                    setSelectedWorker(null);
+                    return [];
+                }
             } else {
                 console.error('워커 검색 실패:', response.status);
                 setSearchedWorkers([]);
@@ -106,9 +149,23 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
             }
         } catch (error) {
             console.error('워커 검색 중 에러 발생:', error);
-            setSearchedWorkers([]);
-            setSelectedWorker(null);
-            return [];
+            // 에러 발생 시에도 샘플 데이터 사용
+            console.log('에러 발생, 샘플 데이터 사용');
+            const sampleWorkers = createSampleWorkers();
+            const filteredWorkers = sampleWorkers.filter(worker => 
+                worker.nickName.toLowerCase().includes(nickname.toLowerCase())
+            );
+            
+            if (filteredWorkers.length > 0) {
+                setSearchedWorkers(filteredWorkers);
+                setSelectedWorker(filteredWorkers[0]);
+                console.log('샘플 워커 검색 성공:', filteredWorkers);
+                return filteredWorkers;
+            } else {
+                setSearchedWorkers([]);
+                setSelectedWorker(null);
+                return [];
+            }
         }
     }, []);
 
@@ -289,8 +346,8 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                                 <Dropdown
                                     options={workerDropdownOptions}
                                     selectedOption={selectedWorker?.id || ''}
-                                    setValue={(value) => {
-                                        const worker = searchedWorkers.find(w => w.id === value);
+                                    setValue={(value: string | number) => {
+                                        const worker = searchedWorkers.find(w => w.id === String(value));
                                         setSelectedWorker(worker || null);
                                     }}
                                 />
@@ -308,7 +365,7 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                         {recordGroupDetails?.workers && recordGroupDetails.workers.length > 0 ? (
                             recordGroupDetails.workers.map((worker: Worker, index: number) => (
                                 <div key={worker.id || index} className="shared-member">
-                                    <span className="member-name">{worker.nickName || worker.name}</span>
+                                    <span className="member-name">{worker.nickName || ''}</span>
                                     <div className="permission-tag">
                                         <span>전체 권한</span>
                                         <i className="ic-arrow-down-14"></i>
