@@ -20,12 +20,6 @@ const CustomerServiceSidebar: React.FC<CustomerServiceSidebarProps> = ({ selecte
         >
           공지사항
         </div>
-        <div 
-          className={`${styles.asideHome} ${selectedMenu === 'faq' ? styles.active : ''}`}
-          onClick={() => onMenuClick('faq')}
-        >
-          자주 묻는 질문
-        </div>
       </div>
     </aside>
   );

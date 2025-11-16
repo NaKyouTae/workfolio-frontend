@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './GuideModal.module.css';
 
 interface ContentModalProps {
   isOpen: boolean;
