@@ -40,17 +40,6 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                 />
             </div>
             <div className="calendar-type">
-                {onSearchChange && (
-                    <div className="input-search">
-                        <input
-                            type="text"
-                            placeholder="검색어를 입력해 주세요."
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </div>
-                )}
                 <ul className="tab-style1">
                     <li>
                         <button 
@@ -77,6 +66,17 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                         </button>
                     </li>
                 </ul>
+                {onSearchChange && (
+                    <div className="input-search">
+                        <input
+                            type="text"
+                            placeholder="검색어를 입력해 주세요."
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

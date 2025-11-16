@@ -179,7 +179,9 @@ input.md {height: 4rem; padding: 0 1.4rem; font-size: 1.4rem; border-radius: .6r
 input.sm {height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
 input::placeholder {color: var(--gray005); font-weight: 400;}
 input:disabled,
-input:read-only {background-color: var(--gray001); color: var(--gray005);}
+input:disabled::placeholder,
+input:read-only,
+input:read-only::placeholder {background-color: var(--gray001); color: var(--gray004)!important;}
 
 .input-search {width: 24rem; position: relative; display: flex; align-items: center;}
 .input-search::before {content: ''; display: block; width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-search.svg); background-repeat: no-repeat; background-size: contain; background-position: center; position: absolute; left: 1.2rem;}
@@ -188,6 +190,8 @@ input:read-only {background-color: var(--gray001); color: var(--gray005);}
 .input-desc {position: relative; display: flex; align-items: center;}
 .input-desc input {padding-right: 5.2rem!important;}
 .input-desc span {position: absolute; font-size: 1.2rem; color: var(--gray005); right: 1.6rem;}
+
+.input-list {display: flex; align-items: center; column-gap: 2rem;}
 
 input[type="checkbox"] {display: none;}
 input[type="checkbox"] + label {display: flex; align-items: center; column-gap: .8rem; cursor: pointer;}
@@ -256,6 +260,7 @@ button.trans {width: fit-content; height: fit-content; padding: 0; background-co
 button.gray {background-color: var(--gray002);}
 button.dark-gray {background-color: var(--gray006);}
 button.line.gray {border-color: var(--gray003); background-color: var(--white); color: var(--black);}
+button:disabled {background-color: var(--gray003)!important;}
 
 .btn-kakao {background-color: #FEE500; color: var(--black);}
 .btn-kakao::before {content: ''; width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-kakao-login.svg); background-repeat: no-repeat; background-size: contain; background-position: center;}

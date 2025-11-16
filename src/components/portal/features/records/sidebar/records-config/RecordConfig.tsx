@@ -17,17 +17,15 @@ interface RecordConfigProps {
     };
 }
 
-const RecordConfig: React.FC<RecordConfigProps> = ({ onClose, recordGroupsData }) => {
+const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
     return (
-        <div className="records-config">
-            <div className="config-header">
-                <h2>기록 설정</h2>
-                <button className="close-btn" onClick={onClose}>
-                    <i className="ic-close-24" />
-                </button>
+        <div className="contents">
+            <div className="page-title">
+                <div>
+                    <h2>기록 설정</h2>
+                </div>
             </div>
-            
-            <div className="config-content">
+            <div className="page-cont">
                 <RecordManagement />
                 <RecordGroupManagement recordGroupsData={recordGroupsData} />
             </div>

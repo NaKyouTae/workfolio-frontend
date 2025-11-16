@@ -24,45 +24,52 @@ const RecordManagement = () => {
     };
 
     return (
-        <div>
-            <div className="config-section">
-                <h3>기록 관리</h3>
-                <div className="config-row">
-                    <label>기록장 기본 화면</label>
-                    <div className="radio-group">
-                        <label className="radio-option">
+        <div className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>기록 관리</h3>
+                </div>
+            </div>
+            <ul className="setting-list">
+                <li>
+                    <p>기록장 기본 화면</p>
+                    <ul className="input-list">
+                        <li>
                             <input 
                                 type="radio" 
                                 name="recordGroupDefaultScreen"
                                 value="weekly"
+                                id="weekly"
                                 checked={recordGroupDefaultScreen === 'weekly'}
                                 onChange={(e) => handleScreenChange(e.target.value as CalendarViewType)}
                             />
-                            <span>주별 보기</span>
-                        </label>
-                        <label className="radio-option">
+                            <label htmlFor="weekly"><p>주별 보기</p></label>
+                        </li>
+                        <li>
                             <input 
                                 type="radio" 
                                 name="recordGroupDefaultScreen"
                                 value="monthly"
+                                id="monthly"
                                 checked={recordGroupDefaultScreen === 'monthly'}
                                 onChange={(e) => handleScreenChange(e.target.value as CalendarViewType)}
                             />
-                            <span>월별 보기</span>
-                        </label>
-                        <label className="radio-option">
+                            <label htmlFor="monthly"><p>월별 보기</p></label>
+                        </li>
+                        <li>
                             <input 
                                 type="radio" 
                                 name="recordGroupDefaultScreen"
                                 value="list"
+                                id="list"
                                 checked={recordGroupDefaultScreen === 'list'}
                                 onChange={(e) => handleScreenChange(e.target.value as CalendarViewType)}
                             />
-                            <span>목록 보기</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
+                            <label htmlFor="list"><p>목록 보기</p></label>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     );
 };

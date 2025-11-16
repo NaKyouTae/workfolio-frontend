@@ -217,49 +217,50 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
     }, [selectedRecordGroup, refreshRecordGroups, fetchRecordGroupDetails]);
 
     return (
-        <div>
-            {/* 기록장 관리 */}
-            <h3>기록장 관리</h3>
-            <div className="config-row">
-                <label>기록장 선택</label>
-                <div className="dropdown-container">
-                    <div className="color" style={{
-                        backgroundColor: dropdownOptions.find(
-                            option => option.value === selectedRecordGroup?.id
-                        )?.color || '#ddd'
-                    }}></div>
+        <div className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>기록장 관리</h3>
+                </div>
+            </div>
+            <ul className="setting-list">
+                <li>
+                    <p>기록장 선택</p>
                     <Dropdown
                         options={dropdownOptions}
                         selectedOption={selectedRecordGroup?.id || ''}
                         setValue={handleRecordGroupChange}
                     />
-                </div>
-            </div>
-            <div className="config-row">
-                <label>기록장 이름 및 색상</label>
-                <div className="input-with-color">
-                    <p>{getRecordGroupTypeLabel(selectedRecordGroup?.type || RecordGroup_RecordGroupType.UNKNOWN)}</p>
-                    <input 
-                        type="text" 
-                        value={selectedRecordGroup?.title || ''}
-                        onChange={(e) => {
-                            if (selectedRecordGroup) {
-                                setSelectedRecordGroup({
-                                    ...selectedRecordGroup,
-                                    title: e.target.value
-                                });
-                            }
-                        }}
-                        className="text-input"
-                    />
-                    <button className="clear-btn">×</button>
-                    <div className="color-picker" style={{ backgroundColor: selectedRecordGroup?.color || '#ddd' }}></div>
-                </div>
-            </div>
-            <div className="config-row">
-                <label>기록장 공유</label>
-                <div className="share-container">
-                    <div className="share-input-row">
+                </li>
+                <li>
+                    <p>기록장 이름 및 색상</p>
+                    <div>
+                        {/* <p>{getRecordGroupTypeLabel(selectedRecordGroup?.type || RecordGroup_RecordGroupType.UNKNOWN)}</p> */}
+                        <input 
+                            type="text" 
+                            value={selectedRecordGroup?.title || ''}
+                            onChange={(e) => {
+                                if (selectedRecordGroup) {
+                                    setSelectedRecordGroup({
+                                        ...selectedRecordGroup,
+                                        title: e.target.value
+                                    });
+                                }
+                            }}
+                        />
+                        <div className="color-picker" style={{ backgroundColor: selectedRecordGroup?.color || '#fff' }}></div>
+                    </div>
+                </li>
+                <li>
+                    <p>기록장 공유 설정</p>
+                    <ul className="input-list">
+                        <li><input type="radio" name="share" id="private" /><label htmlFor="private"><p>개인 기록장</p></label></li>
+                        <li><input type="radio" name="share" id="shared" /><label htmlFor="shared"><p>공유 기록장</p></label></li>
+                    </ul>
+                </li>
+                <li>
+                    <p>기록장 공유 멤버</p>
+                    <div>
                         <input 
                             type="text" 
                             placeholder="공유할 분의 닉네임을 입력해 주세요."
@@ -268,9 +269,16 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                             onKeyDown={handleNicknameKeyDown}
                             onCompositionStart={handleCompositionStart}
                             onCompositionEnd={handleCompositionEnd}
-                            className="text-input"
-                            style={{ width: '800px' }}
                         />
+                        <button >공유하기</button>
+                    </div>
+                </li>
+            </ul>
+            <div className="config-row">
+                <label>기록장 공유</label>
+                <div className="share-container">
+                    <div className="share-input-row">
+                        
                     </div>
                     <div style={{ marginTop: '12px' }}>
                         <label style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px', display: 'block' }}>
