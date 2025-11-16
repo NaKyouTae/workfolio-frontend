@@ -177,7 +177,6 @@ const PrivacyPolicy: React.FC = () => {
             </article>
             <nav className="terms">
                 <ul className="nav-wrap">
-                    <li>제1조 목적</li>
                     <li>제1조 개인정보의 처리목적</li>
                     <li>제2조 개인정보의 처리 및 보유기간</li>
                     <li>제3조 정보주체 및 법정대리인의 권리와 그 행사 방법</li>
