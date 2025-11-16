@@ -6,6 +6,8 @@ import ServiceGuidesSidebar from './ServiceGuidesSidebar';
 import ServiceGuidesContent from './ServiceGuidesContent';
 import styles from './ServiceGuidesPage.module.css';
 
+import Footer from '../../layouts/Footer';
+
 type MenuType = 'notices' | 'terms' | 'privacy';
 
 interface ServiceGuidesPageProps {
@@ -43,16 +45,17 @@ const ServiceGuidesPage: React.FC<ServiceGuidesPageProps> = ({ initialMenu }) =>
   };
 
   return (
-    <main className={styles.container}>
-      <ServiceGuidesSidebar 
-        selectedMenu={selectedMenu}
-        onMenuClick={handleMenuClick}
-      />
-      <section className={styles.content}>
-        <ServiceGuidesContent selectedMenu={selectedMenu} />
-      </section>
+    <main>
+        <ServiceGuidesSidebar 
+            selectedMenu={selectedMenu}
+            onMenuClick={handleMenuClick}
+        />
+        <section>
+            <ServiceGuidesContent selectedMenu={selectedMenu} />
+            <Footer/>
+        </section>
     </main>
-  );
+    );
 };
 
 export default ServiceGuidesPage;

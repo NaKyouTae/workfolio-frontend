@@ -6,7 +6,8 @@ import ExpandableCard from '@/components/portal/ui/ExpandableCard';
 import Pagination from '@/components/portal/ui/Pagination';
 import styles from './Notices.module.css';
 import DateUtil from '@/utils/DateUtil';
-import Footer from '../../../layouts/Footer';
+
+import Image from 'next/image';
 
 interface NoticesProps {
   onNoticeClick?: (notice: Notice) => void;
@@ -51,53 +52,67 @@ const Notices: React.FC<NoticesProps> = ({ onNoticeClick }) => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>공지사항</h2>
-          <div className={styles.count}>총 {notices.length}개</div>
+        <div className="page-title">
+            <div>
+                <h2>공지사항</h2>
+            </div>
         </div>
-
-        <div className={styles.noticesList}>
-          {paginatedNotices.length === 0 ? (
-            <div className={styles.empty}>등록된 공지사항이 없습니다.</div>
-          ) : (
-            paginatedNotices.map((notice) => (
-              <ExpandableCard
-                key={notice.id}
-                title={notice.title}
-                date={DateUtil.formatTimestamp(notice.createdAt)}
-                badge={{
-                  text: notice.isImportant ? '중요' : '일반',
-                  variant: notice.isImportant ? 'important' : 'general',
-                }}
-                content={
-                  <div className={styles.noticeContent}>
-                    <div className={styles.noticeText}>
-                      {notice.content}
+        <div className="page-cont">
+            <div className="cont-box">
+                <div className="cont-tit">
+                    <div>
+                        <p>총 <span>{notices.length}</span>개</p>
                     </div>
-                  </div>
-                }
-                onToggle={(expanded) => {
-                  if (expanded && onNoticeClick) {
-                    onNoticeClick(notice);
-                  }
-                }}
-              />
-            ))
-          )}
-        </div>
+                </div>
+            </div>
+            <ul className="notice-list">
+                {paginatedNotices.length === 0 ? (
+                    <li className="empty-cont">
+                        <Image
+                            src="/assets/img/ico/ic-empty.svg" 
+                            alt="empty" 
+                            width={1}
+                            height={1}
+                        />
+                        <div>
+                            <p>등록된 공지사항이 없습니다.</p>
+                        </div>
+                    </li>
+                ) : (
+                paginatedNotices.map((notice) => (
+                    <ExpandableCard
+                        key={notice.id}
+                        title={notice.title}
+                        date={DateUtil.formatTimestamp(notice.createdAt)}
+                        badge={{
+                            text: notice.isImportant ? '중요' : '일반',
+                            variant: notice.isImportant ? 'red' : 'gray',
+                        }}
+                        content={
+                            <>
+                                {notice.content}
+                            </>
+                        }
+                        onToggle={(expanded) => {
+                            if (expanded && onNoticeClick) {
+                            onNoticeClick(notice);
+                            }
+                        }}
+                    />
+                ))
+                )}
+            </ul>
 
-        {notices.length > 0 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
-        )}
-      </div>
-      <Footer/>
+            {notices.length > 0 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
+            )}
+        </div>
     </>
   );
 };

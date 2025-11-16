@@ -8,7 +8,7 @@ interface ExpandableCardProps {
   content: React.ReactNode;
   badge?: {
     text: string;
-    variant?: 'important' | 'general';
+    variant?: 'red' | 'gray';
   };
   date?: string;
   defaultExpanded?: boolean;
@@ -34,29 +34,27 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
   };
 
   return (
-    <div className={styles.card}>
-      <div className={styles.header} onClick={handleToggle}>
-        <div className={styles.headerLeft}>
-          {badge && (
-            <span className={`${styles.badge} ${styles[badge.variant || 'general']}`}>
-              {badge.text}
-            </span>
-          )}
-          <h3 className={styles.title}>{title}</h3>
+    <li>
+        <div className="question" onClick={handleToggle}>
+            <div className="info">
+                {badge && (
+                    <span className={`label ${[badge.variant || '']}`}>
+                        {badge.text}
+                    </span>
+                )}
+                <p>{title}</p>
+            </div>
+            <div className="option">
+                {date && <span>{date}</span>}
+                {isExpanded ? <i className="ic-arrow-up-14" /> : <i className="ic-arrow-down-14" />}
+            </div>
         </div>
-        <div className={styles.headerRight}>
-          {date && <span className={styles.date}>{date}</span>}
-          <span className={`${styles.icon} ${isExpanded ? styles.expanded : ''}`}>
-            {isExpanded ? '^' : 'v'}
-          </span>
-        </div>
-      </div>
-      {isExpanded && (
-        <div className={styles.content}>
-          {content}
-        </div>
-      )}
-    </div>
+        {isExpanded && (
+            <p className="answer">
+                {content}
+            </p>
+        )}
+    </li>
   );
 };
 

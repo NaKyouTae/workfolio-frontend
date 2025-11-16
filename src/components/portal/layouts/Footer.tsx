@@ -25,7 +25,7 @@ const Footer = () => {
         <li><a href="https://forms.gle/ntxm9NVwbFLQmUbg6" target="_blank">고객문의</a></li>
           <li><Link href="/service-guides/notices">공지사항</Link></li>
           <li><Link href="/service-guides/terms-services">이용약관</Link></li>
-          <li><Link href="/service-guides/privacy-policies">개인정보처리방침</Link></li>
+          <li><Link href="/service-guides/privacy-policies">개인정보 처리방침</Link></li>
           {/* <li>
             <a href="#" onClick={handlePlanClick}>
               플랜구성
