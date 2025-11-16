@@ -334,15 +334,11 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                             onCompositionStart={handleCompositionStart}
                             onCompositionEnd={handleCompositionEnd}
                         />
-                        <button >공유하기</button>
-                    </div>
-                </li>
-                <li>
-                    <div>
+                        <ul className="shared-mem-search" style={{display: 'none'}}>
                         {searchedWorkers.map((worker: Worker, index: number) => {
                             const isSelected = selectedNewWorkers.some(w => w.id === worker.id);
                             return (
-                                <div key={worker.id || index} className="shared-member">
+                                <li key={worker.id || index}>
                                     <input
                                         type="checkbox"
                                         checked={isSelected}
@@ -353,52 +349,65 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
                                                 setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
                                             }
                                         }}
-                                        style={{ marginRight: '8px' }}
                                     />
-                                    <span className="member-name">{worker.nickName || ''}</span>
-                                    <button className="remove-btn" onClick={() => handleRemoveWorker(worker.id)}>×</button>
-                                </div>
+                                    <label htmlFor=""><p>{worker.nickName || ''}</p></label>
+                                </li>
                             );
                         })}
+                        </ul>
+                        <button>공유하기</button>
                     </div>
+                </li>
+                <li>
+                    <p></p>
+                    <ul className="shared-mem-list">
+                        {selectedNewWorkers.length > 0 ? (
+                            selectedNewWorkers.map((worker: Worker, index: number) => (
+                                <li key={worker.id || index} className="new">
+                                    <div className="info">
+                                        <p>{worker.nickName || ''}</p>
+                                        <span className="label red">NEW</span>
+                                    </div>
+                                    <div className="option">
+                                        <select>
+                                            <option>전체 권한</option>
+                                            <option>보기 권한</option>
+                                        </select>
+                                        <button onClick={() => {
+                                            setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
+                                        }}><i className="ic-delete" /></button>
+                                    </div>
+                                </li>
+                            ))
+                        ) : (
+                            <li>선택된 멤버가 없습니다.</li>
+                        )}
+                        {recordGroupDetails?.workers && recordGroupDetails.workers.length > 0 ? (
+                            recordGroupDetails.workers.map((worker: Worker, index: number) => (
+                                <li key={worker.id || index}>
+                                    <div className="info">
+                                        <p>{worker.nickName || ''}</p>
+                                    </div>
+                                    <div className="option">
+                                        <select>
+                                            <option>전체 권한</option>
+                                            <option>보기 권한</option>
+                                        </select>
+                                        <button onClick={() => handleRemoveWorker(worker.id)}><i className="ic-delete" /></button>
+                                    </div>
+                                </li>
+                            ))
+                        ) : (
+                            <li>공유된 멤버가 없습니다.</li>
+                        )}
+                    </ul>
                 </li>
             </ul>
             <div className="config-row">
                 <label>기록장 공유</label>
                 <div className="share-container">
-                    <div className="new-shared-members">
-                        {selectedNewWorkers.length > 0 ? (
-                            selectedNewWorkers.map((worker: Worker, index: number) => (
-                                <div key={worker.id || index} className="shared-member">
-                                    <span className="member-name" style={{ color: 'red' }}>{worker.nickName || ''}</span>
-                                    <div className="permission-tag">
-                                        <span>전체 권한</span>
-                                        <i className="ic-arrow-down-14"></i>
-                                    </div>
-                                    <button className="remove-btn" onClick={() => {
-                                        setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
-                                    }}>×</button>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="info-text">선택된 멤버가 없습니다.</p>
-                        )}
-                    </div>
                     <div className="shared-members">
-                        {recordGroupDetails?.workers && recordGroupDetails.workers.length > 0 ? (
-                            recordGroupDetails.workers.map((worker: Worker, index: number) => (
-                                <div key={worker.id || index} className="shared-member">
-                                    <span className="member-name">{worker.nickName || ''}</span>
-                                    <div className="permission-tag">
-                                        <span>전체 권한</span>
-                                        <i className="ic-arrow-down-14"></i>
-                                    </div>
-                                    <button className="remove-btn" onClick={() => handleRemoveWorker(worker.id)}>×</button>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="info-text">공유된 멤버가 없습니다.</p>
-                        )}
+                        
                     </div>
                     <p className="info-text">공유 멤버가 있으면 기록장을 삭제할 수 없어요.</p>
                 </div>
