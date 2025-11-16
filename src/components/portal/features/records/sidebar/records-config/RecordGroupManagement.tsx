@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import '@/styles/records-config.css';
-import { RecordGroupJoinRequest, RecordGroupDetailResponse } from '@/generated/record_group';
-import { WorkerListResponse } from '@/generated/worker';
-import HttpMethod from '@/enums/HttpMethod';
-import Dropdown from '@/components/portal/ui/Dropdown';
-import { RecordGroup, Worker } from '@/generated/common';
-import { createSampleWorkers, createSampleRecordGroupDetails } from '@/utils/sampleRecordData';
+import { RecordGroupDetailResponse } from '@/generated/record_group';
+import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common';
+import { compareEnumValue } from '@/utils/commonUtils';
+import DraggableList from '@/components/portal/ui/DraggableList';
+import DraggableItem from '@/components/portal/ui/DraggableItem';
 
 interface RecordGroupManagementProps {
     recordGroupsData: {
@@ -20,438 +19,110 @@ interface RecordGroupManagementProps {
 
 const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGroupsData }) => {
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
-    const [shareNickname, setShareNickname] = useState('');
-    const [searchedWorkers, setSearchedWorkers] = useState<Worker[]>([]);
-    const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
-    const [recordGroupDetails, setRecordGroupDetails] = useState<RecordGroupDetailResponse | null>(null);
-    const [isComposing, setIsComposing] = useState(false);
-    const [selectedNewWorkers, setSelectedNewWorkers] = useState<Worker[]>([]);
-
-    // props로 받은 recordGroupsData 사용
-    const { allRecordGroups, refreshRecordGroups, fetchRecordGroupDetails } = recordGroupsData;
+    const [recordGroups, setRecordGroups] = useState<RecordGroup[]>([]);
     
-    // dropdownOptions를 useMemo로 메모이제이션
-    const dropdownOptions = React.useMemo(() => 
-        allRecordGroups.map(group => ({
-            value: group.id,
-            label: group.title,
-            color: group.color
-        })),
-        [allRecordGroups]
-    );
+    // props로 받은 recordGroupsData 사용
+    const { allRecordGroups, ownedRecordGroups, sharedRecordGroups } = recordGroupsData;
+
+    // allRecordGroups가 변경되면 로컬 state 업데이트
+    useEffect(() => {
+        setRecordGroups(allRecordGroups);
+    }, [allRecordGroups]);
 
     // 첫 렌더링 시 첫 번째 레코드 그룹 선택
     useEffect(() => {
-        if (allRecordGroups.length > 0 && !selectedRecordGroup) {
-            setSelectedRecordGroup(allRecordGroups[0]);
+        if (recordGroups.length > 0 && !selectedRecordGroup) {
+            setSelectedRecordGroup(recordGroups[0]);
         }
-    }, [allRecordGroups, selectedRecordGroup]);
+    }, [recordGroups, selectedRecordGroup]);
 
-    // 선택된 레코드 그룹이 변경될 때 상세 정보 조회
-    useEffect(() => {
-        if (selectedRecordGroup) {
-            // 로그인 상태 확인 (쿠키에서 accessToken 확인)
-            const hasToken = document.cookie.includes('accessToken=');
-            
-            // 로그인 안되어있을 때 샘플 데이터 사용
-            if (!hasToken) {
-                console.log('로그인 안되어있음, 샘플 데이터 사용');
-                const sampleDetails = createSampleRecordGroupDetails(selectedRecordGroup);
-                setRecordGroupDetails(sampleDetails);
-            } else {
-                // 로그인되어있을 때 API 호출
-                fetchRecordGroupDetails(selectedRecordGroup.id).then(details => {
-                    setRecordGroupDetails(details);
-                }).catch(error => {
-                    console.error('레코드 그룹 상세 정보 조회 실패:', error);
-                    // 에러 발생 시에도 샘플 데이터 사용
-                    const sampleDetails = createSampleRecordGroupDetails(selectedRecordGroup);
-                    setRecordGroupDetails(sampleDetails);
-                });
-            }
-        }
-    }, [selectedRecordGroup, fetchRecordGroupDetails]);
+    // 드래그로 순서 변경 핸들러
+    const handleReorder = (reorderedGroups: RecordGroup[]) => {
+        setRecordGroups(reorderedGroups);
+        // TODO: API 호출하여 서버에 순서 반영
+    };
 
-    // 드롭다운 변경 핸들러 메모이제이션
-    const handleRecordGroupChange = useCallback((value: string | number) => {
-        const group = allRecordGroups.find(g => g.id === String(value));
-        if (group) {
-            setSelectedRecordGroup(group);
+    // 기록장 제목 반환 (기본 기록장 여부 포함)
+    const getRecordGroupTitle = (group: RecordGroup): string => {
+        if (group.isDefault) {
+            return `[기본] ${group.title}`;
         }
-    }, [allRecordGroups]);
+        return group.title;
+    };
 
-    // 닉네임으로 워커 검색 함수
-    const searchWorkerByNickname = useCallback(async (nickname: string) => {
-        if (!nickname.trim()) {
-            console.warn('닉네임을 입력해주세요.');
-            return [];
+    // 기록장 타입에 따른 라벨 반환
+    const getRecordGroupTypeLabel = (group: RecordGroup): string => {
+        if (compareEnumValue(group.type, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType)) {
+            return '개인 기록장';
+        } else if (compareEnumValue(group.type, RecordGroup_RecordGroupType.SHARED, RecordGroup_RecordGroupType)) {
+            // 공유 기록장인 경우, ownedRecordGroups에 있으면 관리자, sharedRecordGroups에 있으면 멤버
+            const isOwner = ownedRecordGroups.some(g => g.id === group.id);
+            return `공유 기록장(${isOwner ? '관리자' : '멤버'})`;
         }
+        return '';
+    };
+
+    // 기록장 전체 라벨 생성
+    const getRecordGroupLabel = (group: RecordGroup): string => {
+        const title = getRecordGroupTitle(group);
+        const typeLabel = getRecordGroupTypeLabel(group);
         
-        // 로그인 상태 확인 (쿠키에서 accessToken 확인)
-        const hasToken = document.cookie.includes('accessToken=');
-        
-        // 로그인 안되어있을 때 샘플 데이터 사용
-        if (!hasToken) {
-            console.log('로그인 안되어있음, 샘플 데이터 사용');
-            const sampleWorkers = createSampleWorkers();
-            // 닉네임으로 필터링 (부분 일치)
-            const filteredWorkers = sampleWorkers.filter(worker => 
-                worker.nickName.toLowerCase().includes(nickname.toLowerCase())
-            );
-            
-            if (filteredWorkers.length > 0) {
-                setSearchedWorkers(filteredWorkers);
-                setSelectedWorker(filteredWorkers[0]); // 첫 번째 워커를 기본 선택
-                console.log('샘플 워커 검색 성공:', filteredWorkers);
-                return filteredWorkers;
-            } else {
-                console.warn('해당 닉네임의 워커를 찾을 수 없습니다.');
-                setSearchedWorkers([]);
-                setSelectedWorker(null);
-                return [];
-            }
+        if (typeLabel) {
+            return `${title} ${typeLabel}`;
         }
-        
-        try {
-            const response = await fetch(`/api/workers/${nickname}`, {
-                method: HttpMethod.GET
-            });
-
-            if (response.ok) {
-                const data: WorkerListResponse = await response.json();
-                if (data.workers && data.workers.length > 0) {
-                    setSearchedWorkers(data.workers);
-                    setSelectedWorker(data.workers[0]); // 첫 번째 워커를 기본 선택
-                    console.log('워커 검색 성공:', data.workers);
-                    return data.workers;
-                } else {
-                    console.warn('해당 닉네임의 워커를 찾을 수 없습니다.');
-                    setSearchedWorkers([]);
-                    setSelectedWorker(null);
-                    return [];
-                }
-            } else if (response.status === 401 || response.status === 403) {
-                // 인증 실패 시 샘플 데이터 사용
-                console.log('인증 실패, 샘플 데이터 사용');
-                const sampleWorkers = createSampleWorkers();
-                const filteredWorkers = sampleWorkers.filter(worker => 
-                    worker.nickName.toLowerCase().includes(nickname.toLowerCase())
-                );
-                
-                if (filteredWorkers.length > 0) {
-                    setSearchedWorkers(filteredWorkers);
-                    setSelectedWorker(filteredWorkers[0]);
-                    console.log('샘플 워커 검색 성공:', filteredWorkers);
-                    return filteredWorkers;
-                } else {
-                    setSearchedWorkers([]);
-                    setSelectedWorker(null);
-                    return [];
-                }
-            } else {
-                console.error('워커 검색 실패:', response.status);
-                setSearchedWorkers([]);
-                setSelectedWorker(null);
-                return [];
-            }
-        } catch (error) {
-            console.error('워커 검색 중 에러 발생:', error);
-            // 에러 발생 시에도 샘플 데이터 사용
-            console.log('에러 발생, 샘플 데이터 사용');
-            const sampleWorkers = createSampleWorkers();
-            const filteredWorkers = sampleWorkers.filter(worker => 
-                worker.nickName.toLowerCase().includes(nickname.toLowerCase())
-            );
-            
-            if (filteredWorkers.length > 0) {
-                setSearchedWorkers(filteredWorkers);
-                setSelectedWorker(filteredWorkers[0]);
-                console.log('샘플 워커 검색 성공:', filteredWorkers);
-                return filteredWorkers;
-            } else {
-                setSearchedWorkers([]);
-                setSelectedWorker(null);
-                return [];
-            }
-        }
-    }, []);
-
-    // 엔터 키 이벤트 핸들러
-    const handleNicknameKeyDown = useCallback(async (e: React.KeyboardEvent<HTMLInputElement>) => {
-        // 한글 조합 중에는 Enter 키 이벤트 무시
-        if (e.key === 'Enter' && !isComposing) {
-            e.preventDefault();
-            await searchWorkerByNickname(shareNickname);
-        }
-    }, [shareNickname, searchWorkerByNickname, isComposing]);
-
-    // 한글 조합 시작 핸들러
-    const handleCompositionStart = useCallback(() => {
-        setIsComposing(true);
-    }, []);
-
-    // 한글 조합 종료 핸들러
-    const handleCompositionEnd = useCallback(() => {
-        setIsComposing(false);
-    }, []);
-
-    // 그룹 참여 함수
-    const handleJoinRecordGroup = useCallback(async (recordGroupId: string, workerId: string) => {
-        try {
-            const message = RecordGroupJoinRequest.create({
-                recordGroupId: recordGroupId,
-                workerId: workerId,
-            });
-            
-            const response = await fetch('/api/record-groups/join', {
-                method: HttpMethod.POST,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    recordGroupId: message.recordGroupId,
-                    workerId: message.workerId,
-                })
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                if (result != null) {
-                    console.log('그룹 공유 성공');
-                    return true;
-                } else {
-                    console.error('Failed to join group');
-                    return false;
-                }
-            } else {
-                console.error('Failed to join group');
-                return false;
-            }
-        } catch (error) {
-            console.error('Error joining group:', error);
-            return false;
-        }
-    }, []);
-
-    // 워커 공유 함수
-    const handleShareWorker = useCallback(async () => {
-        if (!selectedWorker || !selectedRecordGroup) {
-            return;
-        }
-
-        const success = await handleJoinRecordGroup(selectedRecordGroup.id, selectedWorker.id);
-        
-        if (success) {
-            // 성공 시 레코드 그룹 목록 갱신
-            await refreshRecordGroups();
-            
-            // 레코드 그룹 상세 정보 리프레시
-            const updatedDetails = await fetchRecordGroupDetails(selectedRecordGroup.id);
-            setRecordGroupDetails(updatedDetails);
-            
-            setSelectedWorker(null);
-        } else {
-            alert('공유 추가에 실패했습니다. 다시 시도해주세요.');
-        }
-    }, [selectedWorker, selectedRecordGroup, handleJoinRecordGroup, refreshRecordGroups, fetchRecordGroupDetails]);
-
-    // 워커 제거 함수
-    const handleRemoveWorker = useCallback(async (workerId: string) => {
-        try {
-            const response = await fetch(`/api/worker-record-groups?recordGroupId=${selectedRecordGroup?.id}&targetWorkerId=${workerId}`, {
-                method: HttpMethod.DELETE
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                console.log('result', result);
-                console.log('Worker removed successfully');
-                await refreshRecordGroups();
-                const updatedDetails = await fetchRecordGroupDetails(selectedRecordGroup?.id || '');
-                setRecordGroupDetails(updatedDetails);
-                setShareNickname('');
-                setSearchedWorkers([]);
-                setSelectedWorker(null);
-                
-                return true;
-            }
-        } catch (error) {
-            console.error('Error removing worker:', error);
-        }
-    }, [selectedRecordGroup, refreshRecordGroups, fetchRecordGroupDetails]);
+        return title;
+    };
 
     return (
         <div className="cont-box">
             <div className="cont-tit">
-                <div>
-                    <h3>기록장 관리</h3>
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <h3>기록장 목록</h3>
+                    <span>{recordGroups.length}개</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100px' }}>
+                    <button>+ 추가</button>
                 </div>
             </div>
             <ul className="setting-list">
-                <li>
-                    <p>기록장 선택</p>
-                    <Dropdown
-                        options={dropdownOptions}
-                        selectedOption={selectedRecordGroup?.id || ''}
-                        setValue={handleRecordGroupChange}
-                    />
-                </li>
-                <li>
-                    <p>기록장 이름 및 색상</p>
-                    <div>
-                        {/* <p>{getRecordGroupTypeLabel(selectedRecordGroup?.type || RecordGroup_RecordGroupType.UNKNOWN)}</p> */}
-                        <input 
-                            type="text" 
-                            value={selectedRecordGroup?.title || ''}
-                            onChange={(e) => {
-                                if (selectedRecordGroup) {
-                                    setSelectedRecordGroup({
-                                        ...selectedRecordGroup,
-                                        title: e.target.value
-                                    });
-                                }
-                            }}
-                        />
-                        <div className="color-picker" style={{ backgroundColor: selectedRecordGroup?.color || '#fff' }}></div>
-                    </div>
-                </li>
-                <li>
-                    <p>기록장 공유 설정</p>
-                    <ul className="input-list">
-                        <li><input type="radio" name="share" id="private" /><label htmlFor="private"><p>개인 기록장</p></label></li>
-                        <li><input type="radio" name="share" id="shared" /><label htmlFor="shared"><p>공유 기록장</p></label></li>
-                    </ul>
-                </li>
-                <li>
-                    <p>기록장 공유 멤버</p>
-                    <div>
-                        <input 
-                            type="text" 
-                            placeholder="공유할 분의 닉네임을 입력해 주세요."
-                            value={shareNickname}
-                            onChange={(e) => setShareNickname(e.target.value)}
-                            onKeyDown={handleNicknameKeyDown}
-                            onCompositionStart={handleCompositionStart}
-                            onCompositionEnd={handleCompositionEnd}
-                        />
-                        <ul className="shared-mem-search" style={{display: 'none'}}>
-                        {searchedWorkers.map((worker: Worker, index: number) => {
-                            const isSelected = selectedNewWorkers.some(w => w.id === worker.id);
-                            return (
-                                <li key={worker.id || index}>
-                                    <input
-                                        type="checkbox"
-                                        checked={isSelected}
-                                        onChange={(e) => {
-                                            if (e.target.checked) {
-                                                setSelectedNewWorkers([...selectedNewWorkers, worker]);
-                                            } else {
-                                                setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
-                                            }
-                                        }}
-                                    />
-                                    <label htmlFor=""><p>{worker.nickName || ''}</p></label>
-                                </li>
-                            );
-                        })}
-                        </ul>
-                        <button>공유하기</button>
-                    </div>
-                </li>
-                <li>
-                    <p></p>
-                    <ul className="shared-mem-list">
-                        {selectedNewWorkers.length > 0 ? (
-                            selectedNewWorkers.map((worker: Worker, index: number) => (
-                                <li key={worker.id || index} className="new">
-                                    <div className="info">
-                                        <p>{worker.nickName || ''}</p>
-                                        <span className="label red">NEW</span>
-                                    </div>
-                                    <div className="option">
-                                        <select>
-                                            <option>전체 권한</option>
-                                            <option>보기 권한</option>
-                                        </select>
-                                        <button onClick={() => {
-                                            setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
-                                        }}><i className="ic-delete" /></button>
-                                    </div>
-                                </li>
-                            ))
-                        ) : (
-                            <li>선택된 멤버가 없습니다.</li>
-                        )}
-                        {recordGroupDetails?.workers && recordGroupDetails.workers.length > 0 ? (
-                            recordGroupDetails.workers.map((worker: Worker, index: number) => (
-                                <li key={worker.id || index}>
-                                    <div className="info">
-                                        <p>{worker.nickName || ''}</p>
-                                    </div>
-                                    <div className="option">
-                                        <select>
-                                            <option>전체 권한</option>
-                                            <option>보기 권한</option>
-                                        </select>
-                                        <button onClick={() => handleRemoveWorker(worker.id)}><i className="ic-delete" /></button>
-                                    </div>
-                                </li>
-                            ))
-                        ) : (
-                            <li>공유된 멤버가 없습니다.</li>
-                        )}
-                    </ul>
-                </li>
+                <DraggableList
+                    items={recordGroups}
+                    onReorder={handleReorder}
+                    getItemId={(group, idx) => group.id || `record-group-${idx}`}
+                    renderItem={(group, index) => (
+                        <DraggableItem 
+                            id={group.id || `record-group-${index}`}
+                            showDragButton={true}
+                        >
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', border: '1px solid #ccc',
+                                width: '100%', borderRadius: '4px' }}>
+                                <div 
+                                    style={{ 
+                                        width: '20px', 
+                                        height: '20px', 
+                                        backgroundColor: group.color || '#ccc',
+                                        borderRadius: '4px',
+                                        flexShrink: 0
+                                    }} 
+                                />
+                                <span style={{ flex: 1 }}>{getRecordGroupLabel(group)}</span>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    {compareEnumValue(group.type, RecordGroup_RecordGroupType.SHARED, RecordGroup_RecordGroupType) && 
+                                     sharedRecordGroups.some(g => g.id === group.id) ? (
+                                        <a href="#" style={{ color: '#666' }}>탈퇴</a>
+                                    ) : (
+                                        <>
+                                            <a href="#" style={{ color: '#666' }}>설정</a>
+                                            <span>|</span>
+                                            <a href="#" style={{ color: '#666' }}>삭제</a>
+                                        </>
+                                    )}
+                                </div>
+                            </li>
+                        </DraggableItem>
+                    )}
+                />
             </ul>
-            <div className="config-row">
-                <label>기록장 공유</label>
-                <div className="share-container">
-                    <div className="shared-members">
-                        
-                    </div>
-                    <p className="info-text">공유 멤버가 있으면 기록장을 삭제할 수 없어요.</p>
-                </div>
-            </div>
-            {/* <div className="config-row">
-                <label>기록장 공유 기본 권한</label>
-                <div className="radio-group">
-                    <label className="radio-option">
-                        <input 
-                            type="radio"
-                            name="defaultPermission"
-                            value="full"
-                            checked={defaultPermission === 'full'}
-                            onChange={(e) => setDefaultPermission(e.target.value)}
-                        />
-                        <span>전체 권한</span>
-                    </label>
-                    <label className="radio-option">
-                        <input 
-                            type="radio" 
-                            name="defaultPermission"
-                            value="view"
-                            checked={defaultPermission === 'view'}
-                            onChange={(e) => setDefaultPermission(e.target.value)}
-                        />
-                        <span>보기 권한</span>
-                    </label>
-                </div>
-            </div>
-            <div className="config-row">
-                <label>기록장 삭제</label>
-                <div className="delete-section">
-                    <p className="info-text">기본 기록장은 삭제할 수 없어요.</p>
-                    <button className="delete-btn" disabled>삭제하기</button>
-                    <p className="info-text">기록장에 있는 모든 기록이 삭제돼요.</p>
-                </div>
-            </div>
-            <div className="config-row">
-                <label>기록장 탈퇴</label>
-                <div className="leave-section">
-                    <button className="leave-btn">탈퇴하기</button>
-                    <p className="info-text">탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.</p>
-                </div>
-            </div> */}
         </div>
     );
 };
