@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Record } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleRecordData';
+import { ListRecordResponse } from '@/generated/record';
 import HttpMethod from '@/enums/HttpMethod';
 import { CalendarViewType } from '@/models/CalendarTypes';
 import dayjs from 'dayjs';
@@ -151,6 +152,40 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             return null;
         }
 
+        // 로그인 상태 확인
+        const accessToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')[1];
+
+        // 로그인하지 않은 경우 샘플 데이터 사용
+        if (!accessToken) {
+            const sampleRecordGroups = createSampleRecordGroups();
+            const sampleRecords = createSampleRecords(sampleRecordGroups) as unknown as Record[];
+            
+            // keyword로 필터링 (title, description에서 검색)
+            const keywordLower = keyword.toLowerCase().trim();
+            let filteredRecords = sampleRecords.filter((record: Record) => {
+                const titleMatch = record.title?.toLowerCase().includes(keywordLower) || false;
+                const descriptionMatch = record.description?.toLowerCase().includes(keywordLower) || false;
+                return titleMatch || descriptionMatch;
+            });
+
+            // recordGroupIds로 필터링 (있는 경우)
+            if (recordGroupIds && recordGroupIds.length > 0) {
+                filteredRecords = filteredRecords.filter((record: Record) => 
+                    record.recordGroup?.id && recordGroupIds.includes(record.recordGroup.id)
+                );
+            }
+
+            // ListRecordResponse 형태로 반환
+            const response: ListRecordResponse = {
+                records: filteredRecords
+            };
+            
+            return response;
+        }
+
         try {
             let url = `/api/records/keywords?keyword=${encodeURIComponent(keyword)}`;
             
@@ -165,10 +200,6 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             });
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    window.location.href = '/login';
-                    return null;
-                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
