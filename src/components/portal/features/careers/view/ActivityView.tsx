@@ -129,7 +129,7 @@ const ActivityView: React.FC<ActivityViewProps> = ({ activities, showHidden = fa
                         <ul>
                             {
                                 activity.startedAt && activity.endedAt && (
-                                <li className="font-bl">{formatActivityPeriod(activity.startedAt, activity.endedAt)}</li>
+                                <li className="font-black">{formatActivityPeriod(activity.startedAt, activity.endedAt)}</li>
                                 )
                             }
                             {

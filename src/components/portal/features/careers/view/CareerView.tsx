@@ -152,7 +152,7 @@ const CareerView: React.FC<CareerViewProps> = ({
                             }
                         </div>
                         <ul>
-                            <li className="font-bl">{formatCareerPeriod(career.startedAt, career.endedAt, career.isWorking)}</li>
+                            <li className="font-black">{formatCareerPeriod(career.startedAt, career.endedAt, career.isWorking)}</li>
                             {
                             career.employmentType && (
                                 <li>{getEmploymentTypeLabel(career.employmentType)}</li>

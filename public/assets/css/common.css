@@ -170,7 +170,8 @@ a:visited, a:hover, a:active, a:focus {
 .text-center {text-align: center!important;}
 .text-right {text-align: right!important;}
 
-.font-bl {color: var(--black)!important;}
+.font-black {color: var(--black)!important;}
+.font-red {color: var(--red)!important;}
 
 /* input : checkbox */
 input {width: 100%; height: 5.2rem; padding: 0 1.6rem; border-radius: .8rem; font-size: 1.6rem; font-weight: 500; background-color: var(--white); border: 1px solid var(--gray003); color: var(--black); cursor: text;}
@@ -207,10 +208,10 @@ input:checked.input-resume + label::before {background-image: url(../img/ico/ic-
 .page-title > div > div:not(.input-search) > input[type="text"] {width: 100%; font-size: 1.8rem; font-weight: 600; padding: 0; border: 0;}
 
 /* input : file */
-.file {display: flex; align-items: center; column-gap: 1rem;}
+.file {display: flex; align-items: center; column-gap: .8rem;}
 .file > input[type="file"] {display: none;}
 .file > input {cursor: pointer;}
-.file > button {width: 10rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; background-color: var(--gray004);}
+.file > button {width: 10rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; background-color: var(--gray005);}
 
 .file-list {display: flex; flex-flow: column; padding: .4rem 1.2rem; border: 1px solid var(--gray003); border-radius: .4rem;}
 .file-list > li {height: 2.4rem; display: flex; align-items: center; justify-content: space-between;}
@@ -261,7 +262,7 @@ button.line.gray {border-color: var(--gray003); background-color: var(--white); 
 .btn-kakao > span {flex: 1;}
 
 /*  */
-.date-time {display: flex; align-items: center; column-gap: .6rem;}
+.date-time {display: flex; align-items: center; column-gap: .8rem;}
 .date-time > li {position: relative;}
 .date-time > li:nth-child(1) {flex: 1;}
 .date-time > li > input {cursor: pointer;}

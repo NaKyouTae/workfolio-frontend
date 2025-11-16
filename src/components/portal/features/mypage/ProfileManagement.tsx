@@ -144,263 +144,51 @@ const ProfileManagement: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2 style={{
-        fontSize: '24px',
-        fontWeight: 'bold',
-        marginBottom: '30px',
-        color: '#000000'
-      }}>
-        프로필 관리
-      </h2>
-      
-      {!isLoggedIn && (
-        <div style={{
-          backgroundColor: '#fff3cd',
-          border: '1px solid #ffeaa7',
-          borderRadius: '4px',
-          padding: '15px',
-          marginBottom: '30px',
-          color: '#856404'
-        }}>
-          📋 샘플 데이터를 표시하고 있습니다. 로그인하면 실제 프로필을 관리할 수 있습니다.
-        </div>
-      )}
-
-      {successMessage && (
-        <div style={{
-          backgroundColor: '#d4edda',
-          border: '1px solid #c3e6cb',
-          borderRadius: '4px',
-          padding: '15px',
-          marginBottom: '20px',
-          color: '#155724'
-        }}>
-          ✓ {successMessage}
-        </div>
-      )}
-
-      {errors.submit && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          border: '1px solid #f5c6cb',
-          borderRadius: '4px',
-          padding: '15px',
-          marginBottom: '20px',
-          color: '#721c24'
-        }}>
-          ✕ {errors.submit}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        {/* 닉네임 */}
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            marginBottom: '8px',
-            color: '#000000'
-          }}>
-            닉네임 <span style={{ color: '#dc3545' }}>*</span>
-          </label>
-          <input
-            type="text"
-            name="nickName"
-            value={formData.nickName}
-            onChange={handleInputChange}
-            disabled={!isLoggedIn}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              border: errors.nickName ? '1px solid #dc3545' : '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: !isLoggedIn ? '#f8f9fa' : '#ffffff',
-              color: !isLoggedIn ? '#6c757d' : '#000000'
-            }}
-            placeholder="닉네임을 입력해주세요"
-          />
-          {errors.nickName && (
-            <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '5px' }}>
-              {errors.nickName}
+    <div className="cont-box">
+        <div className="cont-tit">
+            <div>
+                <h3>프로필 관리</h3>
             </div>
-          )}
         </div>
-
-        {/* 전화번호 */}
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            marginBottom: '8px',
-            color: '#000000'
-          }}>
-            전화번호 <span style={{ color: '#dc3545' }}>*</span>
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            disabled={!isLoggedIn}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              border: errors.phone ? '1px solid #dc3545' : '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: !isLoggedIn ? '#f8f9fa' : '#ffffff',
-              color: !isLoggedIn ? '#6c757d' : '#000000'
-            }}
-            placeholder="010-1234-5678"
-          />
-          {errors.phone && (
-            <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '5px' }}>
-              {errors.phone}
+        <form onSubmit={handleSubmit}>
+            <ul className="setting-list">
+                <li>
+                    <p>닉네임<span>*</span></p>
+                    <div>
+                        <input type="text" name="nickName" value={formData.nickName} onChange={handleInputChange} placeholder="닉네임을 입력해주세요" />
+                        <button>중복 확인</button>
+                    </div>
+                </li>
+                {/* {errors.nickName && (
+                    <li>
+                        <p></p>
+                        <span className="font-red">{errors.nickName}</span>
+                    </li>
+                )} */}
+                <li>
+                    <p>전화번호<span>*</span></p>
+                    <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} disabled={!isLoggedIn} />
+                </li>
+                <li>
+                    <p>이메일<span>*</span></p>
+                    <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={!isLoggedIn} />
+                </li>
+                <li>
+                    <p>생년월일<span>*</span></p>
+                    <input type="date" name="birthDate" value={formData.birthDate} onChange={handleInputChange} disabled={!isLoggedIn} />
+                </li>
+                <li>
+                    <p>성별<span>*</span></p>
+                    <input type="text" name="gender" value={formData.gender} onChange={handleInputChange} disabled={!isLoggedIn} />
+                    {/* <option value={Worker_Gender.MALE}>남성</option>
+                    <option value={Worker_Gender.FEMALE}>여성</option> */}
+                </li>
+            </ul>
+            <div className="btn-wrap">
+                <button>취소</button>
+                <button type="submit" disabled={!isLoggedIn || isUpdating || isLoading}>저장</button>
             </div>
-          )}
-        </div>
-
-        {/* 이메일 */}
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            marginBottom: '8px',
-            color: '#000000'
-          }}>
-            이메일 <span style={{ color: '#dc3545' }}>*</span>
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            disabled={!isLoggedIn}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              border: errors.email ? '1px solid #dc3545' : '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: !isLoggedIn ? '#f8f9fa' : '#ffffff',
-              color: !isLoggedIn ? '#6c757d' : '#000000'
-            }}
-            placeholder="email@example.com"
-          />
-          {errors.email && (
-            <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '5px' }}>
-              {errors.email}
-            </div>
-          )}
-        </div>
-
-        {/* 생년월일 */}
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            marginBottom: '8px',
-            color: '#000000'
-          }}>
-            생년월일 <span style={{ color: '#dc3545' }}>*</span>
-          </label>
-          <input
-            type="date"
-            name="birthDate"
-            value={formData.birthDate}
-            onChange={handleInputChange}
-            disabled={!isLoggedIn}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              border: errors.birthDate ? '1px solid #dc3545' : '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: !isLoggedIn ? '#f8f9fa' : '#ffffff',
-              color: !isLoggedIn ? '#6c757d' : '#000000'
-            }}
-          />
-          {errors.birthDate && (
-            <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '5px' }}>
-              {errors.birthDate}
-            </div>
-          )}
-        </div>
-
-        {/* 성별 */}
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            marginBottom: '8px',
-            color: '#000000'
-          }}>
-            성별 <span style={{ color: '#dc3545' }}>*</span>
-          </label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleInputChange}
-            disabled={!isLoggedIn}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              border: '1px solid #e9ecef',
-              borderRadius: '4px',
-              fontSize: '14px',
-              outline: 'none',
-              backgroundColor: !isLoggedIn ? '#f8f9fa' : '#ffffff',
-              color: !isLoggedIn ? '#6c757d' : '#000000',
-              cursor: !isLoggedIn ? 'not-allowed' : 'pointer'
-            }}
-          >
-            <option value={Worker_Gender.MALE}>남성</option>
-            <option value={Worker_Gender.FEMALE}>여성</option>
-          </select>
-        </div>
-
-        {/* 저장 버튼 */}
-        <div style={{ marginTop: '30px' }}>
-          <button
-            type="submit"
-            disabled={!isLoggedIn || isUpdating || isLoading}
-            style={{
-              padding: '12px 24px',
-              backgroundColor: (!isLoggedIn || isUpdating || isLoading) ? '#6c757d' : '#007bff',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: (!isLoggedIn || isUpdating || isLoading) ? 'not-allowed' : 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseEnter={(e) => {
-              if (isLoggedIn && !isUpdating && !isLoading) {
-                e.currentTarget.style.backgroundColor = '#0056b3';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (isLoggedIn && !isUpdating && !isLoading) {
-                e.currentTarget.style.backgroundColor = '#007bff';
-              }
-            }}
-          >
-            {isUpdating ? '저장 중...' : '프로필 저장'}
-          </button>
-        </div>
-      </form>
+        </form>
     </div>
   );
 };

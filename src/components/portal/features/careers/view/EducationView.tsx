@@ -67,7 +67,7 @@ const EducationView: React.FC<EducationViewProps> = ({
                             }
                         </div>
                         <ul>
-                            <li className="font-bl">
+                            <li className="font-black">
                                 {
                                 education.startedAt && education.endedAt && (
                                     <>{`${DateUtil.formatTimestamp(education.startedAt || 0, "YYYY. MM.")}`}</>

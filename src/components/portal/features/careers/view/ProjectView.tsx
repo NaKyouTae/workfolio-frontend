@@ -47,7 +47,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projects, showHidden = false 
                                 }
                             </div>
                             <ul>
-                                <li className="font-bl">
+                                <li className="font-black">
                                     {
                                     project.startedAt && (
                                         <>{DateUtil.formatTimestamp(project.startedAt || 0, 'YYYY. MM.')}</>

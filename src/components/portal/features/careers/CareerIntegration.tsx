@@ -163,8 +163,8 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                                         <li onClick={(e) => handleEdit(e, resume)}>편집</li>
                                         <li onClick={(e) => handleDuplicate(e, resume)}>복제</li>
                                         <li onClick={(e) => handleDelete(e, resume)}>삭제</li>
-                                        <li className="font-bl" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li>
-                                        <li className="font-bl" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li>
+                                        <li className="font-black" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li>
+                                        <li className="font-black" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li>
                                     </ul>
                                 </div>
                                 <ul>
