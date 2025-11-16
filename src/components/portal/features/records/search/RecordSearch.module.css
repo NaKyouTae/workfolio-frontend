@@ -1,0 +1,125 @@
+.searchResults {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.searchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.searchTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: #111827;
+}
+
+.searchTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.searchTable thead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.searchTable th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.dateColumn {
+  width: 120px;
+}
+
+.timeColumn {
+  width: 120px;
+}
+
+.calendarColumn {
+  width: 150px;
+}
+
+.contentColumn {
+  /* 나머지 공간 차지 */
+}
+
+.searchTable tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.searchTable tbody tr:hover {
+  background: #f9fafb;
+}
+
+.searchTable td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.dateCell {
+  color: #6b7280;
+}
+
+.timeCell {
+  color: #6b7280;
+}
+
+.calendarCell {
+  padding: 8px 16px;
+}
+
+.calendarBar {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  min-width: 60px;
+  text-align: center;
+}
+
+.contentCell {
+  font-weight: 500;
+}
+
+.contentLink {
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.contentLink:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+

@@ -9,6 +9,7 @@ import RecordCreateModal from '../../modal/RecordCreateModal'
 import RecordDetail from '../../modal/RecordDetail'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import { useConfirm } from '@/hooks/useConfirm'
+import { formatRecordDisplayTime } from '@/utils/calendarUtils'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -139,20 +140,18 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                 const endDate = dayjs(endTimestamp);
                 const currentDay = dayjs(dayInfo.date);
             
-                let displayTime = ''
                 let isMultiDayStart = false
                 let isMultiDayEnd = false
                 let isMultiDayMiddle = false
                 
-                if (Record_RecordType[record.type] == Record_RecordType.DAY.toString()) {
-                    displayTime = '하루 종일'
-                } else if (Record_RecordType[record.type] == Record_RecordType.TIME.toString()) { // TIME
-                    displayTime = startDate.format('A hh:mm')
-                } else if (Record_RecordType[record.type] == Record_RecordType.MULTI_DAY.toString()) { // MULTI_DAY
+                // Record 타입에 따라 표시할 시간 문자열 가져오기
+                const displayTime = formatRecordDisplayTime(record);
+                
+                // MULTI_DAY 타입인 경우 시작일/종료일/중간일 확인
+                if (Record_RecordType[record.type] == Record_RecordType.MULTI_DAY.toString()) {
                     isMultiDayStart = currentDay.isSame(startDate, 'day')
                     isMultiDayEnd = currentDay.isSame(endDate, 'day')
                     isMultiDayMiddle = !isMultiDayStart && !isMultiDayEnd
-                    displayTime = '하루 종일'
                 }
 
                 listRecords.push({

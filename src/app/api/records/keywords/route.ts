@@ -16,9 +16,18 @@ export async function GET(request: NextRequest) {
         }
         
         const keyword = request.nextUrl.searchParams.get('keyword');
+        const recordGroupIds = request.nextUrl.searchParams.getAll('recordGroupIds');
+        
+        // URL 구성
+        let url = `${API_BASE_URL}/api/records/keywords?keyword=${encodeURIComponent(keyword || '')}`;
+        if (recordGroupIds.length > 0) {
+            recordGroupIds.forEach(id => {
+                url += `&recordGroupIds=${encodeURIComponent(id)}`;
+            });
+        }
         
         const res = await apiFetchHandler<ListRecordResponse[]>(
-            `${API_BASE_URL}/api/records/keywords?keyword=${keyword}`, 
+            url, 
             HttpMethod.GET, 
             undefined, 
             accessToken,

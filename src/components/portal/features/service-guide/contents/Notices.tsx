@@ -6,7 +6,7 @@ import ExpandableCard from '@/components/portal/ui/ExpandableCard';
 import Pagination from '@/components/portal/ui/Pagination';
 import styles from './Notices.module.css';
 import DateUtil from '@/utils/DateUtil';
-import Footer from '../../layouts/Footer';
+import Footer from '../../../layouts/Footer';
 
 interface NoticesProps {
   onNoticeClick?: (notice: Notice) => void;
@@ -103,3 +103,4 @@ const Notices: React.FC<NoticesProps> = ({ onNoticeClick }) => {
 };
 
 export default Notices;
+

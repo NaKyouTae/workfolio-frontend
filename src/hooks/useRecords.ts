@@ -146,13 +146,21 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
     }, [recordRefreshTrigger, refreshRecords]);
 
     // 키워드로 레코드 검색
-    const searchRecordsByKeyword = useCallback(async (keyword: string) => {
+    const searchRecordsByKeyword = useCallback(async (keyword: string, recordGroupIds?: string[]) => {
         if (!keyword || keyword.trim() === '') {
             return null;
         }
 
         try {
-            const response = await fetch(`/api/records/keywords?keyword=${encodeURIComponent(keyword)}`, {
+            let url = `/api/records/keywords?keyword=${encodeURIComponent(keyword)}`;
+            
+            // recordGroupIds가 있으면 쿼리 파라미터로 추가
+            if (recordGroupIds && recordGroupIds.length > 0) {
+                const groupIdsParam = recordGroupIds.map(id => `recordGroupIds=${encodeURIComponent(id)}`).join('&');
+                url += `&${groupIdsParam}`;
+            }
+
+            const response = await fetch(url, {
                 method: HttpMethod.GET,
             });
 

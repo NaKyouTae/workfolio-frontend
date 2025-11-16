@@ -7,11 +7,13 @@ import { useSystemConfigStore } from '@/store/systemConfigStore'
 import { RecordGroup, SystemConfig_SystemConfigType } from '@/generated/common'
 import { parseCalendarViewType } from '@/utils/commonUtils'
 import { RecordGroupDetailResponse } from '@/generated/record_group'
+import { ListRecordResponse } from '@/generated/record'
 import dayjs from 'dayjs'
 import CalendarHeader from '../calendar/CalendarHeader'
 import ListCalendar from '../calendar/list/ListCalendar'
 import MonthlyCalendar from '../calendar/monthly/MonthlyCalendar'
 import WeeklyCalendar from '../calendar/weekly/WeeklyCalendar'
+import RecordSearch from '../search/RecordSearch'
 
 export interface BodyRightRef {
     refreshRecords: () => void;
@@ -45,6 +47,7 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
 
     const [recordType, setRecordType] = useState<CalendarViewType>(initialRecordType)
     const [date, setDate] = useState<Date>(urlDate)
+    const [searchResults, setSearchResults] = useState<ListRecordResponse | null>(null)
     
     // 초기 URL 설정 여부 추적
     const isInitialURLSet = useRef(false)
@@ -164,10 +167,25 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
     const handleSearchChange = useCallback(async (term: string) => {
         // 키워드 검색 API 호출 (엔터 키를 눌렀을 때 호출됨)
         if (term && term.trim() !== '') {
-            const result = await searchRecordsByKeyword(term)
-            console.log('검색 결과:', result)
+            // 체크된 recordGroupIds 추출
+            const recordGroupIds = checkedRecordGroups.map(group => group.id).filter(Boolean) as string[];
+            
+            const result = await searchRecordsByKeyword(term, recordGroupIds.length > 0 ? recordGroupIds : undefined)
+
+            console.log('result', result);
+            if (result) {
+                setSearchResults(result)
+            } else {
+                setSearchResults(null)
+            }
+        } else {
+            setSearchResults(null)
         }
-    }, [searchRecordsByKeyword])
+    }, [searchRecordsByKeyword, checkedRecordGroups])
+
+    const handleCloseSearch = useCallback(() => {
+        setSearchResults(null)
+    }, [])
 
     // URL 파라미터 변경 시 상태 업데이트 (외부에서 URL이 변경된 경우만)
     useEffect(() => {
@@ -230,35 +248,43 @@ const BodyRightComponent = forwardRef<BodyRightRef, BodyRightProps>(({ recordGro
                 onSearchChange={handleSearchChange}
             />
             
-            {/* Calendar - 하위에 위치, 토글에 따라 변경 */}
-            <div className="calendar-wrap">
-                {recordType === 'monthly' ? (
-                    <MonthlyCalendar
-                        key={`monthly-${date.getTime()}`}
-                        initialDate={date}
-                        records={filteredRecords}
-                        allRecordGroups={allRecordGroups}
-                        editableRecordGroups={editableRecordGroups}
-                    />
-                ) : recordType === 'weekly' ? (
-                    <WeeklyCalendar
-                        key={`weekly-${date.getTime()}`}
-                        initialDate={date}
-                        records={filteredRecords}
-                        allRecordGroups={allRecordGroups}
-                        editableRecordGroups={editableRecordGroups}
-                    />
-                ) : (
-                    <ListCalendar
-                        key={`list-${date.getTime()}`}
-                        initialDate={date} 
-                        records={filteredRecords}
-                        recordGroups={checkedRecordGroups}
-                        allRecordGroups={allRecordGroups}
-                        editableRecordGroups={editableRecordGroups}
-                    />
-                )}
-            </div>
+            {/* 검색 결과가 있으면 검색 결과 표시, 없으면 캘린더 표시 */}
+            {searchResults ? (
+                <RecordSearch
+                    searchResults={searchResults}
+                    allRecordGroups={allRecordGroups}
+                    onClose={handleCloseSearch}
+                />
+            ) : (
+                <div className="calendar-wrap">
+                    {recordType === 'monthly' ? (
+                        <MonthlyCalendar
+                            key={`monthly-${date.getTime()}`}
+                            initialDate={date}
+                            records={filteredRecords}
+                            allRecordGroups={allRecordGroups}
+                            editableRecordGroups={editableRecordGroups}
+                        />
+                    ) : recordType === 'weekly' ? (
+                        <WeeklyCalendar
+                            key={`weekly-${date.getTime()}`}
+                            initialDate={date}
+                            records={filteredRecords}
+                            allRecordGroups={allRecordGroups}
+                            editableRecordGroups={editableRecordGroups}
+                        />
+                    ) : (
+                        <ListCalendar
+                            key={`list-${date.getTime()}`}
+                            initialDate={date} 
+                            records={filteredRecords}
+                            recordGroups={checkedRecordGroups}
+                            allRecordGroups={allRecordGroups}
+                            editableRecordGroups={editableRecordGroups}
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
 });

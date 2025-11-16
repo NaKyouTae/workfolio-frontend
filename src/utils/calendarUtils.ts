@@ -68,6 +68,22 @@ export const generateTimeText = (record: Record): string => {
 }
 
 /**
+ * Record 타입에 따라 표시할 시간 문자열을 반환하는 함수
+ * @param record Record 객체
+ * @returns 시간 표시 문자열 ('하루 종일', '오전 10:00' 등)
+ */
+export const formatRecordDisplayTime = (record: Record): string => {
+    const startTimestamp = parseInt(record.startedAt.toString());
+    const startDate = dayjs(startTimestamp);
+
+    if (isRecordType(record.type, Record_RecordType.DAY)) return '하루 종일';
+    else if (isRecordType(record.type, Record_RecordType.TIME)) return startDate.format('A hh:mm');
+    else if (isRecordType(record.type, Record_RecordType.MULTI_DAY)) return '하루 종일';
+    
+    return '';
+}
+
+/**
  * 캘린더 이벤트들을 생성하는 함수
  */
 export const generateCalendarEvents = (
