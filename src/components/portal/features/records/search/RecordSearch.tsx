@@ -120,10 +120,11 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
     if (!selectedRecord) return;
 
     const confirmed = await confirm({
-      title: '기록 삭제',
-      description: '정말 이 기록을 삭제하시겠습니까?',
-      confirmText: '삭제',
-      cancelText: '취소',
+      title: '기록을 삭제하시겠어요?',
+      icon: '/assets/img/ico/ic-delete.svg',
+      description: '삭제하면 이 기록에 담긴 내용이 모두 없어져요.\n한 번 삭제하면 되돌릴 수 없어요.',
+      confirmText: '삭제하기',
+      cancelText: '돌아가기',
     });
 
     if (!confirmed) return;

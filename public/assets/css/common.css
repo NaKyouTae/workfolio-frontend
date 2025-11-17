@@ -63,7 +63,6 @@ button, input, textarea, select, option {
     /* web font + system font */
     font-family: 'Pretendard', 'Mangueira', -apple-system, BlinkMacSystemFont, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     font-weight: 400;
-    letter-spacing: -0.5px;
     /* Remove the inheritance of text transform in Edge, Firefox and IE. */
     text-transform: none;
     color: var(--black);
