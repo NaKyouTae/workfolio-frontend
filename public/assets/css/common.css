@@ -184,9 +184,10 @@ input:disabled::placeholder,
 input:read-only,
 input:read-only::placeholder {background-color: var(--gray001); color: var(--gray004)!important;}
 
-.input-search {width: 24rem; position: relative; display: flex; align-items: center;}
+.input-search {width: 24rem; position: relative; display: flex; align-items: center; position: relative;}
 .input-search::before {content: ''; display: block; width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-search.svg); background-repeat: no-repeat; background-size: contain; background-position: center; position: absolute; left: 1.2rem;}
-.input-search input {height: 3.2rem; padding: 0 1.2rem 0 3.2rem; font-size: 1.2rem; border-radius: .6rem;}
+.input-search input {height: 3.2rem; padding: 0 3.2rem; font-size: 1.2rem; border-radius: .6rem;}
+.input-search button {width: fit-content; height: fit-content; padding: 0; background-color: transparent; border: 0; position: absolute; right: 1.2rem;}
 
 .input-desc {position: relative; display: flex; align-items: center;}
 .input-desc input {padding-right: 5.2rem!important;}
@@ -259,6 +260,7 @@ button.xsm {width: fit-content; min-width: 9.2rem; height: 2.8rem; padding: 0 1r
 
 button.trans {width: fit-content; height: fit-content; padding: 0; background-color: transparent;}
 button.gray {background-color: var(--gray002);}
+button.semi-gray {background-color: var(--gray004);}
 button.dark-gray {background-color: var(--gray006);}
 button.line.gray {border-color: var(--gray003); background-color: var(--white); color: var(--black);}
 button:disabled {background-color: var(--gray003)!important;}

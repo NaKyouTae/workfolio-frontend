@@ -121,7 +121,7 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
             </div>
             <div className="record-modal-btn">
                 <button className="xsm line gray" onClick={onEdit}>수정</button>
-                <button className="xsm gray" onClick={onDelete}>삭제</button>
+                <button className="xsm semi-gray" onClick={onDelete}>삭제</button>
             </div>
         </div>
     );

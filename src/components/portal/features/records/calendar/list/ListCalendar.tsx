@@ -335,9 +335,9 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                                         <p>{record.recordGroup?.title || '기본'}</p>
                                     </div>
                                 </td>
-                                <td>
+                                <td onClick={(e) => handleRecordClick(record as Record, e)}>
                                     <p className={`text-left ${record.isMultiDayMiddle ? 'multi-day-middle' : ''}`}>
-                                        <span onClick={(e) => handleRecordClick(record as Record, e)}>{record.title}</span>
+                                        {record.title}
                                     </p>
                                 </td> 
                             </tr>

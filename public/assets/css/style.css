@@ -130,11 +130,12 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .page-title > div {display: flex; align-items: center; column-gap: 1.2rem; flex: 1;}
 .page-title > div > div {display: flex; align-items: center; column-gap: .8rem;}
 .page-title > div > div:nth-child(1):nth-last-child(1) {flex: 1;}
-.page-title > div > p {font-size: 1.2rem; color: var(--gray005);}
+.page-title > div > p {font-size: 1.4rem; color: var(--gray005);}
 .page-title > ul {display: flex; align-items: center; column-gap: .8rem;}
 .page-title > ul > li {display: flex; align-items: center; column-gap: .8rem; font-size: 1.2rem; color: var(--gray005); cursor: pointer;}
 .page-title > ul > li + li::before {content: ''; width: 1px; height: 1rem; background-color: var(--gray004);}
-.page-title h2 {font-size: 1.8rem; font-weight: 600;}
+.page-title h2 {font-size: 1.8rem; font-weight: 600; display: flex; align-items: center; column-gap: 1.2rem;}
+.page-title h2 > span {font-size: 1.4rem; font-weight: 400; color: var(--gray005);}
 
 /* 레이아웃 - 본문 - 콘텐츠 */
 .page-cont {padding: 2.4rem 2rem; height: 100%; max-height: calc(100vh - 16.1rem); overflow-y: auto;}
@@ -280,6 +281,10 @@ table.list tbody td > div {display: flex; align-items: center; column-gap: .6rem
 table.list tbody td > div > div {width: .6rem; height: 1.4rem; border-radius: .2rem;}
 table.list tbody td > div > p {flex: 1; max-width: 12.8rem; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
 table.list tbody td > p.text-left {overflow: hidden; text-overflow: ellipsis; display: -webkit-box; line-clamp: 1; -webkit-line-clamp: 1; -webkit-box-orient: vertical;}
+
+table.list.search tbody tr:last-child td {border-bottom: 1px solid var(--gray002);}
+table.list.search tbody td:has(.empty) {background-color: var(--gray001);}
+table.list.search tbody td .empty {font-weight: 500; color: var(--gray005);}
 
 /* 이력 관리 - 메인 */
 .stats-summary {display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 1.6rem;}

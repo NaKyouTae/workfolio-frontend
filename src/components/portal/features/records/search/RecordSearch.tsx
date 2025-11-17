@@ -78,9 +78,7 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
       // 대소문자 구분 없이 비교
       if (part.toLowerCase() === keyword.toLowerCase()) {
         return (
-          <span key={index} style={{ color: 'red' }}>
-            {part}
-          </span>
+          <span key={index} style={{ color: '#FFBB26', fontWeight: '600' }}>{part}</span>
         );
       }
       return part;
@@ -148,80 +146,74 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
 
   return (
     <>
-      <div className={styles.searchResults}>
-        <table className={styles.searchTable}>
-          <thead>
-            <tr>
-              <th className={styles.dateColumn}>일자</th>
-              <th className={styles.timeColumn}>시간</th>
-              <th className={styles.calendarColumn}>캘린더</th>
-              <th className={styles.contentColumn}>내용</th>
-            </tr>
-          </thead>
-          <tbody>
-            {normalizedRecords.length === 0 ? (
-              <tr>
-                <td colSpan={4} style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
-                  앗, 검색된 결과가 없어요.
-                </td>
-              </tr>
-            ) : (
-              normalizedRecords.map((record, index) => {
-                const startTimestamp = parseInt(record.startedAt.toString());
-                const startDate = dayjs(startTimestamp);
-                const isWeekend = startDate.day() === 0 || startDate.day() === 6; // 0: 일요일, 6: 토요일
-                
-                return (
-                <tr key={record.id || index} className={styles.tableRow}>
-                  <td 
-                    className={styles.dateCell}
-                    style={isWeekend ? { color: 'red' } : {}}
-                  >
-                    {formatDate(startTimestamp)}
-                  </td>
-                  <td className={styles.timeCell}>{formatTime(record)}</td>
-                  <td className={styles.calendarCell}>
-                    <div
-                      className={styles.calendarBar}
-                      style={{ backgroundColor: getCalendarColor(record) }}
-                    >
-                      {getCalendarName(record)}
-                    </div>
-                  </td>
-                  <td className={styles.contentCell}>
-                    <span 
-                      className={styles.contentLink}
-                      onClick={(e) => handleRecordClick(record, e)}
-                    >
-                      {highlightKeyword(record.title, keyword)}
-                    </span>
-                  </td>
-                </tr>
-              );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+        <div className="calendar-wrap">
+            <table className="list search">
+                <colgroup>
+                    <col style={{width: '8rem'}} />
+                    <col style={{width: '8rem'}} />
+                    <col style={{width: '16rem'}} />
+                    <col style={{width: 'auto'}} />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>일자</th>
+                        <th>시간</th>
+                        <th>캘린더</th>
+                        <th>내용</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {normalizedRecords.length === 0 ? (
+                    <tr>
+                        <td colSpan={4}>
+                            <p className="empty">앗, 검색된 결과가 없어요.</p>
+                        </td>
+                    </tr>
+                    ) : (
+                    normalizedRecords.map((record, index) => {
+                        const startTimestamp = parseInt(record.startedAt.toString());
+                        const startDate = dayjs(startTimestamp);
+                        const isWeekend = startDate.day() === 0 || startDate.day() === 6; // 0: 일요일, 6: 토요일
+                        
+                        return (
+                            <tr key={record.id || index}>
+                                <td className={isWeekend ? 'holiday' : ''}>{formatDate(startTimestamp)}</td>
+                                <td><p>{formatTime(record)}</p></td>
+                                <td>
+                                    <div>
+                                        <div style={{ backgroundColor: getCalendarColor(record) }}></div>
+                                        <p>{getCalendarName(record)}</p>
+                                    </div>
+                                </td>
+                                <td onClick={(e) => handleRecordClick(record, e)}>
+                                    <p className="text-left">{highlightKeyword(record.title, keyword)}</p>
+                                </td>
+                            </tr>
+                        );
+                    })
+                    )}
+                </tbody>
+            </table>
+        </div>
 
-      {/* 레코드 상세 모달 */}
-      <RecordDetail
-        isOpen={isDetailModalOpen}
-        onClose={handleCloseDetailModal}
-        record={selectedRecord}
-        onEdit={handleOpenUpdateModal}
-        onDelete={handleDeleteRecord}
-        position={detailPosition || undefined}
-      />
+        {/* 레코드 상세 모달 */}
+        <RecordDetail
+            isOpen={isDetailModalOpen}
+            onClose={handleCloseDetailModal}
+            record={selectedRecord}
+            onEdit={handleOpenUpdateModal}
+            onDelete={handleDeleteRecord}
+            position={detailPosition || undefined}
+        />
 
-      {/* RecordUpdateModal */}
-      <RecordUpdateModal
-        isOpen={isUpdateModalOpen}
-        onClose={handleCloseUpdateModal}
-        onDelete={handleDeleteRecord}
-        record={selectedRecord}
-        allRecordGroups={allRecordGroups}
-      />
+        {/* RecordUpdateModal */}
+        <RecordUpdateModal
+            isOpen={isUpdateModalOpen}
+            onClose={handleCloseUpdateModal}
+            onDelete={handleDeleteRecord}
+            record={selectedRecord}
+            allRecordGroups={allRecordGroups}
+        />
     </>
   );
 };

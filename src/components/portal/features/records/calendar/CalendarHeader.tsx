@@ -45,7 +45,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         <div className="page-title">
             {searchResults ? (
                 <div className="calendar-nav">
-                    <h2>검색 결과 {searchResultCount}건</h2>
+                    <h2>검색 결과 <span>{searchResultCount}개</span></h2>
                 </div>
             ) : (
                 <div className="calendar-nav">
@@ -97,7 +97,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                         />
                         {searchResults && (
                             <button onClick={handleCloseSearch}>
-                                <i className="ic-close" />
+                                <i className="ic-delete" />
                             </button>
                         )}
                     </div>
