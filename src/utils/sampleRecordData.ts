@@ -1,4 +1,4 @@
-import { RecordGroup, RecordGroup_RecordGroupType, Worker, Worker_Gender } from '@/generated/common'
+import { RecordGroup, RecordGroup_RecordGroupRole, RecordGroup_RecordGroupType, Worker, Worker_Gender } from '@/generated/common'
 import { RecordGroupDetailResponse } from '@/generated/record_group'
 import dayjs from 'dayjs'
 
@@ -12,6 +12,7 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             publicId: 'work',
             color: '#ffc107',
             priority: 1,
+            role: RecordGroup_RecordGroupRole.FULL,
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
@@ -19,10 +20,11 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             id: '2',
             title: '프로젝트',
             isDefault: false,
-            type: RecordGroup_RecordGroupType.PRIVATE,
+            type: RecordGroup_RecordGroupType.SHARED,
             publicId: 'project',
             color: '#fd7e14',
             priority: 2,
+            role: RecordGroup_RecordGroupRole.FULL,
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
@@ -34,6 +36,7 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             publicId: 'business-trip',
             color: '#ffc107',
             priority: 3,
+            role: RecordGroup_RecordGroupRole.FULL,
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
@@ -45,6 +48,7 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             publicId: 'personal',
             color: '#28a745',
             priority: 4,
+            role: RecordGroup_RecordGroupRole.FULL,
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
@@ -56,6 +60,7 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             publicId: 'book-club',
             color: '#007bff',
             priority: 5,
+            role: RecordGroup_RecordGroupRole.FULL,
             createdAt: Date.now(),
             updatedAt: Date.now()
         },
@@ -63,10 +68,11 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             id: '6',
             title: '워크폴리오 사이드 프로젝트',
             isDefault: false,
-            type: RecordGroup_RecordGroupType.PRIVATE,
+            type: RecordGroup_RecordGroupType.SHARED,
             publicId: 'workfolio-side',
             color: '#17a2b8',
             priority: 6,
+            role: RecordGroup_RecordGroupRole.FULL,
             createdAt: Date.now(),
             updatedAt: Date.now()
         }

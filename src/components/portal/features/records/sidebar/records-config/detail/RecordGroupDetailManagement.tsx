@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import '@/styles/records-config.css';
-import { RecordGroupJoinRequest, RecordGroupDetailResponse } from '@/generated/record_group';
+import { RecordGroupJoinRequest, RecordGroupDetailResponse, RecordGroupUpdateRequest } from '@/generated/record_group';
 import { WorkerListResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup, RecordGroup_RecordGroupRole, RecordGroup_RecordGroupType, Worker } from '@/generated/common';
 import { createSampleWorkers, createSampleRecordGroupDetails } from '@/utils/sampleRecordData';
 import { compareEnumValue } from '@/utils/commonUtils';
 import Dropdown from '@/components/portal/ui/Dropdown';
+import FloatingNavigation, { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
 
 interface RecordGroupDetailManagementProps {
     recordGroupsData: {
@@ -88,6 +89,9 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             const filteredWorkers = sampleWorkers.filter(worker => 
                 worker.nickName.toLowerCase().includes(nickname.toLowerCase())
             );
+
+            console.log('filteredWorkers', filteredWorkers);
+            console.log('filteredWorkers.length', filteredWorkers.length);
             
             if (filteredWorkers.length > 0) {
                 setSearchedWorkers(filteredWorkers);
@@ -271,22 +275,68 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
         }
     }, [selectedRecordGroup, refreshRecordGroups, fetchRecordGroupDetails]);
 
+    // 저장 함수
+    const handleSave = useCallback(async () => {
+        if (!selectedRecordGroup) {
+            alert('저장할 기록장이 없습니다.');
+            return;
+        }
+
+        try {
+            const updateRequest = RecordGroupUpdateRequest.create({
+                title: selectedRecordGroup.title || '',
+                color: selectedRecordGroup.color || '',
+                priority: selectedRecordGroup.priority || 0,
+            });
+
+            const response = await fetch(`/api/record-groups/${selectedRecordGroup.id}`, {
+                method: HttpMethod.PUT,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: updateRequest.title,
+                    color: updateRequest.color,
+                    priority: updateRequest.priority?.toString() || '0',
+                })
+            });
+
+            if (response.ok) {
+                console.log('기록장 저장 성공');
+                await refreshRecordGroups();
+                // 저장 후 뒤로가기 또는 성공 메시지 표시
+                if (onBack) {
+                    onBack();
+                }
+            } else {
+                const errorData = await response.json();
+                console.error('기록장 저장 실패:', errorData);
+                alert('저장에 실패했습니다. 다시 시도해주세요.');
+            }
+        } catch (error) {
+            console.error('Error saving record group:', error);
+            alert('저장 중 오류가 발생했습니다.');
+        }
+    }, [selectedRecordGroup, refreshRecordGroups, onBack]);
+
+    // 네비게이션 아이템 설정
+    const navigationItems: FloatingNavigationItem[] = [
+        {
+            id: 'record-group-management',
+            label: '기록장 관리',
+        },
+    ];
+
     return (
-        <div className="cont-box">
-            <div className="cont-tit">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    {onBack && (
-                        <button 
-                            onClick={onBack}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}
-                        >
-                            ←
-                        </button>
-                    )}
-                    <h3>기록장 관리</h3>
-                </div>
-            </div>
-            <ul className="setting-list">
+        <div className="page-cont">
+            <article>
+                <div className="cont-box">
+                    <div className="cont-tit" id="record-group-management">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <h3>기록장 관리</h3>
+                        </div>
+                    </div>
+                    <ul className="setting-list">
                 <li>
                     <p>기록장 이름 및 색상</p>
                     <div>
@@ -345,26 +395,26 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                             onCompositionStart={handleCompositionStart}
                             onCompositionEnd={handleCompositionEnd}
                         />
-                        <ul className="shared-mem-search" style={{display: 'none'}}>
-                        {searchedWorkers.map((worker: Worker, index: number) => {
-                            const isSelected = selectedNewWorkers.some(w => w.id === worker.id);
-                            return (
-                                <li key={worker.id || index}>
-                                    <input
-                                        type="checkbox"
-                                        checked={isSelected}
-                                        onChange={(e) => {
-                                            if (e.target.checked) {
-                                                setSelectedNewWorkers([...selectedNewWorkers, worker]);
-                                            } else {
-                                                setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
-                                            }
-                                        }}
-                                    />
-                                    <label htmlFor=""><p>{worker.nickName || ''}</p></label>
-                                </li>
-                            );
-                        })}
+                        <ul className="shared-mem-search">
+                            {searchedWorkers.map((worker: Worker, index: number) => {
+                                const isSelected = selectedNewWorkers.some(w => w.id === worker.id);
+                                return (
+                                    <li key={worker.id || index}>
+                                        <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedNewWorkers([...selectedNewWorkers, worker]);
+                                                } else {
+                                                    setSelectedNewWorkers(selectedNewWorkers.filter(w => w.id !== worker.id));
+                                                }
+                                            }}
+                                        />
+                                        <label htmlFor=""><p>{worker.nickName || ''}</p></label>
+                                    </li>
+                                );
+                            })}
                         </ul>
                         <button>공유하기</button>
                     </div>
@@ -478,6 +528,15 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                     <p className="info-text">탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.</p>
                 </div>
             </div>
+                </div>
+            </article>
+            <FloatingNavigation
+                navigationItems={navigationItems}
+                onSave={handleSave}
+                onCancel={onBack}
+                saveButtonText="저장하기"
+                cancelButtonText="취소"
+            />
         </div>
     );
 };

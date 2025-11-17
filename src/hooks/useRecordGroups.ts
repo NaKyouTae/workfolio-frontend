@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { RecordGroup } from '@/generated/common';
+import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { createSampleRecordGroups } from '@/utils/sampleRecordData';
 import HttpMethod from '@/enums/HttpMethod';
@@ -40,8 +40,8 @@ export const useRecordGroups = () => {
             
             if (!accessToken) {
                 const sampleRecordGroups = createSampleRecordGroups();
-                setOwnedRecordGroups(sampleRecordGroups);
-                setSharedRecordGroups([]);
+                setOwnedRecordGroups(sampleRecordGroups.filter((group: RecordGroup) => group.type === RecordGroup_RecordGroupType.PRIVATE));
+                setSharedRecordGroups(sampleRecordGroups.filter((group: RecordGroup) => group.type === RecordGroup_RecordGroupType.SHARED));
                 initializeGroups(sampleRecordGroups.map((group: RecordGroup) => group.id));
                 return;
             }
