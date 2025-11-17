@@ -5,6 +5,8 @@ import RecordGroupsOwned from './record-groups/record-groups-owned/RecordGroupsO
 import RecordGroupsShared from './record-groups/record-groups-shard/RecordGroupsShared';
 import SidebarButton from './SidebarButton';
 import SidebarConfig from './SidebarConfig';
+import { useRecordGroupStore } from '@/store/recordGroupStore';
+import { useShallow } from 'zustand/react/shallow';
 
 interface SidebarProps {
     onConfigToggle: () => void;
@@ -21,12 +23,16 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGroupsData }) => {
     const defaultExpanded = true;
     
-    // props로 받은 recordGroupsData 사용
-    const { 
-        ownedRecordGroups, 
-        sharedRecordGroups, 
-        refreshRecordGroups 
-    } = recordGroupsData;
+    // Zustand store에서 직접 구독하여 자동 갱신
+    const { ownedRecordGroups, sharedRecordGroups } = useRecordGroupStore(
+        useShallow((state) => ({
+            ownedRecordGroups: state.ownedRecordGroups,
+            sharedRecordGroups: state.sharedRecordGroups,
+        }))
+    );
+    
+    // refreshRecordGroups는 props에서 가져옴
+    const { refreshRecordGroups } = recordGroupsData;
 
     return (
         <aside>

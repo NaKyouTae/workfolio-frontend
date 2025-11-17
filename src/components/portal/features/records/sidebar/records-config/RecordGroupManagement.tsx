@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import '@/styles/records-config.css';
 import { RecordGroupDetailResponse } from '@/generated/record_group';
 import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common';
@@ -6,6 +6,8 @@ import { compareEnumValue } from '@/utils/commonUtils';
 import DraggableList from '@/components/portal/ui/DraggableList';
 import DraggableItem from '@/components/portal/ui/DraggableItem';
 import { useUserStore } from '@/store/userStore';
+import { useRecordGroupStore } from '@/store/recordGroupStore';
+import { useShallow } from 'zustand/react/shallow';
 
 interface RecordGroupManagementProps {
     recordGroupsData: {
@@ -19,29 +21,33 @@ interface RecordGroupManagementProps {
     onGroupSettingsClick?: (group: RecordGroup) => void;
 }
 
-const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGroupsData, onGroupSettingsClick }) => {
+const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ onGroupSettingsClick }) => {
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
-    const [recordGroups, setRecordGroups] = useState<RecordGroup[]>([]);
     
-    // props로 받은 recordGroupsData 사용
-    const { allRecordGroups, sharedRecordGroups } = recordGroupsData;
+    // Zustand store에서 직접 구독하여 자동 갱신
+    const { ownedRecordGroups, sharedRecordGroups } = useRecordGroupStore(
+        useShallow((state) => ({
+            ownedRecordGroups: state.ownedRecordGroups,
+            sharedRecordGroups: state.sharedRecordGroups,
+        }))
+    );
+    
+    // allRecordGroups 자동 계산
+    const allRecordGroups = useMemo(() => {
+        return [...ownedRecordGroups, ...sharedRecordGroups];
+    }, [ownedRecordGroups, sharedRecordGroups]);
+    
     const { user } = useUserStore();
     
-    // allRecordGroups가 변경되면 로컬 state 업데이트
-    useEffect(() => {
-        setRecordGroups(allRecordGroups);
-    }, [allRecordGroups]);
-
     // 첫 렌더링 시 첫 번째 레코드 그룹 선택
     useEffect(() => {
-        if (recordGroups.length > 0 && !selectedRecordGroup) {
-            setSelectedRecordGroup(recordGroups[0]);
+        if (allRecordGroups.length > 0 && !selectedRecordGroup) {
+            setSelectedRecordGroup(allRecordGroups[0]);
         }
-    }, [recordGroups, selectedRecordGroup]);
+    }, [allRecordGroups, selectedRecordGroup]);
 
     // 드래그로 순서 변경 핸들러
-    const handleReorder = (reorderedGroups: RecordGroup[]) => {
-        setRecordGroups(reorderedGroups);
+    const handleReorder = () => {
         // TODO: API 호출하여 서버에 순서 반영
     };
 
@@ -70,7 +76,7 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
             <div className="cont-tit">
                 <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                     <h3>기록장 목록</h3>
-                    <span>{recordGroups.length}개</span>
+                    <span>{allRecordGroups.length}개</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100px' }}>
                     <button>+ 추가</button>
@@ -78,7 +84,7 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGro
             </div>
             <ul className="setting-list">
                 <DraggableList
-                    items={recordGroups}
+                    items={allRecordGroups}
                     onReorder={handleReorder}
                     getItemId={(group, idx) => group.id || `record-group-${idx}`}
                     renderItem={(group, index) => (

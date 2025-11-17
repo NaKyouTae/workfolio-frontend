@@ -11,19 +11,24 @@ interface DropdownProps {
     options: IDropdown[]; // 옵션 배열
     setValue: (value: string | number) => void; // 선택된 옵션의 값을 설정하는 함수
     label?: string;
+    disabled?: boolean;
 }
 
-const Dropdown = ({ selectedOption, options, setValue, label }: DropdownProps) => {
+const Dropdown = ({ selectedOption, options, setValue, label, disabled = false }: DropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     
     const toggleDropdown = () => {
-        setIsOpen(!isOpen);
+        if (!disabled) {
+            setIsOpen(!isOpen);
+        }
     };
     
     const handleOptionClick = (value: string | number) => {
-        setValue(value); // 선택된 옵션의 title 값을 외부 상태에 설정
-        setIsOpen(false); // 드롭다운 닫기
+        if (!disabled) {
+            setValue(value); // 선택된 옵션의 title 값을 외부 상태에 설정
+            setIsOpen(false); // 드롭다운 닫기
+        }
     };
 
     // 외부 클릭 감지
@@ -52,6 +57,7 @@ const Dropdown = ({ selectedOption, options, setValue, label }: DropdownProps) =
             <button 
                 type="button"
                 onClick={toggleDropdown}
+                disabled={disabled}
                 style={{ color: selectedLabel == '선택' ? '#808991' : '#121212' }}
             >
                 {selectedLabel}

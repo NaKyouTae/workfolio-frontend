@@ -105,8 +105,6 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                             isOpen={showColorModal}
                             currentColor={group.color}
                             onColorSelect={handleColorSelect}
-                            onClose={() => setShowColorModal(false)}
-                            title="기록장 색상 변경"
                         />
                     </div>
                 )}

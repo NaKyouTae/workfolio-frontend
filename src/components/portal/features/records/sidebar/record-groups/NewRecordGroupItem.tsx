@@ -94,8 +94,6 @@ const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupIte
                             isOpen={showColorModal}
                             currentColor={color}
                             onColorSelect={handleColorSelect}
-                            onClose={() => setShowColorModal(false)}
-                            title="기록장 색상 변경"
                         />
                     </div>
                 )}

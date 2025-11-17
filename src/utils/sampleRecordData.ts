@@ -1,4 +1,4 @@
-import { RecordGroup, RecordGroup_RecordGroupRole, RecordGroup_RecordGroupType, Worker, Worker_Gender } from '@/generated/common'
+import { RecordGroup, RecordGroup_RecordGroupRole, RecordGroup_RecordGroupType, Worker, Worker_Gender, WorkerRecordGroup_RecordGroupRole } from '@/generated/common'
 import { RecordGroupDetailResponse } from '@/generated/record_group'
 import dayjs from 'dayjs'
 
@@ -1587,9 +1587,9 @@ export const createSampleWorkers = (): Worker[] => {
 };
 
 // 샘플 RecordGroupDetailResponse 데이터 (로그인 안되어있을 때 사용)
-export const createSampleRecordGroupDetails = (recordGroup: RecordGroup | null): RecordGroupDetailResponse | null => {
+export const createSampleRecordGroupDetails = (recordGroup: RecordGroup | undefined): RecordGroupDetailResponse | undefined => {
     if (!recordGroup) {
-        return null;
+        return undefined;
     }
     
     // 일부 샘플 워커를 공유 멤버로 설정 (3-5명 정도)
@@ -1598,6 +1598,16 @@ export const createSampleRecordGroupDetails = (recordGroup: RecordGroup | null):
     
     return {
         groups: recordGroup,
-        workers: sharedWorkers
+        workers: sharedWorkers.map((worker: Worker) => {
+            return {
+                id: worker.id,
+                publicId: '',
+                role: WorkerRecordGroup_RecordGroupRole.FULL,
+                worker: worker,
+                recordGroup: recordGroup,
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+        })
     };
 };

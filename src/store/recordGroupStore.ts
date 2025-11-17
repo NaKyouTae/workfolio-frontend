@@ -44,10 +44,30 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     // 액션들
     setOwnedRecordGroups: (groups: RecordGroup[]) => 
         set((state) => {
-            // 데이터가 동일하면 업데이트하지 않음
-            if (state.ownedRecordGroups.length === groups.length &&
-                state.ownedRecordGroups.every((g, i) => g.id === groups[i]?.id)) {
-                return state;
+            // id를 키로 하는 Map을 만들어서 비교 (순서 무관, title/color 변경 감지)
+            const oldMap = new Map(state.ownedRecordGroups.map(g => [g.id, g]));
+            const newMap = new Map(groups.map(g => [g.id, g]));
+            
+            // 길이가 다르면 업데이트 필요
+            if (oldMap.size !== newMap.size) {
+                // 업데이트 로직 계속 진행
+            } else {
+                // 모든 그룹이 동일한지 확인 (title, color, type 포함)
+                let isSame = true;
+                for (const [id, oldGroup] of oldMap) {
+                    const newGroup = newMap.get(id);
+                    if (!newGroup || 
+                        oldGroup.title !== newGroup.title ||
+                        oldGroup.color !== newGroup.color ||
+                        oldGroup.type !== newGroup.type) {
+                        isSame = false;
+                        break;
+                    }
+                }
+                
+                if (isSame) {
+                    return state;
+                }
             }
 
             // 새로운 그룹(기존에 없던 그룹)만 체크에 추가
@@ -70,10 +90,30 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     
     setSharedRecordGroups: (groups: RecordGroup[]) => 
         set((state) => {
-            // 데이터가 동일하면 업데이트하지 않음
-            if (state.sharedRecordGroups.length === groups.length &&
-                state.sharedRecordGroups.every((g, i) => g.id === groups[i]?.id)) {
-                return state;
+            // id를 키로 하는 Map을 만들어서 비교 (순서 무관, title/color 변경 감지)
+            const oldMap = new Map(state.sharedRecordGroups.map(g => [g.id, g]));
+            const newMap = new Map(groups.map(g => [g.id, g]));
+            
+            // 길이가 다르면 업데이트 필요
+            if (oldMap.size !== newMap.size) {
+                // 업데이트 로직 계속 진행
+            } else {
+                // 모든 그룹이 동일한지 확인 (title, color, type 포함)
+                let isSame = true;
+                for (const [id, oldGroup] of oldMap) {
+                    const newGroup = newMap.get(id);
+                    if (!newGroup || 
+                        oldGroup.title !== newGroup.title ||
+                        oldGroup.color !== newGroup.color ||
+                        oldGroup.type !== newGroup.type) {
+                        isSame = false;
+                        break;
+                    }
+                }
+                
+                if (isSame) {
+                    return state;
+                }
             }
 
             // 새로운 그룹(기존에 없던 그룹)만 체크에 추가
