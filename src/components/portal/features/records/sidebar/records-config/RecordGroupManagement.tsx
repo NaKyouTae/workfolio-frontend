@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import '@/styles/records-config.css';
 import { RecordGroupDetailResponse } from '@/generated/record_group';
 import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common';
@@ -8,6 +8,8 @@ import DraggableItem from '@/components/portal/ui/DraggableItem';
 import { useUserStore } from '@/store/userStore';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { useShallow } from 'zustand/react/shallow';
+import HttpMethod from '@/enums/HttpMethod';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface RecordGroupManagementProps {
     recordGroupsData: {
@@ -21,7 +23,34 @@ interface RecordGroupManagementProps {
     onGroupSettingsClick?: (group: RecordGroup) => void;
 }
 
-const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ onGroupSettingsClick }) => {
+// worker-record-groups 삭제 API 호출 함수 (공통으로 사용)
+export const handleLeaveRecordGroup = async (
+    recordGroupId: string,
+    targetWorkerId: string
+): Promise<boolean> => {
+    try {
+        const response = await fetch(
+            `/api/worker-record-groups?recordGroupId=${recordGroupId}&targetWorkerId=${targetWorkerId}`,
+            {
+                method: HttpMethod.DELETE,
+            }
+        );
+
+        if (response.ok) {
+            console.log('기록장 탈퇴 성공');
+            return true;
+        } else {
+            const errorData = await response.json();
+            console.error('기록장 탈퇴 실패:', errorData);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error leaving record group:', error);
+        return false;
+    }
+};
+
+const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ recordGroupsData, onGroupSettingsClick }) => {
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
     
     // Zustand store에서 직접 구독하여 자동 갱신
@@ -38,6 +67,36 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ onGroupSe
     }, [ownedRecordGroups, sharedRecordGroups]);
     
     const { user } = useUserStore();
+    const { refreshRecordGroups } = recordGroupsData;
+    const { confirm } = useConfirm();
+    
+    // 기록장 탈퇴 핸들러
+    const handleLeave = useCallback(async (recordGroupId: string) => {
+        if (!user?.id) {
+            alert('사용자 정보를 찾을 수 없습니다.');
+            return;
+        }
+        
+        const confirmed = await confirm({
+            title: '기록장 탈퇴',
+            description: '기록장에서 탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.',
+            confirmText: '확인',
+            cancelText: '취소',
+        });
+        
+        if (!confirmed) {
+            return;
+        }
+        
+        const success = await handleLeaveRecordGroup(recordGroupId, user.id);
+        
+        if (success) {
+            await refreshRecordGroups();
+            alert('기록장에서 탈퇴했습니다.');
+        } else {
+            alert('탈퇴에 실패했습니다. 다시 시도해주세요.');
+        }
+    }, [user?.id, refreshRecordGroups, confirm]);
     
     // 첫 렌더링 시 첫 번째 레코드 그룹 선택
     useEffect(() => {
@@ -109,7 +168,16 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({ onGroupSe
                                     {compareEnumValue(group.type, RecordGroup_RecordGroupType.SHARED, RecordGroup_RecordGroupType) && 
                                      sharedRecordGroups.some((sharedGroup: RecordGroup) => sharedGroup.id === group.id) ? (
                                         <>
-                                            <a href="#" style={{ color: '#666' }}>탈퇴</a>
+                                            <a 
+                                                href="#" 
+                                                style={{ color: '#666', cursor: 'pointer' }}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (group.id && user?.id) {
+                                                        handleLeave(group.id);
+                                                    }
+                                                }}
+                                            >탈퇴</a>
                                             {
                                                 user?.id === group.worker?.id && (
                                                     <>

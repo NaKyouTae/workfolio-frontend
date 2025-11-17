@@ -11,6 +11,7 @@ import FloatingNavigation, { FloatingNavigationItem } from '@/components/portal/
 import RecordGroupColorModal from '../../record-groups/RecordGroupColorModal';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useUserStore } from '@/store/userStore';
+import { handleLeaveRecordGroup } from '../RecordGroupManagement';
 
 interface RecordGroupDetailManagementProps {
     recordGroupsData: {
@@ -398,6 +399,36 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
         }
     }, [selectedRecordGroup, title, color, recordType, defaultRole, selectedNewWorkers, selectedExistWorkers, refreshRecordGroups, onBack, confirm]);
 
+    // 기록장 탈퇴 핸들러
+    const handleLeave = useCallback(async () => {
+        if (!selectedRecordGroup?.id || !user?.id) {
+            alert('기록장 정보를 찾을 수 없습니다.');
+            return;
+        }
+        
+        const confirmed = await confirm({
+            title: '기록장 탈퇴',
+            description: '기록장에서 탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.',
+            confirmText: '확인',
+            cancelText: '취소',
+        });
+        
+        if (!confirmed) {
+            return;
+        }
+        
+        const success = await handleLeaveRecordGroup(selectedRecordGroup.id, user.id);
+        
+        if (success) {
+            await refreshRecordGroups();
+            if (onBack) {
+                onBack();
+            }
+        } else {
+            alert('탈퇴에 실패했습니다. 다시 시도해주세요.');
+        }
+    }, [selectedRecordGroup?.id, user?.id, confirm, refreshRecordGroups, onBack]);
+
     return (
         <div className="page-cont">
             <article>
@@ -678,7 +709,10 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                         <div className="config-row">
                             <label>기록장 탈퇴</label>
                             <div className="leave-section">
-                                <button className="leave-btn">탈퇴하기</button>
+                                <button 
+                                    className="leave-btn"
+                                    onClick={handleLeave}
+                                >탈퇴하기</button>
                                 <p className="info-text">탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.</p>
                             </div>
                         </div>
