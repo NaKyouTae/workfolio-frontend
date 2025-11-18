@@ -114,9 +114,9 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                 />
                 {activeTab === 'goal' && (
                     <TurnOverGoalEdit 
-                    ref={goalEditRef}
-                    turnOverRequest={turnOverRequest || null} 
-                    onSave={handleSave}
+                        ref={goalEditRef}
+                        turnOverRequest={turnOverRequest || null} 
+                        onSave={handleSave}
                     />
                 )}
                 {activeTab === 'challenge' && (

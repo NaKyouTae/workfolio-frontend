@@ -43,8 +43,8 @@ const InterviewQuestionItem: React.FC<InterviewQuestionItemProps> = ({
                     <p>답변</p>
                     <textarea 
                         placeholder="답변을 입력해 주세요."
-                        value={item.question || ''}
-                        onChange={(e) => onUpdate(index, 'question', e.target.value)}                    
+                        value={item.answer || ''}
+                        onChange={(e) => onUpdate(index, 'answer', e.target.value)}                    
                         ></textarea>
                 </li>
             </ul>

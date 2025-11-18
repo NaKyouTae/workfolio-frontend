@@ -11,7 +11,6 @@ import RecordUpdateModal from '../modal/RecordUpdateModal';
 import { useConfirm } from '@/hooks/useConfirm';
 import HttpMethod from '@/enums/HttpMethod';
 import { formatRecordDisplayTime } from '@/utils/calendarUtils';
-import styles from './RecordSearch.module.css';
 
 dayjs.locale('ko');
 dayjs.extend(timezone);
@@ -92,8 +91,8 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
     // 클릭한 위치를 기준으로 모달 위치 계산
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     setDetailPosition({
-      top: rect.bottom + 10,
-      left: rect.left,
+      top: rect.bottom + 4,
+      left: rect.left + 4,
       width: 400,
     });
     

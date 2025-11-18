@@ -179,7 +179,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
             const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5)) // 최소 200px, 최대 400px
             
             // 세로 위치 계산
-            let top = rect.bottom - tableContainer.top + 10
+            let top = rect.bottom - tableContainer.top + 4
             const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
             const spaceAbove = rect.top - detailHeight
             
@@ -190,15 +190,15 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
             
             // 여전히 위쪽도 공간이 부족하면 가능한 공간에 맞춰 조정
             if (top < 0) {
-                top = 5
+                top = 4
             }
             
             // 가로 위치 계산
-            const left = rect.left - tableContainer.left - 5
+            const left = rect.left - tableContainer.left + 4
             
             setDetailPosition({
-                top: Math.max(5, top),
-                left: Math.max(5, left),
+                top: Math.max(4, top),
+                left: Math.max(4, left),
                 width: detailWidth
             })
         }

@@ -4,6 +4,7 @@ import Input from '@/components/portal/ui/Input';
 import DatePicker from '@/components/portal/ui/DatePicker';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import Dropdown from '@/components/portal/ui/Dropdown';
+import { DateTime } from 'luxon';
 
 interface BasicInfoEditProps {
   name: string;
@@ -14,7 +15,7 @@ interface BasicInfoEditProps {
   position: string;
   description: string;
   onNameChange: (name: string) => void;
-  onBirthDateChange: (birthDate: number) => void;
+  onBirthDateChange: (birthDate: number | undefined) => void;
   onGenderChange: (gender: Resume_Gender | undefined) => void;
   onPositionChange: (position: string) => void;
   onPhoneChange: (phone: string) => void;
@@ -63,9 +64,13 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   phone,
   email,
   description,
+  onNameChange,
   onPositionChange,
   onDescriptionChange,
   onGenderChange,
+  onBirthDateChange,
+  onPhoneChange,
+  onEmailChange,
 }) => {
   return (
     <>
@@ -80,8 +85,8 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
                 <Input 
                     type="text"
                     label="이름"
-                    readOnly={true}
                     value={name}
+                    onChange={(e) => onNameChange(e.target.value)}
                 />
             </li>
             <li>
@@ -98,7 +103,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
                 <p>생년월일</p>
                 <DatePicker
                     value={birthDate}
-                    readOnly={true}
+                    onChange={(date) => onBirthDateChange(DateTime.fromISO(date).toMillis() === 0 ? undefined : DateTime.fromISO(date).toMillis())}
                     required={false}
                 />
             </li>
@@ -118,7 +123,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
                 <Input 
                     type="tel"
                     label="전화번호"
-                    readOnly={true}
+                    onChange={(e) => onPhoneChange(formatPhoneNumber(e.target.value))}
                     value={formatPhoneNumber(phone)}
                 />
             </li>
@@ -127,7 +132,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
                 <Input 
                     type="email"
                     label="이메일"
-                    readOnly={true}
+                    onChange={(e) => onEmailChange(e.target.value)}
                     value={email}
                 />
             </li>
