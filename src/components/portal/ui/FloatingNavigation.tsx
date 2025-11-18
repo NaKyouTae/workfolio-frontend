@@ -9,6 +9,7 @@ export interface FloatingNavigationItem {
 }
 
 interface FloatingNavigationProps {
+  width?: string;
   /**
    * 네비게이션 아이템 목록
    * onClick이 없으면 자동으로 스크롤 기능을 사용합니다.
@@ -67,6 +68,7 @@ interface FloatingNavigationProps {
  */
 const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   navigationItems,
+  width,
   onSave,
   onCancel,
   showCancelConfirm = false,
@@ -99,26 +101,84 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   useEffect(() => {
     if (!navigationItems || navigationItems.length === 0) return;
 
-    const handleScroll = () => {
-      const sections = navigationItems
-        .map(item => {
-          const element = document.getElementById(item.id);
-          if (element) {
-            const rect = element.getBoundingClientRect();
-            return { id: item.id, top: rect.top };
-          }
-          return null;
-        })
-        .filter((item): item is { id: string; top: number } => item !== null)
-        .sort((a, b) => Math.abs(a.top) - Math.abs(b.top));
+    // page-cont 스크롤 컨테이너 찾기
+    const firstItem = navigationItems[0];
+    if (!firstItem?.id) return;
+    
+    const firstElement = document.getElementById(firstItem.id);
+    if (!firstElement) return;
+    
+    const scrollContainer = firstElement.closest('.page-cont') as HTMLElement;
 
-      if (sections.length > 0 && sections[0].top < 200) {
-        setActiveSection(sections[0].id);
+    const handleScroll = () => {
+      if (scrollContainer) {
+        // page-cont 컨테이너 내에서의 상대 위치 계산
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const scrollTop = scrollContainer.scrollTop;
+        const offset = 100; // 상단에서 100px 떨어진 위치를 기준으로 활성 섹션 판단
+        
+        // 각 섹션의 위치를 계산하여 현재 보이는 섹션 찾기
+        const sections = navigationItems
+          .map(item => {
+            const element = document.getElementById(item.id);
+            if (element) {
+              const elementRect = element.getBoundingClientRect();
+              // 컨테이너 내에서의 상대 위치 계산
+              const relativeTop = elementRect.top - containerRect.top + scrollTop;
+              return { 
+                id: item.id, 
+                top: relativeTop,
+                bottom: relativeTop + elementRect.height
+              };
+            }
+            return null;
+          })
+          .filter((item): item is { id: string; top: number; bottom: number } => item !== null);
+
+        // 현재 스크롤 위치 + offset을 기준으로 가장 가까운 섹션 찾기
+        const currentScrollPosition = scrollTop + offset;
+        
+        // 현재 스크롤 위치보다 위에 있고 가장 가까운 섹션 찾기
+        const visibleSections = sections
+          .filter(section => section.top <= currentScrollPosition)
+          .sort((a, b) => b.top - a.top); // 위에서 아래로 정렬
+
+        if (visibleSections.length > 0) {
+          setActiveSection(visibleSections[0].id);
+        } else if (sections.length > 0) {
+          // 스크롤이 맨 위에 있으면 첫 번째 섹션 활성화
+          setActiveSection(sections[0].id);
+        }
+      } else {
+        // window 스크롤인 경우
+        const sections = navigationItems
+          .map(item => {
+            const element = document.getElementById(item.id);
+            if (element) {
+              const rect = element.getBoundingClientRect();
+              return { id: item.id, top: rect.top };
+            }
+            return null;
+          })
+          .filter((item): item is { id: string; top: number } => item !== null)
+          .sort((a, b) => Math.abs(a.top) - Math.abs(b.top));
+
+        if (sections.length > 0 && sections[0].top < 200) {
+          setActiveSection(sections[0].id);
+        }
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // 초기 활성 섹션 설정
+    handleScroll();
+
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    } else {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
   }, [navigationItems]);
 
   const handleCancel = async () => {
@@ -142,7 +202,7 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   const showButtons = onSave || onCancel || (actionButtons && actionButtons.length > 0);
 
   return (
-    <nav>
+    <nav style={{width: width || '100%'}}>
       {navigationItems && navigationItems.length > 0 && (
         <ul className="nav-wrap">
           {navigationItems.map((item) => {

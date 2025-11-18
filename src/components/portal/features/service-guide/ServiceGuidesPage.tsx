@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import ServiceGuidesSidebar from './ServiceGuidesSidebar';
 import ServiceGuidesContent from './ServiceGuidesContent';
-import styles from './ServiceGuidesPage.module.css';
 
 import Footer from '../../layouts/Footer';
 

@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import styles from './TermsOfService.module.css';
-import Footer from '../../../layouts/Footer';
+import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
 
 const TermsOfService: React.FC = () => {
   return (
@@ -14,7 +13,7 @@ const TermsOfService: React.FC = () => {
         </div>
         <div className="page-cont">
             <article>
-                <div className="cont-box">
+                <div className="cont-box" id="terms">
                     <div className="cont-tit">
                         <div>
                             <h3>제1조 목적</h3>
@@ -24,7 +23,7 @@ const TermsOfService: React.FC = () => {
                         <p>본 이용약관은 &quot;워크폴리오&quot;(이하 &quot;사이트&quot;)의 서비스의 이용조건과 운영에 관한 제반 사항 규정을 목적으로 합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-2">
                     <div className="cont-tit">
                         <div>
                             <h3>제2조 용어의 정의</h3>
@@ -40,7 +39,7 @@ const TermsOfService: React.FC = () => {
                         ⑥ 해지 : 회원이 이용계약을 해약하는 것을 말합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-3">
                     <div className="cont-tit">
                         <div>
                             <h3>제3조 약관 외 준칙</h3>
@@ -50,7 +49,7 @@ const TermsOfService: React.FC = () => {
                         <p>운영자는 필요한 경우 별도로 운영정책을 공지 안내할 수 있으며, 본 약관과 운영정책이 중첩될 경우 운영정책이 우선 적용됩니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-4">
                     <div className="cont-tit">
                         <div>
                             <h3>제4조 이용계약 체결</h3>
@@ -61,7 +60,7 @@ const TermsOfService: React.FC = () => {
                         ② 회원으로 등록하여 서비스를 이용하려는 자는 사이트 가입신청 시 본 약관을 읽고 아래에 있는 &quot;동의합니다&quot;를 선택하는 것으로 본 약관에 대한 동의 의사 표시를 합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-5">
                     <div className="cont-tit">
                         <div>
                             <h3>제5조 서비스 이용 신청</h3>
@@ -72,7 +71,7 @@ const TermsOfService: React.FC = () => {
                         ② 타인의 정보를 도용하거나 허위의 정보를 등록하는 등 본인의 진정한 정보를 등록하지 않은 회원은 사이트 이용과 관련하여 아무런 권리를 주장할 수 없으며, 관계 법령에 따라 처벌받을 수 있습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-6">
                     <div className="cont-tit">
                         <div>
                             <h3>제6조 개인정보 처리방침</h3>
@@ -84,7 +83,7 @@ const TermsOfService: React.FC = () => {
                         단, 회원의 귀책 사유로 인해 노출된 정보에 대해 운영자는 일체의 책임을 지지 않습니다. 운영자는 회원이 미풍양속에 저해되거나 국가안보에 위배되는 게시물 등 위법한 게시물을 등록 · 배포할 경우 관련 기관의 요청이 있을 시 회원의 자료를 열람 및 해당 자료를 관련 기관에 제출할 수 있습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-7">
                     <div className="cont-tit">
                         <div>
                             <h3>제7조 운영자의 의무</h3>
@@ -95,7 +94,7 @@ const TermsOfService: React.FC = () => {
                         ② 운영자는 계속적이고 안정적인 사이트 제공을 위하여 설비에 장애가 생기거나 유실된 때에는 이를 지체 없이 수리 또는 복구할 수 있도록 사이트에 요구할 수 있습니다. 다만, 천재지변 또는 사이트나 운영자에 부득이한 사유가 있는 경우, 사이트 운영을 일시 정지할 수 있습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-8">
                     <div className="cont-tit">
                         <div>
                             <h3>제8조 회원의 의무</h3>
@@ -108,7 +107,7 @@ const TermsOfService: React.FC = () => {
                         ④ 회원은 운영자와 사이트 및 제3자의 지적 재산권을 침해해서는 안 됩니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-9">
                     <div className="cont-tit">
                         <div>
                             <h3>제9조 서비스 이용 시간</h3>
@@ -124,7 +123,7 @@ const TermsOfService: React.FC = () => {
                         ③ 전항에 의한 서비스 중단의 경우 사이트는 사전에 공지사항 등을 통하여 회원에게 통지합니다. 단, 사이트가 통제할 수 없는 사유로 발생한 서비스의 중단에 대하여 사전공지가 불가능한 경우에는 사후공지로 대신합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-10">
                     <div className="cont-tit">
                         <div>
                             <h3>제10조 서비스 이용 해지</h3>
@@ -135,7 +134,7 @@ const TermsOfService: React.FC = () => {
                         ② 해지 신청과 동시에 사이트가 제공하는 사이트 관련 프로그램이 회원 관리 화면에서 자동적으로 삭제됨으로 운영자는 더 이상 해지신청자의 정보를 볼 수 없습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-11">
                     <div className="cont-tit">
                         <div>
                             <h3>제11조 서비스 이용 제한</h3>
@@ -153,7 +152,7 @@ const TermsOfService: React.FC = () => {
                         ⑧ 기타 관련 법령에 위배되는 행위</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-12">
                     <div className="cont-tit">
                         <div>
                             <h3>제12조 게시물의 관리</h3>
@@ -173,7 +172,7 @@ const TermsOfService: React.FC = () => {
                         ④ 사이트 및 운영자는 게시물 등에 대하여 제3자로부터 명예훼손, 지적재산권 등의 권리 침해를 이유로 게시중단 요청을 받은 경우 이를 임시로 게시 중단(전송중단)할 수 있으며, 게시중단 요청자와 게시물 등록자 간에 소송, 합의 기타 이에 준하는 관련 기관의 결정 등이 이루어져 사이트에 접수된 경우 이에 따릅니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-13">
                     <div className="cont-tit">
                         <div>
                             <h3>제13조 게시물의 보관</h3>
@@ -183,7 +182,7 @@ const TermsOfService: React.FC = () => {
                         <p>사이트 운영자가 불가피한 사정으로 본 사이트를 중단하게 될 경우, 회원에게 사전 공지를 하고 게시물의 이전이 쉽도록 모든 조치를 하기 위해 노력합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-14">
                     <div className="cont-tit">
                         <div>
                             <h3>제14조 게시물에 대한 저작권</h3>
@@ -195,7 +194,7 @@ const TermsOfService: React.FC = () => {
                         ③ 운영자는 회원이 게시하거나 등록하는 사이트 내의 내용물, 게시 내용에 대해 제12조 각호에 해당한다고 판단되는 경우 사전통지 없이 삭제하거나 이동 또는 등록 거부할 수 있습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-15">
                     <div className="cont-tit">
                         <div>
                             <h3>제15조 손해배상</h3>
@@ -206,7 +205,7 @@ const TermsOfService: React.FC = () => {
                         ② 본 사이트로부터 회원이 받은 손해가 천재지변 등 불가항력적이거나 회원의 고의 또는 과실로 인하여 발생한 때에는 손해배상을 하지 않습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-16">
                     <div className="cont-tit">
                         <div>
                             <h3>제16조 면책</h3>
@@ -224,7 +223,7 @@ const TermsOfService: React.FC = () => {
                         ⑨ 운영자는 서버 등 설비의 관리, 점검, 보수, 교체 과정 또는 소프트웨어의 운용 과정에서 고의 또는 고의에 준하는 중대한 과실 없이 발생할 수 있는 시스템의 장애, 제3자의 공격으로 인한 시스템의 장애, 국내외의 저명한 연구기관이나 보안 관련 업체에 의해 대응 방법이 개발되지 아니한 컴퓨터 바이러스 등의 유포나 기타 운영자가 통제할 수 없는 불가항력적 사유로 인한 회원의 손해에 대하여 책임지지 않습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="terms-17">
                     <div className="cont-tit">
                         <div>
                             <h3>부칙</h3>
@@ -235,27 +234,29 @@ const TermsOfService: React.FC = () => {
                     </div>
                 </div>
             </article>
-            <nav className="terms">
-                <ul className="nav-wrap">
-                    <li>제1조 목적</li>
-                    <li>제2조 용어의 정의</li>
-                    <li>제3조 약관 외 준칙</li>
-                    <li>제4조 이용계약 체결</li>
-                    <li>제5조 서비스 이용 신청</li>
-                    <li>제6조 개인정보 처리방침</li>
-                    <li>제7조 운영자의 의무</li>
-                    <li>제8조 회원의 의무</li>
-                    <li>제9조 서비스 이용 시간</li>
-                    <li>제10조 서비스 이용 해지</li>
-                    <li>제11조 서비스 이용 제한</li>
-                    <li>제12조 게시물의 관리</li>
-                    <li>제13조 게시물의 보관</li>
-                    <li>제14조 게시물에 대한 저작권</li>
-                    <li>제15조 손해배상</li>
-                    <li>제16조 면책</li>
-                    <li>부칙</li>
-                </ul>
-            </nav>
+            <FloatingNavigation
+                width='200px'
+                navigationItems={[
+                    { id: 'terms', label: '이용약관' },
+                    { id: 'terms-1', label: '제1조 목적' },
+                    { id: 'terms-2', label: '제2조 용어의 정의' },
+                    { id: 'terms-3', label: '제3조 약관 외 준칙' },
+                    { id: 'terms-4', label: '제4조 이용계약 체결' },
+                    { id: 'terms-5', label: '제5조 서비스 이용 신청' },
+                    { id: 'terms-6', label: '제6조 개인정보 처리방침' },
+                    { id: 'terms-7', label: '제7조 운영자의 의무' },
+                    { id: 'terms-8', label: '제8조 회원의 의무' },
+                    { id: 'terms-9', label: '제9조 서비스 이용 시간' },
+                    { id: 'terms-10', label: '제10조 서비스 이용 해지' },
+                    { id: 'terms-11', label: '제11조 서비스 이용 제한' },
+                    { id: 'terms-12', label: '제12조 게시물의 관리' },
+                    { id: 'terms-13', label: '제13조 게시물의 보관' },
+                    { id: 'terms-14', label: '제14조 게시물에 대한 저작권' },
+                    { id: 'terms-15', label: '제15조 손해배상' },
+                    { id: 'terms-16', label: '제16조 면책' },
+                    { id: 'terms-17', label: '부칙' },
+                ]}
+            />
         </div>
     </>
   );

@@ -1,8 +1,7 @@
 'use client';
 
+import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
 import React from 'react';
-import styles from './PrivacyPolicy.module.css';
-import Footer from '../../../layouts/Footer';
 
 const PrivacyPolicy: React.FC = () => {
   return (
@@ -14,12 +13,12 @@ const PrivacyPolicy: React.FC = () => {
         </div>
         <div className="page-cont">
             <article>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy">
                     <div className="terms-desc">
                         <p>스펙트럼(이하 &quot;회사&quot;라 한다)은 개인정보 보호법 제30조에 따라 정보 주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리지침을 수립, 공개합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-1">
                     <div className="cont-tit">
                         <div>
                             <h3>제1조 개인정보의 처리목적</h3>
@@ -35,7 +34,7 @@ const PrivacyPolicy: React.FC = () => {
                         민원인의 신원 확인, 민원사항 확인, 사실조사를 위한 연락․통지, 처리 결과 통보 등의 목적으로 개인정보를 처리합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-2">
                     <div className="cont-tit">
                         <div>
                             <h3>제2조 개인정보의 처리 및 보유기간</h3>
@@ -50,7 +49,7 @@ const PrivacyPolicy: React.FC = () => {
                         2) 홈페이지 이용에 따른 채권 및 채무관계 잔존 시에는 해당 채권, 채무 관계 정산 시까지</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-3">
                     <div className="cont-tit">
                         <div>
                             <h3>제3조 정보주체 및 법정대리인의 권리와 그 행사 방법</h3>
@@ -68,7 +67,7 @@ const PrivacyPolicy: React.FC = () => {
                         ⑤ 정보주체는 개인정보 보호법 등 관계 법령을 위반하여 회사가 처리하고 있는 정보주체 본인이나 타인의 개인정보 및 사생활을 침해하여서는 아니 됩니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-4">
                     <div className="cont-tit">
                         <div>
                             <h3>제4조 처리하는 개인정보 항목</h3>
@@ -81,7 +80,7 @@ const PrivacyPolicy: React.FC = () => {
                         선택항목 : 성명, 출생 연도, 생일, 전화번호, 성별, 이메일주소</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-5">
                     <div className="cont-tit">
                         <div>
                             <h3>제5조 개인정보의 파기</h3>
@@ -97,7 +96,7 @@ const PrivacyPolicy: React.FC = () => {
                         회사는 전자적 파일 형태로 기록․저장된 개인정보는 기록을 재생할 수 없도록 파기하며, 종이 문서에 기록․저장된 개인정보는 분쇄기로 분쇄하거나 소각하여 파기합니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-6">
                     <div className="cont-tit">
                         <div>
                             <h3>제6조 개인정보의 안전성 확보조치</h3>
@@ -111,7 +110,7 @@ const PrivacyPolicy: React.FC = () => {
                         3. 물리적 조치 : 전산실, 자료보관실 등의 접근통제</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-7">
                     <div className="cont-tit">
                         <div>
                             <h3>제7조 개인정보 자동 수집 장치의 설치∙운영 및 거부에 관한 사항</h3>
@@ -131,7 +130,7 @@ const PrivacyPolicy: React.FC = () => {
                         ④ 회사는 서비스 이용과정에서 사용자가 방문한 각 서비스와 웹 사이트들에 대한 방문 및 이용형태, 인기 검색어, 보안접속 여부 등을 파악하여 이용자에게 최적화된 정보 제공을 위해 수집・이용하고 있습니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-8">
                     <div className="cont-tit">
                         <div>
                             <h3>제8조 개인정보 보호책임자</h3>
@@ -150,7 +149,7 @@ const PrivacyPolicy: React.FC = () => {
                         ② 정보주체께서는 회사의 서비스(또는 사업)을 이용하시면서 발생한 모든 개인정보 보호 관련 문의, 불만 처리, 피해구제 등에 관한 사항을 개인정보 보호책임자 및 담당부서로 문의하실 수 있습니다. 회사는 정보주체의 문의에 대해 지체없이 답변 및 처리해드릴 것입니다.</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-9">
                     <div className="cont-tit">
                         <div>
                             <h3>제9조 권익침해 구제 방법</h3>
@@ -164,7 +163,7 @@ const PrivacyPolicy: React.FC = () => {
                         4. 경찰청 : (국번없이) 182 (ecrm.police.go.kr/minwon/main)</p>
                     </div>
                 </div>
-                <div className="cont-box">
+                <div className="cont-box" id="privacy-10">
                     <div className="cont-tit">
                         <div>
                             <h3>제10조 개인정보 처리방침 시행 및 변경</h3>
@@ -175,21 +174,24 @@ const PrivacyPolicy: React.FC = () => {
                     </div>
                 </div>
             </article>
-            <nav className="terms">
-                <ul className="nav-wrap">
-                    <li>제1조 개인정보의 처리목적</li>
-                    <li>제2조 개인정보의 처리 및 보유기간</li>
-                    <li>제3조 정보주체 및 법정대리인의 권리와 그 행사 방법</li>
-                    <li>제4조 처리하는 개인정보 항목</li>
-                    <li>제5조 개인정보의 파기</li>
-                    <li>제6조 개인정보의 안전성 확보조치</li>
-                    <li>제7조 개인정보 자동 수집 장치의 설치∙운영 및 거부에 관한 사항</li>
-                    <li>제8조 개인정보 보호책임자</li>
-                    <li>제9조 권익침해 구제 방법</li>
-                    <li>제10조 개인정보 처리방침 시행 및 변경</li>
-                </ul>
-            </nav>
+            <FloatingNavigation
+                width="400px"
+                navigationItems={[
+                    { id: 'privacy', label: '개인정보 처리방침' },
+                    { id: 'privacy-1', label: '제1조 개인정보의 처리목적' },
+                    { id: 'privacy-2', label: '제2조 개인정보의 처리 및 보유기간' },
+                    { id: 'privacy-3', label: '제3조 정보주체 및 법정대리인의 권리와 그 행사 방법' },
+                    { id: 'privacy-4', label: '제4조 처리하는 개인정보 항목' },
+                    { id: 'privacy-5', label: '제5조 개인정보의 파기' },
+                    { id: 'privacy-6', label: '제6조 개인정보의 안전성 확보조치' },
+                    { id: 'privacy-7', label: '제7조 개인정보 자동 수집 장치의 설치∙운영 및 거부에 관한 사항' },
+                    { id: 'privacy-8', label: '제8조 개인정보 보호책임자' },
+                    { id: 'privacy-9', label: '제9조 권익침해 구제 방법' },
+                    { id: 'privacy-10', label: '제10조 개인정보 처리방침 시행 및 변경' },
+                ]}
+            />
         </div>
+        
     </>
   );
 };

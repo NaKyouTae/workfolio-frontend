@@ -12,7 +12,7 @@ import { WorkerUpdateRequest, WorkerCheckNickNameResponse } from '@/generated/wo
 import FloatingNavigation from '../../ui/FloatingNavigation';
 
 const ProfileManagement: React.FC = () => {
-  const { user, isLoading, isLoggedIn, refreshUser } = useUser();
+  const { user, isLoggedIn, refreshUser } = useUser();
 
   const [nickName, setNickName] = useState<string>('');
   const [originalNickName, setOriginalNickName] = useState<string>('');
@@ -20,7 +20,6 @@ const ProfileManagement: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [birthDate, setBirthDate] = useState<number | undefined>(undefined);
   const [gender, setGender] = useState<Worker_Gender | undefined>(undefined);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [isCheckingNickName, setIsCheckingNickName] = useState(false);
   const [isNickNameChecked, setIsNickNameChecked] = useState(false);
   const [isNickNameAvailable, setIsNickNameAvailable] = useState<boolean | null>(null);
@@ -138,9 +137,6 @@ const ProfileManagement: React.FC = () => {
     }
 
     try {
-      setIsUpdating(true);
-
-      // 날짜를 timestamp로 변환
       const birthDateTimestamp = birthDate ? new Date(birthDate).getTime() : undefined;
       const genderValue = gender ? normalizeEnumValue(gender, Worker_Gender) : undefined;
 
@@ -170,12 +166,9 @@ const ProfileManagement: React.FC = () => {
       
       // 원래 닉네임 업데이트 (중복 확인 상태 유지)
       setOriginalNickName(nickName);
-
     } catch (error) {
       console.error('프로필 업데이트 오류:', error);
       alert('프로필 업데이트 중 오류가 발생했습니다.');
-    } finally {
-      setIsUpdating(false);
     }
   };
 
