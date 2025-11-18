@@ -18,7 +18,7 @@ interface FloatingNavigationProps {
   /**
    * 저장 버튼 클릭 핸들러
    */
-  onSave?: () => void;
+  onSave?: (e: React.FormEvent) => void;
   
   /**
    * 취소 버튼 클릭 핸들러

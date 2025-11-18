@@ -1,4 +1,4 @@
-import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect, useRef, useMemo} from 'react'
+import React, {useState, useCallback, forwardRef, useImperativeHandle, useEffect, useRef} from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { useRecords } from '@/hooks/useRecords'
@@ -60,13 +60,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
     const checkedRecordGroups = getCheckedRecordGroups()
     
     // props로 받은 recordGroupsData 사용
-    const { allRecordGroups, ownedRecordGroups } = recordGroupsData
-    
-    // 편집 가능한 record groups (owned + 일부 shared)
-    const editableRecordGroups = useMemo(() => {
-        // 현재는 owned만 편집 가능
-        return ownedRecordGroups
-    }, [ownedRecordGroups])
+    const { allRecordGroups } = recordGroupsData
 
 
     // records hook 사용 - recordType에 따라 적절한 파라미터 전달

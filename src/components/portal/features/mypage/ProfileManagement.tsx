@@ -9,6 +9,7 @@ import Dropdown from '../../ui/Dropdown';
 import DatePicker from '../../ui/DatePicker';
 import { DateTime } from 'luxon';
 import { WorkerUpdateRequest, WorkerCheckNickNameResponse } from '@/generated/worker';
+import FloatingNavigation from '../../ui/FloatingNavigation';
 
 const ProfileManagement: React.FC = () => {
   const { user, isLoading, isLoggedIn, refreshUser } = useUser();
@@ -119,26 +120,6 @@ const ProfileManagement: React.FC = () => {
       return '이미 사용 중인 닉네임입니다.';
     }
 
-    if (!phone.trim()) {
-      return '전화번호를 입력해주세요.';
-    } else if (!/^[0-9-]+$/.test(phone)) {
-      return '올바른 전화번호 형식이 아닙니다.';
-    }
-
-    if (!email.trim()) {
-      return '이메일을 입력해주세요.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return '올바른 이메일 형식이 아닙니다.';
-    }
-
-    if (!birthDate) {
-      return '생년월일을 입력해주세요.';
-    }
-
-    if (!gender) {
-      return '성별을 선택해주세요.';
-    }
-
     return true;
   };
 
@@ -224,7 +205,9 @@ const ProfileManagement: React.FC = () => {
                                     onClick={handleCheckNickName}
                                     disabled={!isLoggedIn || isCheckingNickName || !nickName.trim() || nickName === originalNickName}
                                 >중복 확인</button>
-                                <span>닉네임 중복 여부를 확인해 주세요.</span>
+                                {nickName !== originalNickName && !hasCheckedNickName && (
+                                    <span>닉네임 중복 여부를 확인해 주세요.</span>
+                                )}
                                 {hasCheckedNickName && isNickNameChecked && (
                                     <>
                                         {isNickNameAvailable === false && (
@@ -270,15 +253,13 @@ const ProfileManagement: React.FC = () => {
                 </form>
             </div>
         </article>
-        <nav>
-            <ul className="nav-wrap">
-                <li className="active">프로필 관리</li>  
-            </ul>
-            <div className="nav-btn">
-                <button className="dark-gray" type="submit" disabled={!isLoggedIn || isUpdating || isLoading}>저장하기</button>
-                <button className="line gray">취소</button>
-            </div>
-        </nav>
+        <FloatingNavigation
+            navigationItems={[
+                { id: 'profile', label: '프로필 관리' },
+            ]}
+            onSave={(e: React.FormEvent) => handleSubmit(e)}
+            onCancel={() => {}}
+        />
     </>
   );
 };
