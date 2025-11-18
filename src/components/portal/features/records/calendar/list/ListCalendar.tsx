@@ -33,14 +33,12 @@ interface ListCalendarProps {
     records: Record[]
     recordGroups: RecordGroup[]
     allRecordGroups: RecordGroup[]
-    editableRecordGroups: RecordGroup[]
 }
 
 const ListCalendar: React.FC<ListCalendarProps> = React.memo(({ 
     initialDate,
     records,
     allRecordGroups,
-    editableRecordGroups,
 }) => {
     const { confirm } = useConfirm();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -370,7 +368,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDate}
-                editableRecordGroups={editableRecordGroups}
+                allRecordGroups={allRecordGroups}
             />
         </>
     )

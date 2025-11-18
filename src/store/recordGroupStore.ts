@@ -142,7 +142,11 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
             } else {
                 newCheckedGroups.add(id);
             }
-            return { checkedGroups: newCheckedGroups };
+            // record 새로고침 트리거
+            return { 
+                checkedGroups: newCheckedGroups,
+                recordRefreshTrigger: state.recordRefreshTrigger + 1
+            };
         }),
     
     initializeGroups: (groupIds: string[]) => 
@@ -158,15 +162,23 @@ export const useRecordGroupStore = create<RecordGroupState>((set, get) => ({
     toggleAllGroups: () => 
         set((state) => {
             const allGroups = [...state.ownedRecordGroups, ...state.sharedRecordGroups];
-            const allGroupIds = allGroups.map(group => group.id);
-            const allChecked = allGroupIds.every(id => state.checkedGroups.has(id));
+            // undefined나 null인 id를 필터링
+            const allGroupIds = allGroups.map(group => group.id).filter((id): id is string => !!id);
+            const allChecked = allGroupIds.length > 0 && allGroupIds.every(id => state.checkedGroups.has(id));
             
+            // record 새로고침 트리거
             if (allChecked) {
                 // 모든 그룹이 체크되어 있으면 모두 해제
-                return { checkedGroups: new Set() };
+                return { 
+                    checkedGroups: new Set(),
+                    recordRefreshTrigger: state.recordRefreshTrigger + 1
+                };
             } else {
                 // 일부 또는 모든 그룹이 해제되어 있으면 모두 체크
-                return { checkedGroups: new Set(allGroupIds) };
+                return { 
+                    checkedGroups: new Set(allGroupIds),
+                    recordRefreshTrigger: state.recordRefreshTrigger + 1
+                };
             }
         }),
     

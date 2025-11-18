@@ -13,14 +13,14 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     selectedDate?: string | null;
-    editableRecordGroups: RecordGroup[];
+    allRecordGroups: RecordGroup[];
 }
 
 const RecordCreateModal: React.FC<ModalProps> = ({ 
     isOpen, 
     onClose, 
     selectedDate, 
-    editableRecordGroups,
+    allRecordGroups,
 }) => {
     const [recordGroupId, setRecordGroupId] = useState<string | undefined>(undefined);
     const [title, setTitle] = useState<string | null>(null);
@@ -37,11 +37,11 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     
     // record groups를 dropdown options로 변환
     const dropdownOptions: IDropdown[] = useMemo(() => 
-        editableRecordGroups.map(group => ({
+        allRecordGroups.map(group => ({
             value: group.id || '',
             label: group.title || '',
             color: group.color
-        })), [editableRecordGroups]
+        })), [allRecordGroups]
     );
 
     // isAllDay 변경 시 시간 고정 로직

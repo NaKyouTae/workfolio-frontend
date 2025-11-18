@@ -24,7 +24,7 @@ const SidebarConfig: React.FC<SidebarConfigProps> = ({ onConfigToggle }) => {
     
     const onToggle = () => {
         toggleAllGroups();
-        setIsChecked(!isChecked);
+        // setIsChecked는 useEffect에서 자동으로 업데이트되므로 제거
     }
 
     return (

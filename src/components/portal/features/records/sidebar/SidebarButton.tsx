@@ -3,10 +3,10 @@ import { RecordGroup } from '@/generated/common';
 import RecordCreateModal from '../modal/RecordCreateModal';
 
 interface SidebarButtonProps {
-    editableRecordGroups: RecordGroup[];
+    allRecordGroups: RecordGroup[];
 }
 
-const SidebarButton: React.FC<SidebarButtonProps> = ({ editableRecordGroups }) => {
+const SidebarButton: React.FC<SidebarButtonProps> = ({ allRecordGroups }) => {
     const [isRecordCreateModalOpen, setIsRecordCreateModalOpen] = useState(false);
 
     const closeRecordCreateModal = () => {
@@ -23,7 +23,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({ editableRecordGroups }) =
             <RecordCreateModal 
                 isOpen={isRecordCreateModalOpen} 
                 onClose={closeRecordCreateModal}
-                editableRecordGroups={editableRecordGroups}
+                allRecordGroups={allRecordGroups}
             />
         </div>
     );

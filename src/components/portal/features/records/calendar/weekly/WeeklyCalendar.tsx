@@ -19,7 +19,6 @@ interface WeeklyCalendarProps {
     initialDate: Date
     records: Record[]
     allRecordGroups: RecordGroup[]
-    editableRecordGroups: RecordGroup[]
 }
 
 interface WeeklyCalendarDay {
@@ -44,7 +43,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     initialDate,
     records,
     allRecordGroups,
-    editableRecordGroups,
 }) => {
     const { confirm } = useConfirm();
     
@@ -1040,7 +1038,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDateForCreate}
-                editableRecordGroups={editableRecordGroups}
+                allRecordGroups={allRecordGroups}
             />
         </div>
     )

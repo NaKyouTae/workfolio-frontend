@@ -26,7 +26,10 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
     );
     
     // checkedGroups Set을 배열로 변환 및 메모이제이션
-    const checkedGroupIds = useMemo(() => Array.from(checkedGroups), [checkedGroups]);
+    // recordRefreshTrigger도 의존성에 추가하여 강제 갱신
+    const checkedGroupIds = useMemo(() => {
+        return Array.from(checkedGroups);
+    }, [checkedGroups, recordRefreshTrigger]);
     const checkedGroupIdsString = useMemo(() => checkedGroupIds.join(','), [checkedGroupIds]);
     
     // 마지막 API 호출 파라미터를 추적하여 중복 호출 방지

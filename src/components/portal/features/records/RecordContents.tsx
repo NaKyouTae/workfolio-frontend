@@ -271,7 +271,6 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                             initialDate={date}
                             records={filteredRecords}
                             allRecordGroups={allRecordGroups}
-                            editableRecordGroups={editableRecordGroups}
                         />
                     ) : recordType === 'weekly' ? (
                         <WeeklyCalendar
@@ -279,7 +278,6 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                             initialDate={date}
                             records={filteredRecords}
                             allRecordGroups={allRecordGroups}
-                            editableRecordGroups={editableRecordGroups}
                         />
                     ) : (
                         <ListCalendar
@@ -288,7 +286,6 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                             records={filteredRecords}
                             recordGroups={checkedRecordGroups}
                             allRecordGroups={allRecordGroups}
-                            editableRecordGroups={editableRecordGroups}
                         />
                     )}
                 </div>

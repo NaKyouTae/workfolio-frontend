@@ -21,7 +21,6 @@ interface MonthlyCalendarProps {
     initialDate: Date
     records: Record[]
     allRecordGroups: RecordGroup[]
-    editableRecordGroups: RecordGroup[]
 }
 
 /**
@@ -31,7 +30,6 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
     initialDate, 
     records,
     allRecordGroups, 
-    editableRecordGroups,
 }: MonthlyCalendarProps) {
     const { confirm } = useConfirm();
     const [date, setDate] = useState<DateModel>(() => {
@@ -615,7 +613,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                 isOpen={isCreateModalOpen}
                 onClose={handleCloseCreateModal}
                 selectedDate={selectedDateForCreate}
-                editableRecordGroups={editableRecordGroups}
+                allRecordGroups={allRecordGroups}
             />
         </>
     )

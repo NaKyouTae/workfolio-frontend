@@ -32,12 +32,12 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
     );
     
     // refreshRecordGroups는 props에서 가져옴
-    const { refreshRecordGroups } = recordGroupsData;
+    const { refreshRecordGroups, allRecordGroups } = recordGroupsData;
 
     return (
         <aside>
             <SidebarButton 
-                editableRecordGroups={ownedRecordGroups}
+                allRecordGroups={allRecordGroups}
             />
             <div className="aside-cont">
                 <SidebarConfig onConfigToggle={onConfigToggle} />
