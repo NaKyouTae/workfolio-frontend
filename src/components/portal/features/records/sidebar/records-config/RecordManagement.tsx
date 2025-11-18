@@ -36,10 +36,10 @@ const RecordManagement = () => {
                     <ul className="input-list">
                         <li>
                             <input 
+                                id="weekly"
                                 type="radio" 
                                 name="recordGroupDefaultScreen"
                                 value="weekly"
-                                id="weekly"
                                 checked={recordGroupDefaultScreen === 'weekly'}
                                 onChange={(e) => handleScreenChange(e.target.value as CalendarViewType)}
                             />
@@ -47,10 +47,10 @@ const RecordManagement = () => {
                         </li>
                         <li>
                             <input 
+                                id="monthly"
                                 type="radio" 
                                 name="recordGroupDefaultScreen"
                                 value="monthly"
-                                id="monthly"
                                 checked={recordGroupDefaultScreen === 'monthly'}
                                 onChange={(e) => handleScreenChange(e.target.value as CalendarViewType)}
                             />

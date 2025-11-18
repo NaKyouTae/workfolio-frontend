@@ -41,11 +41,33 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
     const urlView = searchParams.get('view') as CalendarViewType | null
     const urlDateString = searchParams.get('date')
     const urlDate = urlDateString ? dayjs(urlDateString).toDate() : dayjs().toDate()
-    
     // urlView가 있으면 사용, 없으면 systemConfig 사용, 그것도 없으면 'monthly'
     const initialRecordType: CalendarViewType = urlView || parseCalendarViewType(systemConfig?.value, 'monthly')
-
     const [recordType, setRecordType] = useState<CalendarViewType>(initialRecordType)
+    
+    // systemConfig가 로드되면 recordType 동기화 및 초기 URL 설정 (URL에 view가 없을 때만)
+    useEffect(() => {
+        // URL에 view가 없고 systemConfig가 로드되었을 때만 업데이트
+        if (!urlView && systemConfig?.value) {
+            const configRecordType = parseCalendarViewType(systemConfig.value, 'monthly');
+            console.log('Syncing recordType with systemConfig:', configRecordType, 'current:', recordType);
+            
+            // recordType 업데이트
+            if (configRecordType !== recordType) {
+                setRecordType(configRecordType);
+            }
+            
+            // 초기 URL이 아직 설정되지 않았으면 지금 설정
+            if (!isInitialURLSet.current) {
+                updateURL(configRecordType, date);
+                isInitialURLSet.current = true;
+            } else {
+                // 이미 초기 URL이 설정되었지만 systemConfig 값과 다르면 업데이트
+                updateURL(configRecordType, date);
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [systemConfig?.value, urlView]) // systemConfig.value와 urlView를 의존성으로 사용
     const [date, setDate] = useState<Date>(urlDate)
     const [searchResults, setSearchResults] = useState<ListRecordResponse | null>(null)
     const [searchKeyword, setSearchKeyword] = useState<string>('')
@@ -225,12 +247,28 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         
         // URL에 view나 date가 없으면 초기값으로 설정
         if (!urlView || !urlDate) {
-            updateURL(recordType, date)
+            // URL에 view가 없으면 systemConfig가 로드될 때까지 기다렸다가 설정
+            // systemConfig가 아직 로드되지 않았으면 나중에 설정하도록 스킵
+            if (!urlView && !systemConfig?.value) {
+                // systemConfig가 로드될 때까지 기다림 (다른 useEffect에서 처리)
+                return
+            }
+            
+            // URL에 view가 없으면 systemConfig를 우선 사용, 그것도 없으면 현재 recordType 사용
+            let viewToUse: CalendarViewType = recordType
+            if (!urlView) {
+                if (systemConfig?.value) {
+                    viewToUse = parseCalendarViewType(systemConfig.value, 'monthly')
+                }
+            } else {
+                viewToUse = urlView as CalendarViewType
+            }
+            updateURL(viewToUse, date)
             isInitialURLSet.current = true
         } else {
             isInitialURLSet.current = true
         }
-    }, [searchParams, recordType, date, updateURL])
+    }, [searchParams, recordType, date, updateURL, systemConfig?.value])
 
     // 검색 필터링된 레코드
     const filteredRecords = Array.isArray(records) ? records : []
