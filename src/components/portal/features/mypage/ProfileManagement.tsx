@@ -258,7 +258,6 @@ const ProfileManagement: React.FC = () => {
                 { id: 'profile', label: '프로필 관리' },
             ]}
             onSave={(e: React.FormEvent) => handleSubmit(e)}
-            onCancel={() => {}}
         />
     </>
   );
