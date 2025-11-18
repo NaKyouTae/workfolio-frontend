@@ -11,7 +11,7 @@ import FloatingNavigation, { FloatingNavigationItem } from '@/components/portal/
 import RecordGroupColorModal from '../../record-groups/RecordGroupColorModal';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useUserStore } from '@/store/userStore';
-import { handleLeaveRecordGroup } from '../RecordGroupManagement';
+import { useRecordGroups } from '@/hooks/useRecordGroups';
 
 interface RecordGroupDetailManagementProps {
     recordGroupsData: {
@@ -27,8 +27,6 @@ interface RecordGroupDetailManagementProps {
 }
 
 const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = ({ recordGroupsData, initialRecordGroup, onBack }) => {
-    
-
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | undefined>(initialRecordGroup || undefined);
     const [recordGroupDetails, setRecordGroupDetails] = useState<RecordGroupDetailResponse | undefined>(undefined);
 
@@ -47,6 +45,9 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
 
     // props로 받은 recordGroupsData 사용
     const { refreshRecordGroups, fetchRecordGroupDetails } = recordGroupsData;
+    
+    // useRecordGroups 훅 사용
+    const { leaveRecordGroup, deleteRecordGroup } = useRecordGroups();
     
     // useConfirm 훅 사용
     const { confirm } = useConfirm();
@@ -408,6 +409,7 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
         
         const confirmed = await confirm({
             title: '기록장 탈퇴',
+            icon: '/assets/img/ico/ic-warning.svg',
             description: '기록장에서 탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.',
             confirmText: '확인',
             cancelText: '취소',
@@ -417,17 +419,46 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             return;
         }
         
-        const success = await handleLeaveRecordGroup(selectedRecordGroup.id, user.id);
+        const success = await leaveRecordGroup(selectedRecordGroup.id, user.id);
         
         if (success) {
-            await refreshRecordGroups();
             if (onBack) {
                 onBack();
             }
         } else {
             alert('탈퇴에 실패했습니다. 다시 시도해주세요.');
         }
-    }, [selectedRecordGroup?.id, user?.id, confirm, refreshRecordGroups, onBack]);
+    }, [selectedRecordGroup?.id, user?.id, confirm, leaveRecordGroup, onBack]);
+
+    // 기록장 삭제 핸들러
+    const handleDelete = useCallback(async () => {
+        if (!selectedRecordGroup?.id) {
+            alert('기록장 정보를 찾을 수 없습니다.');
+            return;
+        }
+        
+        const confirmed = await confirm({
+            title: '기록장 삭제',
+            icon: '/assets/img/ico/ic-delete.svg',
+            description: '기록장을 삭제하면 기록장에 있는 모든 기록이 삭제돼요.',
+            confirmText: '삭제하기',
+            cancelText: '취소',
+        });
+        
+        if (!confirmed) {
+            return;
+        }
+        
+        const success = await deleteRecordGroup(selectedRecordGroup.id);
+        
+        if (success) {
+            if (onBack) {
+                onBack();
+            }
+        } else {
+            alert('삭제에 실패했습니다. 다시 시도해주세요.');
+        }
+    }, [selectedRecordGroup?.id, confirm, deleteRecordGroup, onBack]);
 
     return (
         <div className="page-cont">
@@ -699,7 +730,10 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                                     <p className="info-text">기본 기록장은 삭제할 수 없어요.</p>
                                 ): (
                                     <>
-                                        <button className="delete-btn">삭제하기</button>
+                                        <button 
+                                            className="delete-btn"
+                                            onClick={handleDelete}
+                                        >삭제하기</button>
                                         <p className="info-text">기록장에 있는 모든 기록이 삭제돼요.</p>
                                     </>
                                 )}

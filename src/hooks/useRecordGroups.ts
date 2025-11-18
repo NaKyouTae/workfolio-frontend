@@ -109,6 +109,60 @@ export const useRecordGroups = () => {
         return [...ownedRecordGroups, ...sharedRecordGroups];
     }, [ownedRecordGroups, sharedRecordGroups]);
 
+    // 기록장 탈퇴 API 호출 함수
+    const leaveRecordGroup = useCallback(async (
+        recordGroupId: string,
+        targetWorkerId: string
+    ): Promise<boolean> => {
+        try {
+            const response = await fetch(
+                `/api/worker-record-groups?recordGroupId=${recordGroupId}&targetWorkerId=${targetWorkerId}`,
+                {
+                    method: HttpMethod.DELETE,
+                }
+            );
+
+            if (response.ok) {
+                console.log('기록장 탈퇴 성공');
+                // 탈퇴 성공 시 레코드 그룹 목록 새로고침
+                await fetchRecordGroups();
+                return true;
+            } else {
+                const errorData = await response.json();
+                console.error('기록장 탈퇴 실패:', errorData);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error leaving record group:', error);
+            return false;
+        }
+    }, [fetchRecordGroups]);
+
+    // 기록장 삭제 API 호출 함수
+    const deleteRecordGroup = useCallback(async (
+        recordGroupId: string
+    ): Promise<boolean> => {
+        try {
+            const response = await fetch(`/api/record-groups/${recordGroupId}`, {
+                method: HttpMethod.DELETE,
+            });
+
+            if (response.ok) {
+                console.log('기록장 삭제 성공');
+                // 삭제 성공 시 레코드 그룹 목록 새로고침
+                await fetchRecordGroups();
+                return true;
+            } else {
+                const errorData = await response.json();
+                console.error('기록장 삭제 실패:', errorData);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error deleting record group:', error);
+            return false;
+        }
+    }, [fetchRecordGroups]);
+
     // 🔥 반환 객체를 메모이제이션하여 불필요한 리렌더링 방지
     // 함수들은 useCallback으로 안정적이므로 의존성에 포함
     return useMemo(() => ({
@@ -117,6 +171,8 @@ export const useRecordGroups = () => {
         allRecordGroups,
         isLoading,
         refreshRecordGroups: fetchRecordGroups,
-        fetchRecordGroupDetails
-    }), [ownedRecordGroups, sharedRecordGroups, allRecordGroups, isLoading, fetchRecordGroups, fetchRecordGroupDetails]);
+        fetchRecordGroupDetails,
+        leaveRecordGroup,
+        deleteRecordGroup
+    }), [ownedRecordGroups, sharedRecordGroups, allRecordGroups, isLoading, fetchRecordGroups, fetchRecordGroupDetails, leaveRecordGroup, deleteRecordGroup]);
 };
