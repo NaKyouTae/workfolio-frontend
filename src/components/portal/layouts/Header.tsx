@@ -12,13 +12,15 @@ const Header = () => {
     
     // 로그인 상태 확인 및 유저 정보 가져오기
     useEffect(() => {
-        const accessToken = document.cookie
+        // refresh token이 있으면 유저 정보 가져오기 시도
+        // access token이 만료되어 삭제되었을 수 있으므로 refresh token만 확인
+        const refreshToken = document.cookie
             .split('; ')
-            .find(row => row.startsWith('accessToken='))
+            .find(row => row.startsWith('refreshToken='))
             ?.split('=')[1];
         
-        // 로그인한 경우에만 유저 정보 가져오기
-        if (accessToken) {
+        // refresh token이 있으면 유저 정보 가져오기 시도
+        if (refreshToken) {
             fetchUser();
         }
     }, [fetchUser]);
@@ -76,11 +78,11 @@ const Header = () => {
                             기록 관리
                         </Link>
                     </li>
-                    <li className={pathname.includes('/career') ? 'active' : ''}>
+                    <li className={pathname.includes('/careers') ? 'active' : ''}>
                         <Link
-                            href="/career"
+                            href="/careers"
                             prefetch={false}
-                            onClick={(e) => handleMenuClick(e, '/career')}
+                            onClick={(e) => handleMenuClick(e, '/careers')}
                         >
                             이력 관리
                         </Link>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import TurnOversSidebar from './TurnOversSidebar';
 import TurnOversContent from './TurnOversContent';
 import { TurnOverDetail } from '@/generated/common';
@@ -7,17 +8,38 @@ import { TurnOverUpsertRequest } from '@/generated/turn_over';
 
 type ViewMode = 'home' | 'view' | 'edit';
 
-const TurnOversPage: React.FC = () => {
+interface TurnOversPageProps {
+  initialTurnOverId?: string;
+  initialEditMode?: boolean;
+}
+
+const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initialEditMode = false }) => {
+  const router = useRouter();
   const [selectedTurnOver, setSelectedTurnOver] = useState<TurnOverDetail | null>(null);
   const [isNewTurnOver, setIsNewTurnOver] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('home');
   const [previousMode, setPreviousMode] = useState<ViewMode>('home'); // edit로 들어가기 전 모드 저장
   const { turnOvers, refreshTurnOvers, upsertTurnOver, getTurnOverDetail, duplicateTurnOver, deleteTurnOver } = useTurnOver();
   
+  // URL 파라미터로 초기 상태 설정
+  useEffect(() => {
+    if (initialTurnOverId) {
+      getTurnOverDetail(initialTurnOverId).then((turnOverDetail) => {
+        if (turnOverDetail) {
+          setSelectedTurnOver(turnOverDetail);
+          setIsNewTurnOver(false);
+          setViewMode(initialEditMode ? 'edit' : 'view');
+          setPreviousMode(initialEditMode ? 'view' : 'home');
+        }
+      });
+    }
+  }, [initialTurnOverId, initialEditMode, getTurnOverDetail]);
+  
   const onGoHome = () => {
     setSelectedTurnOver(null);
     setIsNewTurnOver(false);
     setViewMode('home');
+    router.push('/turn-overs');
   };
   
   const onTurnOverSelect = async (id: string) => {
@@ -26,6 +48,7 @@ const TurnOversPage: React.FC = () => {
       setSelectedTurnOver(turnOverDetail);
       setIsNewTurnOver(false);
       setViewMode('view');
+      router.push(`/turn-overs/${id}`);
     }
   };
 
@@ -37,6 +60,7 @@ const TurnOversPage: React.FC = () => {
       setIsNewTurnOver(false);
       setPreviousMode(fromMode);
       setViewMode('edit');
+      router.push(`/turn-overs/${id}/edit`);
     }
   };
 
@@ -50,6 +74,8 @@ const TurnOversPage: React.FC = () => {
       const updatedTurnOverDetail = await getTurnOverDetail(savedId);
       if (updatedTurnOverDetail) {
         setSelectedTurnOver(updatedTurnOverDetail);
+        // 저장 후 view 모드로 이동
+        router.push(`/turn-overs/${savedId}`);
       }
     }
   };
@@ -89,20 +115,27 @@ const TurnOversPage: React.FC = () => {
     setSelectedTurnOver(newTurnOver);
     setIsNewTurnOver(true);
     setViewMode('edit');
+    // 새로 생성하는 경우 URL은 변경하지 않음 (아직 id가 없음)
   };
 
   // edit 모드로 진입 (이전 모드 저장)
   const onEnterEdit = (fromMode: ViewMode) => {
-    setPreviousMode(fromMode);
-    setViewMode('edit');
+    if (selectedTurnOver?.id) {
+      setPreviousMode(fromMode);
+      setViewMode('edit');
+      router.push(`/turn-overs/${selectedTurnOver.id}/edit`);
+    }
   };
 
   // 취소 시 이전 모드로 복귀
   const onCancelEdit = () => {
-    setViewMode(previousMode);
     if (previousMode === 'home') {
       setSelectedTurnOver(null);
       setIsNewTurnOver(false);
+      router.push('/turn-overs');
+    } else if (selectedTurnOver?.id) {
+      setViewMode('view');
+      router.push(`/turn-overs/${selectedTurnOver.id}`);
     }
   };
 
@@ -113,6 +146,10 @@ const TurnOversPage: React.FC = () => {
       setViewMode('home');
       setSelectedTurnOver(null);
       setIsNewTurnOver(false);
+      router.push('/turn-overs');
+    } else if (mode === 'view' && selectedTurnOver?.id) {
+      setViewMode(mode);
+      router.push(`/turn-overs/${selectedTurnOver.id}`);
     } else {
       setViewMode(mode);
     }

@@ -24,5 +24,12 @@ export const useUserStore = create<UserState>((set) => ({
     setUser: (user: Worker | null) => set({ user }),
     setLoading: (loading: boolean) => set({ isLoading: loading }),
     setError: (error: string | null) => set({ error }),
-    clearUser: () => set({ user: null, error: null }),
+    clearUser: () => {
+        // clearUser 호출 위치 추적을 위한 로그
+        const stack = new Error().stack;
+        const caller = stack?.split('\n')[2]?.trim() || 'unknown';
+        console.log('🔴 [clearUser] 호출됨:', caller);
+        console.trace('clearUser 호출 스택:');
+        set({ user: null, error: null });
+    },
 }));

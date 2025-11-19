@@ -20,7 +20,7 @@ import { normalizeEnumValue } from '@/utils/commonUtils';
 
 interface CareerContentCreateProps {
   onCancel?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (resumeId?: string) => void;
 }
 
 const CareerContentCreate: React.FC<CareerContentCreateProps> = ({ 
@@ -161,7 +161,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
     const result = await updateResume(updateRequest);
     
     if (result) {
-      onSuccess?.();
+      onSuccess?.(result.id);
     }
   }, [activities, attachments, birthDate, careers, description, educations, email, gender, isDefault, position, languages, name, onSuccess, phone, projects, title, updateResume]);
 

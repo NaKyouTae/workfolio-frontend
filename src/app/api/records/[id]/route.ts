@@ -10,8 +10,9 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     try {
         const id = params.id;
         const accessToken = await getCookie('accessToken');
+        const refreshToken = await getCookie('refreshToken');
         
-        if (accessToken == null) {
+        if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         

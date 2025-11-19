@@ -11,9 +11,9 @@ export async function GET(req: Request, { params }: { params: { type: SystemConf
     try {
         const type = params.type;
         const accessToken = await getCookie('accessToken');
+        const refreshToken = await getCookie('refreshToken');
         
-        // accessToken이 없으면 401 응답 반환
-        if (accessToken == null) {
+        if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         

@@ -11,9 +11,9 @@ export async function POST(req: Request) {
     try {
         const requestData: RecordCreateRequest = await req.json();
         const accessToken = await getCookie('accessToken');
+        const refreshToken = await getCookie('refreshToken');
         
-        // accessToken이 없으면 401 응답 반환
-        if (accessToken == null) {
+        if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         
@@ -33,9 +33,9 @@ export async function PUT(req: Request) {
     try {
         const requestData: RecordUpdateRequest = await req.json();
         const accessToken = await getCookie('accessToken');
+        const refreshToken = await getCookie('refreshToken');
         
-        // accessToken이 없으면 401 응답 반환
-        if (accessToken == null) {
+        if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         

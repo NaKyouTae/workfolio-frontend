@@ -12,8 +12,9 @@ export async function DELETE(request: NextRequest) {
         const recordGroupId = searchParams.get('recordGroupId');
         const targetWorkerId = searchParams.get('targetWorkerId');
         const accessToken = await getCookie('accessToken');
+        const refreshToken = await getCookie('refreshToken');
         
-        if (accessToken == null) {
+        if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         

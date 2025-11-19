@@ -4,7 +4,7 @@ import React from 'react';
 import Header from "@/components/portal/layouts/Header";
 import CareerPage from '@/components/portal/features/careers/CareerPage';
 
-const Career = () => {
+const Careers = () => {
   return (
     <>
       <Header />
@@ -13,4 +13,5 @@ const Career = () => {
   );
 };
 
-export default Career;
+export default Careers;
+

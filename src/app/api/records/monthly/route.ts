@@ -16,9 +16,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export async function GET(request: Request) {
     try {
         const accessToken = await getCookie('accessToken');
+        const refreshToken = await getCookie('refreshToken');
         
-        // accessToken이 없으면 401 응답 반환
-        if (accessToken == null) {
+        if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
         

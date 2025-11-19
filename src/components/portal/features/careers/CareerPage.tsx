@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import CareerSidebar from './CareerSidebar';
 import CareerIntegration from './CareerIntegration';
 import { useUser } from '@/hooks/useUser';
@@ -10,7 +11,14 @@ import CareerContentCreate from './CareerContentCreate';
 
 import Footer from "@/components/portal/layouts/Footer"
 
-const CareerPage: React.FC = () => {
+interface CareerPageProps {
+  initialResumeId?: string;
+  initialEditMode?: boolean;
+}
+
+const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMode = false }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   // 사용자 인증 상태
   const { user, fetchUser } = useUser();
 
@@ -59,6 +67,18 @@ const CareerPage: React.FC = () => {
     fetchResumeDetails();
   }, [fetchResumeDetails]);
 
+  // URL 파라미터로 초기 상태 설정
+  useEffect(() => {
+    if (initialResumeId && resumeDetails.length > 0) {
+      const resume = resumeDetails.find(r => r.id === initialResumeId);
+      if (resume) {
+        setSelectedResumeDetail(resume);
+        setIsEditMode(initialEditMode);
+        setEditFrom(initialEditMode ? 'view' : 'view');
+      }
+    }
+  }, [initialResumeId, initialEditMode, resumeDetails]);
+
   // resumeDetails가 업데이트되면 selectedResumeDetail도 업데이트
   useEffect(() => {
     if (selectedResumeDetail && resumeDetails.length > 0) {
@@ -78,6 +98,7 @@ const CareerPage: React.FC = () => {
   const viewResumeDetail = (resumeDetail: ResumeDetail) => {
     setSelectedResumeDetail(resumeDetail);
     setIsEditMode(false);
+    router.push(`/careers/${resumeDetail.id}`);
   };
 
   // 이력서 편집 (Edit 모드) - Home에서 진입
@@ -85,12 +106,16 @@ const CareerPage: React.FC = () => {
     setSelectedResumeDetail(resumeDetail);
     setIsEditMode(true);
     setEditFrom('home'); // Home에서 왔음을 기록
+    router.push(`/careers/${resumeDetail.id}/edit`);
   };
 
   // 편집 모드 토글 - View에서 진입
   const toggleEditMode = () => {
-    setIsEditMode(prev => !prev);
-    setEditFrom('view'); // View에서 왔음을 기록
+    if (selectedResumeDetail) {
+      setIsEditMode(true);
+      setEditFrom('view'); // View에서 왔음을 기록
+      router.push(`/careers/${selectedResumeDetail.id}/edit`);
+    }
   };
 
   // 편집 완료 (저장 후 View 모드로 전환)
@@ -98,6 +123,9 @@ const CareerPage: React.FC = () => {
     setIsEditMode(false);
     forceUpdateAfterSave.current = true; // 강제 업데이트 플래그 설정
     await refreshResumeDetails();
+    if (selectedResumeDetail) {
+      router.push(`/careers/${selectedResumeDetail.id}`);
+    }
   };
 
   // 편집 취소 (이전 화면으로 복귀)
@@ -109,6 +137,9 @@ const CareerPage: React.FC = () => {
       // View에서 왔으면 View 모드로 전환
       setIsEditMode(false);
       setIsCreateMode(false);
+      if (selectedResumeDetail) {
+        router.push(`/careers/${selectedResumeDetail.id}`);
+      }
     }
   };
 
@@ -122,6 +153,7 @@ const CareerPage: React.FC = () => {
   const goHome = () => {
     setSelectedResumeDetail(null);
     setIsEditMode(false);
+    router.push('/careers');
   };
 
   // 이력서 생성 모드
@@ -130,10 +162,14 @@ const CareerPage: React.FC = () => {
   };
 
   // 이력서 생성 완료 후 모드 종료
-  const handleResumeCreatedSuccess = async () => {
+  const handleResumeCreatedSuccess = async (resumeId?: string) => {
     setIsEditMode(false);
     setIsCreateMode(false);
     await refreshResumeDetails();
+    // 생성된 이력서가 있으면 해당 페이지로 이동
+    if (resumeId) {
+      router.push(`/careers/${resumeId}`);
+    }
   };
 
   // 메인 뷰
