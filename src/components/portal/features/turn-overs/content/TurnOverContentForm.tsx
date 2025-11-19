@@ -112,27 +112,32 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                     activeTab={activeTab}
                     onTabChange={changeActiveTab}
                 />
-                {activeTab === 'goal' && (
+                {/* 모든 Edit 컴포넌트를 렌더링하되, 활성 탭만 표시 */}
+                {/* key를 사용하여 turnOverRequest.id가 변경되면 컴포넌트를 리마운트 */}
+                <div style={{ display: activeTab === 'goal' ? 'block' : 'none' }}>
                     <TurnOverGoalEdit 
+                        key={turnOverRequest?.id || 'new-goal'}
                         ref={goalEditRef}
                         turnOverRequest={turnOverRequest || null} 
                         onSave={handleSave}
                     />
-                )}
-                {activeTab === 'challenge' && (
+                </div>
+                <div style={{ display: activeTab === 'challenge' ? 'block' : 'none' }}>
                     <TurnOverChallengeEdit 
+                        key={turnOverRequest?.id || 'new-challenge'}
                         ref={challengeEditRef}
                         turnOverRequest={turnOverRequest || null} 
                         onSave={handleSave}
                     />
-                )}
-                {activeTab === 'retrospective' && (
+                </div>
+                <div style={{ display: activeTab === 'retrospective' ? 'block' : 'none' }}>
                     <TurnOverRetrospectiveEdit
+                        key={turnOverRequest?.id || 'new-retrospective'}
                         ref={retrospectiveEditRef}
                         turnOverRequest={turnOverRequest || null}
                         onSave={handleSave}
                     />
-                )}
+                </div>
             </article>
             
             <FloatingNavigation

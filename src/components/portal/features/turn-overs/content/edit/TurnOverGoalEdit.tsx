@@ -42,9 +42,12 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   const checklistRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLDivElement>(null);
 
-  // turnOverRequest가 변경될 때마다 state 업데이트
+  // turnOverRequest가 초기 로드될 때만 state 업데이트
+  const isInitializedRef = useRef(false);
+  
   useEffect(() => {
-    if (turnOverRequest?.turnOverGoal) {
+    // 초기 로드 시에만 turnOverRequest에서 state 초기화
+    if (turnOverRequest?.turnOverGoal && !isInitializedRef.current) {
       setReason(turnOverRequest.turnOverGoal.reason || '');
       setGoal(turnOverRequest.turnOverGoal.goal || '');
       setSelfIntroductions(turnOverRequest.turnOverGoal.selfIntroductions || []);
@@ -52,6 +55,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
       setCheckList(turnOverRequest.turnOverGoal.checkList || []);
       setMemos(turnOverRequest.turnOverGoal.memos || []);
       setAttachments(turnOverRequest.turnOverGoal.attachments || []);
+      isInitializedRef.current = true;
     }
   }, [turnOverRequest]);
 
@@ -144,7 +148,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   }, [activeSection, scrollToSection]);
 
   const handleSave = () => {
-    if (onSave) {
+    if (onSave && turnOverRequest) {
       onSave({
         ...turnOverRequest,
         turnOverGoal: {

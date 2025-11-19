@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import styles from './DatePicker.module.css';
 import DateUtil from '@/utils/DateUtil';
 
@@ -16,17 +16,19 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange = undefined, la
     const [dateInputValue, setDateInputValue] = useState('');
     const calendarRef = useRef<HTMLDivElement>(null);
     
-    // value가 number(timestamp)면 ISO 문자열로 변환
-    const getFormattedValue = (): string | undefined => {
+    // value가 number(timestamp)면 ISO 문자열로 변환 (메모이제이션)
+    const formattedValue = useMemo((): string | undefined => {
         if (!value) return undefined;
         if (typeof value === 'number') {
             return DateUtil.formatTimestamp(value);
         }
         return value;
-    };
+    }, [value]);
     
-    const formattedValue = getFormattedValue();
-    const dateTime = formattedValue ? DateTime.fromISO(formattedValue) : DateTime.now();
+    // formattedValue로부터 dateTime 계산 (메모이제이션)
+    const dateTime = useMemo(() => {
+        return formattedValue ? DateTime.fromISO(formattedValue) : DateTime.now();
+    }, [formattedValue]);
     
     useEffect(() => {
         if (!formattedValue) {

@@ -44,6 +44,9 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
   const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
   const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
 
+  // turnOverRequest가 초기 로드될 때만 state 업데이트
+  const isInitializedRef = useRef(false);
+
   // 네비게이션 항목 정의 (각 탭에 따라 다른 네비게이션 표시 가능)
   // 섹션으로 스크롤하는 함수
   const scrollToSection = useCallback((sectionId: string) => {
@@ -135,22 +138,25 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     );
   }, [turnOverRequest]);
 
-  // turnOverRetrospective가 변경될 때마다 state 업데이트
+  // turnOverRequest가 초기 로드될 때만 state 업데이트
   useEffect(() => {
-    if (turnOverRequest) {
-      setCompanyName(turnOverRequest.turnOverRetrospective?.name || '');
-      setPosition(turnOverRequest.turnOverRetrospective?.position || '');
-      setReason(turnOverRequest.turnOverRetrospective?.reason || '');
-      setSalary(turnOverRequest.turnOverRetrospective?.salary || 0);
-      setJoinDate(turnOverRequest.turnOverRetrospective?.joinedAt || 0);
-      setDepartment(turnOverRequest.turnOverRetrospective?.department || '');
-      setJobTitle(turnOverRequest.turnOverRetrospective?.jobTitle || '');
-      setRank(turnOverRequest.turnOverRetrospective?.rank || '');
-      setWorkType(turnOverRequest.turnOverRetrospective?.workType || '');
-      setScore(turnOverRequest.turnOverRetrospective?.score || 5);
-      setReviewSummary(turnOverRequest.turnOverRetrospective?.reviewSummary || '');
-      setMemos(turnOverRequest.turnOverRetrospective?.memos || []);
-      setAttachments(turnOverRequest.turnOverRetrospective?.attachments || []);
+    // 초기 로드 시에만 turnOverRequest에서 state 초기화
+    if (turnOverRequest?.turnOverRetrospective && !isInitializedRef.current) {
+      setCompanyName(turnOverRequest.turnOverRetrospective.name || '');
+      setPosition(turnOverRequest.turnOverRetrospective.position || '');
+      setReason(turnOverRequest.turnOverRetrospective.reason || '');
+      setSalary(turnOverRequest.turnOverRetrospective.salary || 0);
+      setJoinDate(turnOverRequest.turnOverRetrospective.joinedAt || 0);
+      setEmploymentType(turnOverRequest.turnOverRetrospective.employmentType || TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN);
+      setDepartment(turnOverRequest.turnOverRetrospective.department || '');
+      setJobTitle(turnOverRequest.turnOverRetrospective.jobTitle || '');
+      setRank(turnOverRequest.turnOverRetrospective.rank || '');
+      setWorkType(turnOverRequest.turnOverRetrospective.workType || '');
+      setScore(turnOverRequest.turnOverRetrospective.score || 5);
+      setReviewSummary(turnOverRequest.turnOverRetrospective.reviewSummary || '');
+      setMemos(turnOverRequest.turnOverRetrospective.memos || []);
+      setAttachments(turnOverRequest.turnOverRetrospective.attachments || []);
+      isInitializedRef.current = true;
     }
   }, [turnOverRequest]);
 
@@ -159,7 +165,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
   };
 
   const handleSave = () => {
-    if (onSave) {
+    if (onSave && turnOverRequest) {
       onSave({
         ...turnOverRequest,
         turnOverRetrospective: {
