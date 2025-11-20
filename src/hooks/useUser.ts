@@ -12,17 +12,25 @@ export const useUser = () => {
             setLoading(true);
             setError(null);
             
-            // 쿠키에서 토큰 확인
-            const hasToken = document.cookie.includes('refreshToken=');
+            // httpOnly 쿠키는 JavaScript로 읽을 수 없으므로 토큰 체크를 하지 않고
+            // 그냥 API를 호출하고 401이면 clientFetch가 자동으로 토큰 재발급 처리
+            const response = await fetch('/api/workers/me', { method: HttpMethod.GET });
             
-            if (!hasToken) {
-                // 토큰이 없으면 사용자 정보를 클리어하고 조용히 종료
-                console.log('🔴 [useUser] No token found, user not logged in - clearUser 호출');
+            // 응답 상태 확인
+            if (!response.ok) {
+                if (response.status === 401) {
+                    // 401 응답이면 토큰 재발급이 시도되었을 수 있음
+                    // clientFetch가 이미 처리했으므로, 재발급 실패 시에만 clearUser 호출
+                    console.log('⚠️ [useUser] 401 Unauthorized - token refresh may have been attempted');
+                    // 토큰 재발급이 실패했을 가능성이 높으므로 clearUser 호출하지 않음
+                    // (재발급 성공 시 tokenRefreshed 이벤트로 다시 fetchUser가 호출됨)
+                    return;
+                }
+                // 다른 에러면 사용자 정보 클리어
+                console.log('🔴 [useUser] API error:', response.status);
                 clearUser();
                 return;
             }
-            
-            const response = await fetch('/api/workers/me', { method: HttpMethod.GET });
             
             const data: WorkerGetResponse = await response.json();
 

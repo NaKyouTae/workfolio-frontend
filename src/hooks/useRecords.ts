@@ -1,13 +1,16 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Record } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
-import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleRecordData';
-import { ListRecordResponse } from '@/generated/record';
 import HttpMethod from '@/enums/HttpMethod';
 import { CalendarViewType } from '@/models/CalendarTypes';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import { useShallow } from 'zustand/react/shallow';
+// ============================================
+// TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
+// ============================================
+import { createSampleRecordGroups, createSampleRecords } from '@/utils/sampleRecordData';
+// ============================================
 
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Seoul');
@@ -69,11 +72,38 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
         }
     }, [recordType, initialDate, month, year, checkedGroupIdsString]);
 
+    // ============================================
+    // TODO: 샘플 데이터 관련 함수 - 추후 제거 예정
+    // ============================================
+    const getSampleRecords = useCallback((): Record[] => {
+        const sampleRecordGroups = createSampleRecordGroups();
+        const sampleRecords = createSampleRecords(sampleRecordGroups);
+        
+        // 체크된 그룹에 해당하는 샘플 레코드만 필터링
+        if (checkedGroupIds.length === 0) {
+            return sampleRecords as unknown as Record[];
+        }
+        
+        return sampleRecords.filter((record: unknown) => 
+            checkedGroupIds.includes((record as { recordGroup?: { id?: string } }).recordGroup?.id || '')
+        ) as unknown as Record[];
+    }, [checkedGroupIds]);
+    // ============================================
+
     // 통합된 데이터 로드 useEffect
     useEffect(() => {
-        // 체크된 그룹이 없으면 조기 리턴 (API 호출 불필요)
+        setIsLoading(true);
+        
+        // ============================================
+        // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
+        // 항상 샘플 데이터를 먼저 로드
+        // ============================================
+        const sampleRecords = getSampleRecords();
+        // ============================================
+        
+        // 체크된 그룹이 없으면 샘플 데이터만 표시
         if (checkedGroupIds.length === 0) {
-            setRecords([]);
+            setRecords(sampleRecords);
             setIsLoading(false);
             return;
         }
@@ -82,65 +112,69 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
         const currentParamsKey = JSON.stringify(apiParams) + `-refresh:${forceRefreshTrigger}`;
         
         if (lastFetchParamsRef.current === currentParamsKey && forceRefreshTrigger === 0) {
+            // 중복 호출 방지이지만 샘플 데이터는 항상 표시
+            setIsLoading(false);
             return;
         }
         lastFetchParamsRef.current = currentParamsKey;
         
-        setIsLoading(true);
-        
-        const accessToken = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('accessToken='))
-            ?.split('=')[1];
-        
-        if (!accessToken) {
-            // 로그인하지 않은 경우 - 샘플 데이터 로드
-            const sampleRecordGroups = createSampleRecordGroups();
-            const sampleRecords = createSampleRecords(sampleRecordGroups);
-            
-            const filteredRecords = sampleRecords.filter((record: unknown) => 
-                checkedGroupIds.includes((record as { recordGroup?: { id?: string } }).recordGroup?.id || '')
-            ) as unknown as Record[];
-            
-            setRecords(filteredRecords);
-            setIsLoading(false);
-            return;
-        }
-        
-        // API 호출
+        // API 호출 (토큰이 있으면 clientFetch가 자동으로 처리)
         const apiUrl = apiParams.type === 'weekly'
             ? `/api/records/weekly?startDate=${apiParams.startDate}&endDate=${apiParams.endDate}&recordGroupIds=${apiParams.groupIds}`
             : `/api/records/monthly?year=${apiParams.year}&month=${apiParams.month}&recordGroupIds=${apiParams.groupIds}`;
         
+        // 먼저 샘플 데이터를 표시
+        setRecords(sampleRecords);
+        
         fetch(apiUrl, { method: HttpMethod.GET })
             .then(res => {
                 if (!res.ok) {
+                    // 401이면 clientFetch가 이미 토큰 재발급을 시도했을 것
+                    // 재발급 후에도 401이면 clientFetch가 로그인 페이지로 리다이렉트했을 것
                     if (res.status === 401) {
-                        window.location.href = '/login';
-                        return;
+                        // clientFetch가 이미 처리했으므로 샘플 데이터만 유지
+                        return null;
                     }
-                    throw new Error(`HTTP error! status: ${res.status}`);
+                    // 다른 에러도 샘플 데이터만 유지
+                    return null;
                 }
                 return res.json();
             })
             .then(data => {
-                if (data && Array.isArray(data.records)) {
-                    setRecords(data.records);
-                } else if (data && Array.isArray(data)) {
-                    setRecords(data);
+                // API 데이터가 있으면 샘플 데이터와 병합
+                if (data) {
+                    let apiRecords: Record[] = [];
+                    if (data && Array.isArray(data.records)) {
+                        apiRecords = data.records;
+                    } else if (data && Array.isArray(data)) {
+                        apiRecords = data;
+                    }
+                    
+                    // 샘플 데이터와 API 데이터 병합 (중복 제거: id 기준)
+                    const mergedRecords = [...sampleRecords];
+                    const existingIds = new Set(sampleRecords.map(r => r.id));
+                    
+                    apiRecords.forEach((apiRecord: Record) => {
+                        if (!existingIds.has(apiRecord.id)) {
+                            mergedRecords.push(apiRecord);
+                        }
+                    });
+                    
+                    setRecords(mergedRecords);
                 } else {
-                    console.warn("Invalid records data:", data);
-                    setRecords([]);
+                    // API 데이터가 없으면 샘플 데이터만 유지
+                    setRecords(sampleRecords);
                 }
             })
             .catch(error => {
                 console.error('Error fetching records from API:', error);
-                setRecords([]);
+                // 에러 발생 시에도 샘플 데이터는 유지
+                setRecords(sampleRecords);
             })
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [apiParams, checkedGroupIds, forceRefreshTrigger]);
+    }, [apiParams, checkedGroupIds, forceRefreshTrigger, getSampleRecords]);
 
     // recordRefreshTrigger 변경 시 새로고침
     useEffect(() => {
@@ -155,39 +189,27 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             return null;
         }
 
-        // 로그인 상태 확인
-        const accessToken = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('accessToken='))
-            ?.split('=')[1];
+        // ============================================
+        // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
+        // 샘플 데이터 먼저 필터링
+        // ============================================
+        const sampleRecordGroups = createSampleRecordGroups();
+        const sampleRecords = createSampleRecords(sampleRecordGroups) as unknown as Record[];
+        
+        const keywordLower = keyword.toLowerCase().trim();
+        let filteredSampleRecords = sampleRecords.filter((record: Record) => {
+            const titleMatch = record.title?.toLowerCase().includes(keywordLower) || false;
+            const descriptionMatch = record.description?.toLowerCase().includes(keywordLower) || false;
+            return titleMatch || descriptionMatch;
+        });
 
-        // 로그인하지 않은 경우 샘플 데이터 사용
-        if (!accessToken) {
-            const sampleRecordGroups = createSampleRecordGroups();
-            const sampleRecords = createSampleRecords(sampleRecordGroups) as unknown as Record[];
-            
-            // keyword로 필터링 (title, description에서 검색)
-            const keywordLower = keyword.toLowerCase().trim();
-            let filteredRecords = sampleRecords.filter((record: Record) => {
-                const titleMatch = record.title?.toLowerCase().includes(keywordLower) || false;
-                const descriptionMatch = record.description?.toLowerCase().includes(keywordLower) || false;
-                return titleMatch || descriptionMatch;
-            });
-
-            // recordGroupIds로 필터링 (있는 경우)
-            if (recordGroupIds && recordGroupIds.length > 0) {
-                filteredRecords = filteredRecords.filter((record: Record) => 
-                    record.recordGroup?.id && recordGroupIds.includes(record.recordGroup.id)
-                );
-            }
-
-            // ListRecordResponse 형태로 반환
-            const response: ListRecordResponse = {
-                records: filteredRecords
-            };
-            
-            return response;
+        // recordGroupIds로 필터링 (있는 경우)
+        if (recordGroupIds && recordGroupIds.length > 0) {
+            filteredSampleRecords = filteredSampleRecords.filter((record: Record) => 
+                record.recordGroup?.id && recordGroupIds.includes(record.recordGroup.id)
+            );
         }
+        // ============================================
 
         try {
             let url = `/api/records/keywords?keyword=${encodeURIComponent(keyword)}`;
@@ -203,14 +225,34 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // API 실패 시 샘플 데이터만 반환
+                return {
+                    records: filteredSampleRecords
+                };
             }
 
             const data = await response.json();
-            return data;
+            const apiRecords = data.records || [];
+            
+            // 샘플 데이터와 API 데이터 병합 (중복 제거: id 기준)
+            const mergedRecords = [...filteredSampleRecords];
+            const existingIds = new Set(filteredSampleRecords.map(r => r.id));
+            
+            apiRecords.forEach((apiRecord: Record) => {
+                if (!existingIds.has(apiRecord.id)) {
+                    mergedRecords.push(apiRecord);
+                }
+            });
+            
+            return {
+                records: mergedRecords
+            };
         } catch (error) {
             console.error('Error searching records by keyword:', error);
-            return null;
+            // 에러 발생 시 샘플 데이터만 반환
+            return {
+                records: filteredSampleRecords
+            };
         }
     }, []);
 

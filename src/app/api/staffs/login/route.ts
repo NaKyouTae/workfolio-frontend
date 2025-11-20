@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      domain: 'localhost',
       maxAge: 60 * 60 * 24, // 1일
       path: '/',
     });
@@ -47,6 +48,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      domain: 'localhost',
       maxAge: 60 * 60 * 24 * 7, // 7일
       path: '/',
     });

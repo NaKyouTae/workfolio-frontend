@@ -42,6 +42,7 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
                         secure: process.env.NODE_ENV === 'production',
                         sameSite: 'lax',
                         path: '/',
+                        domain: 'localhost',
                         maxAge: 60 * 60 * 24 * 7, // 7일
                     });
                 }
@@ -52,6 +53,7 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
                         secure: process.env.NODE_ENV === 'production',
                         sameSite: 'lax',
                         path: '/',
+                        domain: 'localhost',
                         maxAge: 60 * 60 * 24 * 30, // 30일
                     });
                 }
