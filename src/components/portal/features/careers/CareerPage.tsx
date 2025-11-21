@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import CareerSidebar from './CareerSidebar';
 import CareerIntegration from './CareerIntegration';
 import { useUser } from '@/hooks/useUser';
@@ -18,7 +18,6 @@ interface CareerPageProps {
 
 const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMode = false }) => {
   const router = useRouter();
-  const pathname = usePathname();
   // 사용자 인증 상태
   const { user, fetchUser } = useUser();
 
@@ -54,7 +53,6 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
   // 컴포넌트 마운트 시 사용자 정보 가져오기
   useEffect(() => {
     if (!user && !userFetchAttempted.current) {
-      console.log('Fetching user information...');
       userFetchAttempted.current = true;
       fetchUser().catch(error => {
         console.error('Failed to fetch user:', error);

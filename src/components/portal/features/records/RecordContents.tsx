@@ -50,7 +50,6 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         // URL에 view가 없고 systemConfig가 로드되었을 때만 업데이트
         if (!urlView && systemConfig?.value) {
             const configRecordType = parseCalendarViewType(systemConfig.value, 'monthly');
-            console.log('Syncing recordType with systemConfig:', configRecordType, 'current:', recordType);
             
             // recordType 업데이트
             if (configRecordType !== recordType) {
@@ -190,7 +189,6 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
             
             const result = await searchRecordsByKeyword(keyword, recordGroupIds.length > 0 ? recordGroupIds : undefined)
 
-            console.log('result', result);
             if (result) {
                 setSearchResults(result)
                 setSearchKeyword(keyword.trim())

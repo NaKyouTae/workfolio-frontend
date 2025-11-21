@@ -36,7 +36,6 @@ export function useTurnOver() {
                 setTurnOvers(fetchedTurnOvers)
                 return fetchedTurnOvers
             } else {
-                console.error('Failed to fetch turn overs')
                 // API 실패 시에도 샘플 데이터 사용
                 const sampleTurnOvers = createAllSampleTurnOvers()
                 setTurnOvers(sampleTurnOvers)
@@ -109,7 +108,6 @@ export function useTurnOver() {
                 ?.split('=')[1];
             
             if (!accessToken) {
-                console.error('No access token found')
                 return null
             }
 
@@ -305,7 +303,6 @@ export function useTurnOver() {
                 ?.split('=')[1];
             
             if (!accessToken) {
-                console.error('No access token found')
                 return false
             }
 
@@ -339,7 +336,6 @@ export function useTurnOver() {
                 ?.split('=')[1];
             
             if (!accessToken) {
-                console.error('No access token found')
                 return false
             }
 

@@ -460,17 +460,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
             setTimeout(applyScroll, 500)
         }
     }, [currentTime]) // currentTime 의존성 추가
-
-    // 렌더링 분석을 위한 추가 로그 (변수 선언 후로 이동)
-    // useEffect(() => {
-    //     console.log(`🔍 WeeklyCalendar 상세 분석:`)
-    //     console.log(`  - 렌더링 횟수: ${renderCountRef.current}`)
-    //     console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
-    //     console.log(`  - Records 개수: ${records.length}`)
-    //     console.log(`  - WeekDays 개수: ${weekDays.length}`)
-    //     console.log(`  - TimeSlots 개수: ${timeSlots?.length || 0}`)
-    //     console.log(`  - AllEvents 개수: ${allEvents?.length || 0}`)
-    // }, [records, weekDays, timeSlots, allEvents])
     
     // 시간 슬롯 생성 (00:00부터 23:00까지) - useMemo로 최적화
     const timeSlots = useMemo(() => {
@@ -563,21 +552,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
             isVisible: true
         }
     }, [currentTime])
-
-    // // 렌더링 분석을 위한 추가 로그 (변수 선언 후)
-    // useEffect(() => {
-    //     // 개발 환경에서만 로그 출력
-    //     if (process.env.NODE_ENV === 'development') {
-    //         console.log(`🔍 WeeklyCalendar 상세 분석:`)
-    //         console.log(`  - 렌더링 횟수: ${renderCountRef.current}`)
-    //         console.log(`  - 네비게이션 횟수: ${navigationCountRef.current}`)
-    //         console.log(`  - Records 개수: ${records.length}`)
-    //         console.log(`  - WeekDays 개수: ${weekDays.length}`)
-    //         console.log(`  - TimeSlots 개수: ${timeSlots?.length || 0}`)
-    //         console.log(`  - AllEvents 개수: ${allEvents?.length || 0}`)
-    //         console.log(`  - TimedEvents 개수: ${timedEvents?.length || 0}`)
-    //     }
-    // }, [records, weekDays, timeSlots, allEvents, timedEvents])
 
     const handleRecordClick = (record: Record, event: React.MouseEvent<HTMLDivElement>) => {
         // 이전 모달 상태 초기화

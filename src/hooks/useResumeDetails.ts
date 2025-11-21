@@ -54,7 +54,6 @@ export const useResumeDetails = () => {
       
       // 로그인 상태 확인
       if (!checkIsLoggedIn()) {
-        console.log('User not logged in, returning sample data');
         const sampleData = createSampleResumeDetails();
         setResumeDetails(sampleData);
         setIsLoading(false);
@@ -70,13 +69,12 @@ export const useResumeDetails = () => {
         setResumeDetails(data.resumes || []);
       } else {
         // API 호출 실패 시에도 샘플 데이터 사용
-        console.log('API call failed, returning sample data');
         const sampleData = createSampleResumeDetails();
         setResumeDetails(sampleData);
       }
     } catch (error) {
       // 에러 발생 시에도 샘플 데이터 사용
-      console.log('Error occurred, returning sample data:', error);
+      console.error('이력서 목록 조회 중 오류 발생:', error);
       const sampleData = createSampleResumeDetails();
       setResumeDetails(sampleData);
     } finally {
@@ -123,7 +121,6 @@ export const useResumeDetails = () => {
   // 이력서 삭제 (confirm 포함, 콜백 처리)
   const deleteResume = useCallback(async (resumeId?: string, onSuccess?: () => void): Promise<void> => {
     if (!resumeId) {
-      console.error('이력서 ID가 없습니다.');
       return;
     }
 
@@ -165,8 +162,6 @@ export const useResumeDetails = () => {
   // PDF 내보내기 (콜백 처리)
   const exportPDF = useCallback(async (resumeId?: string, onSuccess?: () => void): Promise<void> => {
     // TODO: PDF 내보내기 기능 구현
-    console.log('PDF 내보내기:', resumeId);
-    
     try {
       // TODO: 실제 PDF 다운로드 로직 구현
       // const response = await fetch(`/api/resumes/${resumeId}/export-pdf`, {

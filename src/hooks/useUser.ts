@@ -20,14 +20,12 @@ export const useUser = () => {
             if (!response.ok) {
                 if (response.status === 401) {
                     // 401 응답이면 토큰 재발급이 시도되었을 수 있음
-                    // 서버 사이드(apiFetchHandler)에서 이미 처리했으므로, 재발급 실패 시에만 clearUser 호출
-                    console.log('⚠️ [useUser] 401 Unauthorized - token refresh may have been attempted');
+                    // 서버 사이드(apiFetchHandler)에서 이미 처리했으므로, 재발급 실패 시에만 clearUser 
                     // 토큰 재발급이 실패했을 가능성이 높으므로 clearUser 호출
                     clearUser();
                     return;
                 }
                 // 다른 에러면 사용자 정보 클리어
-                console.log('🔴 [useUser] API error:', response.status);
                 clearUser();
                 return;
             }
@@ -38,11 +36,10 @@ export const useUser = () => {
                 setUser(data.worker);
             } else {
                 // 서버에서 유저 정보를 찾을 수 없으면 사용자 정보 클리어
-                console.log('🔴 [useUser] No user data from server - clearUser 호출');
                 clearUser();
             }
         } catch (err) {
-            console.log('Error fetching user info:', err);
+            console.error('Error fetching user info:', err);
         } finally {
             setLoading(false);
         }
@@ -62,7 +59,6 @@ export const useUser = () => {
             }
             
             // 성공 시 유저 정보 클리어 및 로그아웃
-            console.log('🔴 [useUser] deleteAccount 성공 - clearUser 호출');
             clearUser();
             document.cookie = 'accessToken=; max-age=0; path=/';
             document.cookie = 'refreshToken=; max-age=0; path=/';
@@ -82,7 +78,6 @@ export const useUser = () => {
     
     // 로그아웃
     const logout = useCallback(() => {
-        console.log('🔴 [useUser] logout 호출 - clearUser 호출');
         clearUser();
         // 쿠키에서 토큰 제거
         document.cookie = 'accessToken=; max-age=0; path=/';

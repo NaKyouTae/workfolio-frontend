@@ -43,10 +43,8 @@ export default function AdminPlans() {
       const response = await fetch(`/api/plan-subscriptions?planId=${planId}`);
       if (response.ok) {
         const data = await response.json();
-        console.log('Plan subscriptions response:', data);
         // 응답 형식 확인: planSubscriptions (camelCase) 또는 plan_subscriptions (snake_case) 또는 subscriptions
         const subscriptionsData = data.planSubscriptions || data.plan_subscriptions || data.subscriptions || [];
-        console.log('Parsed subscriptions:', subscriptionsData);
         
         // 숫자 필드가 문자열로 온 경우 숫자로 변환
         const normalizedSubscriptions = subscriptionsData.map((sub: PlanSubscription | Record<string, unknown>) => ({
@@ -60,7 +58,6 @@ export default function AdminPlans() {
           updatedAt: typeof sub.updatedAt === 'string' ? parseInt(sub.updatedAt) || 0 : (sub.updatedAt as number) || 0,
         })) as PlanSubscription[];
         
-        console.log('Normalized subscriptions:', normalizedSubscriptions);
         setSubscriptions(normalizedSubscriptions);
       } else {
         const errorData = await response.json().catch(() => ({}));

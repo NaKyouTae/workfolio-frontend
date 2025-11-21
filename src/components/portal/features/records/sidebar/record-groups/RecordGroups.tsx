@@ -41,7 +41,6 @@ const RecordGroups = React.memo(({
             // 기존 그룹 정보 찾기
             const existingGroup = recordGroups.find(group => group.id === id);
             if (!existingGroup) {
-                console.error('Group not found');
                 return;
             }
 
@@ -98,7 +97,6 @@ const RecordGroups = React.memo(({
             // 기존 그룹 정보 찾기
             const existingGroup = recordGroups.find(group => group.id === id);
             if (!existingGroup) {
-                console.error('Group not found');
                 return;
             }
 

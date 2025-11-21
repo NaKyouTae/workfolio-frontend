@@ -100,10 +100,6 @@ const CheckListEdit: React.FC<CheckListEditProps> = ({
 
   const updateCheckListChecked = (index: number, checked: boolean) => {
     const updated = [...checkList];
-    console.log("================")
-    console.log(updated[index]);
-    console.log("================")
-
     updated[index].checked = checked;
     onUpdate(updated);
   };

@@ -29,7 +29,8 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    // TODO: 파일 업로드 기능 추후 오픈 예정
+    // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
@@ -63,7 +64,8 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
             setEndedAt(record.endedAt ? dayjs(parseInt(record.endedAt.toString())).toISOString() : dayjs().add(1, 'hour').toISOString());
             setRecordGroupId(record.recordGroup?.id || '');
             setIsAllDay(false); // 기본값으로 설정
-            setSelectedFile(null);
+            // TODO: 파일 업로드 기능 추후 오픈 예정
+            // setSelectedFile(null);
         }
     }, [isOpen, record]);
 
@@ -117,10 +119,11 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setSelectedFile(file);
-    };
+    // TODO: 파일 업로드 기능 추후 오픈 예정
+    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0] || null;
+    //     setSelectedFile(file);
+    // };
 
     if (!isOpen || !record) return null;
 
@@ -191,7 +194,8 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                                     rows={4}
                                 />
                             </li>
-                            <li>
+                            {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
+                            {/* <li>
                                 <p>첨부파일</p>
                                 <label className="file">
                                     <input
@@ -210,7 +214,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                                         </li>
                                     </ul>
                                 )}
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                     <div className="modal-btn">

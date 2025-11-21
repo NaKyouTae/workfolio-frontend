@@ -59,7 +59,6 @@ export const useSystemConfig = (type: SystemConfig_SystemConfigType): UseSystemC
     // 시스템 설정 업데이트 함수 (API 호출)
     const updateSystemConfig = useCallback(async (value: string): Promise<boolean> => {
         if (!systemConfig) {
-            console.error('System config not loaded yet');
             return false;
         }
 
@@ -87,7 +86,6 @@ export const useSystemConfig = (type: SystemConfig_SystemConfigType): UseSystemC
                     ...systemConfig,
                     value
                 });
-                console.log('System config updated successfully');
                 return true;
             } else {
                 const errorMessage = `Failed to update system config: ${response.status}`;

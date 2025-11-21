@@ -269,7 +269,8 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                                     rows={4}
                                 />
                             </li>
-                            <li>
+                            {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
+                            {/* <li>
                                 <p>첨부파일</p>
                                 <label className="file">
                                     <input
@@ -295,7 +296,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                                         </li>
                                     </ul>
                                 ))}
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                     <div className="modal-btn">

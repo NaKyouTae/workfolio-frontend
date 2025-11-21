@@ -12,12 +12,7 @@ export async function GET() {
         
         // 토큰이 있으면 백엔드에 로그아웃 요청 (실패해도 상관없음)
         if (accessToken || refreshToken) {
-            try {
-                await apiFetchHandler(`${API_BASE_URL}/api/logout`, HttpMethod.GET, undefined, accessToken);
-            } catch (error) {
-                // 백엔드 호출 실패해도 계속 진행 (이미 만료된 토큰일 수 있음)
-                console.log('Backend logout call failed (may be expected):', error);
-            }
+            await apiFetchHandler(`${API_BASE_URL}/api/logout`, HttpMethod.GET, undefined, accessToken);
         }
         
         // 쿠키 삭제 (백엔드 호출 성공 여부와 관계없이)

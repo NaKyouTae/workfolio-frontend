@@ -10,13 +10,11 @@ let refreshPromise: Promise<{ accessToken: string; refreshToken: string } | null
 async function refreshTokenSafely(accessToken: string | undefined, refreshToken: string): Promise<{ accessToken: string; refreshToken: string } | null> {
     // 이미 재발급 중이면 기존 Promise 반환
     if (isRefreshing && refreshPromise) {
-        console.log('⏳ [ApiFetchHandler] Token refresh already in progress, waiting...');
         return refreshPromise;
     }
 
     // 재발급 시작
     isRefreshing = true;
-    console.log('🔄 [ApiFetchHandler] Starting token refresh...');
 
     refreshPromise = (async () => {
         try {
@@ -33,7 +31,6 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
 
             if (reissueResponse.ok) {
                 const reissueData = await reissueResponse.json();
-                console.log('✅ [ApiFetchHandler] Token reissue successful');
                 
                 // 쿠키에 저장
                 const cookieStore = await cookies();
@@ -113,20 +110,17 @@ export async function apiFetchHandler<T>(
         // 401 에러 발생 시 refresh token으로 재발급 시도
         // accessToken이 없어도 refreshToken이 있으면 재발급 시도
         if (status === 401) {
-            console.log('🔄 [ApiFetchHandler] 401 Unauthorized detected, attempting token refresh...');
             const cookieStore = await cookies();
             const refreshToken = cookieStore.get('refreshToken')?.value;
             
             // refresh token이 있으면 재발급 시도
             if (refreshToken) {
-                console.log('✅ [ApiFetchHandler] Refresh token found, calling reissue API...');
                 try {
                     // 중복 방지된 토큰 재발급 (동시 요청 시 하나의 reissue만 실행)
                     const tokenData = await refreshTokenSafely(accessToken, refreshToken);
                     
                     if (tokenData && tokenData.accessToken) {
                         // 새 access token으로 원래 요청 재시도
-                        console.log('🔁 [ApiFetchHandler] Retrying original request with new token...');
                         const newAccessToken = tokenData.accessToken;
                         const retryHeaders: HeadersInit = {
                             'Content-Type': "application/json",

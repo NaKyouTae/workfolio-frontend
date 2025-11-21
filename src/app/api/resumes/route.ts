@@ -81,9 +81,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
-    console.error('=== Error updating resumes ===');
-    console.error('Error:', error);
-    console.error('=============================');
+    console.error('Error updating resume:', error);
     return NextResponse.json({ error: 'Failed to update resumes' }, { status: 500 });
   }
 }

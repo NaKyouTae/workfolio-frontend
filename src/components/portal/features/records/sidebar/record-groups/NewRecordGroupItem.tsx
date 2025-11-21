@@ -33,7 +33,6 @@ const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupIte
 
     const handleSave = () => {
         if (title?.trim()) {
-            console.log('Save', color);
             onSave(title.trim(), color);
             setTitle(null);
         }
@@ -42,7 +41,6 @@ const NewRecordGroupItem = ({ placeholder, onSave, onCancel }: NewRecordGroupIte
     const handleKeyPress = (e: React.KeyboardEvent) => {
         // 한글 조합 중에는 Enter 키 이벤트 무시
         if (e.key === 'Enter' && !isComposing) {
-            console.log('Enter', color);
             handleSave();
         }
     };

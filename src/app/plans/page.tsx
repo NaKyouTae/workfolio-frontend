@@ -15,9 +15,9 @@ export default function PlansPage() {
   }, []);
 
   const handlePlanSelect = (durationMonths: number, totalPrice: number) => {
-    console.log('Selected plan:', { durationMonths, totalPrice });
     // TODO: 플랜 선택 및 구독 처리 로직 구현
     // 예: 결제 페이지로 이동, 구독 생성 등
+    alert(`플랜 선택 작업 예정\n월 ${durationMonths}개월 이용권\n총 ${totalPrice}원 결제`);
   };
 
   const handleCloseModal = () => {

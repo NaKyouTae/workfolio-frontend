@@ -34,10 +34,6 @@ const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelect
       }
       const data: ReleasePlanListResponse = await response.json();
 
-      console.log('data', data);
-      
-
-
       // 완성 플랜(PREMIUM) 찾기
       const completePlan = data.plans?.find(plan => compareEnumValue(plan.type, Plan_PlanType.PREMIUM, Plan_PlanType));
       

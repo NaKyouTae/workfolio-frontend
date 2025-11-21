@@ -75,7 +75,6 @@ export const useRecordGroups = () => {
             if (!ownedRes.ok || !sharedRes.ok) {
                 // 401이면 clientFetch가 이미 처리했을 것이므로, 샘플 데이터만 유지
                 if (ownedRes.status === 401 || sharedRes.status === 401) {
-                    console.log('⚠️ 401 Unauthorized - token refresh may have been attempted');
                     // 샘플 데이터는 이미 설정되어 있음
                     return;
                 }
@@ -173,7 +172,6 @@ export const useRecordGroups = () => {
             );
 
             if (response.ok) {
-                console.log('기록장 탈퇴 성공');
                 // 탈퇴 성공 시 레코드 그룹 목록 새로고침
                 await fetchRecordGroups();
                 return true;
@@ -198,7 +196,6 @@ export const useRecordGroups = () => {
             });
 
             if (response.ok) {
-                console.log('기록장 삭제 성공');
                 // 삭제 성공 시 레코드 그룹 목록 새로고침
                 await fetchRecordGroups();
                 return true;

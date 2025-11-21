@@ -76,8 +76,9 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                         setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
                     />
                 </li>
+                {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
                 {/* 파일 업로드 (파일 모드일 때) */}
-                {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
+                {/* {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
                 <li>
                     <p>파일 첨부</p>
                     <label className="file">
@@ -98,7 +99,7 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                             onClick={() => fileInputRef.current?.click()}>파일 찾기</button>
                     </label>
                 </li>
-                )}
+                )} */}
                 {/* 파일 URL (URL 모드일 때만) */}
                 {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
                 <li>
@@ -276,7 +277,8 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
                 {/* <p>{attachments.length}개</p> */}
             </div>
             <div>
-                <button onClick={handleAddFileAttachment}><i className="ic-add" />파일 추가</button>
+                {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
+                {/* <button onClick={handleAddFileAttachment}><i className="ic-add" />파일 추가</button> */}
                 <button onClick={handleAddUrlAttachment}><i className="ic-add" />URL 추가</button>
             </div>
         </div>

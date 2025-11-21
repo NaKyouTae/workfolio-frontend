@@ -59,7 +59,6 @@ export const useSystemConfigStore = create<SystemConfigState>((set, get) => ({
         const config = get().configs.get(type);
         
         if (!config) {
-            console.error('System config not loaded yet');
             return false;
         }
 
@@ -85,7 +84,6 @@ export const useSystemConfigStore = create<SystemConfigState>((set, get) => ({
                 const newConfigs = new Map(get().configs);
                 newConfigs.set(type, { ...config, value });
                 set({ configs: newConfigs, isLoading: false });
-                console.log('System config updated successfully');
                 return true;
             } else {
                 const errorMessage = `Failed to update system config: ${response.status}`;

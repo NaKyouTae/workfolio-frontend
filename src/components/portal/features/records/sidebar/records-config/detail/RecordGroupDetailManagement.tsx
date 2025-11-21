@@ -100,7 +100,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             
             // 로그인 안되어있을 때 샘플 데이터 사용
             if (!hasToken) {
-                console.log('로그인 안되어있음, 샘플 데이터 사용');
                 const sampleDetails = createSampleRecordGroupDetails(selectedRecordGroup);
                 setRecordGroupDetails(sampleDetails);
                 if (selectedExistWorkers.length === 0) {
@@ -130,7 +129,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
     // 닉네임으로 워커 검색 함수
     const handleSearchWorkerByNickname = useCallback(async (nickname: string) => {
         if (!nickname.trim()) {
-            console.warn('닉네임을 입력해주세요.');
             return [];
         }
         
@@ -139,7 +137,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
         
         // 로그인 안되어있을 때 샘플 데이터 사용
         if (!hasToken) {
-            console.log('로그인 안되어있음, 샘플 데이터 사용');
             const sampleWorkers = createSampleWorkers();
             // 닉네임으로 필터링 (부분 일치)
             const filteredWorkers = sampleWorkers.filter(worker => 
@@ -148,10 +145,8 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             
             if (filteredWorkers.length > 0) {
                 setSearchedWorkers(filteredWorkers);
-                console.log('샘플 워커 검색 성공:', filteredWorkers);
                 return filteredWorkers;
             } else {
-                console.warn('해당 닉네임의 워커를 찾을 수 없습니다.');
                 setSearchedWorkers([]);
                 return [];
             }
@@ -166,7 +161,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                 const data: WorkerListResponse = await response.json();
                 if (data.workers && data.workers.length > 0) {
                     setSearchedWorkers(data.workers);
-                    console.log('워커 검색 성공:', data.workers);
                     return data.workers;
                 } else {
                     console.warn('해당 닉네임의 워커를 찾을 수 없습니다.');
@@ -175,7 +169,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                 }
             } else if (response.status === 401 || response.status === 403) {
                 // 인증 실패 시 샘플 데이터 사용
-                console.log('인증 실패, 샘플 데이터 사용');
                 const sampleWorkers = createSampleWorkers();
                 const filteredWorkers = sampleWorkers.filter(worker => 
                     worker.nickName.toLowerCase().includes(nickname.toLowerCase())
@@ -183,7 +176,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                 
                 if (filteredWorkers.length > 0) {
                     setSearchedWorkers(filteredWorkers);
-                    console.log('샘플 워커 검색 성공:', filteredWorkers);
                     return filteredWorkers;
                 } else {
                     setSearchedWorkers([]);
@@ -197,7 +189,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
         } catch (error) {
             console.error('워커 검색 중 에러 발생:', error);
             // 에러 발생 시에도 샘플 데이터 사용
-            console.log('에러 발생, 샘플 데이터 사용');
             const sampleWorkers = createSampleWorkers();
             const filteredWorkers = sampleWorkers.filter(worker => 
                 worker.nickName.toLowerCase().includes(nickname.toLowerCase())
@@ -205,7 +196,6 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             
             if (filteredWorkers.length > 0) {
                 setSearchedWorkers(filteredWorkers);
-                console.log('샘플 워커 검색 성공:', filteredWorkers);
                 return filteredWorkers;
             } else {
                 setSearchedWorkers([]);
@@ -374,11 +364,9 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             });
 
             if (response.ok) {
-                console.log('기록장 저장 성공');
                 try {
                     if (refreshRecordGroups) {
                         await refreshRecordGroups();
-                        console.log('refreshRecordGroups 완료');
                     } else {
                         console.warn('refreshRecordGroups가 정의되지 않았습니다.');
                     }

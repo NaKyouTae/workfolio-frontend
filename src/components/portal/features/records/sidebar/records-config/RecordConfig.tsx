@@ -40,7 +40,6 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
             const systemConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
             
             if (!systemConfig) {
-                console.error('System config not loaded yet');
                 alert('설정을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
                 return;
             }
@@ -60,7 +59,6 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
             });
 
             if (response.ok) {
-                console.log('System config updated successfully');
                 alert('설정이 저장되었습니다.');
             } else {
                 const errorMessage = `Failed to update system config: ${response.status}`;

@@ -37,13 +37,9 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
-
-        console.log('id', id);
         
         const res = await apiFetchHandler<SuccessResponse>(`${API_BASE_URL}/api/record-groups/${id}`, HttpMethod.DELETE, null, accessToken);
         const data = await res.json();
-        
-        console.log('data', data);
         
         return NextResponse.json(data)
     } catch (error) {

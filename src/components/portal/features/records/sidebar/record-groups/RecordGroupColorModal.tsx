@@ -14,8 +14,6 @@ const RecordGroupColorModal: React.FC<RecordGroupColorModalProps> = ({
 }) => {
     if (!isOpen) return null;
 
-    console.log('currentColor', currentColor);
-
     return (
         <div className="record-edit-color">
             {recordGroupColors.map((color) => (
