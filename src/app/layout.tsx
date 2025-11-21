@@ -7,7 +7,6 @@ import "../../public/assets/css/common.css"
 import "../../public/assets/css/style.css"
 import ConfirmDialogProvider from "@/components/portal/ui/ConfirmDialogProvider"
 import NotificationProvider from "@/components/portal/ui/NotificationProvider"
-import FetchInterceptor from "@/components/portal/FetchInterceptor"
 
 export const metadata = {
     title: "워크폴리오 - 나만의 기록장",
@@ -36,7 +35,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Head>
             </head>
             <body>
-                <FetchInterceptor />
                 {children}
                 <ConfirmDialogProvider />
                 <NotificationProvider />

@@ -13,17 +13,17 @@ export const useUser = () => {
             setError(null);
             
             // httpOnly 쿠키는 JavaScript로 읽을 수 없으므로 토큰 체크를 하지 않고
-            // 그냥 API를 호출하고 401이면 clientFetch가 자동으로 토큰 재발급 처리
+            // 그냥 API를 호출하고 401이면 서버 사이드(apiFetchHandler)에서 자동으로 토큰 재발급 처리
             const response = await fetch('/api/workers/me', { method: HttpMethod.GET });
             
             // 응답 상태 확인
             if (!response.ok) {
                 if (response.status === 401) {
                     // 401 응답이면 토큰 재발급이 시도되었을 수 있음
-                    // clientFetch가 이미 처리했으므로, 재발급 실패 시에만 clearUser 호출
+                    // 서버 사이드(apiFetchHandler)에서 이미 처리했으므로, 재발급 실패 시에만 clearUser 호출
                     console.log('⚠️ [useUser] 401 Unauthorized - token refresh may have been attempted');
-                    // 토큰 재발급이 실패했을 가능성이 높으므로 clearUser 호출하지 않음
-                    // (재발급 성공 시 tokenRefreshed 이벤트로 다시 fetchUser가 호출됨)
+                    // 토큰 재발급이 실패했을 가능성이 높으므로 clearUser 호출
+                    clearUser();
                     return;
                 }
                 // 다른 에러면 사용자 정보 클리어
@@ -33,10 +33,6 @@ export const useUser = () => {
             }
             
             const data: WorkerGetResponse = await response.json();
-
-            console.log('======================');
-            console.log('data', data);
-            console.log('======================');
             
             if (data.worker) {
                 setUser(data.worker);
@@ -71,8 +67,8 @@ export const useUser = () => {
             document.cookie = 'accessToken=; max-age=0; path=/';
             document.cookie = 'refreshToken=; max-age=0; path=/';
             
-            // 로그인 페이지로 리다이렉트 (임시 주석 처리)
-            // window.location.href = '/login';
+            // 로그인 페이지로 리다이렉트
+            window.location.href = '/login';
             
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '회원 탈퇴 중 오류가 발생했습니다.';

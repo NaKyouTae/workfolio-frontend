@@ -10,16 +10,17 @@ let refreshPromise: Promise<{ accessToken: string; refreshToken: string } | null
 async function refreshTokenSafely(accessToken: string | undefined, refreshToken: string): Promise<{ accessToken: string; refreshToken: string } | null> {
     // 이미 재발급 중이면 기존 Promise 반환
     if (isRefreshing && refreshPromise) {
-        console.log('⏳ Token refresh already in progress, waiting...');
+        console.log('⏳ [ApiFetchHandler] Token refresh already in progress, waiting...');
         return refreshPromise;
     }
 
     // 재발급 시작
     isRefreshing = true;
-    console.log('🔄 Starting token refresh...');
+    console.log('🔄 [ApiFetchHandler] Starting token refresh...');
 
     refreshPromise = (async () => {
         try {
+            // 백엔드 API를 직접 호출 (apiFetchHandler 사용하지 않음 - 무한 재귀 방지)
             const reissueResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/token/reissue`, {
                 method: 'GET',
                 credentials: 'include',
@@ -32,7 +33,7 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
 
             if (reissueResponse.ok) {
                 const reissueData = await reissueResponse.json();
-                console.log('✅ Token reissue successful');
+                console.log('✅ [ApiFetchHandler] Token reissue successful');
                 
                 // 쿠키에 저장
                 const cookieStore = await cookies();
@@ -43,7 +44,7 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
                         sameSite: 'lax',
                         path: '/',
                         domain: 'localhost',
-                        maxAge: 60 * 60 * 24 * 7, // 7일
+                        maxAge: 60 * 60 * 3, // 3시간
                     });
                 }
                 
@@ -54,7 +55,7 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
                         sameSite: 'lax',
                         path: '/',
                         domain: 'localhost',
-                        maxAge: 60 * 60 * 24 * 30, // 30일
+                        maxAge: 60 * 60 * 24 * 7, // 7일
                     });
                 }
 
@@ -63,11 +64,11 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
                     refreshToken: reissueData.refreshToken,
                 };
             } else {
-                console.error('❌ Token reissue failed:', reissueResponse.status);
+                console.error('❌ [ApiFetchHandler] Token reissue failed:', reissueResponse.status);
                 return null;
             }
         } catch (error) {
-            console.error('❌ Error during token reissue:', error);
+            console.error('❌ [ApiFetchHandler] Error during token reissue:', error);
             return null;
         } finally {
             // 재발급 완료 후 상태 초기화
@@ -112,20 +113,20 @@ export async function apiFetchHandler<T>(
         // 401 에러 발생 시 refresh token으로 재발급 시도
         // accessToken이 없어도 refreshToken이 있으면 재발급 시도
         if (status === 401) {
-            console.log('🔄 401 Unauthorized detected, attempting token refresh...');
+            console.log('🔄 [ApiFetchHandler] 401 Unauthorized detected, attempting token refresh...');
             const cookieStore = await cookies();
             const refreshToken = cookieStore.get('refreshToken')?.value;
             
             // refresh token이 있으면 재발급 시도
             if (refreshToken) {
-                console.log('✅ Refresh token found, calling reissue API...');
+                console.log('✅ [ApiFetchHandler] Refresh token found, calling reissue API...');
                 try {
                     // 중복 방지된 토큰 재발급 (동시 요청 시 하나의 reissue만 실행)
                     const tokenData = await refreshTokenSafely(accessToken, refreshToken);
                     
                     if (tokenData && tokenData.accessToken) {
                         // 새 access token으로 원래 요청 재시도
-                        console.log('🔁 Retrying original request with new token...');
+                        console.log('🔁 [ApiFetchHandler] Retrying original request with new token...');
                         const newAccessToken = tokenData.accessToken;
                         const retryHeaders: HeadersInit = {
                             'Content-Type': "application/json",
@@ -154,14 +155,14 @@ export async function apiFetchHandler<T>(
                             return NextResponse.json({ message: 'Invalid JSON response', raw: retryResponseText }, { status: 500 });
                         }
                     } else {
-                        console.error('❌ Token reissue failed');
+                        console.error('❌ [ApiFetchHandler] Token reissue failed');
                         // 재발급 실패 시 쿠키 삭제
                         cookieStore.delete('accessToken');
                         cookieStore.delete('refreshToken');
                         return NextResponse.json({ message: 'Token reissue failed' }, { status: 401 });
                     }
                 } catch (error) {
-                    console.error('❌ Error during token reissue:', error);
+                    console.error('❌ [ApiFetchHandler] Error during token reissue:', error);
                     // 에러 발생 시 쿠키 삭제
                     cookieStore.delete('accessToken');
                     cookieStore.delete('refreshToken');
@@ -169,7 +170,7 @@ export async function apiFetchHandler<T>(
                 }
             } else {
                 // refresh token이 없으면 쿠키 삭제
-                console.error('❌ No refresh token found');
+                console.error('❌ [ApiFetchHandler] No refresh token found');
                 cookieStore.delete('accessToken');
                 cookieStore.delete('refreshToken');
                 cookieStore.delete('admin_access_token');

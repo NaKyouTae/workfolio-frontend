@@ -10,19 +10,32 @@ export async function GET() {
         const accessToken = await getCookie('accessToken');
         const refreshToken = await getCookie('refreshToken');
         
-        // accessToken이 없으면 401 응답 반환
-        if (accessToken == null && !refreshToken) {
-            return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+        // 토큰이 있으면 백엔드에 로그아웃 요청 (실패해도 상관없음)
+        if (accessToken || refreshToken) {
+            try {
+                await apiFetchHandler(`${API_BASE_URL}/api/logout`, HttpMethod.GET, undefined, accessToken);
+            } catch (error) {
+                // 백엔드 호출 실패해도 계속 진행 (이미 만료된 토큰일 수 있음)
+                console.log('Backend logout call failed (may be expected):', error);
+            }
         }
         
-        const res = await apiFetchHandler(`${API_BASE_URL}/api/logout`, HttpMethod.GET, undefined, accessToken);
+        // 쿠키 삭제 (백엔드 호출 성공 여부와 관계없이)
+        const res = NextResponse.json({ success: true });
+        res.cookies.delete('accessToken');
+        res.cookies.delete('refreshToken');
+        res.cookies.delete('admin_access_token');
+        res.cookies.delete('admin_refresh_token');
         
-        // 응답이 정상적인 경우
-        const data = await res.json();
-        
-        return NextResponse.json(data);
+        return res;
     } catch (error) {
         console.error('Error in GET request:', error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+        // 에러가 발생해도 쿠키는 삭제
+        const res = NextResponse.json({ success: true });
+        res.cookies.delete('accessToken');
+        res.cookies.delete('refreshToken');
+        res.cookies.delete('admin_access_token');
+        res.cookies.delete('admin_refresh_token');
+        return res;
     }
 }

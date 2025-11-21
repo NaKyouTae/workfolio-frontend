@@ -34,8 +34,7 @@ const RecordGroups = React.memo(({
                 ?.split('=')[1];
             
             if (!accessToken) {
-                // window.location.href = '/login'; // 임시 주석 처리
-                console.log('⚠️ [RecordGroups] No access token found (임시 주석 처리)');
+                window.location.href = '/login';
                 return;
             }
 
@@ -66,8 +65,7 @@ const RecordGroups = React.memo(({
             });
 
             if (response.status === 401) {
-                // window.location.href = '/login'; // 임시 주석 처리
-                console.log('⚠️ [RecordGroups] 401 Unauthorized (임시 주석 처리)');
+                window.location.href = '/login';
                 return;
             }
 
@@ -93,8 +91,7 @@ const RecordGroups = React.memo(({
                 ?.split('=')[1];
             
             if (!accessToken) {
-                // window.location.href = '/login'; // 임시 주석 처리
-                console.log('⚠️ [RecordGroups] No access token found (임시 주석 처리)');
+                window.location.href = '/login';
                 return;
             }
 
@@ -125,8 +122,7 @@ const RecordGroups = React.memo(({
             });
 
             if (response.status === 401) {
-                // window.location.href = '/login'; // 임시 주석 처리
-                console.log('⚠️ [RecordGroups] 401 Unauthorized (임시 주석 처리)');
+                window.location.href = '/login';
                 return;
             }
 
@@ -152,8 +148,7 @@ const RecordGroups = React.memo(({
                 ?.split('=')[1];
             
             if (!accessToken) {
-                // window.location.href = '/login'; // 임시 주석 처리
-                console.log('⚠️ [RecordGroups] No access token found (임시 주석 처리)');
+                window.location.href = '/login';
                 return;
             }
 
@@ -162,8 +157,7 @@ const RecordGroups = React.memo(({
             });
 
             if (response.status === 401) {
-                // window.location.href = '/login'; // 임시 주석 처리
-                console.log('⚠️ [RecordGroups] 401 Unauthorized (임시 주석 처리)');
+                window.location.href = '/login';
                 return;
             }
 

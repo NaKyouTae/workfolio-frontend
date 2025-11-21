@@ -13,22 +13,8 @@ const Header = () => {
     // 로그인 상태 확인 및 유저 정보 가져오기
     useEffect(() => {
         // httpOnly 쿠키는 JavaScript로 읽을 수 없으므로 토큰 체크를 하지 않고
-        // 그냥 API를 호출하고 401이면 clientFetch가 자동으로 처리
+        // 그냥 API를 호출하고 401이면 서버 사이드(apiFetchHandler)에서 자동으로 토큰 재발급 처리
         fetchUser();
-    }, [fetchUser]);
-
-    // 토큰 재발급 이벤트 리스너
-    useEffect(() => {
-        const handleTokenRefreshed = () => {
-            console.log('🔄 Token refreshed event received, fetching user info...');
-            fetchUser();
-        };
-
-        window.addEventListener('tokenRefreshed', handleTokenRefreshed);
-
-        return () => {
-            window.removeEventListener('tokenRefreshed', handleTokenRefreshed);
-        };
     }, [fetchUser]);
     
     const logout = async () => {
