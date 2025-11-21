@@ -51,8 +51,9 @@ export function middleware(request: NextRequest) {
         const accessToken = request.cookies.get('accessToken');
         
         if (!accessToken) {
-            // 토큰이 없으면 로그인 페이지로 리다이렉트
-            return NextResponse.redirect(new URL('/login', request.url));
+            // 토큰이 없으면 로그인 페이지로 리다이렉트 (임시 주석 처리)
+            // return NextResponse.redirect(new URL('/login', request.url));
+            console.log('⚠️ [middleware] No access token found, but redirect disabled (임시 주석 처리)');
         }
     }
     

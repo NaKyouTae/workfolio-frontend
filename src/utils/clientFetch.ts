@@ -114,9 +114,9 @@ export const clientFetch: FetchType = async (input: RequestInfo | URL, init?: Re
                     
                     // 재시도 응답도 401이면 토큰 재발급이 실패한 것
                     if (retryResponse.status === 401) {
-                        console.error('❌ Retry after token refresh also returned 401 - redirecting to login');
+                        console.error('❌ Retry after token refresh also returned 401 - redirecting to login (임시 주석 처리)');
                         if (typeof window !== 'undefined') {
-                            window.location.href = '/login';
+                            // window.location.href = '/login';
                         }
                         return retryResponse;
                     }
@@ -128,26 +128,26 @@ export const clientFetch: FetchType = async (input: RequestInfo | URL, init?: Re
                     
                     return retryResponse;
                 } else {
-                    console.error('❌ Token reissue failed');
-                    // 재발급 실패 시 로그인 페이지로 리다이렉트
+                    console.error('❌ Token reissue failed (임시 주석 처리)');
+                    // 재발급 실패 시 로그인 페이지로 리다이렉트 (임시 주석 처리)
                     if (typeof window !== 'undefined') {
-                        window.location.href = '/login';
+                        // window.location.href = '/login';
                     }
                     return response;
                 }
             } catch (error) {
                 console.error('❌ Error during token reissue:', error);
-                // 에러 발생 시 로그인 페이지로 리다이렉트
+                // 에러 발생 시 로그인 페이지로 리다이렉트 (임시 주석 처리)
                 if (typeof window !== 'undefined') {
-                    window.location.href = '/login';
+                    // window.location.href = '/login';
                 }
                 return response;
             }
         } else {
-            // refresh token이 없으면 로그인 페이지로 리다이렉트
-            console.error('❌ No refresh token found');
+            // refresh token이 없으면 로그인 페이지로 리다이렉트 (임시 주석 처리)
+            console.error('❌ No refresh token found (임시 주석 처리)');
             if (typeof window !== 'undefined') {
-                window.location.href = '/login';
+                // window.location.href = '/login';
             }
             return response;
         }

@@ -71,8 +71,8 @@ export const useUser = () => {
             document.cookie = 'accessToken=; max-age=0; path=/';
             document.cookie = 'refreshToken=; max-age=0; path=/';
             
-            // 로그인 페이지로 리다이렉트
-            window.location.href = '/login';
+            // 로그인 페이지로 리다이렉트 (임시 주석 처리)
+            // window.location.href = '/login';
             
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '회원 탈퇴 중 오류가 발생했습니다.';
