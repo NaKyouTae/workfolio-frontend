@@ -453,7 +453,7 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             <article>
                 <div className="cont-box">
                     <div className="cont-tit" id="record-group-management">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div>
                             <h3>기록장 관리</h3>
                         </div>
                     </div>
@@ -465,7 +465,7 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                                     className="color-picker" 
                                     style={{ backgroundColor: color || '#fff' }}
                                     onClick={() => setIsColorPickerOpen(!isColorPickerOpen)}
-                                ></div>
+                                />
                                 <input 
                                     type="text" 
                                     value={title}
@@ -505,8 +505,8 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                                     />
                                     <label htmlFor="type-shared"><p>공유 기록장</p></label>
                                 </li>
+                                <li><p>기본 기록장은 공유 기록장으로 변경할 수 없어요.</p></li>
                             </ul>
-                            <span className="info-text">기본 기록장은 공유 기록장으로 변경할 수 없어요.</span>
                         </li>
                         <li>
                             <p>기록장 공유 멤버</p>
@@ -560,7 +560,7 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                                         );
                                     })}
                                 </ul>
-                                <button onClick={() => handleSearchWorkerByNickname(shareNickname)} disabled={isPrivate}>검색하기</button>
+                                <button onClick={() => handleSearchWorkerByNickname(shareNickname)} disabled={isPrivate}>검색</button>
                             </div>
                         </li>
                         <li>
@@ -669,76 +669,63 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                                 })()}
                             </ul>
                         </li>
+                        <li>
+                            <p>기록장 공유 기본 권한</p>
+                            <ul className="input-list">
+                                <li>
+                                    <input 
+                                        id="role-full"
+                                        type="radio"
+                                        name="default-role"
+                                        value="full"
+                                        checked={compareEnumValue(defaultRole, RecordGroup_RecordGroupRole.FULL, RecordGroup_RecordGroupRole)}
+                                        onChange={() => {
+                                            setDefaultRole(RecordGroup_RecordGroupRole.FULL);
+                                        }}
+                                    />
+                                    <label htmlFor="role-full"><p>전체 권한</p></label>
+                                </li>  
+                                <li>
+                                    <input 
+                                        id="role-view"
+                                        type="radio" 
+                                        name="default-role"
+                                        value={RecordGroup_RecordGroupRole.VIEW}
+                                        checked={compareEnumValue(defaultRole, RecordGroup_RecordGroupRole.VIEW, RecordGroup_RecordGroupRole)}
+                                        onChange={() => {
+                                            setDefaultRole(RecordGroup_RecordGroupRole.VIEW);
+                                        }}
+                                    />
+                                    <label htmlFor="role-view"><p>보기 권한</p></label>
+                                </li>  
+                            </ul>
+                        </li>
+                        {isAdmin ? (
+                            <li>
+                                <p>기록장 삭제</p>
+                                <div className="delete-section">
+                                    {selectedRecordGroup?.isDefault ? (
+                                        <div className="btn">
+                                            <p>기본 기록장은 삭제할 수 없어요.</p>
+                                        </div>
+                                    ): (
+                                        <div className="btn">
+                                            <button onClick={handleDelete}>삭제하기</button>
+                                            <p>기록장에 있는 모든 기록이 삭제돼요.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </li>
+                        ) : (
+                            <li>
+                                <p>기록장 탈퇴</p>
+                                <div className="btn">
+                                    <button onClick={handleLeave}>탈퇴하기</button>
+                                    <p>기록장을 삭제하면 공유 멤버 모두에게서 없어지고, 안에 있는 기록들도 함께 지워져요.</p>
+                                </div>
+                            </li>
+                        )}
                     </ul>
-                    <div className="config-row">
-                        <label>기록장 공유</label>
-                        <div className="share-container">
-                            <div className="shared-members">
-                                
-                            </div>
-                            <p className="info-text">공유 멤버가 있으면 기록장을 삭제할 수 없어요.</p>
-                        </div>
-                    </div>
-                    <div className="config-row">
-                        <label>기록장 공유 기본 권한</label>
-                        <ul className="radio-group">
-                            <li>
-                                <input 
-                                    id="role-full"
-                                    type="radio"
-                                    name="default-role"
-                                    value="full"
-                                    checked={compareEnumValue(defaultRole, RecordGroup_RecordGroupRole.FULL, RecordGroup_RecordGroupRole)}
-                                    onChange={() => {
-                                        setDefaultRole(RecordGroup_RecordGroupRole.FULL);
-                                    }}
-                                />
-                                <label htmlFor="role-full">전체 권한</label>
-                            </li>  
-                            <li>
-                                <input 
-                                    id="role-view"
-                                    type="radio" 
-                                    name="default-role"
-                                    value={RecordGroup_RecordGroupRole.VIEW}
-                                    checked={compareEnumValue(defaultRole, RecordGroup_RecordGroupRole.VIEW, RecordGroup_RecordGroupRole)}
-                                    onChange={() => {
-                                        setDefaultRole(RecordGroup_RecordGroupRole.VIEW);
-                                    }}
-                                />
-                                <label htmlFor="role-view">보기 권한</label>
-                            </li>  
-                        </ul>
-                    </div>
-                    {isAdmin ? (
-                        <div className="config-row">
-                            <label>기록장 삭제</label>
-                            <div className="delete-section">
-                                {selectedRecordGroup?.isDefault ? (
-                                    <p className="info-text">기본 기록장은 삭제할 수 없어요.</p>
-                                ): (
-                                    <>
-                                        <button 
-                                            className="delete-btn"
-                                            onClick={handleDelete}
-                                        >삭제하기</button>
-                                        <p className="info-text">기록장에 있는 모든 기록이 삭제돼요.</p>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="config-row">
-                            <label>기록장 탈퇴</label>
-                            <div className="leave-section">
-                                <button 
-                                    className="leave-btn"
-                                    onClick={handleLeave}
-                                >탈퇴하기</button>
-                                <p className="info-text">탈퇴하면 더 이상 공유 기록장에 있는 기록을 볼 수 없어요.</p>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </article>
             <FloatingNavigation

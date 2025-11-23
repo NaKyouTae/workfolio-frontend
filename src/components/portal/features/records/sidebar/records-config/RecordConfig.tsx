@@ -78,32 +78,30 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
                     <h2>기록 설정</h2>
                 </div>
             </div>
-            <div className="page-cont">
-                {selectedGroupForDetail ? (
-                    <RecordGroupDetailManagement 
-                        recordGroupsData={recordGroupsData}
-                        initialRecordGroup={selectedGroupForDetail}
-                        onBack={handleBackToList}
-                    />
-                ) : (
-                    <div className="page-cont">
-                        <article>
-                            <RecordManagement />
-                            <RecordGroupManagement 
-                                recordGroupsData={recordGroupsData}
-                                onGroupSettingsClick={handleGroupSettingsClick}
-                            />
-                        </article>
-                        <FloatingNavigation
-                            navigationItems={[
-                                { id: 'record-management', label: '기록 설정' },
-                                { id: 'record-group-management', label: '기록장 설정' },
-                            ]}
-                            onSave={handleSave}
+            {selectedGroupForDetail ? (
+                <RecordGroupDetailManagement 
+                    recordGroupsData={recordGroupsData}
+                    initialRecordGroup={selectedGroupForDetail}
+                    onBack={handleBackToList}
+                />
+            ) : (
+                <div className="page-cont">
+                    <article>
+                        <RecordManagement />
+                        <RecordGroupManagement 
+                            recordGroupsData={recordGroupsData}
+                            onGroupSettingsClick={handleGroupSettingsClick}
                         />
-                    </div>
-                )}
-            </div>
+                    </article>
+                    <FloatingNavigation
+                        navigationItems={[
+                            { id: 'record-management', label: '기록 설정' },
+                            { id: 'record-group-management', label: '기록장 설정' },
+                        ]}
+                        onSave={handleSave}
+                    />
+                </div>
+            )}
         </div>
     );
 };

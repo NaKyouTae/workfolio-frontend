@@ -324,6 +324,67 @@ table.list.search tbody td .empty {font-weight: 500; color: var(--gray005);}
 .resume-intro > div + p {font-size: 1.4rem; line-height: 1.6;}
 .resume-intro > div + p::before {content: ''; width: 1rem; height: 1px; background-color: var(--gray003); display: block; margin-bottom: 2rem;}
 
+/* 기록 관리 - 기록 설정 */
+.edit-drag-list + .edit-drag-list:has(.list) {margin-top: 1rem;}
+.edit-drag-list .list {flex: 1; width: 100%; padding: 1.2rem 1.2rem 1.2rem 1.6rem; display: flex; align-items: center; justify-content: space-between; column-gap: 2rem; border: 1px dashed var(--gray003); border-radius: 1rem;}
+.edit-drag-list .list > div {display: flex; align-items: center; column-gap: .8rem;}
+.edit-drag-list .list > div > span {width: .6rem; height: 1.6rem; border-radius: .2rem;}
+.edit-drag-list .list > div > h4 {font-size: 1.4rem; font-weight: 600;}
+.edit-drag-list .list > div > p {font-size: 1.2rem; color: var(--gray005);}
+.edit-drag-list .list > ul {display: flex; align-items: center; column-gap: 1rem;}
+.edit-drag-list .list > ul > li {display: flex; align-items: center; column-gap: 1rem; font-size: 1.2rem; color: var(--gray005); cursor: pointer;}
+.edit-drag-list .list > ul > li + li::before {content: ''; width: 1px; height: 1rem; background-color: var(--gray004);}
+
+/* 기록장 관리 */
+.setting-list > li > div:has(.shared-mem-search) {position: relative;}
+
+.aside-menu {display: flex; flex-flow: column; row-gap: .8rem; margin-top: -.4rem;}
+.aside-menu > li {height: 3.2rem; display: flex; align-items: center; margin: 0 -2rem; padding: 0 2rem; font-size: 1.4rem; cursor: pointer;}
+.aside-menu > li:hover {background-color: var(--gray001);}
+.aside-menu > li.active {background-color: var(--gray001); font-weight: 600;}
+
+.setting-list {width: 100%; display: flex; flex-flow: column; row-gap: 1.6rem;}
+.setting-list > li {min-height: 3.2rem; display: flex; column-gap: 1rem; position: relative;}
+.setting-list > li > p {width: 14rem; height: 3.2rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005); display: flex; align-items: center; column-gap: .4rem;}
+.setting-list > li > p > span {color: var(--red);}
+.setting-list > li > *:not(p) {flex: 1;}
+.setting-list > li > div {display: flex; align-items: center; grid-gap: 1rem .8rem; flex-wrap: wrap;}
+.setting-list > li > div > span {display: block; width: 100%; font-size: 1.2rem; color: var(--gray005);}
+.setting-list > li input {flex: 1; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
+.setting-list > li input + label > p {font-size: 1.2rem;}
+.setting-list > li button {max-width: 7.6rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; background-color: var(--gray005);}
+.setting-list > li button.xsm {width: fit-content; min-width: 6.2rem; height: 2.8rem; padding: 0 1rem; font-size: 1.1rem; border-radius: .4rem; background-color: var(--gray004);}
+
+.setting-list > li .btn {display: flex; flex-flow: column; row-gap: .4rem; align-items: flex-start;}
+.setting-list > li .btn button {width: fit-content; height: 2.4rem; margin: .4rem 0; padding: 0 1.6rem; border-radius: .4rem; background-color: var(--gray004); font-size: 1rem;}
+.setting-list > li .btn p {font-size: 1.2rem; color: var(--gray005);}
+
+.setting-list > li .shared-mem-search {position: absolute; top: 3.4rem; width: 100%; max-height: 12rem; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000; overflow-y: auto;}
+.setting-list > li .shared-mem-search > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0;}
+.setting-list > li .shared-mem-search > li:hover {background-color: var(--gray002);}
+.setting-list > li .shared-mem-search > li input + label::before {content: none;}
+
+.setting-list > li:has(.shared-mem-list) {margin-top: -.6rem;}
+.setting-list > li .shared-mem-list {padding: .4rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column;}
+.setting-list > li .shared-mem-list > li {height: 2.4rem; padding: 0 1.2rem; display: flex; align-items: center; justify-content: space-between; font-size: 1.2rem; color: var(--gray005);}
+.setting-list > li .shared-mem-list > li .info {display: flex; align-items: center; column-gap: .4rem;}
+.setting-list > li .shared-mem-list > li .info > p {color: var(--black);}
+.setting-list > li .shared-mem-list > li .option {display: flex; align-items: center; column-gap: .8rem;}
+.setting-list > li .shared-mem-list > li .option .dropdown > button  {width: fit-content; height: fit-content; padding: 0 1.4rem 0 0; background-size: 1rem; background-position: center right 0; color: var(--gray005)!important; border: 0;}
+.setting-list > li .shared-mem-list > li .option .dropdown > ul {width: max-content; padding: .6rem 0; top: 2rem; right: 0; row-gap: 0;}
+.setting-list > li .shared-mem-list > li .option .dropdown > ul > li {height: 2rem; padding: 0 1rem;}
+.setting-list > li .shared-mem-list > li .option > button {width: fit-content; height: fit-content; padding: 0; background-color: transparent!important; border: 0;}
+
+.setting-list > li .dropdown button {max-width: initial; padding: 0 3.8rem 0 1.2rem; background-color: transparent!important; color: var(--black);}
+.setting-list > li .date-time {width: 100%;}
+.setting-list > li .color-picker {width: .8rem; height: 3.2rem; border: 0; border-radius: .2rem;}
+.setting-list > li .record-edit-color {padding: 1rem ; display: grid; grid-template-columns: repeat(6, 1fr); grid-gap: .6rem; background-color: var(--white); border: 1px solid var(--gray002); border-radius: .6rem; position: absolute; top: 3.6rem; left: 15rem; z-index: 100;}
+.setting-list > li .record-edit-color > button {width: 1.6rem; height: 1.6rem; padding: 0; border-radius: .2rem;}
+
+.setting-list + .btn-wrap {margin-top: 2.4rem; width: 100%; max-width: 56rem; display: flex; align-items: center; column-gap: 1rem; justify-content: flex-end;}
+.setting-list + .btn-wrap button {max-width: 10rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
+.setting-list + .btn-wrap button:nth-last-child(2) {border-color: var(--gray003); background-color: var(--white); color: var(--black);}
+
 /* 이력 관리 - 뷰어 */
 .view-list {display: flex; flex-flow: column; row-gap: 1.2rem;}
 .view-list > li {width: 100%; padding: 2.4rem 2rem 2rem; display: flex; flex-flow: column; row-gap: 1.6rem; border: 1px solid var(--gray003); border-radius: 1rem;}
@@ -455,48 +516,8 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 
 
 /* 마이페이지 */
-.aside-menu {display: flex; flex-flow: column; row-gap: .8rem; margin-top: -.4rem;}
-.aside-menu > li {height: 3.2rem; display: flex; align-items: center; margin: 0 -2rem; padding: 0 2rem; font-size: 1.4rem; cursor: pointer;}
-.aside-menu > li:hover {background-color: var(--gray001);}
-.aside-menu > li.active {background-color: var(--gray001); font-weight: 600;}
-
-.setting-list {width: 100%; display: flex; flex-flow: column; row-gap: 1.6rem;}
-.setting-list > li {min-height: 3.2rem; display: flex; column-gap: 1rem; position: relative;}
-.setting-list > li > p {width: 14rem; height: 3.2rem; font-size: 1.2rem; font-weight: 500; color: var(--gray005); display: flex; align-items: center; column-gap: .4rem;}
-.setting-list > li > p > span {color: var(--red);}
-.setting-list > li > *:not(p) {flex: 1;}
-.setting-list > li > div {display: flex; align-items: center; grid-gap: 1rem .8rem; flex-wrap: wrap;}
-.setting-list > li > div > span {display: block; width: 100%; font-size: 1.2rem; color: var(--gray005);}
-.setting-list > li input {flex: 1; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
-.setting-list > li input + label > p {font-size: 1.2rem;}
-.setting-list > li button {max-width: 7.6rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem; background-color: var(--gray005);}
-.setting-list > li button:nth-child(3) {background-color: var(--yellow004);}
-.setting-list > li button.xsm {width: fit-content; min-width: 6.2rem; height: 2.8rem; padding: 0 1rem; font-size: 1.1rem; border-radius: .4rem; background-color: var(--gray004);}
-
 .setting-list.grid-2 {display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1.6rem 3.2rem;}
 .setting-list.grid-2 > li.full {grid-column: 1 / span 2;}
-
-.setting-list > li .shared-mem-search {position: absolute; top: 3.4rem; width: 100%; max-width: 41rem; max-height: 12rem; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000; overflow-y: auto;}
-.setting-list > li .shared-mem-search > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0;}
-.setting-list > li .shared-mem-search > li:hover {background-color: var(--gray002);}
-.setting-list > li .shared-mem-search > li input + label::before {content: none;}
-
-.setting-list > li .shared-mem-list {padding: .4rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column;}
-.setting-list > li .shared-mem-list > li {height: 2.4rem; padding: 0 1.2rem; display: flex; align-items: center; justify-content: space-between; font-size: 1.2rem; color: var(--gray005);}
-.setting-list > li .shared-mem-list > li .info {display: flex; align-items: center; column-gap: .4rem;}
-.setting-list > li .shared-mem-list > li .info > p {color: var(--black);}
-.setting-list > li .shared-mem-list > li .option {display: flex; align-items: center; column-gap: .8rem;}
-.setting-list > li .shared-mem-list > li .option > select {width: fit-content; height: fit-content; padding: 0 1.4rem 0 0; background-size: 1rem; background-position: center right 0; color: var(--gray005); border: 0;}
-.setting-list > li .shared-mem-list > li .option > button {width: fit-content; height: fit-content; padding: 0; background-color: transparent; border: 0;}
-
-.setting-list > li .dropdown button {max-width: initial; padding: 0 3.8rem 0 1.2rem; background-color: transparent; color: var(--black);}
-.setting-list > li .date-time {width: 100%;}
-.setting-list > li .color-picker {width: 3.2rem; height: 3.2rem; border: 1px solid var(--gray003); border-radius: .4rem;}
-
-.setting-list + .btn-wrap {margin-top: 2.4rem; width: 100%; max-width: 56rem; display: flex; align-items: center; column-gap: 1rem; justify-content: flex-end;}
-.setting-list + .btn-wrap button {max-width: 10rem; height: 3.2rem; padding: 0 1.2rem; font-size: 1.2rem; border-radius: .4rem;}
-.setting-list + .btn-wrap button:nth-last-child(2) {border-color: var(--gray003); background-color: var(--white); color: var(--black);}
-
 
 /* 공지사항 */
 .notice-list {display: flex; flex-flow: column; row-gap: 1rem;}
@@ -511,6 +532,7 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 
 
 /* 이용약관, 개인정보 처리방침 */
-.page-cont:has(nav.terms) {grid-template-columns: calc(100% - 40rem) 38rem;}
+.page-cont:has(.terms-desc) {grid-template-columns: calc(100% - 40rem) 38rem;}
 
 .terms-desc {font-size: 1.4rem; line-height: 1.6; word-break: keep-all;}
+.terms-desc p {font-size: 1.4rem; line-height: 1.6; word-break: keep-all;}

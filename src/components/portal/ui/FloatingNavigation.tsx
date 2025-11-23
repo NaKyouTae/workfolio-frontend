@@ -202,7 +202,7 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   const showButtons = onSave || onCancel || (actionButtons && actionButtons.length > 0);
 
   return (
-    <nav style={{width: width || '100%'}}>
+    <nav>
       {navigationItems && navigationItems.length > 0 && (
         <ul className="nav-wrap">
           {navigationItems.map((item) => {

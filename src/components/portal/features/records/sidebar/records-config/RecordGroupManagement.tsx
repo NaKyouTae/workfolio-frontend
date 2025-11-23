@@ -48,9 +48,7 @@ const RecordGroupItemActions: React.FC<RecordGroupItemActionsProps> = ({
     if (isPrivate) {
         return (
             <>
-                <a 
-                    href="#" 
-                    style={{ color: '#666', cursor: 'pointer' }}
+                <li
                     onClick={(e) => {
                         e.preventDefault();
                         if (onGroupSettingsClick) {
@@ -59,11 +57,8 @@ const RecordGroupItemActions: React.FC<RecordGroupItemActionsProps> = ({
                     }}
                 >
                     설정
-                </a>
-                <span>|</span>
-                <a 
-                    href="#" 
-                    style={{ color: '#666', cursor: 'pointer' }}
+                </li>
+                <li
                     onClick={(e) => {
                         e.preventDefault();
                         if (group.id) {
@@ -72,7 +67,7 @@ const RecordGroupItemActions: React.FC<RecordGroupItemActionsProps> = ({
                     }}
                 >
                     삭제
-                </a>
+                </li>
             </>
         );
     }
@@ -86,9 +81,7 @@ const RecordGroupItemActions: React.FC<RecordGroupItemActionsProps> = ({
             // 관리자: 설정, 삭제
             return (
                 <>
-                    <a 
-                        href="#" 
-                        style={{ color: '#666', cursor: 'pointer' }}
+                    <li
                         onClick={(e) => {
                             e.preventDefault();
                             if (onGroupSettingsClick) {
@@ -97,11 +90,8 @@ const RecordGroupItemActions: React.FC<RecordGroupItemActionsProps> = ({
                         }}
                     >
                         설정
-                    </a>
-                    <span>|</span>
-                    <a 
-                        href="#" 
-                        style={{ color: '#666', cursor: 'pointer' }}
+                    </li>
+                    <li
                         onClick={(e) => {
                             e.preventDefault();
                             if (group.id) {
@@ -110,15 +100,13 @@ const RecordGroupItemActions: React.FC<RecordGroupItemActionsProps> = ({
                         }}
                     >
                         삭제
-                    </a>
+                    </li>
                 </>
             );
         } else {
             // 관리자 아님: 탈퇴만
             return (
-                <a 
-                    href="#" 
-                    style={{ color: '#666', cursor: 'pointer' }}
+                <li
                     onClick={(e) => {
                         e.preventDefault();
                         if (group.id && user?.id) {
@@ -127,7 +115,7 @@ const RecordGroupItemActions: React.FC<RecordGroupItemActionsProps> = ({
                     }}
                 >
                     탈퇴
-                </a>
+                </li>
             );
         }
     }
@@ -234,11 +222,11 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({
     // 기록장 타입에 따른 라벨 반환
     const getRecordGroupTypeLabel = (group: RecordGroup): string => {
         if (compareEnumValue(group.type, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType)) {
-            return '개인 기록장';
+            return '';
         } else if (compareEnumValue(group.type, RecordGroup_RecordGroupType.SHARED, RecordGroup_RecordGroupType)) {
             // 공유 기록장인 경우, ownedRecordGroups에 있으면 관리자, sharedRecordGroups에 있으면 멤버
             const isMaster = user?.id === group.worker?.id;
-            return `공유 기록장(${isMaster ? '관리자' : '멤버'})`;
+            return `${isMaster ? '관리자' : '멤버'}`;
         }
         return '';
     };
@@ -246,52 +234,41 @@ const RecordGroupManagement: React.FC<RecordGroupManagementProps> = ({
     return (
         <div className="cont-box">
             <div className="cont-tit">
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <h3>기록장 목록</h3>
-                    <span>{allRecordGroups.length}개</span>
+                <div>
+                    <h3>내 기록장 목록</h3>
+                    <p>{allRecordGroups.length}개</p>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100px' }}>
-                    <button>+ 추가</button>
-                </div>
+                <button><i className="ic-add" />추가</button>
             </div>
-            <ul className="setting-list">
-                <DraggableList
-                    items={allRecordGroups}
-                    onReorder={handleReorder}
-                    getItemId={(group, idx) => group.id || `record-group-${idx}`}
-                    renderItem={(group, index) => (
-                        <DraggableItem 
-                            id={group.id || `record-group-${index}`}
-                            showDragButton={true}
-                        >
-                            <li style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', border: '1px solid #ccc',
-                                width: '100%', borderRadius: '4px' }}>
-                                <div 
-                                    style={{ 
-                                        width: '20px', 
-                                        height: '20px', 
-                                        backgroundColor: group.color || '#ccc',
-                                        borderRadius: '4px',
-                                        flexShrink: 0
-                                    }} 
+            <DraggableList
+                items={allRecordGroups}
+                onReorder={handleReorder}
+                getItemId={(group, idx) => group.id || `record-group-${idx}`}
+                renderItem={(group, index) => (
+                    <DraggableItem 
+                        id={group.id || `record-group-${index}`}
+                        showDragButton={true}
+                    >
+                        <div className="list">
+                            <div>
+                                <span style={{ backgroundColor: group.color || '#ccc' }}></span>
+                                <h4>{getRecordGroupTitle(group)}</h4>
+                                <p>{getRecordGroupTypeLabel(group)}</p>
+                            </div>
+                            <ul>
+                                <RecordGroupItemActions
+                                    group={group}
+                                    sharedRecordGroups={sharedRecordGroups}
+                                    user={user}
+                                    onGroupSettingsClick={onGroupSettingsClick}
+                                    onLeave={handleLeave}
+                                    onDelete={handleDelete}
                                 />
-                                <h3 style={{ fontSize: '16px', fontWeight: 'bold' }}>{getRecordGroupTitle(group)}</h3>
-                                <span style={{ fontSize: '14px', color: '#666' }}>{getRecordGroupTypeLabel(group)}</span>
-                                <div style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
-                                    <RecordGroupItemActions
-                                        group={group}
-                                        sharedRecordGroups={sharedRecordGroups}
-                                        user={user}
-                                        onGroupSettingsClick={onGroupSettingsClick}
-                                        onLeave={handleLeave}
-                                        onDelete={handleDelete}
-                                    />
-                                </div>
-                            </li>
-                        </DraggableItem>
-                    )}
-                />
-            </ul>
+                            </ul>
+                        </div>
+                    </DraggableItem>
+                )}
+            />
         </div>
     );
 };

@@ -192,7 +192,10 @@ input:read-only::placeholder {background-color: var(--gray001); color: var(--gra
 .input-desc input {padding-right: 5.2rem!important;}
 .input-desc span {position: absolute; font-size: 1.2rem; color: var(--gray005); right: 1.6rem;}
 
-.input-list {display: flex; align-items: center; column-gap: 2rem;}
+.input-list {display: flex; align-items: center; flex-wrap: wrap; grid-gap: .4rem 2rem;}
+.input-list li:not(:has(> p)) {height: 3.2rem; display: flex; align-items: center;}
+.input-list li:has(> p) {width: 100%;}
+.input-list li > p {font-size: 1.2rem; color: var(--gray005);}
 
 input[type="checkbox"] {display: none;}
 input[type="checkbox"] + label {display: flex; align-items: center; column-gap: .8rem; cursor: pointer;}

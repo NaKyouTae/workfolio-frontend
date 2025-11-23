@@ -235,7 +235,6 @@ const TermsOfService: React.FC = () => {
                 </div>
             </article>
             <FloatingNavigation
-                width='200px'
                 navigationItems={[
                     { id: 'terms', label: '이용약관' },
                     { id: 'terms-1', label: '제1조 목적' },
