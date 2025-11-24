@@ -29,29 +29,22 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
         <div className="aside-group">
           <p className="aside-group-title">내 이력서</p>
           <ul className="aside-group-list">
-            {resumeDetails.length > 0 ? (
-              <>
-                {resumeDetails.map((resumeDetail) => {
-                  const isSelected = selectedResumeDetail?.id === resumeDetail.id;
-                  return (
-                    <li
-                      className={`${isSelected ? 'active' : ''}`}
-                      key={resumeDetail.id}
-                      onClick={() => onResumeSelect(resumeDetail)}
-                    >
-                      {resumeDetail.isDefault && (
-                        <span>[대표]</span>
-                      )}
-                      <p>{resumeDetail.title}</p>
-                  </li>
-                  );
-                })}
-              </>
-            ) : (
-              <li>
-                <div className="empty">아직 등록된 이력서가 없어요.</div>
-              </li>
-            )}
+            {resumeDetails.map((resumeDetail) => {
+              const isSelected = selectedResumeDetail?.id === resumeDetail.id;
+              return (
+                <li
+                  className={`${isSelected ? 'active' : ''}`}
+                  key={resumeDetail.id}
+                  onClick={() => onResumeSelect(resumeDetail)}
+                >
+                  {resumeDetail.isDefault && (
+                    <span>[대표]</span>
+                  )}
+                  <p>{resumeDetail.title}</p>
+                </li>
+              );
+            })}
+            {/* 빈 배열일 때는 아무것도 표시하지 않음 (로딩 중 이전 데이터 유지) */}
           </ul>
         </div>
       </div>

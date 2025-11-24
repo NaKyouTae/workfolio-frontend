@@ -111,6 +111,8 @@ aside {border-right: 1px solid var(--gray002); display: flex; flex-flow: column;
 .aside-home {height: 3.2rem; display: flex; align-items: center; margin: -.7rem -2rem; padding: .7rem 2rem; font-size: 1.4rem; cursor: pointer;}
 .aside-home:hover {background-color: var(--gray001);}
 .aside-home.active {background-color: var(--gray001); font-weight: 600;}
+/* 이직 관리 사이드바의 "내 이직 관리" 메뉴 호버 효과 제거 (active가 아닐 때만) */
+.aside-home:not(.active):hover {background-color: transparent;}
 
 .aside-group {display: flex; flex-flow: column; row-gap: .8rem; padding-top: 2.4rem;}
 .aside-group-title {height: 1.6rem; display: flex; align-items: center; font-size: 1.2rem; font-weight: 500; color: var(--gray005);}

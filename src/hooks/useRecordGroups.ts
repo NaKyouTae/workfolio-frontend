@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { RecordGroup, RecordGroup_RecordGroupType } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import HttpMethod from '@/enums/HttpMethod';
-import { RecordGroupDetailResponse } from '@/generated/record_group';
+import { RecordGroupDetailResponse, RecordGroupPriorityUpdateRequest, RecordGroupPriorityUpdateRequest_PriorityItem, SharedRecordGroupPriorityUpdateRequest, SharedRecordGroupPriorityUpdateRequest_PriorityItem } from '@/generated/record_group';
 import { useShallow } from 'zustand/react/shallow';
 // ============================================
 // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
@@ -54,13 +54,13 @@ export const useRecordGroups = () => {
         const { ownedGroups: sampleOwnedGroups, sharedGroups: sampleSharedGroups } = getSampleRecordGroups();
         const sampleAllGroupIds = [
             ...sampleOwnedGroups.map((group: RecordGroup) => group.id),
-            ...sampleSharedGroups.map((group: RecordGroup) => group.id)
+            // ...sampleSharedGroups.map((group: RecordGroup) => group.id)
         ];
         
         // 샘플 데이터 먼저 설정
         initializeGroups(sampleAllGroupIds);
         setOwnedRecordGroups(sampleOwnedGroups);
-        setSharedRecordGroups(sampleSharedGroups);
+        // setSharedRecordGroups(sampleSharedGroups);
         // ============================================
         
         try {
@@ -210,6 +210,82 @@ export const useRecordGroups = () => {
         }
     }, [fetchRecordGroups]);
 
+    // 기록장 우선순위 업데이트 API 호출 함수 (개인 기록장용)
+    const updatePriorities = useCallback(async (
+        type: RecordGroup_RecordGroupType,
+        recordGroups: RecordGroup[]
+    ): Promise<boolean> => {
+        try {
+            const priorities: RecordGroupPriorityUpdateRequest_PriorityItem[] = recordGroups.map((group, index) => ({
+                recordGroupId: group.id || '',
+                priority: index + 1, // 1부터 시작하는 우선순위
+            }));
+
+            const request: RecordGroupPriorityUpdateRequest = {
+                type,
+                priorities,
+            };
+
+            const response = await fetch('/api/record-groups/priorities', {
+                method: HttpMethod.PUT,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            });
+
+            if (response.ok) {
+                // 우선순위 업데이트 성공 시 레코드 그룹 목록 새로고침
+                await fetchRecordGroups();
+                return true;
+            } else {
+                const errorData = await response.json();
+                console.error('우선순위 업데이트 실패:', errorData);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error updating record group priorities:', error);
+            return false;
+        }
+    }, [fetchRecordGroups]);
+
+    // 공유 기록장 우선순위 업데이트 API 호출 함수
+    const updateSharedPriorities = useCallback(async (
+        recordGroups: RecordGroup[]
+    ): Promise<boolean> => {
+        try {
+            const priorities: SharedRecordGroupPriorityUpdateRequest_PriorityItem[] = recordGroups.map((group, index) => ({
+                recordGroupId: group.id || '',
+                priority: index + 1, // 1부터 시작하는 우선순위
+            }));
+
+            const request: SharedRecordGroupPriorityUpdateRequest = {
+                priorities,
+            };
+
+            const response = await fetch('/api/worker-record-groups/shared/priorities', {
+                method: HttpMethod.PUT,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            });
+
+            if (response.ok) {
+                // 우선순위 업데이트 성공 시 레코드 그룹 목록 새로고침
+                await fetchRecordGroups();
+                return true;
+            } else {
+                const errorData = await response.json();
+                console.error('공유 기록장 우선순위 업데이트 실패:', errorData);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error updating shared record group priorities:', error);
+            return false;
+        }
+    }, [fetchRecordGroups]);
+
     // 🔥 반환 객체를 메모이제이션하여 불필요한 리렌더링 방지
     // 함수들은 useCallback으로 안정적이므로 의존성에 포함
     return useMemo(() => ({
@@ -220,6 +296,8 @@ export const useRecordGroups = () => {
         refreshRecordGroups: fetchRecordGroups,
         fetchRecordGroupDetails,
         leaveRecordGroup,
-        deleteRecordGroup
-    }), [ownedRecordGroups, sharedRecordGroups, allRecordGroups, isLoading, fetchRecordGroups, fetchRecordGroupDetails, leaveRecordGroup, deleteRecordGroup]);
+        deleteRecordGroup,
+        updatePriorities,
+        updateSharedPriorities
+    }), [ownedRecordGroups, sharedRecordGroups, allRecordGroups, isLoading, fetchRecordGroups, fetchRecordGroupDetails, leaveRecordGroup, deleteRecordGroup, updatePriorities, updateSharedPriorities]);
 };

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CheckList } from '@/generated/common';
+import { CheckListCheckedUpdateRequest } from '@/generated/turn_over';
+import HttpMethod from '@/enums/HttpMethod';
 import EmptyState from '@/components/portal/ui/EmptyState';
 import GuideModal from '@/components/portal/ui/GuideModal';
 import { useGuide } from '@/hooks/useGuide';
@@ -7,10 +9,68 @@ import '@/styles/component-view.css';
 
 interface CheckListViewProps {
   checkList: CheckList[];
+  onUpdate?: () => void;
 }
 
-const CheckListView: React.FC<CheckListViewProps> = ({ checkList }) => {
+const CheckListView: React.FC<CheckListViewProps> = ({ checkList, onUpdate }) => {
   const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
+  // 로컬 상태로 체크리스트 관리 (낙관적 업데이트)
+  const [localCheckList, setLocalCheckList] = useState<CheckList[]>(checkList);
+
+  // checkList prop이 변경되면 로컬 상태 업데이트
+  useEffect(() => {
+    setLocalCheckList(checkList);
+  }, [checkList]);
+
+  // checkbox 클릭 핸들러
+  const handleCheckboxChange = useCallback(async (item: CheckList, checked: boolean) => {
+    if (!item.id) {
+      console.error('CheckList id is missing');
+      return;
+    }
+
+    // 낙관적 업데이트: 먼저 로컬 상태 업데이트
+    setLocalCheckList(prev => 
+      prev.map(checkItem => 
+        checkItem.id === item.id 
+          ? { ...checkItem, checked }
+          : checkItem
+      )
+    );
+
+    try {
+      const request: CheckListCheckedUpdateRequest = {
+        id: item.id,
+        checked,
+      };
+
+      const response = await fetch('/api/check-lists/checked', {
+        method: HttpMethod.PUT,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
+
+      if (response.ok) {
+        // API 성공 시 부모 컴포넌트에 알림
+        if (onUpdate) {
+          onUpdate();
+        }
+      } else {
+        // 실패 시 원래 상태로 복구
+        setLocalCheckList(checkList);
+        const errorData = await response.json();
+        console.error('체크리스트 업데이트 실패:', errorData);
+        alert('체크리스트 업데이트에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      // 에러 발생 시 원래 상태로 복구
+      setLocalCheckList(checkList);
+      console.error('Error updating check list:', error);
+      alert('체크리스트 업데이트 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  }, [checkList, onUpdate]);
   return (
     <>
         <div className="cont-tit">
@@ -19,22 +79,22 @@ const CheckListView: React.FC<CheckListViewProps> = ({ checkList }) => {
                 <button onClick={openGuide}><i className="ic-question"></i></button>
             </div>
         </div>
-        {!checkList || checkList.length === 0 ? (
-        <EmptyState text="등록된 체크리스트가 없습니다." />
+        {!localCheckList || localCheckList.length === 0 ? (
+            <EmptyState text="등록된 체크리스트가 없습니다." />
         ) : (
-        <ul className="view-box">
-            {checkList.map((item, index) => (
-            <li key={item.id || `checklist-${index}`}>
-                <input
-                    type="checkbox"
-                    checked={item.checked}
-                    onChange={() => {}}
-                    readOnly
-                />
-                <label><p>{item.content}</p></label>
-            </li>
-            ))}
-        </ul>
+            <ul className="view-box">
+                {localCheckList.map((item, index) => (
+                    <li key={item.id || `checklist-${index}`}>
+                        <input
+                            id={`checklist-${index}`}
+                            type="checkbox"
+                            checked={item.checked || false}
+                            onChange={(e) => handleCheckboxChange(item, e.target.checked)}
+                        />
+                        <label htmlFor={`checklist-${index}`}><p>{item.content}</p></label>
+                    </li>
+                ))}
+            </ul>
         )}
 
         {/* 가이드 모달 */}

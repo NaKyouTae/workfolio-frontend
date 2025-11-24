@@ -28,8 +28,8 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   onEdit, 
   duplicateResume,
   deleteResume,
-  exportPDF,
-  copyURL,
+  // exportPDF,
+  // copyURL,
 }) => {
   // 비공개 정보 보기 상태
   const [showHidden, setShowHidden] = useState(false);
@@ -48,19 +48,19 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
     }
   };
 
-  // PDF 내보내기 핸들러
-  const handleExportPDF = () => {
-    if (exportPDF) {
-      exportPDF(selectedResumeDetail?.id);
-    }
-  };
+  // // PDF 내보내기 핸들러
+  // const handleExportPDF = () => {
+  //   if (exportPDF) {
+  //     exportPDF(selectedResumeDetail?.id);
+  //   }
+  // };
 
-  // URL 복사 핸들러
-  const handleCopyURL = () => {
-    if (copyURL) {
-      copyURL(selectedResumeDetail?.publicId);
-    }
-  };
+  // // URL 복사 핸들러
+  // const handleCopyURL = () => {
+  //   if (copyURL) {
+  //     copyURL(selectedResumeDetail?.publicId);
+  //   }
+  // };
 
   // 비공개 정보 토글 핸들러
   const handleTogglePrivateInfo = () => {
@@ -252,16 +252,16 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                         onClick: handleTogglePrivateInfo,
                         className: 'line gray',
                     },
-                    {
-                        label: 'PDF 내보내기',
-                        onClick: handleExportPDF,
-                        className: 'dark-gray',
-                    },
-                    {
-                        label: 'URL 공유하기',
-                        onClick: handleCopyURL,
-                        className: 'dark-gray',
-                    },
+                    // {
+                    //     label: 'PDF 내보내기',
+                    //     onClick: handleExportPDF,
+                    //     className: 'dark-gray',
+                    // },
+                    // {
+                    //     label: 'URL 공유하기',
+                    //     onClick: handleCopyURL,
+                    //     className: 'dark-gray',
+                    // },
                 ]}
             />
         </div>

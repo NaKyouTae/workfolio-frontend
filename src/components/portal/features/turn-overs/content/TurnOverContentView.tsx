@@ -12,9 +12,10 @@ interface TurnOversContentViewProps {
   onEdit?: () => void;
   onDuplicate?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onUpdate?: () => void;
 }
 
-const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete }) => {
+const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete, onUpdate }) => {
   const [activeTab, setActiveTab] = useState<TabType>('goal');
   const [navigationItems, setNavigationItems] = useState<FloatingNavigationItem[]>([]);
 
@@ -88,6 +89,7 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
                     <TurnOverGoalView 
                     ref={goalViewRef} 
                     turnOverGoal={selectedTurnOver?.turnOverGoal || null}
+                    onUpdate={onUpdate}
                     />
                 )}
                 {activeTab === 'challenge' && (

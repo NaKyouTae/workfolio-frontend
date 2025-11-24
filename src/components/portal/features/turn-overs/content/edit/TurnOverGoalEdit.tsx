@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef, useCallback, useMemo } from 'react';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest, TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest, TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from './common/MemoEdit';
@@ -23,13 +23,30 @@ export interface TurnOverEditRef {
 
 const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ turnOverRequest, onSave }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('direction');
-  const [reason, setReason] = useState('');
-  const [goal, setGoal] = useState('');
-  const [selfIntroductions, setSelfIntroductions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]>([]);
-  const [interviewQuestions, setInterviewQuestions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest[]>([]);
-  const [checkList, setCheckList] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]>([]);
-  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
-  const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
+  
+  // 초기값을 turnOverRequest에서 바로 계산하여 깜빡임 방지
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialReason = useMemo(() => turnOverRequest?.turnOverGoal?.reason || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialGoal = useMemo(() => turnOverRequest?.turnOverGoal?.goal || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialSelfIntroductions = useMemo(() => turnOverRequest?.turnOverGoal?.selfIntroductions || [], [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialInterviewQuestions = useMemo(() => turnOverRequest?.turnOverGoal?.interviewQuestions || [], [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialCheckList = useMemo(() => turnOverRequest?.turnOverGoal?.checkList || [], [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialMemos = useMemo(() => turnOverRequest?.turnOverGoal?.memos || [], [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialAttachments = useMemo(() => turnOverRequest?.turnOverGoal?.attachments || [], [turnOverRequest?.id]);
+  
+  const [reason, setReason] = useState(initialReason);
+  const [goal, setGoal] = useState(initialGoal);
+  const [selfIntroductions, setSelfIntroductions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]>(initialSelfIntroductions);
+  const [interviewQuestions, setInterviewQuestions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_InterviewQuestionRequest[]>(initialInterviewQuestions);
+  const [checkList, setCheckList] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_CheckListRequest[]>(initialCheckList);
+  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>(initialMemos);
+  const [attachments, setAttachments] = useState<AttachmentRequest[]>(initialAttachments);
 
   // 가이드 모달
   const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
@@ -42,20 +59,22 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   const checklistRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLDivElement>(null);
 
-  // turnOverRequest가 초기 로드될 때만 state 업데이트
-  const isInitializedRef = useRef(false);
+  // turnOverRequest의 id가 변경될 때만 state 업데이트
+  const turnOverRequestIdRef = useRef<string | undefined>(turnOverRequest?.id);
   
   useEffect(() => {
-    // 초기 로드 시에만 turnOverRequest에서 state 초기화
-    if (turnOverRequest?.turnOverGoal && !isInitializedRef.current) {
-      setReason(turnOverRequest.turnOverGoal.reason || '');
-      setGoal(turnOverRequest.turnOverGoal.goal || '');
-      setSelfIntroductions(turnOverRequest.turnOverGoal.selfIntroductions || []);
-      setInterviewQuestions(turnOverRequest.turnOverGoal.interviewQuestions || []);
-      setCheckList(turnOverRequest.turnOverGoal.checkList || []);
-      setMemos(turnOverRequest.turnOverGoal.memos || []);
-      setAttachments(turnOverRequest.turnOverGoal.attachments || []);
-      isInitializedRef.current = true;
+    // turnOverRequest의 id가 변경된 경우에만 state 초기화
+    if (turnOverRequest?.id !== turnOverRequestIdRef.current) {
+      turnOverRequestIdRef.current = turnOverRequest?.id;
+      if (turnOverRequest?.turnOverGoal) {
+        setReason(turnOverRequest.turnOverGoal.reason || '');
+        setGoal(turnOverRequest.turnOverGoal.goal || '');
+        setSelfIntroductions(turnOverRequest.turnOverGoal.selfIntroductions || []);
+        setInterviewQuestions(turnOverRequest.turnOverGoal.interviewQuestions || []);
+        setCheckList(turnOverRequest.turnOverGoal.checkList || []);
+        setMemos(turnOverRequest.turnOverGoal.memos || []);
+        setAttachments(turnOverRequest.turnOverGoal.attachments || []);
+      }
     }
   }, [turnOverRequest]);
 

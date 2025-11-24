@@ -23,13 +23,14 @@ interface TurnOversContentProps {
   onEnterEdit?: (fromMode: ViewMode) => void;
   onCancelEdit?: () => void;
   onSaveComplete?: (mode: ViewMode) => void;
+  onTurnOverUpdate?: () => void;
 }
 
 const TurnOversContent  : React.FC<TurnOversContentProps> = ({ 
   selectedTurnOver, 
   isNewTurnOver = false, 
   viewMode,
-  onTurnOverSelect, 
+  onTurnOverSelect,
   onTurnOverSelectAndEdit,
   onSave, 
   onDuplicate, 
@@ -37,11 +38,24 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
   onEnterEdit,
   onCancelEdit,
   onSaveComplete,
+  onTurnOverUpdate,
 }) => {
   const { confirm } = useConfirm();
 
   // 현재 표시할 모드 결정
   const getCurrentViewMode = (): ViewMode => {
+    // viewMode가 'home'이면 무조건 home 반환 (깜빡임 방지)
+    if (viewMode === 'home') {
+      return 'home';
+    }
+    // viewMode가 명시적으로 설정되어 있으면 그것을 우선 (로딩 중에도 view 모드 유지)
+    if (viewMode === 'view' || viewMode === 'edit') {
+      if (isNewTurnOver) {
+        return 'edit';
+      }
+      return viewMode;
+    }
+    // selectedTurnOver가 없으면 home 반환
     if (!selectedTurnOver) {
       return 'home';
     }
@@ -87,9 +101,10 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
     }
   };
 
-  const handleSave = (data: TurnOverUpsertRequest, mode: ViewMode = 'view') => {
+  const handleSave = async (data: TurnOverUpsertRequest, mode: ViewMode = 'view') => {
     if (onSave) {
-      onSave(data);
+      // onSave가 완료된 후 onSaveComplete 호출
+      await onSave(data);
     }
     if (onSaveComplete) {
       onSaveComplete(mode);
@@ -130,6 +145,12 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
     }
   };
 
+  const handleTurnOverUpdate = () => {
+    if (onTurnOverUpdate) {
+      onTurnOverUpdate();
+    }
+  };
+
   return (
     <section>
         {currentViewMode === 'home' && (
@@ -146,6 +167,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
               onEdit={handleEditCurrentTurnOver}
               onDuplicate={handleDuplicate}
               onDelete={handleDelete}
+              onUpdate={handleTurnOverUpdate}
           />
         )}
         {currentViewMode === 'edit' && isNewTurnOver && (

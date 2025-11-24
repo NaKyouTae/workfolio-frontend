@@ -63,6 +63,34 @@ export interface RecordGroupResponse {
   recordGroup?: RecordGroup | undefined;
 }
 
+export interface RecordGroupPriorityUpdateRequest {
+  type: RecordGroup_RecordGroupType;
+  priorities: RecordGroupPriorityUpdateRequest_PriorityItem[];
+}
+
+export interface RecordGroupPriorityUpdateRequest_PriorityItem {
+  recordGroupId: string;
+  priority: number;
+}
+
+export interface WorkerRecordGroupPriorityUpdateRequest {
+  priorities: WorkerRecordGroupPriorityUpdateRequest_PriorityItem[];
+}
+
+export interface WorkerRecordGroupPriorityUpdateRequest_PriorityItem {
+  workerRecordGroupId: string;
+  priority: number;
+}
+
+export interface SharedRecordGroupPriorityUpdateRequest {
+  priorities: SharedRecordGroupPriorityUpdateRequest_PriorityItem[];
+}
+
+export interface SharedRecordGroupPriorityUpdateRequest_PriorityItem {
+  recordGroupId: string;
+  priority: number;
+}
+
 function createBaseCreateRecordGroupRequest(): CreateRecordGroupRequest {
   return { title: "", color: "", type: 0, priority: 0 };
 }
@@ -700,6 +728,477 @@ export const RecordGroupResponse: MessageFns<RecordGroupResponse> = {
     message.recordGroup = (object.recordGroup !== undefined && object.recordGroup !== null)
       ? RecordGroup.fromPartial(object.recordGroup)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseRecordGroupPriorityUpdateRequest(): RecordGroupPriorityUpdateRequest {
+  return { type: 0, priorities: [] };
+}
+
+export const RecordGroupPriorityUpdateRequest: MessageFns<RecordGroupPriorityUpdateRequest> = {
+  encode(message: RecordGroupPriorityUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    for (const v of message.priorities) {
+      RecordGroupPriorityUpdateRequest_PriorityItem.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecordGroupPriorityUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecordGroupPriorityUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = reader.int32() as any;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.priorities.push(RecordGroupPriorityUpdateRequest_PriorityItem.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RecordGroupPriorityUpdateRequest {
+    return {
+      type: isSet(object.type) ? recordGroup_RecordGroupTypeFromJSON(object.type) : 0,
+      priorities: globalThis.Array.isArray(object?.priorities)
+        ? object.priorities.map((e: any) => RecordGroupPriorityUpdateRequest_PriorityItem.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: RecordGroupPriorityUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.type !== 0) {
+      obj.type = recordGroup_RecordGroupTypeToJSON(message.type);
+    }
+    if (message.priorities?.length) {
+      obj.priorities = message.priorities.map((e) => RecordGroupPriorityUpdateRequest_PriorityItem.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RecordGroupPriorityUpdateRequest>, I>>(
+    base?: I,
+  ): RecordGroupPriorityUpdateRequest {
+    return RecordGroupPriorityUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RecordGroupPriorityUpdateRequest>, I>>(
+    object: I,
+  ): RecordGroupPriorityUpdateRequest {
+    const message = createBaseRecordGroupPriorityUpdateRequest();
+    message.type = object.type ?? 0;
+    message.priorities = object.priorities?.map((e) => RecordGroupPriorityUpdateRequest_PriorityItem.fromPartial(e)) ||
+      [];
+    return message;
+  },
+};
+
+function createBaseRecordGroupPriorityUpdateRequest_PriorityItem(): RecordGroupPriorityUpdateRequest_PriorityItem {
+  return { recordGroupId: "", priority: 0 };
+}
+
+export const RecordGroupPriorityUpdateRequest_PriorityItem: MessageFns<RecordGroupPriorityUpdateRequest_PriorityItem> =
+  {
+    encode(
+      message: RecordGroupPriorityUpdateRequest_PriorityItem,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.recordGroupId !== "") {
+        writer.uint32(10).string(message.recordGroupId);
+      }
+      if (message.priority !== 0) {
+        writer.uint32(16).uint64(message.priority);
+      }
+      return writer;
+    },
+
+    decode(input: BinaryReader | Uint8Array, length?: number): RecordGroupPriorityUpdateRequest_PriorityItem {
+      const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseRecordGroupPriorityUpdateRequest_PriorityItem();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.recordGroupId = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 16) {
+              break;
+            }
+
+            message.priority = longToNumber(reader.uint64());
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    fromJSON(object: any): RecordGroupPriorityUpdateRequest_PriorityItem {
+      return {
+        recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
+        priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
+      };
+    },
+
+    toJSON(message: RecordGroupPriorityUpdateRequest_PriorityItem): unknown {
+      const obj: any = {};
+      if (message.recordGroupId !== "") {
+        obj.recordGroupId = message.recordGroupId;
+      }
+      if (message.priority !== 0) {
+        obj.priority = Math.round(message.priority);
+      }
+      return obj;
+    },
+
+    create<I extends Exact<DeepPartial<RecordGroupPriorityUpdateRequest_PriorityItem>, I>>(
+      base?: I,
+    ): RecordGroupPriorityUpdateRequest_PriorityItem {
+      return RecordGroupPriorityUpdateRequest_PriorityItem.fromPartial(base ?? ({} as any));
+    },
+    fromPartial<I extends Exact<DeepPartial<RecordGroupPriorityUpdateRequest_PriorityItem>, I>>(
+      object: I,
+    ): RecordGroupPriorityUpdateRequest_PriorityItem {
+      const message = createBaseRecordGroupPriorityUpdateRequest_PriorityItem();
+      message.recordGroupId = object.recordGroupId ?? "";
+      message.priority = object.priority ?? 0;
+      return message;
+    },
+  };
+
+function createBaseWorkerRecordGroupPriorityUpdateRequest(): WorkerRecordGroupPriorityUpdateRequest {
+  return { priorities: [] };
+}
+
+export const WorkerRecordGroupPriorityUpdateRequest: MessageFns<WorkerRecordGroupPriorityUpdateRequest> = {
+  encode(message: WorkerRecordGroupPriorityUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.priorities) {
+      WorkerRecordGroupPriorityUpdateRequest_PriorityItem.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WorkerRecordGroupPriorityUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkerRecordGroupPriorityUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.priorities.push(WorkerRecordGroupPriorityUpdateRequest_PriorityItem.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkerRecordGroupPriorityUpdateRequest {
+    return {
+      priorities: globalThis.Array.isArray(object?.priorities)
+        ? object.priorities.map((e: any) => WorkerRecordGroupPriorityUpdateRequest_PriorityItem.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: WorkerRecordGroupPriorityUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.priorities?.length) {
+      obj.priorities = message.priorities.map((e) => WorkerRecordGroupPriorityUpdateRequest_PriorityItem.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WorkerRecordGroupPriorityUpdateRequest>, I>>(
+    base?: I,
+  ): WorkerRecordGroupPriorityUpdateRequest {
+    return WorkerRecordGroupPriorityUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WorkerRecordGroupPriorityUpdateRequest>, I>>(
+    object: I,
+  ): WorkerRecordGroupPriorityUpdateRequest {
+    const message = createBaseWorkerRecordGroupPriorityUpdateRequest();
+    message.priorities =
+      object.priorities?.map((e) => WorkerRecordGroupPriorityUpdateRequest_PriorityItem.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseWorkerRecordGroupPriorityUpdateRequest_PriorityItem(): WorkerRecordGroupPriorityUpdateRequest_PriorityItem {
+  return { workerRecordGroupId: "", priority: 0 };
+}
+
+export const WorkerRecordGroupPriorityUpdateRequest_PriorityItem: MessageFns<
+  WorkerRecordGroupPriorityUpdateRequest_PriorityItem
+> = {
+  encode(
+    message: WorkerRecordGroupPriorityUpdateRequest_PriorityItem,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.workerRecordGroupId !== "") {
+      writer.uint32(10).string(message.workerRecordGroupId);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(16).uint64(message.priority);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WorkerRecordGroupPriorityUpdateRequest_PriorityItem {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkerRecordGroupPriorityUpdateRequest_PriorityItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.workerRecordGroupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.priority = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkerRecordGroupPriorityUpdateRequest_PriorityItem {
+    return {
+      workerRecordGroupId: isSet(object.workerRecordGroupId) ? globalThis.String(object.workerRecordGroupId) : "",
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
+    };
+  },
+
+  toJSON(message: WorkerRecordGroupPriorityUpdateRequest_PriorityItem): unknown {
+    const obj: any = {};
+    if (message.workerRecordGroupId !== "") {
+      obj.workerRecordGroupId = message.workerRecordGroupId;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WorkerRecordGroupPriorityUpdateRequest_PriorityItem>, I>>(
+    base?: I,
+  ): WorkerRecordGroupPriorityUpdateRequest_PriorityItem {
+    return WorkerRecordGroupPriorityUpdateRequest_PriorityItem.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WorkerRecordGroupPriorityUpdateRequest_PriorityItem>, I>>(
+    object: I,
+  ): WorkerRecordGroupPriorityUpdateRequest_PriorityItem {
+    const message = createBaseWorkerRecordGroupPriorityUpdateRequest_PriorityItem();
+    message.workerRecordGroupId = object.workerRecordGroupId ?? "";
+    message.priority = object.priority ?? 0;
+    return message;
+  },
+};
+
+function createBaseSharedRecordGroupPriorityUpdateRequest(): SharedRecordGroupPriorityUpdateRequest {
+  return { priorities: [] };
+}
+
+export const SharedRecordGroupPriorityUpdateRequest: MessageFns<SharedRecordGroupPriorityUpdateRequest> = {
+  encode(message: SharedRecordGroupPriorityUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.priorities) {
+      SharedRecordGroupPriorityUpdateRequest_PriorityItem.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SharedRecordGroupPriorityUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSharedRecordGroupPriorityUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.priorities.push(SharedRecordGroupPriorityUpdateRequest_PriorityItem.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SharedRecordGroupPriorityUpdateRequest {
+    return {
+      priorities: globalThis.Array.isArray(object?.priorities)
+        ? object.priorities.map((e: any) => SharedRecordGroupPriorityUpdateRequest_PriorityItem.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: SharedRecordGroupPriorityUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.priorities?.length) {
+      obj.priorities = message.priorities.map((e) => SharedRecordGroupPriorityUpdateRequest_PriorityItem.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SharedRecordGroupPriorityUpdateRequest>, I>>(
+    base?: I,
+  ): SharedRecordGroupPriorityUpdateRequest {
+    return SharedRecordGroupPriorityUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SharedRecordGroupPriorityUpdateRequest>, I>>(
+    object: I,
+  ): SharedRecordGroupPriorityUpdateRequest {
+    const message = createBaseSharedRecordGroupPriorityUpdateRequest();
+    message.priorities =
+      object.priorities?.map((e) => SharedRecordGroupPriorityUpdateRequest_PriorityItem.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSharedRecordGroupPriorityUpdateRequest_PriorityItem(): SharedRecordGroupPriorityUpdateRequest_PriorityItem {
+  return { recordGroupId: "", priority: 0 };
+}
+
+export const SharedRecordGroupPriorityUpdateRequest_PriorityItem: MessageFns<
+  SharedRecordGroupPriorityUpdateRequest_PriorityItem
+> = {
+  encode(
+    message: SharedRecordGroupPriorityUpdateRequest_PriorityItem,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.recordGroupId !== "") {
+      writer.uint32(10).string(message.recordGroupId);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(16).uint64(message.priority);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SharedRecordGroupPriorityUpdateRequest_PriorityItem {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSharedRecordGroupPriorityUpdateRequest_PriorityItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.recordGroupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.priority = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SharedRecordGroupPriorityUpdateRequest_PriorityItem {
+    return {
+      recordGroupId: isSet(object.recordGroupId) ? globalThis.String(object.recordGroupId) : "",
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
+    };
+  },
+
+  toJSON(message: SharedRecordGroupPriorityUpdateRequest_PriorityItem): unknown {
+    const obj: any = {};
+    if (message.recordGroupId !== "") {
+      obj.recordGroupId = message.recordGroupId;
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SharedRecordGroupPriorityUpdateRequest_PriorityItem>, I>>(
+    base?: I,
+  ): SharedRecordGroupPriorityUpdateRequest_PriorityItem {
+    return SharedRecordGroupPriorityUpdateRequest_PriorityItem.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<SharedRecordGroupPriorityUpdateRequest_PriorityItem>, I>>(
+    object: I,
+  ): SharedRecordGroupPriorityUpdateRequest_PriorityItem {
+    const message = createBaseSharedRecordGroupPriorityUpdateRequest_PriorityItem();
+    message.recordGroupId = object.recordGroupId ?? "";
+    message.priority = object.priority ?? 0;
     return message;
   },
 };

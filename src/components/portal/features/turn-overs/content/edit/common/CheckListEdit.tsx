@@ -35,11 +35,12 @@ const CheckListItem: React.FC<CheckListItemProps> = ({
             <ul className="edit-cont type2">
                 <li>
                     <input
+                        id={`checklist-${index}`}
                         type="checkbox"
                         checked={item.checked || false}
                         onChange={(e) => onUpdateChecked(index, e.target.checked)}
                     />
-                    <label>
+                    <label htmlFor={`checklist-${index}`}>
                         <Input
                             type="text"
                             placeholder="내용을 입력해 주세요."
@@ -130,23 +131,23 @@ const CheckListEdit: React.FC<CheckListEditProps> = ({
         </div>
 
         {checkList.length === 0 ? (
-        <EmptyState text="체크리스트를 추가해 주세요." />
+            <EmptyState text="체크리스트를 추가해 주세요." />
         ) : (
-        <DraggableList
-            items={checkList}
-            onReorder={handleReorder}
-            getItemId={(_, idx) => `checkList-${idx}`}
-            renderItem={(item, index) => (
-            <CheckListItem
-                key={`checkList-${index}`}
-                item={item}
-                index={index}
-                onUpdateChecked={updateCheckListChecked}
-                onUpdateContent={updateCheckListContent}
-                onRemove={removeCheckListItem}
+            <DraggableList
+                items={checkList}
+                onReorder={handleReorder}
+                getItemId={(_, idx) => `checkList-${idx}`}
+                renderItem={(item, index) => (
+                    <CheckListItem
+                        key={`checkList-${index}`}
+                        item={item}
+                        index={index}
+                        onUpdateChecked={updateCheckListChecked}
+                        onUpdateContent={updateCheckListContent}
+                        onRemove={removeCheckListItem}
+                    />
+                )}
             />
-            )}
-        />
         )}
 
         {/* 가이드 모달 */}

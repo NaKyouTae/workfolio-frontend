@@ -1,14 +1,73 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { TurnOverDetail } from '@/generated/common'
-import { TurnOverDetailResponse, TurnOverUpsertRequest } from '@/generated/turn_over'
+import { TurnOverDetailResponse, TurnOverDetailListResponse, TurnOverUpsertRequest } from '@/generated/turn_over'
 import { createAllSampleTurnOvers } from '@/utils/sampleTurnOverData'
 
+// 모듈 레벨 캐시: 페이지 리마운트 시에도 데이터 유지
+let cachedTurnOvers: TurnOverDetail[] = [];
+let isInitialized = false;
+// 모듈 레벨 로딩 상태: 모든 컴포넌트가 공유
+let globalIsLoading = false;
+// 로딩 상태 변경 리스너들
+const loadingListeners = new Set<(loading: boolean) => void>();
+// turnOvers 상태 변경 리스너들
+const turnOversListeners = new Set<(turnOvers: TurnOverDetail[]) => void>();
+
+// 로딩 상태 변경 알림
+function notifyLoadingChange(loading: boolean) {
+    globalIsLoading = loading;
+    loadingListeners.forEach(listener => listener(loading));
+}
+
+// turnOvers 상태 변경 알림
+function notifyTurnOversChange(turnOvers: TurnOverDetail[]) {
+    cachedTurnOvers = turnOvers;
+    turnOversListeners.forEach(listener => listener(turnOvers));
+}
+
 export function useTurnOver() {
-    const [turnOvers, setTurnOvers] = useState<TurnOverDetail[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    // 캐시된 데이터가 있으면 초기값으로 사용
+    const [turnOvers, setTurnOvers] = useState<TurnOverDetail[]>(cachedTurnOvers)
+    // 모듈 레벨 로딩 상태를 구독
+    const [isLoading, setIsLoading] = useState(() => {
+        // 캐시된 데이터가 있으면 로딩하지 않음
+        if (cachedTurnOvers.length > 0) {
+            return false;
+        }
+        // 초기화되지 않았고 데이터도 없으면 로딩
+        return !isInitialized;
+    })
+
+    // 로딩 상태 리스너 등록
+    useEffect(() => {
+        const loadingListener = (loading: boolean) => {
+            setIsLoading(loading);
+        };
+        loadingListeners.add(loadingListener);
+        // 초기값 설정
+        setIsLoading(globalIsLoading);
+        
+        return () => {
+            loadingListeners.delete(loadingListener);
+        };
+    }, [])
+
+    // turnOvers 상태 리스너 등록
+    useEffect(() => {
+        const turnOversListener = (newTurnOvers: TurnOverDetail[]) => {
+            setTurnOvers(newTurnOvers);
+        };
+        turnOversListeners.add(turnOversListener);
+        // 초기값 설정
+        setTurnOvers(cachedTurnOvers);
+        
+        return () => {
+            turnOversListeners.delete(turnOversListener);
+        };
+    }, [])
 
     const fetchTurnOvers = useCallback(async (): Promise<TurnOverDetail[]> => {
-        setIsLoading(true)
+        notifyLoadingChange(true)
         try {
             // 토큰 확인 (useUser 대신 직접 확인하여 불필요한 의존성 제거)
             const accessToken = document.cookie
@@ -19,11 +78,14 @@ export function useTurnOver() {
             if (!accessToken) {
                 // 로그인하지 않은 경우 샘플 데이터 사용
                 const sampleTurnOvers = createAllSampleTurnOvers()
-                setTurnOvers(sampleTurnOvers)
-                return sampleTurnOvers
+                const dataToUse = cachedTurnOvers.length > 0 ? cachedTurnOvers : sampleTurnOvers
+                notifyTurnOversChange(dataToUse) // 모든 컴포넌트에 알림
+                isInitialized = true
+                notifyLoadingChange(false)
+                return dataToUse
             }
 
-            const response = await fetch('/api/turn-over', {
+            const response = await fetch('/api/turn-overs/details', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,32 +93,40 @@ export function useTurnOver() {
             })
 
             if (response.ok) {
-                const data = await response.json()
+                const data: TurnOverDetailListResponse = await response.json()
                 const fetchedTurnOvers = data.turnOvers || []
-                setTurnOvers(fetchedTurnOvers)
-                return fetchedTurnOvers
+                // 새 데이터가 있으면 교체하고 캐시 업데이트
+                if (fetchedTurnOvers.length > 0) {
+                    notifyTurnOversChange(fetchedTurnOvers) // 모든 컴포넌트에 알림
+                } else if (cachedTurnOvers.length === 0) {
+                    // 새 데이터가 없고 캐시도 없으면 빈 배열로 설정
+                    notifyTurnOversChange([]) // 모든 컴포넌트에 알림
+                }
+                // 새 데이터가 없어도 이전 데이터는 유지 (빈 배열로 교체하지 않음)
+                isInitialized = true
+                notifyLoadingChange(false) // 명시적으로 로딩 상태 해제
+                return cachedTurnOvers.length > 0 ? cachedTurnOvers : fetchedTurnOvers
             } else {
-                // API 실패 시에도 샘플 데이터 사용
-                const sampleTurnOvers = createAllSampleTurnOvers()
-                setTurnOvers(sampleTurnOvers)
-                return sampleTurnOvers
+                // API 실패 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
+                const fallbackData = cachedTurnOvers.length > 0 ? cachedTurnOvers : createAllSampleTurnOvers()
+                notifyTurnOversChange(fallbackData) // 모든 컴포넌트에 알림
+                isInitialized = true
+                notifyLoadingChange(false) // 명시적으로 로딩 상태 해제
+                return fallbackData
             }
         } catch (error) {
             console.error('Error fetching turn overs:', error)
-            // 에러 발생 시에도 샘플 데이터 사용
-            const sampleTurnOvers = createAllSampleTurnOvers()
-            setTurnOvers(sampleTurnOvers)
-            return sampleTurnOvers
+            // 에러 발생 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
+            const fallbackData = cachedTurnOvers.length > 0 ? cachedTurnOvers : createAllSampleTurnOvers()
+            notifyTurnOversChange(fallbackData) // 모든 컴포넌트에 알림
+            isInitialized = true
+            notifyLoadingChange(false) // 명시적으로 로딩 상태 해제
+            return fallbackData
         } finally {
-            setIsLoading(false)
+            // finally 블록에서도 확실히 로딩 상태 해제
+            notifyLoadingChange(false)
         }
     }, [])
-
-    // 초기 로드 (한 번만 실행)
-    useEffect(() => {
-        fetchTurnOvers()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []) // 의도적으로 빈 배열 - 마운트 시 한 번만 실행
 
     const refreshTurnOvers = useCallback(() => {
         fetchTurnOvers()
@@ -274,7 +344,7 @@ export function useTurnOver() {
             })
 
             if (response.ok) {
-                // 목록 새로고침
+                // 목록 새로고침 (캐시 업데이트됨)
                 const updatedTurnOvers = await fetchTurnOvers()
                 // 저장된 ID 반환 (새로 생성된 경우 목록에서 가장 최근 항목 찾기)
                 if (filteredRequest.id) {
@@ -314,7 +384,7 @@ export function useTurnOver() {
             })
 
             if (response.ok) {
-                // 목록 새로고침
+                // 목록 새로고침 (캐시 업데이트됨)
                 await fetchTurnOvers()
                 return true
             } else {
@@ -347,7 +417,7 @@ export function useTurnOver() {
             })
 
             if (response.ok) {
-                // 목록 새로고침
+                // 목록 새로고침 (캐시 업데이트됨)
                 await fetchTurnOvers()
                 return true
             } else {

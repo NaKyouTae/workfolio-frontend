@@ -38,14 +38,17 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
   const [selectedResumeDetail, setSelectedResumeDetail] = useState<ResumeDetail | null>(null);
   
   // 편집 모드 상태
-  const [isEditMode, setIsEditMode] = useState(false);
+  // initialResumeId가 있으면 초기 상태를 바로 설정하여 홈 화면이 먼저 보이는 것을 방지
+  const [isEditMode, setIsEditMode] = useState(initialEditMode);
   const [isCreateMode, setIsCreateMode] = useState(false);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(!!initialResumeId); // 초기 로딩 상태
 
   // 편집 모드 진입 위치 추적 ('home' | 'view')
   const [editFrom, setEditFrom] = useState<'home' | 'view'>('view');
 
   // 초기 로드 여부를 추적하는 ref
   const userFetchAttempted = useRef(false);
+  const resumeDetailsFetched = useRef(false);
   
   // 편집 완료 후 강제 업데이트를 위한 ref
   const forceUpdateAfterSave = useRef(false);
@@ -61,20 +64,35 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 이력서 목록은 한 번만 패칭 (페이지 리마운트 시 중복 패칭 방지)
   useEffect(() => {
-    fetchResumeDetails();
-  }, [fetchResumeDetails]);
+    if (!resumeDetailsFetched.current) {
+      resumeDetailsFetched.current = true;
+      fetchResumeDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // URL 파라미터로 초기 상태 설정
+  // URL 파라미터로 초기 상태 설정 (resumeDetails가 로드된 후에만 실행)
   useEffect(() => {
     if (initialResumeId && resumeDetails.length > 0) {
+      setIsLoadingDetail(true);
       const resume = resumeDetails.find(r => r.id === initialResumeId);
       if (resume) {
+        // 이미 같은 이력서가 선택되어 있고 편집 모드도 같으면 업데이트하지 않음
+        if (selectedResumeDetail?.id === resume.id && isEditMode === initialEditMode) {
+          setIsLoadingDetail(false);
+          return;
+        }
         setSelectedResumeDetail(resume);
         setIsEditMode(initialEditMode);
         setEditFrom(initialEditMode ? 'view' : 'view');
       }
+      setIsLoadingDetail(false);
+    } else if (!initialResumeId) {
+      setIsLoadingDetail(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialResumeId, initialEditMode, resumeDetails]);
 
   // resumeDetails가 업데이트되면 selectedResumeDetail도 업데이트
@@ -121,6 +139,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
     setIsEditMode(false);
     forceUpdateAfterSave.current = true; // 강제 업데이트 플래그 설정
     await refreshResumeDetails();
+    resumeDetailsFetched.current = true; // 패칭 완료 플래그 유지
     if (selectedResumeDetail) {
       router.push(`/careers/${selectedResumeDetail.id}`);
     }
@@ -144,6 +163,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
   // 삭제 성공 후 홈으로 이동
   const handleDeleteSuccess = async () => {
     await refreshResumeDetails();
+    resumeDetailsFetched.current = true; // 패칭 완료 플래그 유지
     goHome();
   };
 
@@ -151,6 +171,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
   const goHome = () => {
     setSelectedResumeDetail(null);
     setIsEditMode(false);
+    setIsLoadingDetail(false);
     router.push('/careers');
   };
 
@@ -164,11 +185,30 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
     setIsEditMode(false);
     setIsCreateMode(false);
     await refreshResumeDetails();
+    resumeDetailsFetched.current = true; // 패칭 완료 플래그 유지
     // 생성된 이력서가 있으면 해당 페이지로 이동
     if (resumeId) {
       router.push(`/careers/${resumeId}`);
     }
   };
+
+  // 데이터 로딩 중이면 로딩 화면 표시 (홈 화면이 먼저 보이는 것을 방지)
+  if (isLoadingDetail) {
+    return (
+      <main>
+        <CareerSidebar 
+          resumeDetails={resumeDetails}
+          selectedResumeDetail={selectedResumeDetail || null}
+          onResumeSelect={viewResumeDetail}
+          onResumeCreated={handleResumeCreated}
+          onGoHome={goHome}
+        />
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div>로딩 중...</div>
+        </div>
+      </main>
+    );
+  }
 
   // 메인 뷰
   return (

@@ -315,7 +315,7 @@ message RecordGroup {
   bool is_default = 4;
   string public_id = 5;
   string color = 6;
-  RecordGroupRole role = 7;
+  RecordGroupRole default_role = 7;
 
   uint64 priority = 30;
 
@@ -336,6 +336,7 @@ message WorkerRecordGroup {
   string id = 1;
   string public_id = 2;
   RecordGroupRole role = 3;
+  uint64 priority = 4;
 
   Worker worker = 50;
   RecordGroup record_group = 51;

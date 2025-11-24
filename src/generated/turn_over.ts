@@ -11,6 +11,7 @@ import {
   ApplicationStage_ApplicationStageStatus,
   applicationStage_ApplicationStageStatusFromJSON,
   applicationStage_ApplicationStageStatusToJSON,
+  CheckList,
   JobApplication_JobApplicationStatus,
   jobApplication_JobApplicationStatusFromJSON,
   jobApplication_JobApplicationStatusToJSON,
@@ -138,6 +139,15 @@ export interface TurnOverResponse {
 
 export interface TurnOverDetailResponse {
   turnOver?: TurnOverDetail | undefined;
+}
+
+export interface CheckListCheckedUpdateRequest {
+  id: string;
+  checked: boolean;
+}
+
+export interface CheckListResponse {
+  checkList?: CheckList | undefined;
 }
 
 function createBaseTurnOverUpsertRequest(): TurnOverUpsertRequest {
@@ -2188,6 +2198,144 @@ export const TurnOverDetailResponse: MessageFns<TurnOverDetailResponse> = {
     const message = createBaseTurnOverDetailResponse();
     message.turnOver = (object.turnOver !== undefined && object.turnOver !== null)
       ? TurnOverDetail.fromPartial(object.turnOver)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseCheckListCheckedUpdateRequest(): CheckListCheckedUpdateRequest {
+  return { id: "", checked: false };
+}
+
+export const CheckListCheckedUpdateRequest: MessageFns<CheckListCheckedUpdateRequest> = {
+  encode(message: CheckListCheckedUpdateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.checked !== false) {
+      writer.uint32(16).bool(message.checked);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CheckListCheckedUpdateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCheckListCheckedUpdateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.checked = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CheckListCheckedUpdateRequest {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      checked: isSet(object.checked) ? globalThis.Boolean(object.checked) : false,
+    };
+  },
+
+  toJSON(message: CheckListCheckedUpdateRequest): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.checked !== false) {
+      obj.checked = message.checked;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CheckListCheckedUpdateRequest>, I>>(base?: I): CheckListCheckedUpdateRequest {
+    return CheckListCheckedUpdateRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CheckListCheckedUpdateRequest>, I>>(
+    object: I,
+  ): CheckListCheckedUpdateRequest {
+    const message = createBaseCheckListCheckedUpdateRequest();
+    message.id = object.id ?? "";
+    message.checked = object.checked ?? false;
+    return message;
+  },
+};
+
+function createBaseCheckListResponse(): CheckListResponse {
+  return { checkList: undefined };
+}
+
+export const CheckListResponse: MessageFns<CheckListResponse> = {
+  encode(message: CheckListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.checkList !== undefined) {
+      CheckList.encode(message.checkList, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CheckListResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCheckListResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.checkList = CheckList.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CheckListResponse {
+    return { checkList: isSet(object.checkList) ? CheckList.fromJSON(object.checkList) : undefined };
+  },
+
+  toJSON(message: CheckListResponse): unknown {
+    const obj: any = {};
+    if (message.checkList !== undefined) {
+      obj.checkList = CheckList.toJSON(message.checkList);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CheckListResponse>, I>>(base?: I): CheckListResponse {
+    return CheckListResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CheckListResponse>, I>>(object: I): CheckListResponse {
+    const message = createBaseCheckListResponse();
+    message.checkList = (object.checkList !== undefined && object.checkList !== null)
+      ? CheckList.fromPartial(object.checkList)
       : undefined;
     return message;
   },

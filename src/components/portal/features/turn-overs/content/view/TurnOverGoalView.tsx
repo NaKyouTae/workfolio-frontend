@@ -11,13 +11,14 @@ import { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigatio
 
 interface TurnOverGoalViewProps {
   turnOverGoal: TurnOverGoalDetail | null;
+  onUpdate?: () => void;
 }
 
 export interface TurnOverViewRef {
   getNavigationItems: () => FloatingNavigationItem[];
 }
 
-const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ turnOverGoal }, ref) => {
+const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ turnOverGoal, onUpdate }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('direction');
   
   // 각 섹션에 대한 ref
@@ -156,7 +157,10 @@ const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ t
 
         {/* 체크리스트 */}
         <div ref={checkListRef} className="cont-box">
-            <CheckListView checkList={turnOverGoal.checkList || []} />
+            <CheckListView 
+                checkList={turnOverGoal.checkList || []} 
+                onUpdate={onUpdate}
+            />
         </div>
 
         {/* 첨부 */}

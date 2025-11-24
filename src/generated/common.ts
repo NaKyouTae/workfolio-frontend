@@ -707,7 +707,7 @@ export interface RecordGroup {
   isDefault: boolean;
   publicId: string;
   color: string;
-  role: RecordGroup_RecordGroupRole;
+  defaultRole: RecordGroup_RecordGroupRole;
   priority: number;
   worker?: Worker | undefined;
   createdAt: number;
@@ -808,6 +808,7 @@ export interface WorkerRecordGroup {
   id: string;
   publicId: string;
   role: WorkerRecordGroup_RecordGroupRole;
+  priority: number;
   worker?: Worker | undefined;
   recordGroup?: RecordGroup | undefined;
   createdAt: number;
@@ -4862,7 +4863,7 @@ function createBaseRecordGroup(): RecordGroup {
     isDefault: false,
     publicId: "",
     color: "",
-    role: 0,
+    defaultRole: 0,
     priority: 0,
     worker: undefined,
     createdAt: 0,
@@ -4890,8 +4891,8 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     if (message.color !== "") {
       writer.uint32(50).string(message.color);
     }
-    if (message.role !== 0) {
-      writer.uint32(56).int32(message.role);
+    if (message.defaultRole !== 0) {
+      writer.uint32(56).int32(message.defaultRole);
     }
     if (message.priority !== 0) {
       writer.uint32(240).uint64(message.priority);
@@ -4968,7 +4969,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
             break;
           }
 
-          message.role = reader.int32() as any;
+          message.defaultRole = reader.int32() as any;
           continue;
         }
         case 30: {
@@ -5020,7 +5021,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
       isDefault: isSet(object.isDefault) ? globalThis.Boolean(object.isDefault) : false,
       publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       color: isSet(object.color) ? globalThis.String(object.color) : "",
-      role: isSet(object.role) ? recordGroup_RecordGroupRoleFromJSON(object.role) : 0,
+      defaultRole: isSet(object.defaultRole) ? recordGroup_RecordGroupRoleFromJSON(object.defaultRole) : 0,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
@@ -5048,8 +5049,8 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     if (message.color !== "") {
       obj.color = message.color;
     }
-    if (message.role !== 0) {
-      obj.role = recordGroup_RecordGroupRoleToJSON(message.role);
+    if (message.defaultRole !== 0) {
+      obj.defaultRole = recordGroup_RecordGroupRoleToJSON(message.defaultRole);
     }
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
@@ -5077,7 +5078,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     message.isDefault = object.isDefault ?? false;
     message.publicId = object.publicId ?? "";
     message.color = object.color ?? "";
-    message.role = object.role ?? 0;
+    message.defaultRole = object.defaultRole ?? 0;
     message.priority = object.priority ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
@@ -5089,7 +5090,16 @@ export const RecordGroup: MessageFns<RecordGroup> = {
 };
 
 function createBaseWorkerRecordGroup(): WorkerRecordGroup {
-  return { id: "", publicId: "", role: 0, worker: undefined, recordGroup: undefined, createdAt: 0, updatedAt: 0 };
+  return {
+    id: "",
+    publicId: "",
+    role: 0,
+    priority: 0,
+    worker: undefined,
+    recordGroup: undefined,
+    createdAt: 0,
+    updatedAt: 0,
+  };
 }
 
 export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
@@ -5102,6 +5112,9 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
     }
     if (message.role !== 0) {
       writer.uint32(24).int32(message.role);
+    }
+    if (message.priority !== 0) {
+      writer.uint32(32).uint64(message.priority);
     }
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(402).fork()).join();
@@ -5147,6 +5160,14 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
           }
 
           message.role = reader.int32() as any;
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.priority = longToNumber(reader.uint64());
           continue;
         }
         case 50: {
@@ -5195,6 +5216,7 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       publicId: isSet(object.publicId) ? globalThis.String(object.publicId) : "",
       role: isSet(object.role) ? workerRecordGroup_RecordGroupRoleFromJSON(object.role) : 0,
+      priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       recordGroup: isSet(object.recordGroup) ? RecordGroup.fromJSON(object.recordGroup) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
@@ -5212,6 +5234,9 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
     }
     if (message.role !== 0) {
       obj.role = workerRecordGroup_RecordGroupRoleToJSON(message.role);
+    }
+    if (message.priority !== 0) {
+      obj.priority = Math.round(message.priority);
     }
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
@@ -5236,6 +5261,7 @@ export const WorkerRecordGroup: MessageFns<WorkerRecordGroup> = {
     message.id = object.id ?? "";
     message.publicId = object.publicId ?? "";
     message.role = object.role ?? 0;
+    message.priority = object.priority ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
       : undefined;

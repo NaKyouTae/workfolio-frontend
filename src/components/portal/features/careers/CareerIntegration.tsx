@@ -3,6 +3,7 @@ import { ResumeDetail } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
 
 import Footer from "@/components/portal/layouts/Footer"
+import Dropdown from '../../ui/Dropdown';
 
 interface CareerIntegrationProps {
   resumeDetails: ResumeDetail[];
@@ -22,8 +23,8 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   onEdit,
   duplicateResume,
   deleteResume,
-  exportPDF,
-  copyURL,
+  // exportPDF,
+  // copyURL,
   calculateTotalCareer,
   changeDefault,
 }) => {
@@ -52,17 +53,17 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
     deleteResume(resume.id);
   };
 
-  // PDF 내보내기
-  const handleExportPDF = (e: React.MouseEvent, resume: ResumeDetail) => {
-    e.stopPropagation();
-    exportPDF(resume.id);
-  };
+  // // PDF 내보내기
+  // const handleExportPDF = (e: React.MouseEvent, resume: ResumeDetail) => {
+  //   e.stopPropagation();
+  //   exportPDF(resume.id);
+  // };
 
-  // URL 공유하기
-  const handleCopyURL = (e: React.MouseEvent, resume: ResumeDetail) => {
-    e.stopPropagation();
-    copyURL(resume.publicId);
-  };
+  // // URL 공유하기
+  // const handleCopyURL = (e: React.MouseEvent, resume: ResumeDetail) => {
+  //   e.stopPropagation();
+  //   copyURL(resume.publicId);
+  // };
 
   // 기본 이력서 변경
   const handleChangeDefault = (e: React.MouseEvent, resume: ResumeDetail) => {
@@ -73,7 +74,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   // 정렬된 이력서 목록
   const sortedResumes = [...resumeDetails].sort((a, b) => {
     // 대표 이력서(isDefault가 true)는 항상 첫 번째로
-    // if (a.isDefault && !b.isDefault) return -1;
+    if (a.isDefault && !b.isDefault) return -1;
     // if (!a.isDefault && b.isDefault) return 1;
     
     // 둘 다 대표가 아니거나 둘 다 대표인 경우 sortOrder에 따라 정렬
@@ -123,13 +124,16 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                             <h3>전체 이력서</h3>
                             <p>{resumeDetails.length}개</p>
                         </div>
-                        <select
-                            value={sortOrder}
-                            onChange={(e) => setSortOrder(e.target.value as 'recent' | 'oldest')}
-                        >
-                            <option value="recent">최근 수정일 순</option>
-                            <option value="oldest">오래된 순</option>
-                        </select>
+                        <div>
+                            <Dropdown
+                                options={[
+                                    { value: 'recent', label: '최근 수정일 순' },
+                                    { value: 'oldest', label: '오래된 순' },
+                                ]}
+                                selectedOption={sortOrder}
+                                setValue={(value) => setSortOrder(value as 'recent' | 'oldest')}
+                            />
+                        </div>
                     </div>
                     <ul className="summary-list">
                         {sortedResumes.map((resume) => (
@@ -163,8 +167,8 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                                         <li onClick={(e) => handleEdit(e, resume)}>편집</li>
                                         <li onClick={(e) => handleDuplicate(e, resume)}>복제</li>
                                         <li onClick={(e) => handleDelete(e, resume)}>삭제</li>
-                                        <li className="font-black" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li>
-                                        <li className="font-black" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li>
+                                        {/* <li className="font-black" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li> */}
+                                        {/* <li className="font-black" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li> */}
                                     </ul>
                                 </div>
                                 <ul>

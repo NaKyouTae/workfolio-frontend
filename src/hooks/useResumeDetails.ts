@@ -36,12 +36,17 @@ const createSampleResumeDetails = (): ResumeDetail[] => {
   }));
 };
 
+// 모듈 레벨 캐시: 페이지 리마운트 시에도 데이터 유지
+let cachedResumeDetails: ResumeDetail[] = [];
+let isInitialized = false;
+
 /**
  * 이력서 목록을 관리하는 커스텀 훅
  */
 export const useResumeDetails = () => {
-  const [resumeDetails, setResumeDetails] = useState<ResumeDetail[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // 캐시된 데이터가 있으면 초기값으로 사용
+  const [resumeDetails, setResumeDetails] = useState<ResumeDetail[]>(cachedResumeDetails);
+  const [isLoading, setIsLoading] = useState(!isInitialized);
   const [error, setError] = useState<string | null>(null);
   const { confirm } = useConfirmStore();
   const { showNotification } = useNotificationStore();
@@ -55,7 +60,10 @@ export const useResumeDetails = () => {
       // 로그인 상태 확인
       if (!checkIsLoggedIn()) {
         const sampleData = createSampleResumeDetails();
-        setResumeDetails(sampleData);
+        const dataToUse = cachedResumeDetails.length > 0 ? cachedResumeDetails : sampleData;
+        setResumeDetails(dataToUse);
+        cachedResumeDetails = dataToUse; // 캐시 업데이트
+        isInitialized = true;
         setIsLoading(false);
         return;
       }
@@ -66,17 +74,28 @@ export const useResumeDetails = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setResumeDetails(data.resumes || []);
+        const newResumes = data.resumes || [];
+        // 새 데이터가 있으면 교체하고 캐시 업데이트
+        if (newResumes.length > 0) {
+          setResumeDetails(newResumes);
+          cachedResumeDetails = newResumes; // 캐시 업데이트
+        }
+        // 새 데이터가 없어도 이전 데이터는 유지 (빈 배열로 교체하지 않음)
+        isInitialized = true;
       } else {
-        // API 호출 실패 시에도 샘플 데이터 사용
-        const sampleData = createSampleResumeDetails();
-        setResumeDetails(sampleData);
+        // API 호출 실패 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
+        const fallbackData = cachedResumeDetails.length > 0 ? cachedResumeDetails : createSampleResumeDetails();
+        setResumeDetails(fallbackData);
+        cachedResumeDetails = fallbackData; // 캐시 업데이트
+        isInitialized = true;
       }
     } catch (error) {
-      // 에러 발생 시에도 샘플 데이터 사용
+      // 에러 발생 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
       console.error('이력서 목록 조회 중 오류 발생:', error);
-      const sampleData = createSampleResumeDetails();
-      setResumeDetails(sampleData);
+      const fallbackData = cachedResumeDetails.length > 0 ? cachedResumeDetails : createSampleResumeDetails();
+      setResumeDetails(fallbackData);
+      cachedResumeDetails = fallbackData; // 캐시 업데이트
+      isInitialized = true;
     } finally {
       setIsLoading(false);
     }
@@ -85,6 +104,7 @@ export const useResumeDetails = () => {
   // 이력서 목록 리프레시
   const refreshResumeDetails = useCallback(async () => {
     await fetchResumeDetails();
+    // fetchResumeDetails에서 이미 캐시 업데이트됨
   }, [fetchResumeDetails]);
 
   // 이력서 복제 (콜백 처리)
@@ -143,7 +163,7 @@ export const useResumeDetails = () => {
       });
 
       if (response.ok || response.status === 204) {
-        await fetchResumeDetails();
+        await fetchResumeDetails(); // fetchResumeDetails에서 캐시 업데이트됨
         
         // 성공 시 콜백 실행
         if (onSuccess) {

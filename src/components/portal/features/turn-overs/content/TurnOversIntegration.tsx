@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useTurnOver } from '@/hooks/useTurnOver';
 import { TurnOverDetail, ApplicationStage_ApplicationStageStatus, JobApplication_JobApplicationStatus } from '@/generated/common';
 import styles from './TurnOversIntegration.module.css';
+import Dropdown from '@/components/portal/ui/Dropdown';
 
 interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
@@ -11,7 +12,7 @@ interface TurnOversIntegrationProps {
 }
 
 const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete }) => {
-  const { turnOvers, isLoading } = useTurnOver();
+  const { turnOvers } = useTurnOver();
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
 
   // ApplicationStage 상태 레이블 변환
@@ -107,14 +108,6 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
     return { label: '진행 중', className: styles.statusOngoing };
   };
 
-  if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
-      </div>
-    );
-  }
-
   return (
     <div className="contents">
         <div className="page-title">
@@ -150,13 +143,16 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                         <h3>전체 이직 활동</h3>
                         <p>{turnOvers.length}개</p>
                     </div>
-                    <select
-                        value={sortOrder}
-                        onChange={(e) => setSortOrder(e.target.value as 'recent' | 'oldest')}
-                    >
-                        <option value="recent">최근 수정일 순</option>
-                        <option value="oldest">오래된 순</option>
-                    </select>
+                    <div>
+                        <Dropdown
+                            options={[
+                                { value: 'recent', label: '최근 수정일 순' },
+                                { value: 'oldest', label: '오래된 순' },
+                            ]}
+                            selectedOption={sortOrder}
+                            setValue={(value) => setSortOrder(value as 'recent' | 'oldest')}
+                        />
+                    </div>
                 </div>
                 {sortedTurnOvers.length === 0 ? (
                     <div className="empty">

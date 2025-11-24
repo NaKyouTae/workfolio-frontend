@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import '@/styles/records-config.css';
 import RecordManagement from './RecordManagement';
-import RecordGroupManagement from './RecordGroupManagement';
-import RecordGroupDetailManagement from './detail/RecordGroupDetailManagement';
-import { RecordGroup, SystemConfig_SystemConfigType } from '@/generated/common';
+import { RecordGroup, RecordGroup_RecordGroupType, SystemConfig_SystemConfigType } from '@/generated/common';
 import { RecordGroupDetailResponse } from '@/generated/record_group';
 import { SystemConfigUpdateRequest } from '@/generated/system_config';
 import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
 import HttpMethod from '@/enums/HttpMethod';
 import { useSystemConfigStore } from '@/store/systemConfigStore';
+import RecordSharedGroupManagement from './RecordSharedGroupManagement';
+import RecordPrivateGroupManagement from './RecordPrivateGroupManagement';
+import { compareEnumValue } from '@/utils/commonUtils';
+import { useUserStore } from '@/store/userStore';
+import RecordGroupDetailManagement from './detail/RecordGroupDetailManagement';
 
 interface RecordConfigProps {
     onClose: () => void;
@@ -25,6 +28,7 @@ interface RecordConfigProps {
 const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
     const [selectedGroupForDetail, setSelectedGroupForDetail] = useState<RecordGroup | null>(null);
     const { getSystemConfig } = useSystemConfigStore();
+    const { user } = useUserStore();
 
     const handleGroupSettingsClick = (group: RecordGroup) => {
         setSelectedGroupForDetail(group);
@@ -82,14 +86,19 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
                 <RecordGroupDetailManagement 
                     recordGroupsData={recordGroupsData}
                     initialRecordGroup={selectedGroupForDetail}
+                    isPrivate={compareEnumValue(selectedGroupForDetail.type, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType)}
+                    isAdmin={selectedGroupForDetail.worker?.id === user?.id}
                     onBack={handleBackToList}
                 />
             ) : (
                 <div className="page-cont">
                     <article>
                         <RecordManagement />
-                        <RecordGroupManagement 
-                            recordGroupsData={recordGroupsData}
+                        <RecordPrivateGroupManagement
+                            onGroupSettingsClick={handleGroupSettingsClick}
+                        />
+                        <RecordSharedGroupManagement
+                            userId={user?.id || ''}
                             onGroupSettingsClick={handleGroupSettingsClick}
                         />
                     </article>

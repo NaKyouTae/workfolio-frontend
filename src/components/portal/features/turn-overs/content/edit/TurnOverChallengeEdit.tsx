@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef, useCallback, useMemo } from 'react';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_MemoRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest } from '@/generated/turn_over';
 import { AttachmentRequest } from '@/generated/attachment';
 import MemoEdit from '@/components/portal/features/turn-overs/content/edit/common/MemoEdit';
@@ -14,25 +14,33 @@ interface TurnOverChallengeEditProps {
 
 const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditProps>(({ turnOverRequest, onSave }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('jobApplication');
-  const [jobApplications, setJobApplications] = useState<TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[]>([]);
-  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>([]);
-  const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
+  
+  // 초기값을 turnOverRequest에서 바로 계산하여 깜빡임 방지
+  const initialJobApplications = useMemo(() => turnOverRequest?.turnOverChallenge?.jobApplications || [], [turnOverRequest?.id]);
+  const initialMemos = useMemo(() => turnOverRequest?.turnOverChallenge?.memos || [], [turnOverRequest?.id]);
+  const initialAttachments = useMemo(() => turnOverRequest?.turnOverChallenge?.attachments || [], [turnOverRequest?.id]);
+  
+  const [jobApplications, setJobApplications] = useState<TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[]>(initialJobApplications);
+  const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>(initialMemos);
+  const [attachments, setAttachments] = useState<AttachmentRequest[]>(initialAttachments);
 
   // 각 섹션에 대한 ref
   const jobApplicationRef = useRef<HTMLDivElement>(null);
   const memoRef = useRef<HTMLDivElement>(null);
   const attachmentRef = useRef<HTMLDivElement>(null);
 
-  // turnOverRequest가 초기 로드될 때만 state 업데이트
-  const isInitializedRef = useRef(false);
+  // turnOverRequest의 id가 변경될 때만 state 업데이트
+  const turnOverRequestIdRef = useRef<string | undefined>(turnOverRequest?.id);
   
   useEffect(() => {
-    // 초기 로드 시에만 turnOverRequest에서 state 초기화
-    if (turnOverRequest?.turnOverChallenge && !isInitializedRef.current) {
-      setJobApplications(turnOverRequest.turnOverChallenge.jobApplications || []);
-      setMemos(turnOverRequest.turnOverChallenge.memos || []);
-      setAttachments(turnOverRequest.turnOverChallenge.attachments || []);
-      isInitializedRef.current = true;
+    // turnOverRequest의 id가 변경된 경우에만 state 초기화
+    if (turnOverRequest?.id !== turnOverRequestIdRef.current) {
+      turnOverRequestIdRef.current = turnOverRequest?.id;
+      if (turnOverRequest?.turnOverChallenge) {
+        setJobApplications(turnOverRequest.turnOverChallenge.jobApplications || []);
+        setMemos(turnOverRequest.turnOverChallenge.memos || []);
+        setAttachments(turnOverRequest.turnOverChallenge.attachments || []);
+      }
     }
   }, [turnOverRequest]);
 
