@@ -548,31 +548,23 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                                 <tr>
                                     {week.map((day, dayIndex) => (
                                         <td key={dayIndex}
-                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''} ${day && !day.isCurrentMonth ? 'other-month' : ''}`}
                                         onClick={() => day && handleEmptyRecordClick(day)}
                                         style={{ 
                                             cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
                                             pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
                                         }}
                                         >
-                                            {day && (
-                                                <div>
-                                                    <p>{day.day}</p>
-                                                </div>
-                                            )}
                                         </td>
                                     ))}
                                 </tr>
                             </tbody>
                         </table>
-                        
-                        {/* 레코드를 렌더링하는 테이블 */}
-                        <table className="records-table">
+                        <table>
                             <tbody>
                                 <tr>
                                     {week.map((day, dayIndex) => (
                                         <td key={dayIndex}
-                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''} ${day && !day.isCurrentMonth ? 'other-month' : ''}`}
+                                        className={`day ${dayIndex === 0 ? 'holiday' : ''} ${day?.isCurrentMonth && day?.id === today ? 'today' : ''} ${day && !day.isCurrentMonth ? 'other' : ''}`}
                                         >
                                             {day && (
                                                 <div>
