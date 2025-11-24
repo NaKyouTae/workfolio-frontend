@@ -432,7 +432,7 @@ table.list.search tbody td .empty {font-weight: 500; color: var(--gray005);}
 .edit-list > li textarea {height: 10rem; padding: 1.2rem 1.4rem; font-size: 1.4rem; border-radius: .6rem;}
 .edit-list > li.full {grid-column: 1 / span 2;}
 
-.edit-list .date-picker {top: 4.2rem; min-width: 16rem;}
+.edit-list .date-picker {top: 4.2rem; max-width: 20rem;}
 .edit-list .date-time {width: 100%;}
 .edit-list .dropdown > button {height: 4rem; font-size: 1.4rem; border-radius: .6rem;}
 .edit-list .dropdown > ul {top: 4.2rem;}
