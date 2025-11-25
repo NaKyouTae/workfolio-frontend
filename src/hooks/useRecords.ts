@@ -144,9 +144,9 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
                 // API 데이터가 있으면 샘플 데이터와 병합
                 if (data) {
                     let apiRecords: Record[] = [];
-                    if (data && Array.isArray(data.records)) {
+                if (data && Array.isArray(data.records)) {
                         apiRecords = data.records;
-                    } else if (data && Array.isArray(data)) {
+                } else if (data && Array.isArray(data)) {
                         apiRecords = data;
                     }
                     
@@ -193,22 +193,22 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
         // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
         // 샘플 데이터 먼저 필터링
         // ============================================
-        const sampleRecordGroups = createSampleRecordGroups();
-        const sampleRecords = createSampleRecords(sampleRecordGroups) as unknown as Record[];
-        
-        const keywordLower = keyword.toLowerCase().trim();
+            const sampleRecordGroups = createSampleRecordGroups();
+            const sampleRecords = createSampleRecords(sampleRecordGroups) as unknown as Record[];
+            
+            const keywordLower = keyword.toLowerCase().trim();
         let filteredSampleRecords = sampleRecords.filter((record: Record) => {
-            const titleMatch = record.title?.toLowerCase().includes(keywordLower) || false;
-            const descriptionMatch = record.description?.toLowerCase().includes(keywordLower) || false;
-            return titleMatch || descriptionMatch;
-        });
+                const titleMatch = record.title?.toLowerCase().includes(keywordLower) || false;
+                const descriptionMatch = record.description?.toLowerCase().includes(keywordLower) || false;
+                return titleMatch || descriptionMatch;
+            });
 
-        // recordGroupIds로 필터링 (있는 경우)
-        if (recordGroupIds && recordGroupIds.length > 0) {
+            // recordGroupIds로 필터링 (있는 경우)
+            if (recordGroupIds && recordGroupIds.length > 0) {
             filteredSampleRecords = filteredSampleRecords.filter((record: Record) => 
-                record.recordGroup?.id && recordGroupIds.includes(record.recordGroup.id)
-            );
-        }
+                    record.recordGroup?.id && recordGroupIds.includes(record.recordGroup.id)
+                );
+            }
         // ============================================
 
         try {

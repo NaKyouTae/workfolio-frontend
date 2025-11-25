@@ -48,6 +48,7 @@ export const useResumeDetails = () => {
   const [resumeDetails, setResumeDetails] = useState<ResumeDetail[]>(cachedResumeDetails);
   const [isLoading, setIsLoading] = useState(!isInitialized);
   const [error, setError] = useState<string | null>(null);
+  const { showNotification } = useNotificationStore();
   const { confirm } = useConfirmStore();
   const { showNotification } = useNotificationStore();
 
@@ -110,7 +111,7 @@ export const useResumeDetails = () => {
   // 이력서 복제 (콜백 처리)
   const duplicateResume = useCallback(async (resumeId?: string, onSuccess?: () => void): Promise<void> => {
     if (!resumeId) {
-      alert('이력서 ID가 없습니다.');
+      showNotification('이력서 ID가 없습니다.', 'error');
       return;
     }
 
@@ -121,7 +122,7 @@ export const useResumeDetails = () => {
 
       if (response.ok) {
         await response.json();
-        alert('이력서가 성공적으로 복제되었습니다.');
+        showNotification('이력서가 성공적으로 복제되었습니다.', 'success');
         await fetchResumeDetails();
         
         // 성공 시 콜백 실행
@@ -130,13 +131,13 @@ export const useResumeDetails = () => {
         }
       } else {
         const errorData = await response.json();
-        alert(`복제 실패: ${errorData.error || '알 수 없는 오류'}`);
+        showNotification(`복제 실패: ${errorData.error || '알 수 없는 오류'}`, 'error');
       }
     } catch (error) {
       console.error('이력서 복제 중 오류 발생:', error);
-      alert('이력서 복제 중 오류가 발생했습니다.');
+      showNotification('이력서 복제 중 오류가 발생했습니다.', 'error');
     }
-  }, [fetchResumeDetails]);
+  }, [fetchResumeDetails, showNotification]);
 
   // 이력서 삭제 (confirm 포함, 콜백 처리)
   const deleteResume = useCallback(async (resumeId?: string, onSuccess?: () => void): Promise<void> => {
@@ -171,11 +172,11 @@ export const useResumeDetails = () => {
         }
       } else {
         const errorData = await response.json();
-        alert(`삭제 실패: ${errorData.error || '알 수 없는 오류'}`);
+        showNotification(`삭제 실패: ${errorData.error || '알 수 없는 오류'}`, 'error');
       }
     } catch (error) {
       console.error('이력서 삭제 중 오류 발생:', error);
-      alert('이력서 삭제 중 오류가 발생했습니다.');
+      showNotification('이력서 삭제 중 오류가 발생했습니다.', 'error');
     }
   }, [fetchResumeDetails, confirm]);
 
@@ -192,7 +193,7 @@ export const useResumeDetails = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // PDF 저장 완료 알림 표시
-      showNotification('PDF 저장 완료', '#4caf50');
+      showNotification('PDF 저장 완료', 'success');
       
       // 성공 시 콜백 실행
       if (onSuccess) {
@@ -200,14 +201,14 @@ export const useResumeDetails = () => {
       }
     } catch (error) {
       console.error('PDF 내보내기 중 오류 발생:', error);
-      showNotification('PDF 내보내기에 실패했습니다', '#f44336');
+      showNotification('PDF 내보내기에 실패했습니다', 'error');
     }
   }, [showNotification]);
 
   // URL 복사 (confirm 포함, 콜백 처리)
   const copyURL = useCallback(async (publicId?: string, onSuccess?: () => void): Promise<void> => {
     if (!publicId) {
-      alert('공개 URL이 없습니다.');
+      showNotification('공개 URL이 없습니다.', 'error');
       return;
     }
 
@@ -228,7 +229,7 @@ export const useResumeDetails = () => {
     const url = `${window.location.origin}/resume/${publicId}`;
     try {
       await navigator.clipboard.writeText(url);
-      alert('URL이 복사되었습니다.');
+      showNotification('URL이 복사되었습니다.', 'success');
       
       // 성공 시 콜백 실행
       if (onSuccess) {
@@ -236,9 +237,9 @@ export const useResumeDetails = () => {
       }
     } catch (err) {
       console.error('URL 복사 실패:', err);
-      alert('URL 복사에 실패했습니다.');
+      showNotification('URL 복사에 실패했습니다.', 'error');
     }
-  }, [confirm]);
+  }, [confirm, showNotification]);
 
   // 총 경력 계산
   const calculateTotalCareer = useCallback((resume: ResumeDetail): string => {
@@ -383,15 +384,15 @@ export const useResumeDetails = () => {
       } else {
         const errorData = await response.json();
         console.error('이력서 업데이트 실패:', errorData);
-        alert(`업데이트 실패: ${errorData.error || '알 수 없는 오류'}`);
+        showNotification(`업데이트 실패: ${errorData.error || '알 수 없는 오류'}`, 'error');
         return null;
       }
     } catch (error) {
       console.error('이력서 업데이트 중 오류 발생:', error);
-      alert('이력서 업데이트 중 오류가 발생했습니다.');
+      showNotification('이력서 업데이트 중 오류가 발생했습니다.', 'error');
       return null;
     }
-  }, [fetchResumeDetails]);
+  }, [fetchResumeDetails, showNotification]);
 
   // 기본 이력서 변경
   const changeDefault = useCallback(async (resumeId?: string): Promise<void> => {

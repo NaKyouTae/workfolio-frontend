@@ -12,6 +12,7 @@ import RecordGroupColorModal from '../../record-groups/RecordGroupColorModal';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useUserStore } from '@/store/userStore';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
+import { useNotification } from '@/hooks/useNotification';
 
 interface RecordGroupDetailManagementProps {
     recordGroupsData: {
@@ -53,6 +54,9 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
     
     // useConfirm 훅 사용
     const { confirm } = useConfirm();
+    
+    // useNotification 훅 사용
+    const { showNotification } = useNotification();
     
     // user 정보 가져오기
     const { user } = useUserStore();
@@ -298,7 +302,7 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
     // 저장 함수
     const handleSave = useCallback(async () => {
         if (!selectedRecordGroup) {
-            alert('저장할 기록장이 없습니다.');
+            showNotification('저장할 기록장이 없습니다.', 'error');
             return;
         }
 
@@ -369,18 +373,18 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
             } else {
                 const errorData = await response.json();
                 console.error('기록장 저장 실패:', errorData);
-                alert('저장에 실패했습니다. 다시 시도해주세요.');
+                showNotification('저장에 실패했습니다. 다시 시도해주세요.', 'error');
             }
         } catch (error) {
             console.error('Error saving record group:', error);
-            alert('저장 중 오류가 발생했습니다.');
+            showNotification('저장 중 오류가 발생했습니다.', 'error');
         }
-    }, [selectedRecordGroup, title, color, recordType, defaultRole, selectedNewWorkers, selectedExistWorkers, refreshRecordGroups, onBack, confirm]);
+    }, [selectedRecordGroup, title, color, recordType, defaultRole, selectedNewWorkers, selectedExistWorkers, refreshRecordGroups, onBack, confirm, showNotification]);
 
     // 기록장 탈퇴 핸들러
     const handleLeave = useCallback(async () => {
         if (!selectedRecordGroup?.id || !user?.id) {
-            alert('기록장 정보를 찾을 수 없습니다.');
+            showNotification('기록장 정보를 찾을 수 없습니다.', 'error');
             return;
         }
         
@@ -403,14 +407,14 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                 onBack();
             }
         } else {
-            alert('탈퇴에 실패했습니다. 다시 시도해주세요.');
+            showNotification('탈퇴에 실패했습니다. 다시 시도해주세요.', 'error');
         }
-    }, [selectedRecordGroup?.id, user?.id, confirm, leaveRecordGroup, onBack]);
+    }, [selectedRecordGroup?.id, user?.id, confirm, leaveRecordGroup, onBack, showNotification]);
 
     // 기록장 삭제 핸들러
     const handleDelete = useCallback(async () => {
         if (!selectedRecordGroup?.id) {
-            alert('기록장 정보를 찾을 수 없습니다.');
+            showNotification('기록장 정보를 찾을 수 없습니다.', 'error');
             return;
         }
         
@@ -433,9 +437,9 @@ const RecordGroupDetailManagement: React.FC<RecordGroupDetailManagementProps> = 
                 onBack();
             }
         } else {
-            alert('삭제에 실패했습니다. 다시 시도해주세요.');
+            showNotification('삭제에 실패했습니다. 다시 시도해주세요.', 'error');
         }
-    }, [selectedRecordGroup?.id, confirm, deleteRecordGroup, onBack]);
+    }, [selectedRecordGroup?.id, confirm, deleteRecordGroup, onBack, showNotification]);
 
     const handleSelectColor = useCallback((color: string) => {
         setColor(color);

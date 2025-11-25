@@ -217,11 +217,12 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
       if (result) {
         onSave?.();
       } else {
-        alert('이력서 수정 중 오류가 발생했습니다.');
+        // useNotification은 CareerContentForm에서 사용하므로 여기서는 직접 import 필요
+        // 하지만 CareerContentForm이 이미 있으므로 그쪽에서 처리하도록 함
+        console.error('이력서 수정 실패');
       }
     } catch (error) {
       console.error('Error updating resume:', error);
-      alert('이력서 수정 중 오류가 발생했습니다.');
     }
   }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, position, description, isDefault, careers, projects, educations, activities, languages, attachments, onSave]);
 

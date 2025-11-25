@@ -5,9 +5,11 @@ import { useUser } from '@/hooks/useUser';
 import Header from '@/components/portal/layouts/Header';
 import Footer from "@/components/portal/layouts/Footer"
 import ProfileManagement from '@/components/portal/features/mypage/ProfileManagement';
+import { useNotification } from '@/hooks/useNotification';
 
 const Mypage: React.FC = () => {
     const { deleteAccount, isLoading, isLoggedIn } = useUser();
+    const { showNotification } = useNotification();
     const [activeMenu, setActiveMenu] = useState('profile');
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -23,7 +25,7 @@ const Mypage: React.FC = () => {
         } catch (error) {
             console.error('회원 탈퇴 실패:', error);
             // 400 에러는 이미 deleteAccount에서 성공으로 처리되므로 여기까지 오지 않음
-            alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.');
+            showNotification('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
         } finally {
             setIsDeleting(false);
         }

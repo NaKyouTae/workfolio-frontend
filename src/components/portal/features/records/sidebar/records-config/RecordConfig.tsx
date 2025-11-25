@@ -12,6 +12,7 @@ import RecordPrivateGroupManagement from './RecordPrivateGroupManagement';
 import { compareEnumValue } from '@/utils/commonUtils';
 import { useUserStore } from '@/store/userStore';
 import RecordGroupDetailManagement from './detail/RecordGroupDetailManagement';
+import { useNotification } from '@/hooks/useNotification';
 
 interface RecordConfigProps {
     onClose: () => void;
@@ -29,6 +30,7 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
     const [selectedGroupForDetail, setSelectedGroupForDetail] = useState<RecordGroup | null>(null);
     const { getSystemConfig } = useSystemConfigStore();
     const { user } = useUserStore();
+    const { showNotification } = useNotification();
 
     const handleGroupSettingsClick = (group: RecordGroup) => {
         setSelectedGroupForDetail(group);
@@ -44,7 +46,7 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
             const systemConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
             
             if (!systemConfig) {
-                alert('설정을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+                showNotification('설정을 불러오는 중입니다. 잠시 후 다시 시도해주세요.', 'error');
                 return;
             }
 
@@ -63,15 +65,15 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
             });
 
             if (response.ok) {
-                alert('설정이 저장되었습니다.');
+                showNotification('설정이 저장되었습니다.', 'success');
             } else {
                 const errorMessage = `Failed to update system config: ${response.status}`;
                 console.error(errorMessage);
-                alert('설정 저장에 실패했습니다.');
+                showNotification('설정 저장에 실패했습니다.', 'error');
             }
         } catch (error) {
             console.error('Error updating system config:', error);
-            alert('설정 저장 중 오류가 발생했습니다.');
+            showNotification('설정 저장 중 오류가 발생했습니다.', 'error');
         }
     };
 

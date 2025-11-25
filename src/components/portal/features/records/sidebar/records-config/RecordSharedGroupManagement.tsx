@@ -8,6 +8,7 @@ import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
+import { useNotification } from '@/hooks/useNotification';
 
 interface RecordSharedGroupManagementProps {
     onGroupSettingsClick?: (group: RecordGroup) => void;
@@ -29,6 +30,7 @@ const RecordSharedGroupManagement: React.FC<RecordSharedGroupManagementProps> = 
 
     const { confirm } = useConfirm();
     const { deleteRecordGroup, updateSharedPriorities } = useRecordGroups();
+    const { showNotification } = useNotification();
 
     // 기록장 삭제 핸들러
     const handleDelete = useCallback(async (recordGroupId: string) => {
@@ -47,11 +49,11 @@ const RecordSharedGroupManagement: React.FC<RecordSharedGroupManagementProps> = 
         const success = await deleteRecordGroup(recordGroupId);
         
         if (success) {
-            alert('기록장이 삭제되었습니다.');
+            showNotification('기록장이 삭제되었습니다.', 'success');
         } else {
-            alert('삭제에 실패했습니다. 다시 시도해주세요.');
+            showNotification('삭제에 실패했습니다. 다시 시도해주세요.', 'error');
         }
-    }, [deleteRecordGroup, confirm]);
+    }, [deleteRecordGroup, confirm, showNotification]);
     
     // 첫 렌더링 시 첫 번째 레코드 그룹 선택
     useEffect(() => {
@@ -70,10 +72,10 @@ const RecordSharedGroupManagement: React.FC<RecordSharedGroupManagementProps> = 
         
         if (!success) {
             // 실패 시 원래 순서로 복구하기 위해 목록 새로고침
-            alert('우선순위 업데이트에 실패했습니다. 다시 시도해주세요.');
+            showNotification('우선순위 업데이트에 실패했습니다. 다시 시도해주세요.', 'error');
             // refreshRecordGroups는 updateSharedPriorities 내부에서 이미 호출됨
         }
-    }, [updateSharedPriorities, setSharedRecordGroups]);
+    }, [updateSharedPriorities, setSharedRecordGroups, showNotification]);
 
     // 기록장 제목 반환 (기본 기록장 여부 포함)
     const getRecordGroupTitle = (group: RecordGroup): string => {

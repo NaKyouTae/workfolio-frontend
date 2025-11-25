@@ -10,9 +10,11 @@ import DatePicker from '../../ui/DatePicker';
 import { DateTime } from 'luxon';
 import { WorkerUpdateRequest, WorkerCheckNickNameResponse } from '@/generated/worker';
 import FloatingNavigation from '../../ui/FloatingNavigation';
+import { useNotification } from '@/hooks/useNotification';
 
 const ProfileManagement: React.FC = () => {
   const { user, isLoggedIn, refreshUser } = useUser();
+  const { showNotification } = useNotification();
 
   const [nickName, setNickName] = useState<string>('');
   const [originalNickName, setOriginalNickName] = useState<string>('');
@@ -73,12 +75,12 @@ const ProfileManagement: React.FC = () => {
 
   const handleCheckNickName = async () => {
     if (!nickName.trim()) {
-      alert('닉네임을 입력해주세요.');
+      showNotification('닉네임을 입력해주세요.', 'error');
       return;
     }
 
     if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
+      showNotification('로그인이 필요합니다.', 'error');
       return;
     }
 
@@ -98,7 +100,7 @@ const ProfileManagement: React.FC = () => {
       setHasCheckedNickName(true); // 중복 확인을 수행했음을 표시
     } catch (error) {
       console.error('닉네임 중복 확인 오류:', error);
-      alert('닉네임 중복 확인 중 오류가 발생했습니다.');
+      showNotification('닉네임 중복 확인 중 오류가 발생했습니다.', 'error');
     } finally {
       setIsCheckingNickName(false);
     }
@@ -126,13 +128,13 @@ const ProfileManagement: React.FC = () => {
     e.preventDefault();
 
     if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
+      showNotification('로그인이 필요합니다.', 'error');
       return;
     }
 
     const validationResult = validateForm();
     if (validationResult !== true) {
-      alert(validationResult);
+      showNotification(validationResult, 'error');
       return;
     }
 
@@ -166,9 +168,10 @@ const ProfileManagement: React.FC = () => {
       
       // 원래 닉네임 업데이트 (중복 확인 상태 유지)
       setOriginalNickName(nickName);
+      showNotification('프로필이 업데이트되었습니다.', 'success');
     } catch (error) {
       console.error('프로필 업데이트 오류:', error);
-      alert('프로필 업데이트 중 오류가 발생했습니다.');
+      showNotification('프로필 업데이트 중 오류가 발생했습니다.', 'error');
     }
   };
 

@@ -1,24 +1,33 @@
 import { create } from 'zustand';
 
-interface NotificationOptions {
-  text: string;
-  color?: string;
-}
+export type NotificationType = 'success' | 'warning' | 'error' | 'info';
 
 interface NotificationState {
   isOpen: boolean;
   text: string;
   color: string;
-  showNotification: (text: string, color?: string) => void;
+  showNotification: (text: string, type?: NotificationType) => void;
   hideNotification: () => void;
 }
+
+// 타입에 따른 색상 매핑
+const getColorByType = (type: NotificationType): string => {
+  const colorMap: Record<NotificationType, string> = {
+    success: '#4caf50', // 녹색
+    warning: '#ff9800', // 주황색
+    error: '#f44336',   // 빨간색
+    info: '#2196f3',    // 파란색
+  };
+  return colorMap[type];
+};
 
 const useNotificationStoreInternal = create<NotificationState>((set) => ({
   isOpen: false,
   text: '',
   color: '#4caf50', // 기본 색상 (녹색)
 
-  showNotification: (text, color = '#4caf50') => {
+  showNotification: (text, type = 'success') => {
+    const color = getColorByType(type);
     set({
       isOpen: true,
       text,
