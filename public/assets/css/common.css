@@ -241,8 +241,15 @@ select.sm {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border
 .dropdown > button {height: 3.2rem; padding: 0 3.8rem 0 1.2rem; font-size: 1.2rem; justify-content: flex-start; background-color: transparent; border-radius: .4rem; border: 1px solid var(--gray003); background-image: url(../img/ico/ic-select.svg); background-repeat: no-repeat; background-size: 1.4rem; background-position: center right 1.2rem; cursor: pointer; color: var(--black);}
 .dropdown > button:has(+ ul) {background-image: url(../img/ico/ic-select-ov.svg);}
 .dropdown > ul {position: absolute; top: 3.4rem; width: 100%; max-height: 16rem; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 1000; overflow-y: auto;}
+.dropdown > ul.above {top: auto; bottom: 3.4rem;}
 .dropdown > ul > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0;}
 .dropdown > ul > li:hover {background-color: var(--gray002);}
+
+/* dropdown menu (Portal로 렌더링된 메뉴) */
+.dropdown-menu {width: 100%; max-height: 16rem; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; overflow-y: auto; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);}
+.dropdown-menu > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; min-width: 10rem;}
+.dropdown-menu > li:hover {background-color: var(--gray002);}
+.dropdown-menu > li.selected {background-color: var(--gray002); font-weight: 500;}
 
 
 /* label */
