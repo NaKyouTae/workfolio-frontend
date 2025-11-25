@@ -691,7 +691,7 @@ export const createSampleResume3 = () => {
     gender: Resume_Gender.FEMALE,
     position: '프론트엔드 개발자',
     description: 'React와 Next.js를 주력으로 사용하는 3년차 프론트엔드 개발자입니다.',
-    isDefault: false,
+    isDefault: true,
     worker,
     createdAt: now - 120 * 24 * 60 * 60 * 1000,
     updatedAt: now - 1 * 24 * 60 * 60 * 1000

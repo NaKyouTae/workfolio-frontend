@@ -38,13 +38,8 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
     // 진행 중인 지원 수 계산
     let ongoingApplications = 0;
     turnOvers.forEach(turnOver => {
-      if (turnOver.turnOverChallenge?.jobApplications) {
-        turnOver.turnOverChallenge.jobApplications.forEach(app => {
-          // 진행 중인 지원인지 확인 (endedAt이 없거나 미래인 경우)
-          if (!app.endedAt || app.endedAt > Date.now()) {
-            ongoingApplications++;
-          }
-        });
+      if (!turnOver.turnOverRetrospective?.name || turnOver.turnOverRetrospective?.name === '') {
+        ongoingApplications++;
       }
     });
 

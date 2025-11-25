@@ -14,6 +14,14 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
     onResumeCreated();
   };
 
+  // 정렬된 이력서 목록
+  const sortedResumes = [...resumeDetails].sort((a, b) => {
+    // 대표 이력서(isDefault가 true)는 항상 첫 번째로
+    if (a.isDefault && !b.isDefault) return -1;
+    
+    return (a.createdAt || 0) - (b.createdAt || 0);
+  });
+
   return (
     <aside> 
       <div className="aside-button">
@@ -29,7 +37,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
         <div className="aside-group">
           <p className="aside-group-title">내 이력서</p>
           <ul className="aside-group-list">
-            {resumeDetails.map((resumeDetail) => {
+            {sortedResumes.map((resumeDetail) => {
               const isSelected = selectedResumeDetail?.id === resumeDetail.id;
               return (
                 <li
