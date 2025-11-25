@@ -4,10 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import ServiceGuidesSidebar from './ServiceGuidesSidebar';
 import ServiceGuidesContent from './ServiceGuidesContent';
-
 import Footer from '../../layouts/Footer';
-
-type MenuType = 'notices' | 'terms' | 'privacy';
+import { MenuType } from '@/models/MenuType';
 
 interface ServiceGuidesPageProps {
   initialMenu?: MenuType;
