@@ -50,7 +50,6 @@ export const useResumeDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const { showNotification } = useNotificationStore();
   const { confirm } = useConfirmStore();
-  const { showNotification } = useNotificationStore();
 
   // 이력서 목록 조회
   const fetchResumeDetails = useCallback(async () => {
