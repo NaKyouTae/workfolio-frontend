@@ -1,17 +1,26 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import Header from '@/components/portal/layouts/Header';
 import Footer from "@/components/portal/layouts/Footer"
 import ProfileManagement from '@/components/portal/features/mypage/ProfileManagement';
 import { useNotification } from '@/hooks/useNotification';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 const Mypage: React.FC = () => {
-    const { deleteAccount, isLoading, isLoggedIn } = useUser();
+    const { deleteAccount, isLoading, isLoggedIn: userIsLoggedIn } = useUser();
     const { showNotification } = useNotification();
     const [activeMenu, setActiveMenu] = useState('profile');
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
+    useEffect(() => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+        }
+    }, []);
 
     const handleWithdraw = async () => {
         if (!confirm('정말로 회원 탈퇴를 하시겠습니까? 탈퇴 후에는 모든 데이터가 삭제되며 복구할 수 없습니다.')) {
@@ -76,6 +85,7 @@ const Mypage: React.FC = () => {
                     <Footer/>
                 </section>
             </main>
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </>
     );
 };

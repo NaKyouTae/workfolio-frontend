@@ -7,6 +7,8 @@ import {Record, RecordGroup} from "@/generated/common"
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import dayjs from 'dayjs'
 import { RecordUpdateRequest } from '@/generated/record'
+import { isLoggedIn } from '@/utils/authUtils'
+import LoginModal from '@/components/portal/ui/LoginModal'
 
 interface ModalProps {
     isOpen: boolean;
@@ -29,6 +31,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
     // TODO: 파일 업로드 기능 추후 오픈 예정
     // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -218,11 +221,18 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                         </ul>
                     </div>
                     <div className="modal-btn">
-                        <button type="button" onClick={onDelete}>삭제</button>
+                        <button type="button" onClick={() => {
+                            if (!isLoggedIn()) {
+                                setShowLoginModal(true);
+                                return;
+                            }
+                            onDelete?.();
+                        }}>삭제</button>
                         <button type="submit">저장</button>
                     </div>
                 </form>
             </div>
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </div>
     );
 };

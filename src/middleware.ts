@@ -24,39 +24,12 @@ export function middleware(request: NextRequest) {
         }
     }
     
-    // 로그인 페이지는 항상 허용
+    // 로그인 페이지는 제거되었으므로 리다이렉트
     if (request.nextUrl.pathname === '/login') {
-        const response = NextResponse.next();
-        
-        // portal 로그인 성공 시 (accessToken이 있는 경우) admin 토큰 제거
-        const accessToken = request.cookies.get('accessToken');
-        const refreshToken = request.cookies.get('refreshToken');
-        
-        if (accessToken && refreshToken) {
-            // admin 토큰 제거
-            response.cookies.delete('admin_access_token');
-            response.cookies.delete('admin_refresh_token');
-        }
-        
-        return response;
+        return NextResponse.redirect(new URL('/records', request.url));
     }
     
-    // 보호된 페이지들 (토큰이 필요한 페이지) - 현재는 없음
-    // records와 mypage는 샘플 데이터로 접근 가능하도록 허용
-    const protectedPaths: string[] = [];
-    const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path));
-    
-    if (isProtectedPath) {
-        // 토큰 확인
-        const accessToken = request.cookies.get('accessToken');
-        
-        if (!accessToken) {
-            // 토큰이 없으면 로그인 페이지로 리다이렉트
-            return NextResponse.redirect(new URL('/login', request.url));
-        }
-    }
-    
-    // 다른 모든 페이지는 허용
+    // 모든 페이지는 로그인 없이 접근 가능 (로그인은 팝업으로 처리)
     return NextResponse.next();
 }
 

@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Record } from '@/generated/common'
 import dayjs from 'dayjs'
 import { DateUtil } from '@/utils/DateUtil';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface RecordDetailProps {
     isOpen: boolean;
@@ -26,6 +28,7 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
     position
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [showLoginModal, setShowLoginModal] = useState(false);
     const format = 'YYYY. MM. DD. A hh:mm';
     // 외부 클릭 감지
     useEffect(() => {
@@ -120,9 +123,22 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
                 </ul>
             </div>
             <div className="record-modal-btn">
-                <button className="xsm line gray" onClick={onEdit}>수정</button>
-                <button className="xsm semi-gray" onClick={onDelete}>삭제</button>
+                <button className="xsm line gray" onClick={() => {
+                    if (!isLoggedIn()) {
+                        setShowLoginModal(true);
+                        return;
+                    }
+                    onEdit?.();
+                }}>수정</button>
+                <button className="xsm semi-gray" onClick={() => {
+                    if (!isLoggedIn()) {
+                        setShowLoginModal(true);
+                        return;
+                    }
+                    onDelete?.();
+                }}>삭제</button>
             </div>
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </div>
     );
 };

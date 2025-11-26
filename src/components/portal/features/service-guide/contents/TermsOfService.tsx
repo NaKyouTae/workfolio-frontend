@@ -13,7 +13,7 @@ const TermsOfService: React.FC = () => {
         </div>
         <div className="page-cont">
             <article>
-                <div className="cont-box" id="terms">
+                <div className="cont-box" id="terms-1">
                     <div className="cont-tit">
                         <div>
                             <h3>제1조 목적</h3>

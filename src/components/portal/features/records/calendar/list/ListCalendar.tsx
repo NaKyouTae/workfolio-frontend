@@ -10,6 +10,8 @@ import RecordDetail from '../../modal/RecordDetail'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import { useConfirm } from '@/hooks/useConfirm'
 import { formatRecordDisplayTime } from '@/utils/calendarUtils'
+import { isLoggedIn } from '@/utils/authUtils'
+import LoginModal from '@/components/portal/ui/LoginModal'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -47,6 +49,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [selectedDate, setSelectedDate] = useState<string | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
+    const [showLoginModal, setShowLoginModal] = useState(false)
 
     const { triggerRecordRefresh } = useRecordGroupStore()  
 
@@ -215,6 +218,12 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
 
     // 레코드 생성 모달 열기 핸들러
     const handleOpenCreateModal = (date?: string) => {
+        // 로그인 체크 - 팝업을 열기 전에 체크
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         setSelectedDate(date || null)
         setIsCreateModalOpen(true)
     }
@@ -238,6 +247,11 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
 
     const handleDeleteRecord = async () => {
         if (!selectedRecord) return;
+        
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
         
         const result = await confirm({
             title: '레코드 삭제',
@@ -370,6 +384,7 @@ const ListCalendar: React.FC<ListCalendarProps> = React.memo(({
                 selectedDate={selectedDate}
                 allRecordGroups={allRecordGroups}
             />
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </>
     )
 });

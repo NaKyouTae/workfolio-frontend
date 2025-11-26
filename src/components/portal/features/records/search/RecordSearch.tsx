@@ -11,6 +11,8 @@ import RecordUpdateModal from '../modal/RecordUpdateModal';
 import { useConfirm } from '@/hooks/useConfirm';
 import HttpMethod from '@/enums/HttpMethod';
 import { formatRecordDisplayTime } from '@/utils/calendarUtils';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 dayjs.locale('ko');
 dayjs.extend(timezone);
@@ -31,6 +33,7 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const { confirm } = useConfirm();
 
   const normalizedRecords = React.useMemo(() => {
@@ -117,6 +120,11 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
 
   const handleDeleteRecord = async () => {
     if (!selectedRecord) return;
+
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
 
     const confirmed = await confirm({
       title: '기록을 삭제하시겠어요?',
@@ -214,6 +222,7 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
             record={selectedRecord}
             allRecordGroups={allRecordGroups}
         />
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </>
   );
 };

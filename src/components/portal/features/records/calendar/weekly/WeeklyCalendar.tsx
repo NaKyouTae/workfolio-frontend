@@ -10,6 +10,8 @@ import HttpMethod from '@/enums/HttpMethod'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
 import { isRecordType } from '@/utils/calendarUtils'
 import { useConfirm } from '@/hooks/useConfirm'
+import { isLoggedIn } from '@/utils/authUtils'
+import LoginModal from '@/components/portal/ui/LoginModal'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -68,6 +70,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     const [detailPosition, setDetailPosition] = useState<{top: number, left?: number, right?: number, width: number} | null>(null)
     const [currentTime, setCurrentTime] = useState(dayjs().toDate())
     const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
+    const [showLoginModal, setShowLoginModal] = useState(false)
     
     const weeklyGridRef = useRef<HTMLDivElement>(null)
 
@@ -588,6 +591,12 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     }
 
     const handleSubSlotClick = (dayIndex: number, slotIndex: number, subIndex: number) => {
+        // 로그인 체크 - 팝업을 열기 전에 체크
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         // 이전 모달 상태 초기화
         setIsDetailModalOpen(false)
         setIsUpdateModalOpen(false)
@@ -633,6 +642,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
     const handleDeleteRecord = async () => {
         
         if (!selectedRecord) return;
+        
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
         
         const result = await confirm({
             title: '레코드 삭제',
@@ -1014,6 +1028,7 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
                 selectedDate={selectedDateForCreate}
                 allRecordGroups={allRecordGroups}
             />
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </div>
     )
 })

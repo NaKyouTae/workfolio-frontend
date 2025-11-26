@@ -4,6 +4,7 @@ import { useRecordGroupStore } from '@/store/recordGroupStore';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroupDetailResponse, RecordGroupPriorityUpdateRequest, RecordGroupPriorityUpdateRequest_PriorityItem, SharedRecordGroupPriorityUpdateRequest, SharedRecordGroupPriorityUpdateRequest_PriorityItem } from '@/generated/record_group';
 import { useShallow } from 'zustand/react/shallow';
+import { isLoggedIn } from '@/utils/authUtils';
 // ============================================
 // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
 // ============================================
@@ -47,21 +48,24 @@ export const useRecordGroups = () => {
     const fetchRecordGroups = useCallback(async () => {
         setIsLoading(true);
         
-        // ============================================
-        // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
-        // 항상 샘플 데이터를 먼저 로드
-        // ============================================
-        const { ownedGroups: sampleOwnedGroups, sharedGroups: sampleSharedGroups } = getSampleRecordGroups();
-        const sampleAllGroupIds = [
-            ...sampleOwnedGroups.map((group: RecordGroup) => group.id),
-            // ...sampleSharedGroups.map((group: RecordGroup) => group.id)
-        ];
-        
-        // 샘플 데이터 먼저 설정
-        initializeGroups(sampleAllGroupIds);
-        setOwnedRecordGroups(sampleOwnedGroups);
-        // setSharedRecordGroups(sampleSharedGroups);
-        // ============================================
+        // 로그인하지 않은 경우 샘플 데이터만 사용하고 API 호출하지 않음
+        if (!isLoggedIn()) {
+            // ============================================
+            // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
+            // 로그인하지 않은 경우에만 샘플 데이터 사용
+            // ============================================
+            const { ownedGroups: sampleOwnedGroups } = getSampleRecordGroups();
+            const sampleAllGroupIds = [
+                ...sampleOwnedGroups.map((group: RecordGroup) => group.id),
+            ];
+            
+            // 샘플 데이터 설정
+            initializeGroups(sampleAllGroupIds);
+            setOwnedRecordGroups(sampleOwnedGroups);
+            // ============================================
+            setIsLoading(false);
+            return;
+        }
         
         try {
             // API 호출 (토큰이 있으면 clientFetch가 자동으로 처리)
@@ -73,12 +77,15 @@ export const useRecordGroups = () => {
             
             // 응답 상태 확인
             if (!ownedRes.ok || !sharedRes.ok) {
-                // 401이면 clientFetch가 이미 처리했을 것이므로, 샘플 데이터만 유지
+                // 401이면 clientFetch가 이미 처리했을 것
                 if (ownedRes.status === 401 || sharedRes.status === 401) {
-                    // 샘플 데이터는 이미 설정되어 있음
+                    setIsLoading(false);
                     return;
                 }
-                // 다른 에러도 샘플 데이터만 유지
+                // 다른 에러도 빈 배열로 설정
+                setOwnedRecordGroups([]);
+                setSharedRecordGroups([]);
+                setIsLoading(false);
                 return;
             }
             
@@ -88,39 +95,21 @@ export const useRecordGroups = () => {
             const ownedGroups = ownedData.groups || [];
             const sharedGroups = sharedData.groups || [];
 
-            // API 데이터와 샘플 데이터 병합 (중복 제거: id 기준)
-            const mergedOwnedGroups = [...sampleOwnedGroups];
-            const mergedSharedGroups = [...sampleSharedGroups];
-            const existingOwnedIds = new Set(sampleOwnedGroups.map(g => g.id));
-            const existingSharedIds = new Set(sampleSharedGroups.map(g => g.id));
-            
-            ownedGroups.forEach((group: RecordGroup) => {
-                if (!existingOwnedIds.has(group.id)) {
-                    mergedOwnedGroups.push(group);
-                }
-            });
-            
-            sharedGroups.forEach((group: RecordGroup) => {
-                if (!existingSharedIds.has(group.id)) {
-                    mergedSharedGroups.push(group);
-                }
-            });
-
-            // 소유한 그룹 + 공유받은 그룹 모두 기본적으로 체크된 상태로 초기화
+            // 로그인한 경우 API 데이터만 사용 (샘플 데이터 병합하지 않음)
             const allGroupIds = [
-                ...mergedOwnedGroups.map((group: RecordGroup) => group.id),
-                ...mergedSharedGroups.map((group: RecordGroup) => group.id)
+                ...ownedGroups.map((group: RecordGroup) => group.id),
+                ...sharedGroups.map((group: RecordGroup) => group.id)
             ];
             
             // 🔥 체크 상태를 먼저 설정한 후 데이터 설정
-            // 이렇게 하면 setOwnedRecordGroups/setSharedRecordGroups에서
-            // 자동으로 체크에 추가되지 않음 (이미 체크되어 있으므로)
             initializeGroups(allGroupIds);
-            setOwnedRecordGroups(mergedOwnedGroups);
-            setSharedRecordGroups(mergedSharedGroups);
+            setOwnedRecordGroups(ownedGroups);
+            setSharedRecordGroups(sharedGroups);
         } catch (error) {
+            // 에러 발생 시 빈 배열로 설정
             console.error('Error fetching record groups:', error);
-            // 에러 발생 시에도 샘플 데이터는 유지
+            setOwnedRecordGroups([]);
+            setSharedRecordGroups([]);
         } finally {
             setIsLoading(false);
         }

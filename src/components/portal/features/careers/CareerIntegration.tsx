@@ -4,6 +4,8 @@ import DateUtil from '@/utils/DateUtil';
 
 import Footer from "@/components/portal/layouts/Footer"
 import Dropdown from '../../ui/Dropdown';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface CareerIntegrationProps {
   resumeDetails: ResumeDetail[];
@@ -29,6 +31,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   changeDefault,
 }) => {
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // 이력서 상세보기
   const handleView = (resume: ResumeDetail) => {
@@ -38,18 +41,30 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   // 이력서 편집
   const handleEdit = (e: React.MouseEvent, resume: ResumeDetail) => {
     e.stopPropagation();
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     onEdit(resume);
   };
 
   // 이력서 복제
   const handleDuplicate = (e: React.MouseEvent, resume: ResumeDetail) => {
     e.stopPropagation();
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     duplicateResume(resume.id);
   };
 
   // 이력서 삭제
   const handleDelete = (e: React.MouseEvent, resume: ResumeDetail) => {
     e.stopPropagation();
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     deleteResume(resume.id);
   };
 
@@ -68,6 +83,10 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   // 기본 이력서 변경
   const handleChangeDefault = (e: React.MouseEvent, resume: ResumeDetail) => {
     e.stopPropagation();
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     changeDefault(resume.id);
   };
 
@@ -97,27 +116,6 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                 </div>
             </div>
             <div className="page-cont">
-                <div className="cont-box">
-                    <div className="cont-tit">
-                        <div>
-                            <h3>내 이력 현황</h3>
-                        </div>
-                    </div>
-                    <ul className="stats-summary">
-                        <li>
-                            <p>전체 이력서</p>
-                            <div>{resumeDetails.length}<span>개</span></div>
-                        </li>
-                        <li>
-                            <p>PDF 변환 이력서</p>
-                            <div>0<span>개</span></div>
-                        </li>
-                        <li>
-                            <p>URL 공유 이력서</p>
-                            <div>0<span>개</span></div>
-                        </li>
-                    </ul>
-                </div>
                 <div className="cont-box">
                     <div className="cont-tit">
                         <div>
@@ -158,6 +156,10 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                                             htmlFor={`resume-${resume.id}`}
                                             onClick={(e) => {
                                             e.stopPropagation();
+                                            if (!isLoggedIn()) {
+                                              setShowLoginModal(true);
+                                              return;
+                                            }
                                             changeDefault(resume.id);
                                             }}
                                         ></label>
@@ -187,6 +189,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
             </div>
         </div>
         <Footer/>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </section>
   );
 };

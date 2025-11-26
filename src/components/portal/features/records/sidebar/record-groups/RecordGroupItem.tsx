@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { RecordGroup } from '@/generated/common';
 import RecordGroupColorModal from './RecordGroupColorModal';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface RecordGroupItemProps {
     group: RecordGroup;
@@ -16,6 +18,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
     const [editTitle, setEditTitle] = useState(group.title);
     const [showColorModal, setShowColorModal] = useState(false);
     const [isComposing, setIsComposing] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
     const modalRef = useRef<HTMLDivElement>(null);
 
     // 외부 클릭 감지
@@ -100,7 +103,15 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                         {!group.isDefault && (
                             <button onClick={() => onDelete?.(group.id)}>기록장 삭제</button>
                         )}
-                        <button onClick={() => setIsEditing(true)}>기록장 이름 변경</button>
+                        <button onClick={() => {
+                            if (!isLoggedIn()) {
+                                setShowLoginModal(true);
+                                setShowColorModal(false);
+                                return;
+                            }
+                            setIsEditing(true);
+                            setShowColorModal(false);
+                        }}>기록장 이름 변경</button>
                         <RecordGroupColorModal
                             isOpen={showColorModal}
                             currentColor={group.color}
@@ -109,6 +120,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, 
                     </div>
                 )}
             </div>
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </li>
     );
 };

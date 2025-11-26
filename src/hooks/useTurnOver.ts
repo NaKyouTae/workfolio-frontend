@@ -95,33 +95,25 @@ export function useTurnOver() {
             if (response.ok) {
                 const data: TurnOverDetailListResponse = await response.json()
                 const fetchedTurnOvers = data.turnOvers || []
-                // 새 데이터가 있으면 교체하고 캐시 업데이트
-                if (fetchedTurnOvers.length > 0) {
-                    notifyTurnOversChange(fetchedTurnOvers) // 모든 컴포넌트에 알림
-                } else if (cachedTurnOvers.length === 0) {
-                    // 새 데이터가 없고 캐시도 없으면 빈 배열로 설정
-                    notifyTurnOversChange([]) // 모든 컴포넌트에 알림
-                }
-                // 새 데이터가 없어도 이전 데이터는 유지 (빈 배열로 교체하지 않음)
+                // 로그인한 경우 API 데이터만 사용 (샘플 데이터 사용하지 않음)
+                notifyTurnOversChange(fetchedTurnOvers) // 모든 컴포넌트에 알림
                 isInitialized = true
                 notifyLoadingChange(false) // 명시적으로 로딩 상태 해제
-                return cachedTurnOvers.length > 0 ? cachedTurnOvers : fetchedTurnOvers
+                return fetchedTurnOvers
             } else {
-                // API 실패 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
-                const fallbackData = cachedTurnOvers.length > 0 ? cachedTurnOvers : createAllSampleTurnOvers()
-                notifyTurnOversChange(fallbackData) // 모든 컴포넌트에 알림
+                // API 실패 시 빈 배열
+                notifyTurnOversChange([]) // 모든 컴포넌트에 알림
                 isInitialized = true
                 notifyLoadingChange(false) // 명시적으로 로딩 상태 해제
-                return fallbackData
+                return []
             }
         } catch (error) {
             console.error('Error fetching turn overs:', error)
-            // 에러 발생 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
-            const fallbackData = cachedTurnOvers.length > 0 ? cachedTurnOvers : createAllSampleTurnOvers()
-            notifyTurnOversChange(fallbackData) // 모든 컴포넌트에 알림
+            // 에러 발생 시 빈 배열
+            notifyTurnOversChange([]) // 모든 컴포넌트에 알림
             isInitialized = true
             notifyLoadingChange(false) // 명시적으로 로딩 상태 해제
-            return fallbackData
+            return []
         } finally {
             // finally 블록에서도 확실히 로딩 상태 해제
             notifyLoadingChange(false)
@@ -154,18 +146,17 @@ export function useTurnOver() {
 
             if (response.ok) {
                 const data: TurnOverDetailResponse = await response.json()
+                // 로그인한 경우 API 데이터만 사용 (샘플 데이터 사용하지 않음)
                 return data.turnOver || null
             } else {
                 console.error('Failed to fetch turn over detail')
-                // API 실패 시 샘플 데이터에서 찾기
-                const sampleTurnOvers = createAllSampleTurnOvers()
-                return sampleTurnOvers.find(to => to.id === id) || null
+                // API 실패 시 null 반환
+                return null
             }
         } catch (error) {
             console.error('Error fetching turn over detail:', error)
-            // 에러 발생 시 샘플 데이터에서 찾기
-            const sampleTurnOvers = createAllSampleTurnOvers()
-            return sampleTurnOvers.find(to => to.id === id) || null
+            // 에러 발생 시 null 반환
+            return null
         }
     }, [])
 

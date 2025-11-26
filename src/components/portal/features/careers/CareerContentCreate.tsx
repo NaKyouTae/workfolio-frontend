@@ -17,6 +17,8 @@ import { useResumeDetails } from '@/hooks/useResumeDetails';
 import CareerContentForm from './CareerContentForm';
 import { useUser } from '@/hooks/useUser';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface CareerContentCreateProps {
   onCancel?: () => void;
@@ -136,8 +138,14 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
   ]);
 
   const { updateResume } = useResumeDetails();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleSaveAll = useCallback(async () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    
     const updateRequest: ResumeUpdateRequest = {
       id: '',
       title: title || '제목없는 이력서',
@@ -166,40 +174,43 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
   }, [activities, attachments, birthDate, careers, description, educations, email, gender, isDefault, position, languages, name, onSuccess, phone, projects, title, updateResume]);
 
   return (
-    <CareerContentForm
-      title={title}
-      isDefault={isDefault}
-      name={name}
-      birthDate={birthDate}
-      gender={gender}
-      phone={phone}
-      email={email}
-      position={position}
-      description={description}
-      careers={careers}
-      projects={projects}
-      educations={educations}
-      activities={activities}
-      languages={languages}
-      attachments={attachments}
-      onTitleChange={setTitle}
-      onIsDefaultChange={setIsDefault}
-      onNameChange={setName}
-      onBirthDateChange={setBirthDate}
-      onGenderChange={setGender}
-      onPhoneChange={setPhone}
-      onEmailChange={setEmail}
-      onPositionChange={setPosition}
-      onDescriptionChange={setDescription}
-      onCareersChange={setCareers}
-      onProjectsChange={setProjects}
-      onEducationsChange={setEducations}
-      onActivitiesChange={setActivities}
-      onLanguagesChange={setLanguages}
-      onAttachmentsChange={setAttachments}
-      onSave={handleSaveAll}
-      onCancel={onCancel}
-    />
+    <>
+      <CareerContentForm
+        title={title}
+        isDefault={isDefault}
+        name={name}
+        birthDate={birthDate}
+        gender={gender}
+        phone={phone}
+        email={email}
+        position={position}
+        description={description}
+        careers={careers}
+        projects={projects}
+        educations={educations}
+        activities={activities}
+        languages={languages}
+        attachments={attachments}
+        onTitleChange={setTitle}
+        onIsDefaultChange={setIsDefault}
+        onNameChange={setName}
+        onBirthDateChange={setBirthDate}
+        onGenderChange={setGender}
+        onPhoneChange={setPhone}
+        onEmailChange={setEmail}
+        onPositionChange={setPosition}
+        onDescriptionChange={setDescription}
+        onCareersChange={setCareers}
+        onProjectsChange={setProjects}
+        onEducationsChange={setEducations}
+        onActivitiesChange={setActivities}
+        onLanguagesChange={setLanguages}
+        onAttachmentsChange={setAttachments}
+        onSave={handleSaveAll}
+        onCancel={onCancel}
+      />
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+    </>
   );
 };
 

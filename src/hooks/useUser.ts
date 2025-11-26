@@ -2,12 +2,20 @@ import { useCallback } from 'react';
 import { useUserStore } from '@/store/userStore';
 import { WorkerGetResponse, WorkerUpdateNickNameResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
+import { isLoggedIn } from '@/utils/authUtils';
 
 export const useUser = () => {
     const { user, isLoading, error, setUser, setLoading, setError, clearUser } = useUserStore();
     
     // 유저 정보 가져오기 (useCallback으로 메모이제이션)
     const fetchUser = useCallback(async () => {
+        // 로그인하지 않은 경우 API 호출하지 않음
+        if (!isLoggedIn()) {
+            clearUser();
+            setLoading(false);
+            return;
+        }
+        
         try {
             setLoading(true);
             setError(null);
@@ -39,7 +47,11 @@ export const useUser = () => {
                 clearUser();
             }
         } catch (err) {
-            console.error('Error fetching user info:', err);
+            // 로그인하지 않은 상태에서 발생하는 에러는 조용히 처리
+            if (isLoggedIn()) {
+                console.error('Error fetching user info:', err);
+            }
+            clearUser();
         } finally {
             setLoading(false);
         }

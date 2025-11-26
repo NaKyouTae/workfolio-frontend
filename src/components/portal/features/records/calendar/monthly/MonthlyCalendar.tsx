@@ -12,6 +12,8 @@ import RecordCreateModal from '../../modal/RecordCreateModal'
 import RecordDetail from '../../modal/RecordDetail'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
 import { useConfirm } from '@/hooks/useConfirm'
+import { isLoggedIn } from '@/utils/authUtils'
+import LoginModal from '@/components/portal/ui/LoginModal'
 
 dayjs.locale('ko')
 dayjs.extend(timezone)
@@ -50,6 +52,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
     const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
     const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
+    const [showLoginModal, setShowLoginModal] = useState(false)
 
     // 커스텀 훅 사용
     const calendarDays = useCalendarDays(date)
@@ -57,6 +60,12 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
 
     // 빈 record 영역 클릭 핸들러 - useCallback으로 최적화
     const handleEmptyRecordClick = useCallback((day: CalendarDay) => {
+        // 로그인 체크 - 팝업을 열기 전에 체크
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         // 이전 모달 상태 초기화
         setIsDetailModalOpen(false)
         setIsUpdateModalOpen(false)
@@ -187,6 +196,11 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
     // 삭제 핸들러
     const handleDeleteRecord = async () => {
         if (!selectedRecord) return;
+        
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
         
         const result = await confirm({
             title: '레코드 삭제',
@@ -607,6 +621,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                 selectedDate={selectedDateForCreate}
                 allRecordGroups={allRecordGroups}
             />
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </>
     )
 })

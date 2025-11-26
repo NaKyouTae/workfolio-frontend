@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TurnOver, TurnOverDetail } from '@/generated/common';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface TurnOversSidebarProps {
   turnOvers: TurnOver[];
@@ -11,11 +13,17 @@ interface TurnOversSidebarProps {
 }
 
 const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, selectedTurnOver, onGoHome, onTurnOverSelect, onTurnOverCreated }) => {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  
   const handleTurnOverSelect = (id: string) => {
     onTurnOverSelect(id)
   };
   
   const handleTurnOverCreated = () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     onTurnOverCreated();
   };
 
@@ -45,6 +53,7 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, selected
                 </ul>
             </div>
         </div>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </aside>
   );
 };

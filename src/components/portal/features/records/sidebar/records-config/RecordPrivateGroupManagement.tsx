@@ -10,13 +10,17 @@ import { useShallow } from 'zustand/react/shallow';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
 import { useNotification } from '@/hooks/useNotification';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface RecordPrivateGroupManagementProps {
     onGroupSettingsClick?: (group: RecordGroup) => void;
+    onCreateGroup?: () => void;
 }
 
 const RecordPrivateGroupManagement: React.FC<RecordPrivateGroupManagementProps> = ({ 
-    onGroupSettingsClick 
+    onGroupSettingsClick,
+    onCreateGroup
 }) => {
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
     
@@ -36,9 +40,15 @@ const RecordPrivateGroupManagement: React.FC<RecordPrivateGroupManagementProps> 
     const { confirm } = useConfirm();
     const { deleteRecordGroup, updatePriorities } = useRecordGroups();
     const { showNotification } = useNotification();
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     // 기록장 삭제 핸들러
     const handleDelete = useCallback(async (recordGroupId: string) => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         const confirmed = await confirm({
             title: '기록장 삭제',
             icon: '/assets/img/ico/ic-delete.svg',
@@ -109,7 +119,11 @@ const RecordPrivateGroupManagement: React.FC<RecordPrivateGroupManagementProps> 
                     <h3>내 기록장 목록</h3>
                     <p>{allRecordGroups.length}개</p>
                 </div>
-                <button><i className="ic-add" />추가</button>
+                <button onClick={() => {
+                    if (onCreateGroup) {
+                        onCreateGroup();
+                    }
+                }}><i className="ic-add" />추가</button>
             </div>
             <DraggableList
                 items={allRecordGroups}
@@ -152,6 +166,7 @@ const RecordPrivateGroupManagement: React.FC<RecordPrivateGroupManagementProps> 
                     </DraggableItem>
                 )}
             />
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </div>
     );
 };

@@ -11,8 +11,11 @@ import RecordSharedGroupManagement from './RecordSharedGroupManagement';
 import RecordPrivateGroupManagement from './RecordPrivateGroupManagement';
 import { compareEnumValue } from '@/utils/commonUtils';
 import { useUserStore } from '@/store/userStore';
-import RecordGroupDetailManagement from './detail/RecordGroupDetailManagement';
+import RecordGroupDetailEditManagement from './detail/RecordGroupDetailEditManagement';
+import RecordGroupDetailCreateManagement from './detail/RecordGroupDetailCreateManagement';
 import { useNotification } from '@/hooks/useNotification';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface RecordConfigProps {
     onClose: () => void;
@@ -27,7 +30,8 @@ interface RecordConfigProps {
 }
 
 const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
-    const [selectedGroupForDetail, setSelectedGroupForDetail] = useState<RecordGroup | null>(null);
+    const [selectedGroupForDetail, setSelectedGroupForDetail] = useState<RecordGroup | null | 'create-private' | 'create-shared'>(null);
+    const [showLoginModal, setShowLoginModal] = useState(false);
     const { getSystemConfig } = useSystemConfigStore();
     const { user } = useUserStore();
     const { showNotification } = useNotification();
@@ -36,11 +40,32 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
         setSelectedGroupForDetail(group);
     };
 
+    const handleCreatePrivateGroup = () => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        setSelectedGroupForDetail('create-private');
+    };
+
+    const handleCreateSharedGroup = () => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        setSelectedGroupForDetail('create-shared');
+    };
+
     const handleBackToList = () => {
         setSelectedGroupForDetail(null);
     };
 
     const handleSave = async () => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         try {
             // DEFAULT_RECORD_TYPE 설정 가져오기
             const systemConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
@@ -85,23 +110,34 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
                 </div>
             </div>
             {selectedGroupForDetail ? (
-                <RecordGroupDetailManagement 
-                    recordGroupsData={recordGroupsData}
-                    initialRecordGroup={selectedGroupForDetail}
-                    isPrivate={compareEnumValue(selectedGroupForDetail.type, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType)}
-                    isAdmin={selectedGroupForDetail.worker?.id === user?.id}
-                    onBack={handleBackToList}
-                />
+                selectedGroupForDetail === 'create-private' || selectedGroupForDetail === 'create-shared' ? (
+                    <RecordGroupDetailCreateManagement 
+                        recordGroupsData={recordGroupsData}
+                        isPrivate={selectedGroupForDetail === 'create-private'}
+                        createType={selectedGroupForDetail === 'create-private' ? RecordGroup_RecordGroupType.PRIVATE : RecordGroup_RecordGroupType.SHARED}
+                        onBack={handleBackToList}
+                    />
+                ) : (
+                    <RecordGroupDetailEditManagement 
+                        recordGroupsData={recordGroupsData}
+                        initialRecordGroup={selectedGroupForDetail}
+                        isPrivate={compareEnumValue(selectedGroupForDetail.type, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType)}
+                        isAdmin={selectedGroupForDetail.worker?.id === user?.id}
+                        onBack={handleBackToList}
+                    />
+                )
             ) : (
                 <div className="page-cont">
                     <article>
                         <RecordManagement />
                         <RecordPrivateGroupManagement
                             onGroupSettingsClick={handleGroupSettingsClick}
+                            onCreateGroup={handleCreatePrivateGroup}
                         />
                         <RecordSharedGroupManagement
                             userId={user?.id || ''}
                             onGroupSettingsClick={handleGroupSettingsClick}
+                            onCreateGroup={handleCreateSharedGroup}
                         />
                     </article>
                     <FloatingNavigation
@@ -113,6 +149,7 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
                     />
                 </div>
             )}
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </div>
     );
 };

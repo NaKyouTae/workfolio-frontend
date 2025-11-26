@@ -19,6 +19,7 @@ export function useCareers() {
                 // 로그인하지 않은 경우 샘플 데이터 사용
                 const sampleCareers = createSampleCareers()
                 setCareers(sampleCareers)
+                setIsLoading(false)
                 return
             }
 
@@ -31,18 +32,17 @@ export function useCareers() {
 
             if (response.ok) {
                 const data = await response.json()
+                // 로그인한 경우 API 데이터만 사용 (샘플 데이터 사용하지 않음)
                 setCareers(data.careers || [])
             } else {
                 console.error('Failed to fetch companies')
-                // API 실패 시 샘플 데이터 사용
-                const sampleCareers = createSampleCareers()
-                setCareers(sampleCareers)
+                // API 실패 시 빈 배열
+                setCareers([])
             }
         } catch (error) {
             console.error('Error fetching companies:', error)
-            // 에러 시 샘플 데이터 사용
-            const sampleCareers = createSampleCareers()
-            setCareers(sampleCareers)
+            // 에러 시 빈 배열
+            setCareers([])
         } finally {
             setIsLoading(false)
         }

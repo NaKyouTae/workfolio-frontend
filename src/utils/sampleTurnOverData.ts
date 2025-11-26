@@ -156,19 +156,197 @@ export const createSampleTurnOver1 = (): TurnOverDetail => {
     updatedAt: now - 7 * 24 * 60 * 60 * 1000,
   };
 
+  // 진행 중: 지원 기록 5개, 회고 없음
+  const turnOverChallenge: TurnOverChallengeDetail = {
+    id: 'turn-over-challenge-1',
+    jobApplications: [
+      {
+        id: 'job-app-1-1',
+        name: '네이버',
+        position: '시니어 백엔드 개발자',
+        jobPostingTitle: '네이버 클라우드 플랫폼팀 시니어 개발자',
+        jobPostingUrl: 'https://recruit.navercorp.com/naver/job/detail/12345',
+        startedAt: now - 20 * 24 * 60 * 60 * 1000,
+        endedAt: undefined,
+        status: JobApplication_JobApplicationStatus.PENDING,
+        applicationSource: '원티드',
+        memo: '대규모 트래픽 처리 경험 어필',
+        isVisible: true,
+        priority: 0,
+        applicationStages: [
+          {
+            id: 'app-stage-1-1-1',
+            name: '서류 전형',
+            status: ApplicationStage_ApplicationStageStatus.PENDING,
+            startedAt: now - 20 * 24 * 60 * 60 * 1000,
+            memo: '서류 제출 완료',
+            isVisible: true,
+            priority: 0,
+            createdAt: now - 20 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 20 * 24 * 60 * 60 * 1000,
+          },
+        ],
+        createdAt: now - 20 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 20 * 24 * 60 * 60 * 1000,
+      },
+      {
+        id: 'job-app-1-2',
+        name: '카카오',
+        position: '백엔드 개발자',
+        jobPostingTitle: '카카오페이 결제 시스템 개발자',
+        jobPostingUrl: 'https://careers.kakao.com/jobs/P-12345',
+        startedAt: now - 18 * 24 * 60 * 60 * 1000,
+        endedAt: undefined,
+        status: JobApplication_JobApplicationStatus.PASSED,
+        applicationSource: '사람인',
+        memo: '결제 도메인 경험 어필',
+        isVisible: true,
+        priority: 1,
+        applicationStages: [
+          {
+            id: 'app-stage-1-2-1',
+            name: '서류 전형',
+            status: ApplicationStage_ApplicationStageStatus.PASSED,
+            startedAt: now - 18 * 24 * 60 * 60 * 1000,
+            memo: '서류 합격',
+            isVisible: true,
+            priority: 0,
+            createdAt: now - 18 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 15 * 24 * 60 * 60 * 1000,
+          },
+          {
+            id: 'app-stage-1-2-2',
+            name: '1차 면접',
+            status: ApplicationStage_ApplicationStageStatus.SCHEDULED,
+            startedAt: now + 5 * 24 * 60 * 60 * 1000,
+            memo: '다음 주 면접 예정',
+            isVisible: true,
+            priority: 1,
+            createdAt: now - 15 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+          },
+        ],
+        createdAt: now - 18 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+      },
+      {
+        id: 'job-app-1-3',
+        name: '토스',
+        position: '서버 개발자',
+        jobPostingTitle: '토스뱅크 백엔드 개발자 (Senior)',
+        jobPostingUrl: 'https://toss.im/career/job-detail?gh_jid=5678901',
+        startedAt: now - 15 * 24 * 60 * 60 * 1000,
+        endedAt: undefined,
+        status: JobApplication_JobApplicationStatus.PENDING,
+        applicationSource: '원티드',
+        memo: '토스 기술 블로그를 보고 매우 매력적으로 느꼈음',
+        isVisible: true,
+        priority: 2,
+        applicationStages: [
+          {
+            id: 'app-stage-1-3-1',
+            name: '서류 전형',
+            status: ApplicationStage_ApplicationStageStatus.PENDING,
+            startedAt: now - 15 * 24 * 60 * 60 * 1000,
+            memo: '서류 제출 완료',
+            isVisible: true,
+            priority: 0,
+            createdAt: now - 15 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 15 * 24 * 60 * 60 * 1000,
+          },
+        ],
+        createdAt: now - 15 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 15 * 24 * 60 * 60 * 1000,
+      },
+      {
+        id: 'job-app-1-4',
+        name: '쿠팡',
+        position: 'Software Engineer',
+        jobPostingTitle: 'Backend Engineer - Logistics',
+        jobPostingUrl: 'https://www.coupang.jobs/kr/jobs/12345',
+        startedAt: now - 12 * 24 * 60 * 60 * 1000,
+        endedAt: undefined,
+        status: JobApplication_JobApplicationStatus.PASSED,
+        applicationSource: '링크드인',
+        memo: '영어 면접 준비 필요',
+        isVisible: true,
+        priority: 3,
+        applicationStages: [
+          {
+            id: 'app-stage-1-4-1',
+            name: '서류 전형',
+            status: ApplicationStage_ApplicationStageStatus.PASSED,
+            startedAt: now - 12 * 24 * 60 * 60 * 1000,
+            memo: '서류 합격',
+            isVisible: true,
+            priority: 0,
+            createdAt: now - 12 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 10 * 24 * 60 * 60 * 1000,
+          },
+          {
+            id: 'app-stage-1-4-2',
+            name: '코딩 테스트',
+            status: ApplicationStage_ApplicationStageStatus.SCHEDULED,
+            startedAt: now + 3 * 24 * 60 * 60 * 1000,
+            memo: 'HackerRank 플랫폼 사용 예정',
+            isVisible: true,
+            priority: 1,
+            createdAt: now - 10 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+          },
+        ],
+        createdAt: now - 12 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+      },
+      {
+        id: 'job-app-1-5',
+        name: '배달의민족',
+        position: '백엔드 개발자',
+        jobPostingTitle: '배달의민족 백엔드 개발자',
+        jobPostingUrl: 'https://careers.baemin.com/jobs/12345',
+        startedAt: now - 10 * 24 * 60 * 60 * 1000,
+        endedAt: undefined,
+        status: JobApplication_JobApplicationStatus.PENDING,
+        applicationSource: '원티드',
+        memo: '대규모 트래픽 처리 경험 강조',
+        isVisible: true,
+        priority: 4,
+        applicationStages: [
+          {
+            id: 'app-stage-1-5-1',
+            name: '서류 전형',
+            status: ApplicationStage_ApplicationStageStatus.PENDING,
+            startedAt: now - 10 * 24 * 60 * 60 * 1000,
+            memo: '서류 제출 완료',
+            isVisible: true,
+            priority: 0,
+            createdAt: now - 10 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 10 * 24 * 60 * 60 * 1000,
+          },
+        ],
+        createdAt: now - 10 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 10 * 24 * 60 * 60 * 1000,
+      },
+    ],
+    memos: [],
+    attachments: [],
+    createdAt: now - 20 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+  };
+
   return {
     id: 'turn-over-1',
     name: '2024년 하반기 이직',
     worker,
     turnOverGoal,
-    turnOverChallenge: undefined,
+    turnOverChallenge,
     turnOverRetrospective: undefined,
     createdAt: now - 20 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 7 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 1 * 24 * 60 * 60 * 1000,
   };
 };
 
-// 샘플 이직 활동 2: 진행 중 (목표 + 도전)
+// 샘플 이직 활동 2: 완료 (목표 + 도전 + 회고)
 export const createSampleTurnOver2 = (): TurnOverDetail => {
   const now = Date.now();
   const worker = createSampleWorker();
@@ -359,13 +537,44 @@ export const createSampleTurnOver2 = (): TurnOverDetail => {
     updatedAt: now - 1 * 24 * 60 * 60 * 1000,
   };
 
+  const turnOverRetrospective: TurnOverRetrospectiveDetail = {
+    id: 'turn-over-retrospective-2',
+    name: '토스',
+    salary: 9500,
+    position: '서버 개발자',
+    jobTitle: '백엔드팀',
+    rank: '시니어',
+    department: '금융서비스개발본부',
+    reason: '핀테크 분야에서 최신 기술을 접하고, 빠르게 성장하는 환경에서 일하고 싶었습니다.',
+    score: 5,
+    reviewSummary: '매우 만족스러운 이직이었습니다.\n\n장점:\n- 최신 기술 스택 (Kotlin, Spring Boot, Kafka, Redis)\n- 대규모 트래픽 처리 경험 (초당 10만 TPS)\n- 우수한 동료들과 협업\n- 수평적인 조직 문화\n- 탁월한 복지 (점심/저녁 제공, 넉넉한 휴가)\n- 좋은 연봉과 스톡옵션\n\n아쉬운 점:\n- 초기 온보딩 기간이 짧아서 적응에 시간이 필요했음\n- 금융 도메인 지식을 새로 배워야 했음\n\n전반적으로 기술적으로도 많이 성장하고, 커리어에도 큰 도움이 되는 이직이었습니다.',
+    joinedAt: now - 5 * 24 * 60 * 60 * 1000,
+    workType: '하이브리드 (주 2일 출근)',
+    employmentType: TurnOverRetrospectiveDetail_EmploymentType.FULL_TIME,
+    memos: [
+      {
+        id: 'memo-2-retro-1',
+        content: '온보딩 프로그램이 잘 되어 있어 적응이 빨랐음',
+        targetId: 'turn-over-retrospective-2',
+        targetType: Memo_MemoTargetType.TURN_OVER_RETROSPECT,
+        isVisible: true,
+        priority: 0,
+        createdAt: now - 4 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 4 * 24 * 60 * 60 * 1000,
+      },
+    ],
+    attachments: [],
+    createdAt: now - 5 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+  };
+
   return {
     id: 'turn-over-2',
     name: '2024 상반기 대기업 지원',
     worker,
     turnOverGoal,
     turnOverChallenge,
-    turnOverRetrospective: undefined,
+    turnOverRetrospective,
     createdAt: now - 60 * 24 * 60 * 60 * 1000,
     updatedAt: now - 1 * 24 * 60 * 60 * 1000,
   };
@@ -591,7 +800,7 @@ export const createSampleTurnOver3 = (): TurnOverDetail => {
   };
 };
 
-// 샘플 이직 활동 4: 진행 중 (여러 지원)
+// 샘플 이직 활동 4: 완료 (목표 + 도전 + 회고)
 export const createSampleTurnOver4 = (): TurnOverDetail => {
   const now = Date.now();
   const worker = createSampleWorker();
@@ -832,19 +1041,50 @@ export const createSampleTurnOver4 = (): TurnOverDetail => {
     updatedAt: now,
   };
 
+  const turnOverRetrospective: TurnOverRetrospectiveDetail = {
+    id: 'turn-over-retrospective-4',
+    name: 'Google Korea',
+    salary: 12000,
+    position: 'Software Engineer',
+    jobTitle: 'Backend Team',
+    rank: 'Senior',
+    department: 'Engineering',
+    reason: '글로벌 기업에서 일하며 최신 기술과 문화를 경험하고 싶었습니다.',
+    score: 5,
+    reviewSummary: '매우 만족스러운 이직이었습니다.\n\n장점:\n- 최신 기술 스택 (Go, Python, Kubernetes, GCP)\n- 글로벌 팀과 협업 경험\n- 우수한 동료들과 협업\n- 수평적인 조직 문화\n- 탁월한 복지 (무료 식사, 헬스케어, 유연한 근무)\n- 매우 좋은 연봉과 스톡옵션\n\n아쉬운 점:\n- 초기 영어 커뮤니케이션에 어려움이 있었음\n- 대규모 조직에서의 프로세스가 복잡함\n\n전반적으로 기술적으로도 많이 성장하고, 글로벌 경험을 쌓을 수 있는 좋은 이직이었습니다.',
+    joinedAt: now - 1 * 24 * 60 * 60 * 1000,
+    workType: '하이브리드 (주 3일 출근)',
+    employmentType: TurnOverRetrospectiveDetail_EmploymentType.FULL_TIME,
+    memos: [
+      {
+        id: 'memo-4-retro-1',
+        content: '온보딩 프로그램이 매우 잘 되어 있어 적응이 빨랐음',
+        targetId: 'turn-over-retrospective-4',
+        targetType: Memo_MemoTargetType.TURN_OVER_RETROSPECT,
+        isVisible: true,
+        priority: 0,
+        createdAt: now,
+        updatedAt: now,
+      },
+    ],
+    attachments: [],
+    createdAt: now - 1 * 24 * 60 * 60 * 1000,
+    updatedAt: now,
+  };
+
   return {
     id: 'turn-over-4',
     name: '2024 외국계 기업 도전',
     worker,
     turnOverGoal,
     turnOverChallenge,
-    turnOverRetrospective: undefined,
+    turnOverRetrospective,
     createdAt: now - 45 * 24 * 60 * 60 * 1000,
     updatedAt: now,
   };
 };
 
-// 샘플 이직 활동 5: 초기 단계 (목표만 간단히)
+// 샘플 이직 활동 5: 완료 (목표 + 도전 + 회고)
 export const createSampleTurnOver5 = (): TurnOverDetail => {
   const now = Date.now();
   const worker = createSampleWorker();
@@ -881,15 +1121,55 @@ export const createSampleTurnOver5 = (): TurnOverDetail => {
     updatedAt: now - 3 * 24 * 60 * 60 * 1000,
   };
 
+  const turnOverChallenge: TurnOverChallengeDetail = {
+    id: 'turn-over-challenge-5',
+    jobApplications: [],
+    memos: [],
+    attachments: [],
+    createdAt: now - 180 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 90 * 24 * 60 * 60 * 1000,
+  };
+
+  const turnOverRetrospective: TurnOverRetrospectiveDetail = {
+    id: 'turn-over-retrospective-5',
+    name: '네이버',
+    salary: 7500,
+    position: '백엔드 개발자',
+    jobTitle: '플랫폼개발팀',
+    rank: '선임',
+    department: '개발본부',
+    reason: '워라밸이 좋고, 안정적인 환경에서 일하고 싶었습니다.',
+    score: 4,
+    reviewSummary: '만족스러운 이직이었습니다.\n\n장점:\n- 좋은 워라밸 (야근 거의 없음)\n- 안정적인 환경\n- 수평적인 조직 문화\n- 좋은 복지 (점심 제공, 넉넉한 휴가)\n- 적절한 연봉\n\n아쉬운 점:\n- 레거시 코드가 많아서 최신 기술을 접하기 어려움\n- 대기업 특유의 느린 의사결정\n\n전반적으로 워라밸이 좋고, 안정적인 환경에서 일할 수 있어 만족스러운 이직이었습니다.',
+    joinedAt: now - 90 * 24 * 60 * 60 * 1000,
+    workType: '하이브리드 (주 2일 출근)',
+    employmentType: TurnOverRetrospectiveDetail_EmploymentType.FULL_TIME,
+    memos: [
+      {
+        id: 'memo-5-retro-1',
+        content: '워라밸이 정말 좋아서 만족스러움',
+        targetId: 'turn-over-retrospective-5',
+        targetType: Memo_MemoTargetType.TURN_OVER_RETROSPECT,
+        isVisible: true,
+        priority: 0,
+        createdAt: now - 85 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 85 * 24 * 60 * 60 * 1000,
+      },
+    ],
+    attachments: [],
+    createdAt: now - 90 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 30 * 24 * 60 * 60 * 1000,
+  };
+
   return {
     id: 'turn-over-5',
     name: '2025 워라밸 회사 찾기',
     worker,
     turnOverGoal,
-    turnOverChallenge: undefined,
-    turnOverRetrospective: undefined,
-    createdAt: now - 7 * 24 * 60 * 60 * 1000,
-    updatedAt: now - 3 * 24 * 60 * 60 * 1000,
+    turnOverChallenge,
+    turnOverRetrospective,
+    createdAt: now - 180 * 24 * 60 * 60 * 1000,
+    updatedAt: now - 30 * 24 * 60 * 60 * 1000,
   };
 };
 

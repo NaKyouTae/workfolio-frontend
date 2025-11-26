@@ -13,9 +13,10 @@ interface TurnOversContentViewProps {
   onDuplicate?: (id: string) => void;
   onDelete?: (id: string) => void;
   onUpdate?: () => void;
+  onShowLoginModal?: () => void;
 }
 
-const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete, onUpdate }) => {
+const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete, onUpdate, onShowLoginModal }) => {
   const [activeTab, setActiveTab] = useState<TabType>('goal');
   const [navigationItems, setNavigationItems] = useState<FloatingNavigationItem[]>([]);
 
@@ -76,6 +77,7 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
           onEdit={onEdit}
           onDuplicate={() => onDuplicate?.(selectedTurnOver.id)}
           onDelete={() => onDelete?.(selectedTurnOver.id)}
+          onShowLoginModal={onShowLoginModal}
         />
 
         <div className="page-cont">

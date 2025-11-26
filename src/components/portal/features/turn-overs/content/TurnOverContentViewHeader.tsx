@@ -1,5 +1,6 @@
 import React from 'react';
 import DateUtil from '@/utils/DateUtil';
+import { isLoggedIn } from '@/utils/authUtils';
 
 interface TurnOverContentViewHeaderProps {
   title: string;
@@ -7,6 +8,7 @@ interface TurnOverContentViewHeaderProps {
   onEdit?: () => void;
   onDuplicate?: () => void;
   onDelete?: () => void;
+  onShowLoginModal?: () => void;
 }
 
 const TurnOverContentViewHeader: React.FC<TurnOverContentViewHeaderProps> = ({ 
@@ -14,8 +16,17 @@ const TurnOverContentViewHeader: React.FC<TurnOverContentViewHeaderProps> = ({
   updatedAt, 
   onEdit, 
   onDuplicate, 
-  onDelete 
+  onDelete,
+  onShowLoginModal,
 }) => {
+  const handleEdit = () => {
+    if (!isLoggedIn()) {
+      onShowLoginModal?.();
+      return;
+    }
+    onEdit?.();
+  };
+
   return (
     <div className="page-title">
         <div>
@@ -24,7 +35,7 @@ const TurnOverContentViewHeader: React.FC<TurnOverContentViewHeaderProps> = ({
         </div>
         <ul>
             {onEdit && (
-                <li onClick={onEdit}>편집</li>
+                <li onClick={handleEdit}>편집</li>
             )}
             {onDuplicate && (
                 <li onClick={onDuplicate}>복제</li>

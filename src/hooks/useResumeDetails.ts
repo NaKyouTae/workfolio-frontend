@@ -75,26 +75,21 @@ export const useResumeDetails = () => {
       if (response.ok) {
         const data = await response.json();
         const newResumes = data.resumes || [];
-        // 새 데이터가 있으면 교체하고 캐시 업데이트
-        if (newResumes.length > 0) {
-          setResumeDetails(newResumes);
-          cachedResumeDetails = newResumes; // 캐시 업데이트
-        }
-        // 새 데이터가 없어도 이전 데이터는 유지 (빈 배열로 교체하지 않음)
+        // 로그인한 경우 API 데이터만 사용 (샘플 데이터 사용하지 않음)
+        setResumeDetails(newResumes);
+        cachedResumeDetails = newResumes; // 캐시 업데이트
         isInitialized = true;
       } else {
-        // API 호출 실패 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
-        const fallbackData = cachedResumeDetails.length > 0 ? cachedResumeDetails : createSampleResumeDetails();
-        setResumeDetails(fallbackData);
-        cachedResumeDetails = fallbackData; // 캐시 업데이트
+        // API 호출 실패 시 빈 배열
+        setResumeDetails([]);
+        cachedResumeDetails = []; // 캐시 업데이트
         isInitialized = true;
       }
     } catch (error) {
-      // 에러 발생 시에도 이전 데이터 유지, 없으면 샘플 데이터 사용
+      // 에러 발생 시 빈 배열
       console.error('이력서 목록 조회 중 오류 발생:', error);
-      const fallbackData = cachedResumeDetails.length > 0 ? cachedResumeDetails : createSampleResumeDetails();
-      setResumeDetails(fallbackData);
-      cachedResumeDetails = fallbackData; // 캐시 업데이트
+      setResumeDetails([]);
+      cachedResumeDetails = []; // 캐시 업데이트
       isInitialized = true;
     } finally {
       setIsLoading(false);

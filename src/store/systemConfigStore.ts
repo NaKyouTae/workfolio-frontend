@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { SystemConfig, SystemConfig_SystemConfigType, systemConfig_SystemConfigTypeToJSON } from '@/generated/common';
 import { SystemConfigGetResponse, SystemConfigUpdateRequest } from '@/generated/system_config';
 import HttpMethod from '@/enums/HttpMethod';
+import { isLoggedIn } from '@/utils/authUtils';
 
 interface SystemConfigState {
     // SystemConfig 데이터 (타입별로 저장)
@@ -27,6 +28,26 @@ export const useSystemConfigStore = create<SystemConfigState>((set, get) => ({
 
     // 시스템 설정 조회
     fetchSystemConfig: async (type: SystemConfig_SystemConfigType) => {
+        // 로그인하지 않은 경우 샘플 데이터 사용
+        if (!isLoggedIn()) {
+            // DEFAULT_RECORD_TYPE의 기본값 설정
+            if (type === SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE) {
+                const sampleConfig: SystemConfig = {
+                    id: 'sample-default-record-type',
+                    type: SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE,
+                    value: 'MONTHLY', // 기본값
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                };
+                const newConfigs = new Map(get().configs);
+                newConfigs.set(type, sampleConfig);
+                set({ configs: newConfigs, isLoading: false });
+                return;
+            }
+            set({ isLoading: false });
+            return;
+        }
+        
         set({ isLoading: true, error: null });
         
         try {
@@ -43,14 +64,51 @@ export const useSystemConfigStore = create<SystemConfigState>((set, get) => ({
                     set({ configs: newConfigs, isLoading: false });
                 }
             } else {
+                // 401 에러면 샘플 데이터 사용
+                if (response.status === 401) {
+                    if (type === SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE) {
+                        const sampleConfig: SystemConfig = {
+                            id: 'sample-default-record-type',
+                            type: SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE,
+                            value: 'MONTHLY',
+                            createdAt: Date.now(),
+                            updatedAt: Date.now(),
+                        };
+                        const newConfigs = new Map(get().configs);
+                        newConfigs.set(type, sampleConfig);
+                        set({ configs: newConfigs, isLoading: false });
+                        return;
+                    }
+                }
                 const errorMessage = `Failed to fetch system config: ${response.status}`;
                 set({ error: errorMessage, isLoading: false });
-                console.error(errorMessage);
+                // 로그인하지 않은 상태에서 발생하는 에러는 조용히 처리
+                if (isLoggedIn()) {
+                    console.error(errorMessage);
+                }
             }
         } catch (error) {
+            // 로그인하지 않은 상태에서 발생하는 에러는 조용히 처리하고 샘플 데이터 사용
+            if (!isLoggedIn()) {
+                if (type === SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE) {
+                    const sampleConfig: SystemConfig = {
+                        id: 'sample-default-record-type',
+                        type: SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE,
+                        value: 'MONTHLY',
+                        createdAt: Date.now(),
+                        updatedAt: Date.now(),
+                    };
+                    const newConfigs = new Map(get().configs);
+                    newConfigs.set(type, sampleConfig);
+                    set({ configs: newConfigs, isLoading: false });
+                    return;
+                }
+            }
             const errorMessage = 'Error fetching system config';
             set({ error: errorMessage, isLoading: false });
-            console.error(errorMessage, error);
+            if (isLoggedIn()) {
+                console.error(errorMessage, error);
+            }
         }
     },
 

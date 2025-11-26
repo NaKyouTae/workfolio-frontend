@@ -246,6 +246,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
             deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}
             exportPDF={exportPDF}
             copyURL={copyURL}
+            changeDefault={changeDefault}
           />
           <Footer/>
         </section>

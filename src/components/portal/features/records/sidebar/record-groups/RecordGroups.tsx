@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import { RecordGroup } from '@/generated/common';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
@@ -6,6 +6,8 @@ import { RecordGroupUpdateRequest } from '@/generated/record_group';
 import { RecordGroupColor } from '@/enums/RecordGroupColor';
 import RecordGroupItem from './RecordGroupItem';
 import { useShallow } from 'zustand/react/shallow';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface RecordGroupsProps {
     recordGroups: RecordGroup[];
@@ -24,19 +26,15 @@ const RecordGroups = React.memo(({
             triggerRecordRefresh: state.triggerRecordRefresh,
         }))
     );
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     const updateRecordGroup = useCallback(async (id: string, title: string) => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         try {
-            // 토큰이 없으면 로그인 페이지로 리다이렉트
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
-                window.location.href = '/login';
-                return;
-            }
 
             // 기존 그룹 정보 찾기
             const existingGroup = recordGroups.find(group => group.id === id);
@@ -82,17 +80,12 @@ const RecordGroups = React.memo(({
     }, [recordGroups, onRefresh, triggerRecordRefresh]);
 
     const updateRecordGroupColor = useCallback(async (id: string, color: string) => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         try {
-            // 토큰이 없으면 로그인 페이지로 리다이렉트
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
-                window.location.href = '/login';
-                return;
-            }
 
             // 기존 그룹 정보 찾기
             const existingGroup = recordGroups.find(group => group.id === id);
@@ -138,17 +131,12 @@ const RecordGroups = React.memo(({
     }, [recordGroups, onRefresh, triggerRecordRefresh]);
 
     const deleteRecordGroup = useCallback(async (id: string) => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         try {
-            // 토큰이 없으면 로그인 페이지로 리다이렉트
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
-                window.location.href = '/login';
-                return;
-            }
 
             const response = await fetch(`/api/record-groups/${id}`, {
                 method: HttpMethod.DELETE,
@@ -183,6 +171,7 @@ const RecordGroups = React.memo(({
                     onDelete={deleteRecordGroup}
                 />
             ))}
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </>
     );
 });

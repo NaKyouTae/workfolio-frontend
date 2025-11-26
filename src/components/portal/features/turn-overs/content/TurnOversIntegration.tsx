@@ -3,6 +3,8 @@ import { useTurnOver } from '@/hooks/useTurnOver';
 import { TurnOverDetail, ApplicationStage_ApplicationStageStatus, JobApplication_JobApplicationStatus } from '@/generated/common';
 import styles from './TurnOversIntegration.module.css';
 import Dropdown from '@/components/portal/ui/Dropdown';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
@@ -14,6 +16,7 @@ interface TurnOversIntegrationProps {
 const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete }) => {
   const { turnOvers } = useTurnOver();
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // ApplicationStage 상태 레이블 변환
   const getStatusLabel = (status: ApplicationStage_ApplicationStageStatus) => {
@@ -33,24 +36,14 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
 
   // 통계 계산
   const statistics = useMemo(() => {
-    const totalTurnOvers = turnOvers.length;
-    
-    // 진행 중인 지원 수 계산
-    let ongoingApplications = 0;
-    turnOvers.forEach(turnOver => {
-      if (!turnOver.turnOverRetrospective?.name || turnOver.turnOverRetrospective?.name === '') {
-        ongoingApplications++;
-      }
-    });
-
     // 평균 이직 기간 계산 (완료된 이직 활동만)
     const completedTurnOvers = turnOvers.filter(
       turnOver => turnOver.turnOverRetrospective
     );
     
-    let avgDuration = 0;
+    let avgDuration = { months: 0, days: 0 };
     if (completedTurnOvers.length > 0) {
-      const totalMonths = completedTurnOvers.reduce((sum, turnOver) => {
+      const totalDays = completedTurnOvers.reduce((sum, turnOver) => {
         if (turnOver.turnOverChallenge?.jobApplications && 
             turnOver.turnOverChallenge.jobApplications.length > 0) {
           const apps = turnOver.turnOverChallenge.jobApplications;
@@ -65,20 +58,58 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
           , apps[0]);
 
           if (firstApp.startedAt && lastApp.endedAt) {
-            const duration = (lastApp.endedAt - firstApp.startedAt) / (1000 * 60 * 60 * 24 * 30);
-            return sum + duration;
+            const durationDays = (lastApp.endedAt - firstApp.startedAt) / (1000 * 60 * 60 * 24);
+            return sum + durationDays;
           }
         }
         return sum;
       }, 0);
       
-      avgDuration = Math.round(totalMonths / completedTurnOvers.length);
+      const avgDays = totalDays / completedTurnOvers.length;
+      console.log('avgDays', avgDays);
+      avgDuration = {
+        months: Math.floor(avgDays / 30),
+        days: Math.round(avgDays % 30)
+      };
     }
 
+    const avgApplications = turnOvers.length > 0 
+      ? turnOvers.map(turnOver => turnOver.turnOverChallenge?.jobApplications.length ?? 0).reduce((sum, length) => sum + length, 0) / turnOvers.length 
+      : 0;
+    
+    // 연봉 상승률 계산: 이전 이직 활동의 최종 연봉을 이전 연봉으로 사용
+    let avgSalaryIncreaseRate = 0;
+    if (completedTurnOvers.length > 1) {
+      // createdAt 기준으로 정렬하여 시간순으로 비교
+      const sortedTurnOvers = [...completedTurnOvers].sort((a, b) => 
+        (a.createdAt || 0) - (b.createdAt || 0)
+      );
+      
+      const increaseRates: number[] = [];
+      
+      for (let i = 1; i < sortedTurnOvers.length; i++) {
+        const currentTurnOver = sortedTurnOvers[i];
+        const previousTurnOver = sortedTurnOvers[i - 1];
+        
+        const currentSalary = currentTurnOver.turnOverRetrospective?.salary ?? 0;
+        const previousSalary = previousTurnOver.turnOverRetrospective?.salary ?? 0;
+        
+        // 이전 연봉이 0보다 크고 현재 연봉도 0보다 큰 경우만 계산
+        if (previousSalary > 0 && currentSalary > 0) {
+          const increaseRate = ((currentSalary - previousSalary) / previousSalary) * 100;
+          increaseRates.push(increaseRate);
+        }
+      }
+      
+      if (increaseRates.length > 0) {
+        avgSalaryIncreaseRate = increaseRates.reduce((sum, rate) => sum + rate, 0) / increaseRates.length;
+      }
+    }
+    
     return {
-      totalTurnOvers,
-      ongoingApplications,
-      avgDuration
+      avgDuration,
+      avgApplications,
+      avgSalaryIncreaseRate
     };
   }, [turnOvers]);
 
@@ -118,18 +149,23 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                     </div>
                 </div>
                 <ul className="stats-summary">
-                    <li>
-                        <p>전체 이직 활동</p>
-                        <div>{statistics.totalTurnOvers}<span>개</span></div>
-                    </li>
-                    <li>
-                        <p>진행 중인 지원</p>
-                        <div>{statistics.ongoingApplications}<span>개</span></div>
-                    </li>
-                    <li>
+                    <li key="avgDuration">
                         <p>평균 이직 기간</p>
-                        <div>{statistics.avgDuration}<span>개월</span></div>
+                        <div>
+                          {statistics.avgDuration.months > 0 && `${statistics.avgDuration.months}개월 `}
+                          {statistics.avgDuration.days > 0 && `${statistics.avgDuration.days}일`}
+                          {statistics.avgDuration.months === 0 && statistics.avgDuration.days === 0 && '0일'}
+                        </div>
                     </li>
+                    <li>
+                        <p>평균 지원 회사</p>
+                        <div>{statistics.avgApplications}<span>개</span></div>
+                    </li>
+                    <li>
+                        <p>평균 연봉 상승률</p>
+                        <div>{statistics.avgSalaryIncreaseRate.toFixed(1)}<span>%</span></div>
+                    </li>
+                    
                 </ul>
             </div>
             <div className="cont-box">
@@ -170,6 +206,10 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                                         <li
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            if (!isLoggedIn()) {
+                                                setShowLoginModal(true);
+                                                return;
+                                            }
                                             onEdit?.(turnOver.id);
                                         }}
                                         >
@@ -178,6 +218,10 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                                         <li
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            if (!isLoggedIn()) {
+                                                setShowLoginModal(true);
+                                                return;
+                                            }
                                             onDuplicate?.(turnOver.id);
                                         }}
                                         >
@@ -186,6 +230,10 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                                         <li
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            if (!isLoggedIn()) {
+                                                setShowLoginModal(true);
+                                                return;
+                                            }
                                             onDelete?.(turnOver.id);
                                         }}
                                         >
@@ -244,6 +292,7 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                 )}
             </div>
         </div>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </div>
   );
 };

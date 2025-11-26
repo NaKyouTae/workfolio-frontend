@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TurnOversContentView from './content/TurnOverContentView';
 import { TurnOverDetail } from '@/generated/common';
 import TurnOversIntegration from './content/TurnOversIntegration';
@@ -6,6 +6,8 @@ import TurnOverContentEdit from './content/TurnOverContentEdit';
 import TurnOverContentCreate from './content/TurnOverContentCreate';
 import { TurnOverUpsertRequest } from '@/generated/turn_over';
 import { useConfirm } from '@/hooks/useConfirm';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 import Footer from "@/components/portal/layouts/Footer"
 
@@ -41,6 +43,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
   onTurnOverUpdate,
 }) => {
   const { confirm } = useConfirm();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // 현재 표시할 모드 결정
   const getCurrentViewMode = (): ViewMode => {
@@ -102,6 +105,11 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
   };
 
   const handleSave = async (data: TurnOverUpsertRequest, mode: ViewMode = 'view') => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    
     if (onSave) {
       // onSave가 완료된 후 onSaveComplete 호출
       await onSave(data);
@@ -126,12 +134,22 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
   };
 
   const handleDuplicate = (id: string) => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    
     if (onDuplicate) {
       onDuplicate(id);
     }
   };
 
   const handleDelete = async (id: string) => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    
     const result = await confirm({
       title: '이직 활동을 삭제하시겠어요?',
       icon: '/assets/img/ico/ic-delete.svg',
@@ -168,6 +186,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
               onDuplicate={handleDuplicate}
               onDelete={handleDelete}
               onUpdate={handleTurnOverUpdate}
+              onShowLoginModal={() => setShowLoginModal(true)}
           />
         )}
         {currentViewMode === 'edit' && isNewTurnOver && (
@@ -187,6 +206,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
           />
         )}
         <Footer/>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </section>
   );
 };

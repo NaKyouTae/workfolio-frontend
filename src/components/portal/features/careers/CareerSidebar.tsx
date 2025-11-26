@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ResumeDetail } from '@/generated/common';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface CareerSidebarProps {
   resumeDetails: ResumeDetail[];
@@ -10,7 +12,13 @@ interface CareerSidebarProps {
 }
 
 const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedResumeDetail, onResumeSelect, onResumeCreated, onGoHome }) => {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  
   const handleResumeCreated = () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     onResumeCreated();
   };
 
@@ -56,6 +64,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
           </ul>
         </div>
       </div>
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </aside>
   );
 };

@@ -1873,18 +1873,11 @@ export const createEmptySampleResumeDetails = () => {
   return { resume, careers, educations, projects, activities, languageSkills, attachments };
 };
 
-// 모든 샘플 Resume 데이터를 한 번에 반환
+// 모든 샘플 Resume 데이터를 한 번에 반환 (가이드에 따라 3개만)
 export const createAllSampleResumes = () => {
   return [
     createSampleResume2(),
     createSampleResume3(),
     createSampleResume4(),
-    createSampleResume5(),
-    createSampleResume6(),
-    createSampleResume7(),
-    createSampleResume8(),
-    createSampleResume9(),
-    createSampleResume10(),
-    createSampleResume11(),
   ];
 };

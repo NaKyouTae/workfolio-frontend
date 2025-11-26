@@ -5,6 +5,9 @@ import HttpMethod from '@/enums/HttpMethod';
 import EmptyState from '@/components/portal/ui/EmptyState';
 import GuideModal from '@/components/portal/ui/GuideModal';
 import { useGuide } from '@/hooks/useGuide';
+import { useNotification } from '@/hooks/useNotification';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 import '@/styles/component-view.css';
 
 interface CheckListViewProps {
@@ -14,6 +17,8 @@ interface CheckListViewProps {
 
 const CheckListView: React.FC<CheckListViewProps> = ({ checkList, onUpdate }) => {
   const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
+  const { showNotification } = useNotification();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   // 로컬 상태로 체크리스트 관리 (낙관적 업데이트)
   const [localCheckList, setLocalCheckList] = useState<CheckList[]>(checkList);
 
@@ -24,6 +29,11 @@ const CheckListView: React.FC<CheckListViewProps> = ({ checkList, onUpdate }) =>
 
   // checkbox 클릭 핸들러
   const handleCheckboxChange = useCallback(async (item: CheckList, checked: boolean) => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+
     if (!item.id) {
       console.error('CheckList id is missing');
       return;
@@ -62,15 +72,15 @@ const CheckListView: React.FC<CheckListViewProps> = ({ checkList, onUpdate }) =>
         setLocalCheckList(checkList);
         const errorData = await response.json();
         console.error('체크리스트 업데이트 실패:', errorData);
-        alert('체크리스트 업데이트에 실패했습니다. 다시 시도해주세요.');
+        showNotification('체크리스트 업데이트에 실패했습니다. 다시 시도해주세요.', 'error');
       }
     } catch (error) {
       // 에러 발생 시 원래 상태로 복구
       setLocalCheckList(checkList);
       console.error('Error updating check list:', error);
-      alert('체크리스트 업데이트 중 오류가 발생했습니다. 다시 시도해주세요.');
+      showNotification('체크리스트 업데이트 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
     }
-  }, [checkList, onUpdate]);
+  }, [checkList, onUpdate, showNotification]);
   return (
     <>
         <div className="cont-tit">
@@ -139,6 +149,7 @@ const CheckListView: React.FC<CheckListViewProps> = ({ checkList, onUpdate }) =>
             </ul>
           </div>
         </GuideModal>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </>
   );
 };

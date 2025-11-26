@@ -5,6 +5,8 @@ import { CreateRecordGroupRequest } from '@/generated/record_group';
 import HttpMethod from '@/enums/HttpMethod';
 import NewRecordGroupItem from '../NewRecordGroupItem';
 import { RecordGroup_RecordGroupType, RecordGroup } from '@/generated/common';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;
@@ -20,12 +22,17 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
     
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     const handleToggleGroups = useCallback(() => {
         setIsGroupsExpanded(prev => !prev);
     }, []);
 
     const handleCreateGroupRequest = useCallback(() => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
         setIsCreatingGroup(true);
     }, []);
 
@@ -35,6 +42,11 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
 
     // 새 그룹 생성 함수
     const createRecordGroup = useCallback(async (title: string, color: string) => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         try {
             const message = CreateRecordGroupRequest.create({
                 title: title,
@@ -70,29 +82,32 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
     }, [recordGroups.length, onRefresh]);
 
     return (
-        <div className="record-group">
-            <RecordGroupsOwnedHeader 
-                isGroupsExpanded={isGroupsExpanded}
-                onToggleGroups={handleToggleGroups}
-                onCreateGroup={handleCreateGroupRequest}
-            />
-            {isGroupsExpanded && (
-                <ul className="record-group-list">
-                    {isCreatingGroup && (
-                        <NewRecordGroupItem
-                            placeholder="신규 기록장 이름"
-                            onSave={createRecordGroup}
-                            onCancel={handleCancelCreate}
+        <>
+            <div className="record-group">
+                <RecordGroupsOwnedHeader 
+                    isGroupsExpanded={isGroupsExpanded}
+                    onToggleGroups={handleToggleGroups}
+                    onCreateGroup={handleCreateGroupRequest}
+                />
+                {isGroupsExpanded && (
+                    <ul className="record-group-list">
+                        {isCreatingGroup && (
+                            <NewRecordGroupItem
+                                placeholder="신규 기록장 이름"
+                                onSave={createRecordGroup}
+                                onCancel={handleCancelCreate}
+                            />
+                        )}
+                        <RecordGroups 
+                            key="owned-record-groups"
+                            recordGroups={recordGroups} 
+                            onRefresh={onRefresh}
                         />
-                    )}
-                    <RecordGroups 
-                        key="owned-record-groups"
-                        recordGroups={recordGroups} 
-                        onRefresh={onRefresh}
-                    />
-                </ul>
-            )}
-        </div>
+                    </ul>
+                )}
+            </div>
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+        </>
     );
 });
 

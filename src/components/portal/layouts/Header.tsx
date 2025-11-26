@@ -1,14 +1,17 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 const Header = () => {
     const router = useRouter();
     const pathname = usePathname();
     const { user, fetchUser, logout: userLogout } = useUser();
+    const [showLoginModal, setShowLoginModal] = useState(false);
     
     // 로그인 상태 확인 및 유저 정보 가져오기
     useEffect(() => {
@@ -53,6 +56,22 @@ const Header = () => {
         // 다른 경로면 Link 컴포넌트가 처리하도록 함
         // (Link는 클라이언트 사이드 네비게이션을 처리)
     }, [pathname]);
+
+    // 마이페이지 클릭 핸들러
+    const handleMypageClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (!isLoggedIn()) {
+            e.preventDefault();
+            setShowLoginModal(true);
+            return;
+        }
+        handleMenuClick(e, '/mypage');
+    }, [handleMenuClick]);
+
+    // 로그인 버튼 클릭 핸들러
+    const handleLoginClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        setShowLoginModal(true);
+    }, []);
 
     return (
         <header>
@@ -110,17 +129,18 @@ const Header = () => {
                             <Link 
                                 href="/mypage" 
                                 prefetch={false}
-                                onClick={(e) => handleMenuClick(e, '/mypage')}
+                                onClick={handleMypageClick}
                             >
                                 마이페이지
                             </Link>
                         </li>
                         <li>
-                            <a href="/login">로그인</a>
+                            <a onClick={handleLoginClick}>로그인</a>
                         </li>
                     </ul>
                 )}
             </div>
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </header>
     )
 }

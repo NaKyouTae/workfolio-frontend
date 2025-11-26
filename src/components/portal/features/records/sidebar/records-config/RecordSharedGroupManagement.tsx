@@ -9,15 +9,19 @@ import { useShallow } from 'zustand/react/shallow';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useRecordGroups } from '@/hooks/useRecordGroups';
 import { useNotification } from '@/hooks/useNotification';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface RecordSharedGroupManagementProps {
     onGroupSettingsClick?: (group: RecordGroup) => void;
     userId: string;
+    onCreateGroup?: () => void;
 }
 
 const RecordSharedGroupManagement: React.FC<RecordSharedGroupManagementProps> = ({ 
     onGroupSettingsClick,
     userId,
+    onCreateGroup,
 }) => {
     const [selectedRecordGroup, setSelectedRecordGroup] = useState<RecordGroup | null>(null);
     
@@ -31,9 +35,15 @@ const RecordSharedGroupManagement: React.FC<RecordSharedGroupManagementProps> = 
     const { confirm } = useConfirm();
     const { deleteRecordGroup, updateSharedPriorities } = useRecordGroups();
     const { showNotification } = useNotification();
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     // 기록장 삭제 핸들러
     const handleDelete = useCallback(async (recordGroupId: string) => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        
         const confirmed = await confirm({
             title: '기록장 삭제',
             icon: '/assets/img/ico/ic-delete.svg',
@@ -104,7 +114,11 @@ const RecordSharedGroupManagement: React.FC<RecordSharedGroupManagementProps> = 
                     <h3>공유 기록장 목록</h3>
                     <p>{sharedRecordGroups.length}개</p>
                 </div>
-                <button><i className="ic-add" />추가</button>
+                <button onClick={() => {
+                    if (onCreateGroup) {
+                        onCreateGroup();
+                    }
+                }}><i className="ic-add" />추가</button>
             </div>
             <DraggableList
                 items={sharedRecordGroups}
@@ -147,6 +161,7 @@ const RecordSharedGroupManagement: React.FC<RecordSharedGroupManagementProps> = 
                     </DraggableItem>
                 )}
             />
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </div>
     );
 };

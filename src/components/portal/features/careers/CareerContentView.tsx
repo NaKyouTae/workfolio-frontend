@@ -9,6 +9,8 @@ import AttachmentView from '@/components/portal/features/common/AttachmentView';
 import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import DateUtil from '@/utils/DateUtil';
+import { isLoggedIn } from '@/utils/authUtils';
+import LoginModal from '@/components/portal/ui/LoginModal';
 
 interface CareerContentViewProps {
   selectedResumeDetail: ResumeDetail | null;
@@ -17,6 +19,7 @@ interface CareerContentViewProps {
   deleteResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   exportPDF?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   copyURL?: (publicId?: string, onSuccess?: () => void) => Promise<void>;
+  changeDefault?: (resumeId?: string) => Promise<void>;
 }
 
 /**
@@ -30,12 +33,27 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   deleteResume,
   // exportPDF,
   // copyURL,
+  changeDefault,
 }) => {
   // 비공개 정보 보기 상태
   const [showHidden, setShowHidden] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // 편집 핸들러
+  const handleEdit = () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    onEdit();
+  };
 
   // 복제 핸들러
   const handleDuplicateResume = () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     if (duplicateResume) {
       duplicateResume(selectedResumeDetail?.id);
     }
@@ -43,8 +61,23 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
 
   // 삭제 핸들러
   const handleDeleteResume = () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
     if (deleteResume) {
       deleteResume(selectedResumeDetail?.id);
+    }
+  };
+
+  // 기본 이력 변경 핸들러
+  const handleChangeDefault = () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (changeDefault && selectedResumeDetail?.id) {
+      changeDefault(selectedResumeDetail.id);
     }
   };
 
@@ -137,10 +170,11 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                         className="input-resume" 
                         checked={selectedResumeDetail?.isDefault || false} 
                         onChange={() => {}}
+                        onClick={handleChangeDefault}
                         id="isDefault" 
                         readOnly 
                     />
-                    <label htmlFor="isDefault"></label>
+                    <label htmlFor="isDefault" onClick={handleChangeDefault}></label>
                     {
                         selectedResumeDetail?.title && (
                             <h2>{selectedResumeDetail?.title}</h2>
@@ -154,7 +188,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                 )}
             </div>
             <ul>
-                <li onClick={onEdit}>편집</li>
+                <li onClick={handleEdit}>편집</li>
                 <li onClick={handleDuplicateResume}>복제</li>
                 <li onClick={handleDeleteResume}>삭제</li>
             </ul>
@@ -267,6 +301,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
         </div>
 
         {/* 스크롤 가능한 컨텐츠 */}
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </div>
   );
 };
