@@ -1,13 +1,15 @@
 import React from 'react';
 import '@/styles/component-view.css';
+import { DateUtil } from '@/utils/DateUtil';
 
 interface FinalChoiceViewProps {
+  endedAt?: number | undefined;
   name: string;
   position: string;
   reason?: string;
 }
 
-const FinalChoiceView: React.FC<FinalChoiceViewProps> = ({ name, position, reason }) => {
+const FinalChoiceView: React.FC<FinalChoiceViewProps> = ({ endedAt, name, position, reason }) => {
   return (
     <>
         <div className="cont-tit">
@@ -26,6 +28,9 @@ const FinalChoiceView: React.FC<FinalChoiceViewProps> = ({ name, position, reaso
                     </div>
                 </div>
                 <div className="desc">
+                    {endedAt && (
+                        <p>종료일: {DateUtil.formatTimestamp(endedAt)}</p>
+                    )}
                     {reason && (
                         <p>{reason}</p>
                     )}

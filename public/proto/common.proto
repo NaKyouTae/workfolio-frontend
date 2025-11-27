@@ -368,6 +368,8 @@ message SystemConfig {
 message TurnOver {
   string id = 1;
   string name = 2;
+  optional uint64 started_at = 3;
+  optional uint64 ended_at = 4;
 
   Worker worker = 50;
 
@@ -378,6 +380,8 @@ message TurnOver {
 message TurnOverDetail {
   string id = 1;
   string name = 2;
+  optional uint64 started_at = 3;
+  optional uint64 ended_at = 4;
 
   Worker worker = 50;
   TurnOverGoalDetail turn_over_goal = 51;
@@ -422,7 +426,7 @@ message SelfIntroduction {
   bool is_visible = 30;
   uint32 priority = 31;
 
-  TurnOverGoal turn_over_goal = 50;
+  TurnOver turn_over = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -436,7 +440,7 @@ message InterviewQuestion {
   bool is_visible = 30;
   uint32 priority = 31;
 
-  TurnOverGoal turn_over_goal = 50;
+  TurnOver turn_over = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -450,7 +454,7 @@ message CheckList {
   bool is_visible = 30;
   uint32 priority = 31;
 
-  TurnOverGoal turn_over_goal = 50;
+  TurnOver turn_over = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;
@@ -499,7 +503,7 @@ message JobApplication {
   bool is_visible = 30;
   uint32 priority = 31;
 
-  TurnOverChallenge turn_over_challenge = 50;
+  TurnOver turn_over = 50;
 
   uint64 created_at = 98;
   uint64 updated_at = 99;

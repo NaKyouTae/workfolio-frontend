@@ -337,6 +337,8 @@ export const createSampleTurnOver1 = (): TurnOverDetail => {
   return {
     id: 'turn-over-1',
     name: '2024년 하반기 이직',
+    startedAt: now - 20 * 24 * 60 * 60 * 1000,
+    endedAt: now - 10 * 24 * 60 * 60 * 1000,
     worker,
     turnOverGoal,
     turnOverChallenge,
@@ -571,6 +573,8 @@ export const createSampleTurnOver2 = (): TurnOverDetail => {
   return {
     id: 'turn-over-2',
     name: '2024 상반기 대기업 지원',
+    startedAt: now - 20 * 24 * 60 * 60 * 1000,
+    endedAt: now - 10 * 24 * 60 * 60 * 1000,
     worker,
     turnOverGoal,
     turnOverChallenge,
@@ -791,6 +795,8 @@ export const createSampleTurnOver3 = (): TurnOverDetail => {
   return {
     id: 'turn-over-3',
     name: '2023 하반기 이커머스 도전',
+    startedAt: now - 20 * 24 * 60 * 60 * 1000,
+    endedAt: now - 10 * 24 * 60 * 60 * 1000,
     worker,
     turnOverGoal,
     turnOverChallenge,
@@ -1075,6 +1081,8 @@ export const createSampleTurnOver4 = (): TurnOverDetail => {
   return {
     id: 'turn-over-4',
     name: '2024 외국계 기업 도전',
+    startedAt: now - 20 * 24 * 60 * 60 * 1000,
+    endedAt: now - 10 * 24 * 60 * 60 * 1000,
     worker,
     turnOverGoal,
     turnOverChallenge,
@@ -1164,6 +1172,8 @@ export const createSampleTurnOver5 = (): TurnOverDetail => {
   return {
     id: 'turn-over-5',
     name: '2025 워라밸 회사 찾기',
+    startedAt: now - 20 * 24 * 60 * 60 * 1000,
+    endedAt: now - 10 * 24 * 60 * 60 * 1000,
     worker,
     turnOverGoal,
     turnOverChallenge,

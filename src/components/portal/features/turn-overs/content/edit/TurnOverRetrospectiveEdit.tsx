@@ -31,21 +31,38 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
   const attachmentRef = useRef<HTMLDivElement>(null);
   
   // 초기값을 turnOverRequest에서 바로 계산하여 깜빡임 방지
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialEndedAt = useMemo(() => turnOverRequest?.endedAt || undefined, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialCompanyName = useMemo(() => turnOverRequest?.turnOverRetrospective?.name || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialPosition = useMemo(() => turnOverRequest?.turnOverRetrospective?.position || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialReason = useMemo(() => turnOverRequest?.turnOverRetrospective?.reason || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialSalary = useMemo(() => turnOverRequest?.turnOverRetrospective?.salary || 0, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialJoinDate = useMemo(() => turnOverRequest?.turnOverRetrospective?.joinedAt || undefined, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialEmploymentType = useMemo(() => turnOverRequest?.turnOverRetrospective?.employmentType || TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialDepartment = useMemo(() => turnOverRequest?.turnOverRetrospective?.department || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialJobTitle = useMemo(() => turnOverRequest?.turnOverRetrospective?.jobTitle || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialRank = useMemo(() => turnOverRequest?.turnOverRetrospective?.rank || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialWorkType = useMemo(() => turnOverRequest?.turnOverRetrospective?.workType || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialScore = useMemo(() => turnOverRequest?.turnOverRetrospective?.score || 5, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialReviewSummary = useMemo(() => turnOverRequest?.turnOverRetrospective?.reviewSummary || '', [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialMemos = useMemo(() => turnOverRequest?.turnOverRetrospective?.memos || [], [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialAttachments = useMemo(() => turnOverRequest?.turnOverRetrospective?.attachments || [], [turnOverRequest?.id]);
   
+  const [endedAt, setEndedAt] = useState<number | undefined>(initialEndedAt);
   const [companyName, setCompanyName] = useState(initialCompanyName);
   const [position, setPosition] = useState(initialPosition);
   const [reason, setReason] = useState(initialReason);
@@ -160,21 +177,24 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     // turnOverRequest의 id가 변경된 경우에만 state 초기화
     if (turnOverRequest?.id !== turnOverRequestIdRef.current) {
       turnOverRequestIdRef.current = turnOverRequest?.id;
-      if (turnOverRequest?.turnOverRetrospective) {
-        setCompanyName(turnOverRequest.turnOverRetrospective.name || '');
-        setPosition(turnOverRequest.turnOverRetrospective.position || '');
-        setReason(turnOverRequest.turnOverRetrospective.reason || '');
-        setSalary(turnOverRequest.turnOverRetrospective.salary || 0);
-        setJoinDate(turnOverRequest.turnOverRetrospective.joinedAt || undefined);
-        setEmploymentType(turnOverRequest.turnOverRetrospective.employmentType || TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN);
-        setDepartment(turnOverRequest.turnOverRetrospective.department || '');
-        setJobTitle(turnOverRequest.turnOverRetrospective.jobTitle || '');
-        setRank(turnOverRequest.turnOverRetrospective.rank || '');
-        setWorkType(turnOverRequest.turnOverRetrospective.workType || '');
-        setScore(turnOverRequest.turnOverRetrospective.score || 5);
-        setReviewSummary(turnOverRequest.turnOverRetrospective.reviewSummary || '');
-        setMemos(turnOverRequest.turnOverRetrospective.memos || []);
-        setAttachments(turnOverRequest.turnOverRetrospective.attachments || []);
+      if (turnOverRequest) {
+        setEndedAt(turnOverRequest.endedAt || undefined);
+        if (turnOverRequest.turnOverRetrospective) {
+          setCompanyName(turnOverRequest.turnOverRetrospective.name || '');
+          setPosition(turnOverRequest.turnOverRetrospective.position || '');
+          setReason(turnOverRequest.turnOverRetrospective.reason || '');
+          setSalary(turnOverRequest.turnOverRetrospective.salary || 0);
+          setJoinDate(turnOverRequest.turnOverRetrospective.joinedAt || undefined);
+          setEmploymentType(turnOverRequest.turnOverRetrospective.employmentType || TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN);
+          setDepartment(turnOverRequest.turnOverRetrospective.department || '');
+          setJobTitle(turnOverRequest.turnOverRetrospective.jobTitle || '');
+          setRank(turnOverRequest.turnOverRetrospective.rank || '');
+          setWorkType(turnOverRequest.turnOverRetrospective.workType || '');
+          setScore(turnOverRequest.turnOverRetrospective.score || 5);
+          setReviewSummary(turnOverRequest.turnOverRetrospective.reviewSummary || '');
+          setMemos(turnOverRequest.turnOverRetrospective.memos || []);
+          setAttachments(turnOverRequest.turnOverRetrospective.attachments || []);
+        }
       }
     }
   }, [turnOverRequest]);
@@ -187,6 +207,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     if (onSave && turnOverRequest) {
       onSave({
         ...turnOverRequest,
+        endedAt: endedAt,
         turnOverRetrospective: {
           id: turnOverRequest?.turnOverRetrospective?.id || undefined,
           name: companyName,
@@ -224,6 +245,14 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
                 </div>
             </div>
             <ul className="edit-list type1">
+                <li>
+                    <p>종료일</p>
+                    <DatePicker
+                      value={DateUtil.formatTimestamp(endedAt || 0)}
+                      onChange={(date) => setEndedAt(DateTime.fromISO(date).toMillis())}
+                      required={false}
+                    />
+                </li>
                 <li>
                     <p>회사명</p>
                     <Dropdown

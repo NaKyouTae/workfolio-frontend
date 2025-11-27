@@ -11,6 +11,7 @@ import { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigatio
 
 interface TurnOverGoalViewProps {
   turnOverGoal: TurnOverGoalDetail | null;
+  startedAt?: number | undefined;
   onUpdate?: () => void;
 }
 
@@ -18,7 +19,7 @@ export interface TurnOverViewRef {
   getNavigationItems: () => FloatingNavigationItem[];
 }
 
-const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ turnOverGoal, onUpdate }, ref) => {
+const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ turnOverGoal, startedAt, onUpdate }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('direction');
   
   // 각 섹션에 대한 ref
@@ -135,6 +136,7 @@ const TurnOverGoalView = forwardRef<TurnOverViewRef, TurnOverGoalViewProps>(({ t
         {/* 이직 방향 설정 */}
         <div ref={directionRef} className="cont-box">
             <TurnOverDirectionView
+            startedAt={startedAt}
             reason={turnOverGoal.reason}
             goal={turnOverGoal.goal}
             />

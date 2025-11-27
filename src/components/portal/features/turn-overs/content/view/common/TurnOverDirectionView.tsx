@@ -2,13 +2,15 @@ import React from 'react';
 import '@/styles/component-view.css';
 import GuideModal from '@/components/portal/ui/GuideModal';
 import { useGuide } from '@/hooks/useGuide';
+import { DateUtil } from '@/utils/DateUtil';
 
 interface TurnOverDirectionViewProps {
+  startedAt?: number | undefined;
   reason: string;
   goal: string;
 }
 
-const TurnOverDirectionView: React.FC<TurnOverDirectionViewProps> = ({ reason, goal }) => {
+const TurnOverDirectionView: React.FC<TurnOverDirectionViewProps> = ({ startedAt, reason, goal }) => {
   const { isOpen: isGuideOpen, openGuide, closeGuide } = useGuide();
   return (
     <>
@@ -19,6 +21,7 @@ const TurnOverDirectionView: React.FC<TurnOverDirectionViewProps> = ({ reason, g
             </div>
         </div>
         <ul className="view-box">
+            <li><p>시작일</p><span>{startedAt ? DateUtil.formatTimestamp(startedAt) : '-'}</span></li>
             <li><p>이직 사유</p><span>{reason || '-'}</span></li>
             <li><p>이직 목표</p><span>{goal || '-'}</span></li>
         </ul>

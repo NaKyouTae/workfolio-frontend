@@ -10,6 +10,9 @@ import CheckListEdit from './common/CheckListEdit';
 import GuideModal from '@/components/portal/ui/GuideModal';
 import { useGuide } from '@/hooks/useGuide';
 import Input from '@/components/portal/ui/Input';
+import DatePicker from '@/components/portal/ui/DatePicker';
+import { DateUtil } from '@/utils/DateUtil';
+import { DateTime } from 'luxon';
 
 interface TurnOverGoalEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
@@ -26,6 +29,8 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   
   // 초기값을 turnOverRequest에서 바로 계산하여 깜빡임 방지
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialStartedAt = useMemo(() => turnOverRequest?.startedAt || undefined, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialReason = useMemo(() => turnOverRequest?.turnOverGoal?.reason || '', [turnOverRequest?.id]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialGoal = useMemo(() => turnOverRequest?.turnOverGoal?.goal || '', [turnOverRequest?.id]);
@@ -40,6 +45,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialAttachments = useMemo(() => turnOverRequest?.turnOverGoal?.attachments || [], [turnOverRequest?.id]);
   
+  const [startedAt, setStartedAt] = useState<number | undefined>(initialStartedAt);
   const [reason, setReason] = useState(initialReason);
   const [goal, setGoal] = useState(initialGoal);
   const [selfIntroductions, setSelfIntroductions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]>(initialSelfIntroductions);
@@ -66,14 +72,17 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
     // turnOverRequest의 id가 변경된 경우에만 state 초기화
     if (turnOverRequest?.id !== turnOverRequestIdRef.current) {
       turnOverRequestIdRef.current = turnOverRequest?.id;
-      if (turnOverRequest?.turnOverGoal) {
-        setReason(turnOverRequest.turnOverGoal.reason || '');
-        setGoal(turnOverRequest.turnOverGoal.goal || '');
-        setSelfIntroductions(turnOverRequest.turnOverGoal.selfIntroductions || []);
-        setInterviewQuestions(turnOverRequest.turnOverGoal.interviewQuestions || []);
-        setCheckList(turnOverRequest.turnOverGoal.checkList || []);
-        setMemos(turnOverRequest.turnOverGoal.memos || []);
-        setAttachments(turnOverRequest.turnOverGoal.attachments || []);
+      if (turnOverRequest) {
+        setStartedAt(turnOverRequest.startedAt || undefined);
+        if (turnOverRequest.turnOverGoal) {
+          setReason(turnOverRequest.turnOverGoal.reason || '');
+          setGoal(turnOverRequest.turnOverGoal.goal || '');
+          setSelfIntroductions(turnOverRequest.turnOverGoal.selfIntroductions || []);
+          setInterviewQuestions(turnOverRequest.turnOverGoal.interviewQuestions || []);
+          setCheckList(turnOverRequest.turnOverGoal.checkList || []);
+          setMemos(turnOverRequest.turnOverGoal.memos || []);
+          setAttachments(turnOverRequest.turnOverGoal.attachments || []);
+        }
       }
     }
   }, [turnOverRequest]);
@@ -170,6 +179,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
     if (onSave && turnOverRequest) {
       onSave({
         ...turnOverRequest,
+        startedAt: startedAt,
         turnOverGoal: {
           id: turnOverRequest?.turnOverGoal?.id || undefined,
           reason: reason,
@@ -205,6 +215,14 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
                 </div>
             </div>
             <ul className="edit-list type2">
+                <li>
+                    <p>시작일</p>
+                    <DatePicker
+                      value={DateUtil.formatTimestamp(startedAt || 0)}
+                      onChange={(date) => setStartedAt(DateTime.fromISO(date).toMillis())}
+                      required={false}
+                    />
+                </li>
                 <li>
                     <p>이직 사유</p>
                     <Input 

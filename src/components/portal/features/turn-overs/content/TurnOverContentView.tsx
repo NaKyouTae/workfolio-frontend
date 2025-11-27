@@ -91,6 +91,7 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
                     <TurnOverGoalView 
                     ref={goalViewRef} 
                     turnOverGoal={selectedTurnOver?.turnOverGoal || null}
+                    startedAt={selectedTurnOver?.startedAt}
                     onUpdate={onUpdate}
                     />
                 )}
@@ -104,6 +105,7 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
                     <TurnOverRetrospectiveView 
                     ref={retrospectiveViewRef} 
                     turnOverRetrospective={selectedTurnOver?.turnOverRetrospective || null}
+                    endedAt={selectedTurnOver?.endedAt}
                     />
                 )}
             </article>

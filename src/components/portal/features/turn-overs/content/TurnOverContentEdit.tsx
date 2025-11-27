@@ -18,6 +18,8 @@ const createTurnOverRequestFromDetail = (selectedTurnOver: TurnOverDetail | null
   return {
     id: selectedTurnOver.id || undefined,
     name: selectedTurnOver.name || '제목 없음',
+    startedAt: selectedTurnOver.startedAt || undefined,
+    endedAt: selectedTurnOver.endedAt || undefined,
     turnOverGoal: {
       id: selectedTurnOver.turnOverGoal?.id || undefined,
       reason: selectedTurnOver.turnOverGoal?.reason || '',

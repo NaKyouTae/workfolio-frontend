@@ -12,9 +12,10 @@ import Image from 'next/image';
 
 interface TurnOverRetrospectiveViewProps {
   turnOverRetrospective: TurnOverRetrospectiveDetail | null;
+  endedAt?: number | undefined;
 }
 
-const TurnOverRetrospectiveView = forwardRef<TurnOverViewRef, TurnOverRetrospectiveViewProps>(({ turnOverRetrospective }, ref) => {
+const TurnOverRetrospectiveView = forwardRef<TurnOverViewRef, TurnOverRetrospectiveViewProps>(({ turnOverRetrospective, endedAt }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('finalChoice');
   
   // 각 섹션에 대한 ref
@@ -131,6 +132,7 @@ const TurnOverRetrospectiveView = forwardRef<TurnOverViewRef, TurnOverRetrospect
         {/* 최종 선택 */}
         <div ref={finalChoiceRef} className="cont-box">
             <FinalChoiceView
+            endedAt={endedAt}
             name={turnOverRetrospective.name}
             position={turnOverRetrospective.position}
             reason={turnOverRetrospective.reason}
