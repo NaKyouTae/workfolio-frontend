@@ -128,6 +128,7 @@ const TurnOverContentForm: React.FC<TurnOverContentFormProps> = ({
                         ref={challengeEditRef}
                         turnOverRequest={turnOverRequest || null} 
                         onSave={handleSave}
+                        onTurnOverRequestChange={onTurnOverRequestChange}
                     />
                 </div>
                 <div style={{ display: activeTab === 'retrospective' ? 'block' : 'none' }}>

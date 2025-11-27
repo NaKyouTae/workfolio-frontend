@@ -10,9 +10,10 @@ import { TurnOverEditRef } from './TurnOverGoalEdit';
 interface TurnOverChallengeEditProps {
   turnOverRequest: TurnOverUpsertRequest | null;
   onSave?: (data: TurnOverUpsertRequest) => void;
+  onTurnOverRequestChange?: (data: TurnOverUpsertRequest) => void;
 }
 
-const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditProps>(({ turnOverRequest, onSave }, ref) => {
+const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditProps>(({ turnOverRequest, onSave, onTurnOverRequestChange }, ref) => {
   const [activeSection, setActiveSection] = useState<string>('jobApplication');
   
   // 초기값을 turnOverRequest에서 바로 계산하여 깜빡임 방지
@@ -128,6 +129,34 @@ const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditP
   const handleUpdateAttachments = (attachments: AttachmentRequest[]) => {
     setAttachments(attachments);
   };
+
+  // jobApplications가 변경될 때마다 turnOverRequest만 업데이트 (저장하지 않음)
+  const prevJobApplicationsRef = useRef<string>('');
+  
+  useEffect(() => {
+    if (!turnOverRequest) return;
+    
+    // jobApplications의 상태를 문자열로 변환하여 비교
+    const currentKey = JSON.stringify(jobApplications.map(app => ({ id: app.id, status: app.status, name: app.name })));
+    
+    // 이전 값과 다를 때만 업데이트
+    if (currentKey !== prevJobApplicationsRef.current) {
+      prevJobApplicationsRef.current = currentKey;
+      
+      // turnOverRequest만 업데이트 (저장하지 않음)
+      if (onTurnOverRequestChange) {
+        onTurnOverRequestChange({
+          ...turnOverRequest,
+          turnOverChallenge: {
+            id: turnOverRequest?.turnOverChallenge?.id || undefined,
+            memos: memos,
+            attachments: attachments,
+            jobApplications: [...jobApplications], // 새 배열로 복사하여 참조 변경 보장
+          } as TurnOverUpsertRequest_TurnOverChallengeRequest,
+        } as TurnOverUpsertRequest);
+      }
+    }
+  }, [jobApplications, turnOverRequest, memos, attachments, onTurnOverRequestChange]);
 
   // ref를 통해 getNavigationItems와 handleSave 함수를 노출
   useImperativeHandle(ref, () => ({

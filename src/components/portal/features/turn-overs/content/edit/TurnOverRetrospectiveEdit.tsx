@@ -163,6 +163,16 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
   }, [activeSection, scrollToSection]);
 
   // 합격한 지원 기록만 필터링
+  // jobApplications 배열의 각 항목의 id와 status를 추적하여 변경 감지
+  const jobApplicationsKey = useMemo(() => {
+    if (!turnOverRequest?.turnOverChallenge?.jobApplications) {
+      return '';
+    }
+    return turnOverRequest.turnOverChallenge.jobApplications
+      .map(app => `${app.id || ''}-${app.status || ''}-${app.name || ''}`)
+      .join(',');
+  }, [turnOverRequest?.turnOverChallenge?.jobApplications]);
+
   const passedJobApplications = useMemo(() => {
     if (!turnOverRequest?.turnOverChallenge?.jobApplications) {
       return [];
@@ -170,7 +180,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     return turnOverRequest.turnOverChallenge.jobApplications.filter(app =>
       compareEnumValue(app.status, JobApplication_JobApplicationStatus.PASSED, JobApplication_JobApplicationStatus)
     );
-  }, [turnOverRequest]);
+  }, [jobApplicationsKey]);
 
   // turnOverRequest의 id가 변경될 때만 state 업데이트
   useEffect(() => {
