@@ -122,7 +122,7 @@ export interface TurnOverUpsertRequest_TurnOverRetrospectiveRequest {
   reviewSummary: string;
   joinedAt?: number | undefined;
   workType: string;
-  employmentType: TurnOverRetrospective_EmploymentType;
+  employmentType?: TurnOverRetrospective_EmploymentType | undefined;
   memos: TurnOverUpsertRequest_MemoRequest[];
   attachments: AttachmentRequest[];
 }
@@ -1694,7 +1694,7 @@ function createBaseTurnOverUpsertRequest_TurnOverRetrospectiveRequest(): TurnOve
     reviewSummary: "",
     joinedAt: undefined,
     workType: "",
-    employmentType: 0,
+    employmentType: undefined,
     memos: [],
     attachments: [],
   };
@@ -1743,7 +1743,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
     if (message.workType !== "") {
       writer.uint32(98).string(message.workType);
     }
-    if (message.employmentType !== 0) {
+    if (message.employmentType !== undefined) {
       writer.uint32(104).int32(message.employmentType);
     }
     for (const v of message.memos) {
@@ -1907,7 +1907,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
       workType: isSet(object.workType) ? globalThis.String(object.workType) : "",
       employmentType: isSet(object.employmentType)
         ? turnOverRetrospective_EmploymentTypeFromJSON(object.employmentType)
-        : 0,
+        : undefined,
       memos: globalThis.Array.isArray(object?.memos)
         ? object.memos.map((e: any) => TurnOverUpsertRequest_MemoRequest.fromJSON(e))
         : [],
@@ -1955,7 +1955,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
     if (message.workType !== "") {
       obj.workType = message.workType;
     }
-    if (message.employmentType !== 0) {
+    if (message.employmentType !== undefined) {
       obj.employmentType = turnOverRetrospective_EmploymentTypeToJSON(message.employmentType);
     }
     if (message.memos?.length) {
@@ -1988,7 +1988,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
     message.reviewSummary = object.reviewSummary ?? "";
     message.joinedAt = object.joinedAt ?? undefined;
     message.workType = object.workType ?? "";
-    message.employmentType = object.employmentType ?? 0;
+    message.employmentType = object.employmentType ?? undefined;
     message.memos = object.memos?.map((e) => TurnOverUpsertRequest_MemoRequest.fromPartial(e)) || [];
     message.attachments = object.attachments?.map((e) => AttachmentRequest.fromPartial(e)) || [];
     return message;
