@@ -274,7 +274,7 @@ button.dark-gray {background-color: var(--gray006);}
 button.line.gray {border-color: var(--gray003); background-color: var(--white); color: var(--black);}
 button:disabled {background-color: var(--gray003)!important;}
 
-.btn-kakao {background-color: #FEE500; color: var(--black);}
+.btn-kakao {background-color: #FEE500!important; color: var(--black)!important; border: 0!important;}
 .btn-kakao::before {content: ''; width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-kakao-login.svg); background-repeat: no-repeat; background-size: contain; background-position: center;}
 .btn-kakao > span {flex: 1;}
 

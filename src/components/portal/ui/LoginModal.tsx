@@ -87,15 +87,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     return (
         <div className="modal" onClick={handleOverlayClick}>
-            <div className="modal-wrap" style={{ width: '53rem', zIndex: 10000 }}>
-                <div className="modal-tit">
-                    <h2>로그인</h2>
-                    <button onClick={onClose}><i className="ic-close" /></button>
-                </div>
+            <div className="modal-wrap">
                 <div className="modal-cont">
-                    <div className="login-box">
-                        <h1><Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} /></h1>
-                        <p>워크폴리오, 일과 이력을 한곳에 쌓아두는 나만의 기록장.<br/>차곡차곡 쌓이는 경험을 한곳에서 정리하고 더 멋진 커리어로 이어가 보세요.</p>
+                    <div className="login-wrap">
+                        <Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} />
+                        <p>일과 이력을 한곳에 모아두는 나만의 기록장, 워크폴리오.<br/>쉽게 가입하고 간편하게 로그인하세요.</p>
                         {error && (
                             <div style={{
                                 color: '#dc3545',
@@ -109,12 +105,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                                 {error}
                             </div>
                         )}
-                        <ul>
-                            <li>
-                                <button className="btn-kakao" onClick={() => window.location.href = KAKAO_AUTH_URL}><span>카카오로 시작하기</span></button>
-                            </li>   
-                        </ul>
                     </div>
+                </div>
+                <div className="modal-btn">
+                    <button className="btn-kakao" onClick={() => window.location.href = KAKAO_AUTH_URL}><span>카카오로 시작하기</span></button>
+                    <button className="back">돌아가기</button>
                 </div>
             </div>
         </div>
