@@ -159,7 +159,7 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                     </li>
                     <li>
                         <p>평균 지원 회사</p>
-                        <div>{statistics.avgApplications}<span>개</span></div>
+                        <div>{statistics.avgApplications.toFixed(1)}<span>개</span></div>
                     </li>
                     <li>
                         <p>평균 연봉 상승률</p>

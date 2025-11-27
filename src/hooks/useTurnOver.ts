@@ -225,7 +225,9 @@ export function useTurnOver() {
                 }
 
                 // Goal 전체가 비어있으면 undefined로 설정
+                // 단, id가 있으면 기존 데이터가 있다는 의미이므로 유지
                 if (
+                    !goal.id && // id가 없을 때만 제거 가능
                     !hasContent(goal.reason) &&
                     !hasContent(goal.goal) &&
                     (!goal.selfIntroductions || goal.selfIntroductions.length === 0) &&
