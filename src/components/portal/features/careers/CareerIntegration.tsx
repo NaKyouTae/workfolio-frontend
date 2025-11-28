@@ -6,6 +6,7 @@ import Footer from "@/components/portal/layouts/Footer"
 import Dropdown from '../../ui/Dropdown';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
+import EmptyState from '@/components/portal/ui/EmptyState';
 
 interface CareerIntegrationProps {
   resumeDetails: ResumeDetail[];
@@ -133,58 +134,62 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                             />
                         </div>
                     </div>
-                    <ul className="summary-list">
-                        {sortedResumes.map((resume) => (
-                        <li key={resume.id} onClick={() => handleView(resume)}>
-                            <div className="info">
-                                <div>
+                    {sortedResumes.length === 0 ? (
+                        <EmptyState text="등록된 이력서가 없습니다." />
+                    ) : (
+                        <ul className="summary-list">
+                            {sortedResumes.map((resume) => (
+                            <li key={resume.id} onClick={() => handleView(resume)}>
+                                <div className="info">
                                     <div>
-                                        <input 
-                                            type="radio" 
-                                            name="default" 
-                                            id={`resume-${resume.id}`} 
-                                            checked={resume.isDefault} 
-                                            readOnly 
-                                            onChange={() => {}}
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              handleChangeDefault(e, resume);
-                                            }}
-                                            className="input-resume"
-                                        />
-                                        <label 
-                                            htmlFor={`resume-${resume.id}`}
-                                            onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (!isLoggedIn()) {
-                                              setShowLoginModal(true);
-                                              return;
-                                            }
-                                            changeDefault(resume.id);
-                                            }}
-                                        ></label>
-                                        <p onClick={() => handleView(resume)}>{resume.title}</p>
+                                        <div>
+                                            <input 
+                                                type="radio" 
+                                                name="default" 
+                                                id={`resume-${resume.id}`} 
+                                                checked={resume.isDefault} 
+                                                readOnly 
+                                                onChange={() => {}}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handleChangeDefault(e, resume);
+                                                }}
+                                                className="input-resume"
+                                            />
+                                            <label 
+                                                htmlFor={`resume-${resume.id}`}
+                                                onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!isLoggedIn()) {
+                                                  setShowLoginModal(true);
+                                                  return;
+                                                }
+                                                changeDefault(resume.id);
+                                                }}
+                                            ></label>
+                                            <p onClick={() => handleView(resume)}>{resume.title}</p>
+                                        </div>
+                                        <ul>
+                                            <li onClick={(e) => handleEdit(e, resume)}>편집</li>
+                                            <li onClick={(e) => handleDuplicate(e, resume)}>복제</li>
+                                            <li onClick={(e) => handleDelete(e, resume)}>삭제</li>
+                                            {/* <li className="font-black" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li> */}
+                                            {/* <li className="font-black" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li> */}
+                                        </ul>
                                     </div>
                                     <ul>
-                                        <li onClick={(e) => handleEdit(e, resume)}>편집</li>
-                                        <li onClick={(e) => handleDuplicate(e, resume)}>복제</li>
-                                        <li onClick={(e) => handleDelete(e, resume)}>삭제</li>
-                                        {/* <li className="font-black" onClick={(e) => handleExportPDF(e, resume)}>PDF 내보내기</li> */}
-                                        {/* <li className="font-black" onClick={(e) => handleCopyURL(e, resume)}>URL 공유하기</li> */}
+                                        <li>{resume.position || '직무'}</li>
+                                        <li>{calculateTotalCareer(resume) || '경력 없음'}</li>
                                     </ul>
                                 </div>
-                                <ul>
-                                    <li>{resume.position || '직무'}</li>
-                                    <li>{calculateTotalCareer(resume) || '경력 없음'}</li>
-                                </ul>
-                            </div>
-                            <div className="desc">
-                                {/* <p>최종 등록일 : {DateUtil.formatTimestamp(resume.createdAt || 0, 'YYYY. MM. DD.')}</p> */}
-                                <p>최종 수정일 : {DateUtil.formatTimestamp(resume.updatedAt || 0, 'YYYY. MM. DD.')}</p>
-                            </div>
-                        </li>
-                        ))}
-                    </ul>
+                                <div className="desc">
+                                    {/* <p>최종 등록일 : {DateUtil.formatTimestamp(resume.createdAt || 0, 'YYYY. MM. DD.')}</p> */}
+                                    <p>최종 수정일 : {DateUtil.formatTimestamp(resume.updatedAt || 0, 'YYYY. MM. DD.')}</p>
+                                </div>
+                            </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </div>
         </div>
