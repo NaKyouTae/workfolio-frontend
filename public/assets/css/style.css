@@ -76,6 +76,7 @@ footer > p {font-size: 1rem; color: var(--gray005);}
 
 /* 레이아웃 */
 main {width: 100%; min-width: 124rem; display: grid; grid-template-columns: 28rem auto; height: calc(100vh - 6.4rem);}
+main:has(:nth-child(1):nth-last-child(1)) {display: block;}
 
 /* 레이아웃 - 사이드바 */
 aside {border-right: 1px solid var(--gray002); display: flex; flex-flow: column;}
@@ -558,3 +559,11 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 
 .terms-desc {font-size: 1.4rem; line-height: 1.6; word-break: keep-all;}
 .terms-desc p {font-size: 1.4rem; line-height: 1.6; word-break: keep-all;}
+
+/* 에러 페이지 */
+.error-wrap {width: 100%; height: 100%; display: flex; flex-flow: column; align-items: center; justify-content: center; row-gap: 2rem;}
+.error-wrap > img {width: 4rem; height: 4rem;}
+.error-wrap > div {display: flex; flex-flow: column; row-gap: .6rem;}
+.error-wrap > div > p {text-align: center; font-size: 1.4rem; line-height: 1.6; font-weight: 500;}
+.error-wrap > div > span {text-align: center; font-size: 1.2rem; line-height: 1.6; color: var(--gray005);}
+.error-wrap > button {width: fit-content; height: 3.2rem; padding: 0 1.6rem; border-radius: .6rem; font-size: 1.2rem; font-weight: 500;}

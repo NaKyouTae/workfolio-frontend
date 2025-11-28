@@ -101,7 +101,9 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                 </li>
                 )} */}
                 {/* 파일 URL (URL 모드일 때만) */}
-                {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
+                {/* {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
+                
+                )} */}
                 <li>
                     <p>URL</p>
                     <Input 
@@ -112,7 +114,6 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                         onChange={(e) => handleAttachmentChange(index, 'url', e.target.value)}
                     />
                 </li>
-                )}
             </ul>
             <CardActions
                 isVisible={attachment.isVisible ?? true}
@@ -279,7 +280,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
             <div>
                 {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
                 {/* <button onClick={handleAddFileAttachment}><i className="ic-add" />파일 추가</button> */}
-                <button onClick={handleAddUrlAttachment}><i className="ic-add" />URL 추가</button>
+                <button onClick={handleAddUrlAttachment}><i className="ic-add" />추가</button>
             </div>
         </div>
 

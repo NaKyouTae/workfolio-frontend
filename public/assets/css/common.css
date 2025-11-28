@@ -246,8 +246,8 @@ select.sm {height: fit-content; padding: 0 1.8rem 0 0; font-size: 1.4rem; border
 .dropdown > ul > li:hover {background-color: var(--gray002);}
 
 /* dropdown menu (Portal로 렌더링된 메뉴) */
-.dropdown-menu {width: 100%; min-width: initial; max-height: 16rem; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; overflow-y: auto; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);}
-.dropdown-menu > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; min-width: 10rem;}
+.dropdown-menu {width: 100%; max-height: 16rem; padding: .6rem 0; background-color: var(--white); border-radius: .4rem; border: 1px solid var(--gray003); display: flex; flex-flow: column; row-gap: .2rem; z-index: 100; overflow-y: auto;}
+.dropdown-menu > li {height: 2.4rem; display: flex; align-items: center; padding: 0 1.2rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0;}
 .dropdown-menu > li:hover {background-color: var(--gray002);}
 .dropdown-menu > li.selected {background-color: var(--gray002); font-weight: 500;}
 
@@ -286,7 +286,7 @@ button:disabled {background-color: var(--gray003)!important;}
 
 .date-picker {width: 100%; background-color: var(--white); border: 1px solid var(--gray003); border-radius: .4rem; position: absolute; top: 3.4rem; z-index: 10; }
 .date-picker .controller {height: 2.8rem; display: flex; align-items: center; column-gap: .8rem; justify-content: center; border-bottom: 1px solid var(--gray003);}
-.date-picker .controller > p {text-align: center; font-size: 1.1rem; font-weight: 500;}
+.date-picker .controller > p {text-align: center; font-size: 1.1rem; font-weight: 500; color: var(--black);}
 .date-picker .controller > button {width: fit-content; height: fit-content; padding: 0; background-color: transparent!important;}
 .date-picker .calendar {display: flex; flex-flow: column; padding: .6rem 0;}
 .date-picker .calendar .week {display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 0;}

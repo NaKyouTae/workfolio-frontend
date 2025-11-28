@@ -6,6 +6,8 @@ import Dropdown from '@/components/portal/ui/Dropdown';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 
+import Image from 'next/image';
+
 interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
   onEdit?: (id: string) => void;
@@ -186,9 +188,17 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                     </div>
                 </div>
                 {sortedTurnOvers.length === 0 ? (
-                    <div className="empty">
-                        <p>등록된 이직 활동이 없습니다.</p>
-                    </div>
+                    <div className="empty-cont">
+                      <Image
+                          src="/assets/img/ico/ic-empty.svg" 
+                          alt="empty" 
+                          width={1}
+                          height={1}
+                      />
+                      <div>
+                          <p>등록된 이직 활동이 없어요.</p>
+                      </div>
+                  </div>
                 ) : (
                     <ul className="summary-list">
                     {sortedTurnOvers.map((turnOver) => {
