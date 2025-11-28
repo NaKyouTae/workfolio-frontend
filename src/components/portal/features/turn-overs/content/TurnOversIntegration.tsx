@@ -5,6 +5,7 @@ import styles from './TurnOversIntegration.module.css';
 import Dropdown from '@/components/portal/ui/Dropdown';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
+import EmptyState from '@/components/portal/ui/EmptyState';
 
 interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
@@ -186,9 +187,7 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                     </div>
                 </div>
                 {sortedTurnOvers.length === 0 ? (
-                    <div className="empty">
-                        <p>등록된 이직 활동이 없습니다.</p>
-                    </div>
+                    <EmptyState text="등록된 이직 활동이 없습니다." />
                 ) : (
                     <ul className="summary-list">
                     {sortedTurnOvers.map((turnOver) => {
