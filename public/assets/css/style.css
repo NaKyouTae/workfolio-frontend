@@ -76,7 +76,7 @@ footer > p {font-size: 1rem; color: var(--gray005);}
 
 /* 레이아웃 */
 main {width: 100%; min-width: 124rem; display: grid; grid-template-columns: 28rem auto; height: calc(100vh - 6.4rem);}
-main:has(:nth-child(1):nth-last-child(1)) {display: block;}
+main:has(> *:nth-child(1):nth-last-child(1)) {display: block;}
 
 /* 레이아웃 - 사이드바 */
 aside {border-right: 1px solid var(--gray002); display: flex; flex-flow: column;}
