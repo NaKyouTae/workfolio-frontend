@@ -385,3 +385,8 @@ to { opacity: 0; }
 .empty-cont {width: 100%; padding: 4rem; display: flex; flex-flow: column; row-gap: 1.2rem; align-items: center; border: 1px dashed var(--gray003); border-radius: 1rem;}
 .empty-cont > img {width: 4rem; height: 4rem;}
 .empty-cont > div > p {text-align: center; font-size: 1.4rem; color: var(--gray005);}
+
+/* loading */
+.loading {width: 100%; height: 100%; display: flex; flex-flow: column; align-items: center; justify-content: center; row-gap: 2rem;}
+.loading > i {width: 4rem; height: 4rem}
+.loading > p {font-size: 1.2rem; font-weight: 500; color: var(--gray005);}

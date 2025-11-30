@@ -7,23 +7,14 @@ interface LoadingScreenProps {
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ 
-  message = '로딩 중...', 
-  minHeight = '400px',
-  className = ''
 }) => {
   return (
-    <div 
-      style={{ 
-        flex: 1, 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: minHeight 
-      }}
-      className={className}
-    >
-      <div>{message}</div>
-    </div>
+    <main>
+        <div  className="loading">
+            <i className="ic-rocket"/>
+            <p>커리어 성장 중</p>
+        </div>
+    </main>
   );
 };
 
