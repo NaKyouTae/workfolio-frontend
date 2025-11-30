@@ -113,21 +113,25 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
   const onSave = async (data: TurnOverUpsertRequest) => {
     const savedId = await upsertTurnOver(data);
     if (savedId) {
-      // 목록 새로고침과 상세 데이터 조회를 병렬로 처리
-      const [, updatedTurnOverDetail] = await Promise.all([
-        refreshTurnOvers(),
-        getTurnOverDetail(savedId)
-      ]);
+      // 목록 새로고침
+      await refreshTurnOvers();
       
-      setIsNewTurnOver(false);
-      
-      // 저장된 데이터를 다시 조회하여 갱신
-      if (updatedTurnOverDetail) {
-        setSelectedTurnOver(updatedTurnOverDetail);
-        // 저장 후 view 모드로 변경
-        setViewMode('view');
-        setPreviousMode('view');
-        router.push(`/turn-overs/${savedId}`);
+      // 새로 생성한 경우 (isNewTurnOver가 true) 목록 화면으로 이동
+      if (isNewTurnOver) {
+        setIsNewTurnOver(false);
+        setSelectedTurnOver(null);
+        setViewMode('home');
+        setPreviousMode('home');
+        router.push('/turn-overs');
+      } else {
+        // 기존 이직 활동 수정한 경우 상세 화면으로 이동
+        const updatedTurnOverDetail = await getTurnOverDetail(savedId);
+        if (updatedTurnOverDetail) {
+          setSelectedTurnOver(updatedTurnOverDetail);
+          setViewMode('view');
+          setPreviousMode('view');
+          router.push(`/turn-overs/${savedId}`);
+        }
       }
     }
   };
@@ -193,20 +197,10 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
 
   // 저장 후 모드 변경
   const onSaveComplete = (mode: ViewMode) => {
-    // mode가 'view'이고 previousMode가 'home'이면 home으로, 아니면 view로
-    if (mode === 'view' && previousMode === 'home') {
-      setViewMode('home');
-      setSelectedTurnOver(null);
-      setIsNewTurnOver(false);
-      router.push('/turn-overs');
-    } else if (mode === 'view' && selectedTurnOver?.id) {
-      setViewMode(mode);
-      router.push(`/turn-overs/${selectedTurnOver.id}`);
-    } else {
-      setViewMode(mode);
-    }
-    // 저장 후에는 previousMode 초기화
+    // onSave에서 이미 라우팅을 처리했으므로, 여기서는 추가 라우팅을 하지 않음
+    // 단, mode가 'edit'이 아닌 경우에만 viewMode 업데이트
     if (mode !== 'edit') {
+      setViewMode(mode);
       setPreviousMode(mode);
     }
   };
