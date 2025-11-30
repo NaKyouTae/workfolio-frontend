@@ -10,15 +10,19 @@ import LoginModal from '@/components/portal/ui/LoginModal';
 const Header = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const { user, fetchUser, logout: userLogout } = useUser();
+    const { user, isHydrated, fetchUser, logout: userLogout } = useUser();
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [hasInitialized, setHasInitialized] = useState(false);
     
-    // 로그인 상태 확인 및 유저 정보 가져오기
+    // 로그인 상태 확인 및 유저 정보 가져오기 (한 번만 실행)
     useEffect(() => {
-        // httpOnly 쿠키는 JavaScript로 읽을 수 없으므로 토큰 체크를 하지 않고
-        // 그냥 API를 호출하고 401이면 서버 사이드(apiFetchHandler)에서 자동으로 토큰 재발급 처리
-        fetchUser();
-    }, [fetchUser]);
+        if (!hasInitialized) {
+            setHasInitialized(true);
+            // httpOnly 쿠키는 JavaScript로 읽을 수 없으므로 토큰 체크를 하지 않고
+            // 그냥 API를 호출하고 401이면 서버 사이드(apiFetchHandler)에서 자동으로 토큰 재발급 처리
+            fetchUser();
+        }
+    }, [fetchUser, hasInitialized]);
     
     const logout = async () => {
         try {
@@ -108,27 +112,30 @@ const Header = () => {
                         </Link>
                     </li>
                 </ul>
-                {user? (
-                    <ul className="user">
-                        <li>{`${user.nickName} 님 반가워요 !`}</li>
-                        <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
-                        <li>
-                            <Link 
-                                href="/mypage" 
-                                prefetch={false}
-                                onClick={(e) => handleMenuClick(e, '/mypage')}
-                            >
-                                마이페이지
-                            </Link>
-                        </li>
-                        <li><a onClick={logout}>로그아웃</a></li>
-                    </ul>
-                ) : (
-                    <ul className="user">
-                        <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
-                        <li><a onClick={handleLoginClick}>로그인</a></li>
-                    </ul>
-                )}
+                {/* hydration이 완료된 후에만 UI 표시 (깜빡임 방지) */}
+                {isHydrated ? (
+                    user ? (
+                        <ul className="user">
+                            <li>{`${user.nickName} 님 반가워요 !`}</li>
+                            <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
+                            <li>
+                                <Link 
+                                    href="/mypage" 
+                                    prefetch={false}
+                                    onClick={handleMypageClick}
+                                >
+                                    마이페이지
+                                </Link>
+                            </li>
+                            <li><a onClick={logout}>로그아웃</a></li>
+                        </ul>
+                    ) : (
+                        <ul className="user">
+                            <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
+                            <li><a onClick={handleLoginClick}>로그인</a></li>
+                        </ul>
+                    )
+                ) : null}
             </div>
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </header>

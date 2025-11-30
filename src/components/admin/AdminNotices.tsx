@@ -7,6 +7,7 @@ import TableView, { TableColumn } from '@/components/portal/ui/TableView';
 import NoticeCreateModal from './NoticeCreateModal';
 import NoticeUpdateModal from './NoticeUpdateModal';
 import { NoticeCreateRequest, NoticeUpdateRequest } from '@/generated/notice';
+import LoadingScreen from '../portal/ui/LoadingScreen';
 
 export default function AdminNotices() {
   const { notices, loading, error, fetchNotices, createNotice, updateNotice, deleteNotice } = useAdminNotices();
@@ -180,7 +181,7 @@ export default function AdminNotices() {
             </button>
           </div>
 
-          {loading && <div>로딩 중...</div>}
+          {loading && <LoadingScreen />}
           {error && <div style={{ color: 'red' }}>에러: {error}</div>}
 
           <TableView

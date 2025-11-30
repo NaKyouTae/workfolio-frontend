@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import '@/styles/table-view.css';
+import LoadingScreen from './LoadingScreen';
 
 export interface TableColumn<T> {
   key: string;
@@ -53,7 +54,7 @@ function TableView<T>({
   if (isLoading) {
     return (
       <div className="table-view-container">
-        <div className="table-view-loading">로딩 중...</div>
+        <LoadingScreen />
       </div>
     );
   }

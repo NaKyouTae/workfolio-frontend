@@ -8,6 +8,7 @@ import styles from './Notices.module.css';
 import DateUtil from '@/utils/DateUtil';
 
 import Image from 'next/image';
+import LoadingScreen from '@/components/portal/ui/LoadingScreen';
 
 interface NoticesProps {
   onNoticeClick?: (notice: Notice) => void;
@@ -45,7 +46,7 @@ const Notices: React.FC<NoticesProps> = ({ onNoticeClick }) => {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>로딩 중...</div>
+        <LoadingScreen />
       </div>
     );
   }

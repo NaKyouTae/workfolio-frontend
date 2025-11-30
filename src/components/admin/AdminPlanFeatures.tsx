@@ -7,6 +7,7 @@ import { useFeatures } from '@/hooks/useFeatures';
 import { PlanFeatureCreateRequest, PlanFeatureUpdateRequest } from '@/generated/plan_feature';
 import { Plan_PlanType, PlanFeature } from '@/generated/common';
 import { normalizeEnumValue } from '@/utils/commonUtils';
+import LoadingScreen from '../portal/ui/LoadingScreen';
 
 export default function AdminPlanFeatures() {
   const { planFeatures, loading, error, fetchPlanFeatures, createPlanFeature, updatePlanFeature, deletePlanFeature } = usePlanFeatures();
@@ -141,7 +142,7 @@ export default function AdminPlanFeatures() {
             </button>
           </div>
 
-        {loading && <div>로딩 중...</div>}
+          {loading && <LoadingScreen />}
         {error && <div style={{ color: 'red' }}>에러: {error}</div>}
 
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>

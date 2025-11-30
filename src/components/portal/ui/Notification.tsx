@@ -15,6 +15,11 @@ const Notification: React.FC<NotificationProps> = ({
   // color = '#4caf50',
   // onClose,
 }) => {
+  // text가 비어있거나 isOpen이 false이면 렌더링하지 않음
+  if (!isOpen || !text || text.trim() === '') {
+    return null;
+  }
+
   return (
     <div className={`toast ${isOpen ? "show" : "hide"}`}>{text}</div>
   );

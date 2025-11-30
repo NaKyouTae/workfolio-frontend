@@ -27,6 +27,11 @@ const useNotificationStoreInternal = create<NotificationState>((set) => ({
   color: '#4caf50', // 기본 색상 (녹색)
 
   showNotification: (text, type = 'success') => {
+    // 빈 텍스트나 공백만 있는 경우 알림을 표시하지 않음
+    if (!text || text.trim() === '') {
+      return;
+    }
+    
     const color = getColorByType(type);
     set({
       isOpen: true,

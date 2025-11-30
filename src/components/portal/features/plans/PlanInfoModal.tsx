@@ -5,6 +5,7 @@ import styles from './PlanInfoModal.module.css';
 import { ReleasePlanListResponse, ReleasePlanSubscription } from '@/generated/release';
 import { Plan_PlanType } from '@/generated/common';
 import { compareEnumValue } from '@/utils/commonUtils';
+import LoadingScreen from '../../ui/LoadingScreen';
 
 interface PlanInfoModalProps {
   isOpen: boolean;
@@ -196,7 +197,9 @@ const PlanInfoModal: React.FC<PlanInfoModalProps> = ({ isOpen, onClose, onSelect
             <h3 className={styles.membershipTitle}>완성 플랜 멤버십</h3>
             <p className={styles.membershipIntro}>나에게 딱 맞는 플랜을 선택해 보세요.</p>
             {loading ? (
-              <div className={styles.loading}>로딩 중...</div>
+              <div className={styles.loading}>
+                <LoadingScreen />
+              </div>
             ) : error ? (
               <div className={styles.error}>플랜 정보를 불러오는 중 오류가 발생했습니다.</div>
             ) : membershipOptions.length === 0 ? (

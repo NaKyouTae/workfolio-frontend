@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useFeatures } from '@/hooks/useFeatures';
 import { FeatureCreateRequest, FeatureUpdateRequest } from '@/generated/feature';
 import { Feature } from '@/generated/common';
+import LoadingScreen from '../portal/ui/LoadingScreen';
 
 export default function AdminFeatures() {
   const { features, loading, error, fetchFeatures, createFeature, updateFeature, deleteFeature } = useFeatures();
@@ -102,7 +103,7 @@ export default function AdminFeatures() {
             </button>
           </div>
 
-        {loading && <div>로딩 중...</div>}
+        {loading && <LoadingScreen />}
         {error && <div style={{ color: 'red' }}>에러: {error}</div>}
 
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>

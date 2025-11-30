@@ -1,27 +1,28 @@
-import { useCallback } from 'react';
+import { useCallback, useLayoutEffect } from 'react';
 import { useUserStore } from '@/store/userStore';
 import { WorkerGetResponse, WorkerUpdateNickNameResponse } from '@/generated/worker';
 import HttpMethod from '@/enums/HttpMethod';
-import { isLoggedIn } from '@/utils/authUtils';
 
 export const useUser = () => {
-    const { user, isLoading, error, setUser, setLoading, setError, clearUser } = useUserStore();
+    const { user, isLoading, error, isHydrated, setUser, setLoading, setError, clearUser, hydrate } = useUserStore();
+    
+    // 클라이언트에서만 localStorage에서 복원 (Hydration 에러 방지)
+    // useLayoutEffect를 사용하여 브라우저 페인트 전에 실행 (깜빡임 최소화)
+    useLayoutEffect(() => {
+        if (typeof window !== 'undefined' && !isHydrated) {
+            hydrate();
+        }
+    }, [isHydrated, hydrate]);
     
     // 유저 정보 가져오기 (useCallback으로 메모이제이션)
     const fetchUser = useCallback(async () => {
-        // 로그인하지 않은 경우 API 호출하지 않음
-        if (!isLoggedIn()) {
-            clearUser();
-            setLoading(false);
-            return;
-        }
-        
         try {
             setLoading(true);
             setError(null);
             
-            // httpOnly 쿠키는 JavaScript로 읽을 수 없으므로 토큰 체크를 하지 않고
-            // 그냥 API를 호출하고 401이면 서버 사이드(apiFetchHandler)에서 자동으로 토큰 재발급 처리
+            // httpOnly 쿠키는 JavaScript로 읽을 수 없으므로 cookie 체크 없이 바로 API 호출
+            // 서버에서 쿠키를 확인하고 응답을 주므로, cookie 조회 지연 없이 즉시 호출
+            // 401이면 서버 사이드(apiFetchHandler)에서 자동으로 토큰 재발급 처리
             const response = await fetch('/api/workers/me', { method: HttpMethod.GET });
             
             // 응답 상태 확인
@@ -47,11 +48,12 @@ export const useUser = () => {
                 clearUser();
             }
         } catch (err) {
-            // 로그인하지 않은 상태에서 발생하는 에러는 조용히 처리
-            if (isLoggedIn()) {
-                console.error('Error fetching user info:', err);
-            }
-            clearUser();
+            // 네트워크 에러 등은 조용히 처리
+            // 기존 user가 있으면 유지하고, 없으면 clearUser 호출하지 않음
+            // (리프레시 시 일시적인 네트워크 문제일 수 있으므로)
+            console.error('Error fetching user info:', err);
+            // catch 블록에서는 clearUser를 호출하지 않음 (기존 상태 유지)
+            // localStorage에서 복원된 user가 있으면 유지됨
         } finally {
             setLoading(false);
         }
@@ -138,6 +140,7 @@ export const useUser = () => {
         user,
         isLoading,
         error,
+        isHydrated, // hydration 완료 여부도 반환
         fetchUser,
         logout,
         refreshUser,

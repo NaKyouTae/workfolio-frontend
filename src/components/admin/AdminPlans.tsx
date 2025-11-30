@@ -6,6 +6,7 @@ import { PlanCreateRequest, PlanUpdateRequest } from '@/generated/plan';
 import { Plan_PlanType, Plan, PlanSubscription } from '@/generated/common';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import styles from './AdminPlans.module.css';
+import LoadingScreen from '../portal/ui/LoadingScreen';
 
 export default function AdminPlans() {
   const { plans, loading, error, fetchPlans, createPlan, updatePlan } = usePlans();
@@ -266,7 +267,7 @@ export default function AdminPlans() {
           </div>
           
           <div className={styles.planList}>
-            {loading && <div style={{ padding: '20px', textAlign: 'center' }}>로딩 중...</div>}
+            {loading && <LoadingScreen />}
             {error && <div style={{ padding: '20px', color: 'red' }}>에러: {error}</div>}
             
             {plans.map((plan) => (
@@ -323,7 +324,7 @@ export default function AdminPlans() {
               </div>
             ) : loadingSubscriptions ? (
               <div className={styles.emptyState}>
-                <p>로딩 중...</p>
+                {loading && <LoadingScreen />}
               </div>
             ) : subscriptions.length === 0 ? (
               <div className={styles.emptyState}>
