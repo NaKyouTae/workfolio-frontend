@@ -7,6 +7,9 @@ import NewRecordGroupItem from '../NewRecordGroupItem';
 import { RecordGroup_RecordGroupType, RecordGroup } from '@/generated/common';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
+import RecordGroupsSkeleton from '@/components/portal/ui/skeleton/RecordGroupsSkeleton';
+import { useRecordGroupStore } from '@/store/recordGroupStore';
+import { useShallow } from 'zustand/react/shallow';
 
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;
@@ -23,6 +26,13 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
     const [isGroupsExpanded, setIsGroupsExpanded] = useState(defaultExpanded);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
+    
+    // 로딩 상태 확인
+    const { isLoading } = useRecordGroupStore(
+        useShallow((state) => ({
+            isLoading: state.isLoading,
+        }))
+    );
 
     const handleToggleGroups = useCallback(() => {
         setIsGroupsExpanded(prev => !prev);
@@ -98,11 +108,15 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
                                 onCancel={handleCancelCreate}
                             />
                         )}
-                        <RecordGroups 
-                            key="owned-record-groups"
-                            recordGroups={recordGroups} 
-                            onRefresh={onRefresh}
-                        />
+                        {isLoading && recordGroups.length === 0 ? (
+                            <RecordGroupsSkeleton count={3} />
+                        ) : (
+                            <RecordGroups 
+                                key="owned-record-groups"
+                                recordGroups={recordGroups} 
+                                onRefresh={onRefresh}
+                            />
+                        )}
                     </ul>
                 )}
             </div>
