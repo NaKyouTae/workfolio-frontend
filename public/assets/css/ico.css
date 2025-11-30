@@ -7,6 +7,7 @@ i {display: flex; align-items: center; justify-content: center; background-repea
 .ic-arrow-down-14 {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-arrow-down-14.svg);}
 
 .ic-add {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-add.svg);}
+.ic-rocket {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-rocket.svg);}
 
 .ic-check {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-check.svg);}
 .ic-delete {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-delete-16.svg);}

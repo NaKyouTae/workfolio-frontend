@@ -8,8 +8,7 @@ const Footer = () => {
   return (
     <>
       <footer>
-        <ul>
-          <li><a href="/info" target="_blank">소개하기</a></li>
+        <ul>          
           <li><a href="https://forms.gle/ntxm9NVwbFLQmUbg6" target="_blank">고객문의</a></li>
           <li><Link href="/service-guides/notices">공지사항</Link></li>
           <li><Link href="/service-guides/terms-services">이용약관</Link></li>

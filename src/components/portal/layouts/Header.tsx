@@ -111,6 +111,7 @@ const Header = () => {
                 {user? (
                     <ul className="user">
                         <li>{`${user.nickName} 님 반가워요 !`}</li>
+                        <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
                         <li>
                             <Link 
                                 href="/mypage" 
@@ -124,19 +125,8 @@ const Header = () => {
                     </ul>
                 ) : (
                     <ul className="user">
-                        <li>환영해요 !</li>
-                        <li>
-                            <Link 
-                                href="/mypage" 
-                                prefetch={false}
-                                onClick={handleMypageClick}
-                            >
-                                마이페이지
-                            </Link>
-                        </li>
-                        <li>
-                            <a onClick={handleLoginClick}>로그인</a>
-                        </li>
+                        <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
+                        <li><a onClick={handleLoginClick}>로그인</a></li>
                     </ul>
                 )}
             </div>
