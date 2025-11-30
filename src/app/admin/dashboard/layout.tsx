@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminSidebar from '@/components/admin/AdminSidebar';
+import LoadingScreen from '@/components/portal/ui/LoadingScreen';
 import styles from './layout.module.css';
 
 export default function AdminDashboardLayout({
@@ -53,9 +54,7 @@ export default function AdminDashboardLayout({
   // 인증 확인 중에는 아무것도 렌더링하지 않음
   if (isChecking) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div>로딩 중...</div>
-      </div>
+      <LoadingScreen minHeight="100vh" />
     );
   }
 

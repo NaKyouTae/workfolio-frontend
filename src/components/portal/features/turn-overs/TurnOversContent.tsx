@@ -8,6 +8,7 @@ import { TurnOverUpsertRequest } from '@/generated/turn_over';
 import { useConfirm } from '@/hooks/useConfirm';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
+import LoadingScreen from '@/components/portal/ui/LoadingScreen';
 
 import Footer from "@/components/portal/layouts/Footer"
 
@@ -17,6 +18,7 @@ interface TurnOversContentProps {
   selectedTurnOver: TurnOverDetail | null;
   isNewTurnOver?: boolean;
   viewMode: ViewMode;
+  isLoading?: boolean;
   onTurnOverSelect?: (id: string) => void;
   onTurnOverSelectAndEdit?: (id: string, fromMode: ViewMode) => void;
   onSave?: (data: TurnOverUpsertRequest) => void;
@@ -32,6 +34,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
   selectedTurnOver, 
   isNewTurnOver = false, 
   viewMode,
+  isLoading = false,
   onTurnOverSelect,
   onTurnOverSelectAndEdit,
   onSave, 
@@ -169,6 +172,17 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
     }
   };
 
+  // 로딩 중이고 view 모드일 때 로딩 화면 표시
+  if (isLoading && currentViewMode === 'view') {
+    return (
+      <section>
+        <LoadingScreen />
+        <Footer/>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      </section>
+    );
+  }
+
   return (
     <section>
         {currentViewMode === 'home' && (
@@ -182,6 +196,7 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
         {currentViewMode === 'view' && selectedTurnOver && (
           <TurnOversContentView 
               selectedTurnOver={selectedTurnOver} 
+              isLoading={isLoading}
               onEdit={handleEditCurrentTurnOver}
               onDuplicate={handleDuplicate}
               onDelete={handleDelete}

@@ -20,7 +20,8 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
   // initialTurnOverId가 있으면 초기 viewMode를 바로 설정하여 홈 화면이 먼저 보이는 것을 방지
   const [viewMode, setViewMode] = useState<ViewMode>(initialTurnOverId ? (initialEditMode ? 'edit' : 'view') : 'home');
   const [previousMode, setPreviousMode] = useState<ViewMode>('home'); // edit로 들어가기 전 모드 저장
-  const { turnOvers, refreshTurnOvers, upsertTurnOver, getTurnOverDetail, duplicateTurnOver, deleteTurnOver } = useTurnOver();
+  const [isLoadingDetail, setIsLoadingDetail] = useState(!!initialTurnOverId); // 초기 로딩 상태
+  const { turnOvers, isLoading, refreshTurnOvers, upsertTurnOver, getTurnOverDetail, duplicateTurnOver, deleteTurnOver } = useTurnOver();
   
   // 초기 로드 여부를 추적하는 ref
   const turnOversFetched = useRef(false);
@@ -39,17 +40,37 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
     if (initialTurnOverId) {
       // 이미 같은 이직 활동이 선택되어 있고 편집 모드도 같으면 업데이트하지 않음
       if (selectedTurnOver?.id === initialTurnOverId && viewMode === (initialEditMode ? 'edit' : 'view')) {
+        setIsLoadingDetail(false);
         return;
       }
-      // 화면은 즉시 변경하고, turnOvers에서 데이터를 찾아서 바로 표시
+      
+      setIsLoadingDetail(true);
       setViewMode(initialEditMode ? 'edit' : 'view');
       setPreviousMode(initialEditMode ? 'view' : 'home');
-      // turnOvers에서 해당 id의 데이터를 찾아서 바로 표시 (API 조회 없이)
+      
+      // turnOvers에서 해당 id의 데이터를 찾아서 바로 표시
       const turnOverDetail = turnOvers.find(t => t.id === initialTurnOverId);
       if (turnOverDetail) {
         setSelectedTurnOver(turnOverDetail);
         setIsNewTurnOver(false);
+        setIsLoadingDetail(false);
+      } else if (turnOvers.length > 0) {
+        // turnOvers가 로드되었지만 해당 id를 찾지 못한 경우, getTurnOverDetail 호출
+        getTurnOverDetail(initialTurnOverId).then((detail) => {
+          if (detail) {
+            setSelectedTurnOver(detail);
+            setIsNewTurnOver(false);
+          }
+          setIsLoadingDetail(false);
+        }).catch(() => {
+          setIsLoadingDetail(false);
+        });
+      } else {
+        // turnOvers가 아직 로드되지 않은 경우, 로드 완료 후 다시 시도
+        // 이 경우 turnOvers가 업데이트되면 이 useEffect가 다시 실행됨
       }
+    } else {
+      setIsLoadingDetail(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialTurnOverId, initialEditMode, turnOvers]);
@@ -93,7 +114,7 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
     const savedId = await upsertTurnOver(data);
     if (savedId) {
       // 목록 새로고침과 상세 데이터 조회를 병렬로 처리
-      const [_, updatedTurnOverDetail] = await Promise.all([
+      const [, updatedTurnOverDetail] = await Promise.all([
         refreshTurnOvers(),
         getTurnOverDetail(savedId)
       ]);
@@ -204,6 +225,7 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
             selectedTurnOver={selectedTurnOver} 
             isNewTurnOver={isNewTurnOver}
             viewMode={viewMode}
+            isLoading={isLoading || isLoadingDetail}
             onTurnOverSelect={onTurnOverSelect} 
             onTurnOverSelectAndEdit={onTurnOverSelectAndEdit}
             onSave={onSave} 

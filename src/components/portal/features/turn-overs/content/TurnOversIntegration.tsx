@@ -7,8 +7,6 @@ import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 import EmptyState from '@/components/portal/ui/EmptyState';
 
-import Image from 'next/image';
-
 interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
   onEdit?: (id: string) => void;

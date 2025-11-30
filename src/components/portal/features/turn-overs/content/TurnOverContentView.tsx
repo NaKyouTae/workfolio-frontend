@@ -6,9 +6,11 @@ import TurnOverChallengeView from './view/TurnOverChallengeView';
 import TurnOverContentViewHeader from './TurnOverContentViewHeader';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
 import FloatingNavigation, { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
+import LoadingScreen from '@/components/portal/ui/LoadingScreen';
 
 interface TurnOversContentViewProps {
   selectedTurnOver: TurnOverDetail | null;
+  isLoading?: boolean;
   onEdit?: () => void;
   onDuplicate?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -16,7 +18,7 @@ interface TurnOversContentViewProps {
   onShowLoginModal?: () => void;
 }
 
-const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete, onUpdate, onShowLoginModal }) => {
+const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, isLoading = false, onEdit, onDuplicate, onDelete, onUpdate, onShowLoginModal }) => {
   const [activeTab, setActiveTab] = useState<TabType>('goal');
   const [navigationItems, setNavigationItems] = useState<FloatingNavigationItem[]>([]);
 
@@ -63,6 +65,14 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
 
     return () => clearInterval(interval);
   }, [updateNavigationItems]);
+
+  if (isLoading) {
+    return (
+      <div className="contents">
+        <LoadingScreen />
+      </div>
+    );
+  }
 
   if (!selectedTurnOver) {
     return <div>이직 현황을 선택해주세요.</div>;

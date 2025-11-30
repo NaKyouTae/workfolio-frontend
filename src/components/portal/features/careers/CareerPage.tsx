@@ -8,6 +8,7 @@ import { ResumeDetail } from '@/generated/common';
 import CareerContentView from './CareerContentView';
 import CareerContentEdit from './CareerContentEdit';
 import CareerContentCreate from './CareerContentCreate';
+import LoadingScreen from '@/components/portal/ui/LoadingScreen';
 
 import Footer from "@/components/portal/layouts/Footer"
 
@@ -203,9 +204,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
           onResumeCreated={handleResumeCreated}
           onGoHome={goHome}
         />
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div>로딩 중...</div>
-        </div>
+        <LoadingScreen />
       </main>
     );
   }
