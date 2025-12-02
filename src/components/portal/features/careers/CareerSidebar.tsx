@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ResumeDetail } from '@/generated/common';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
+import SidebarListSkeleton from '@/components/portal/ui/skeleton/SidebarListSkeleton';
 
 interface CareerSidebarProps {
   resumeDetails: ResumeDetail[];
@@ -9,9 +10,10 @@ interface CareerSidebarProps {
   onResumeSelect: (resume: ResumeDetail) => void; 
   onResumeCreated: () => void;
   onGoHome: () => void;
+  isLoading?: boolean;
 }
 
-const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedResumeDetail, onResumeSelect, onResumeCreated, onGoHome }) => {
+const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedResumeDetail, onResumeSelect, onResumeCreated, onGoHome, isLoading = false }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   
   const handleResumeCreated = () => {
@@ -45,22 +47,25 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
         <div className="aside-group">
           <p className="aside-group-title">내 이력서</p>
           <ul className="aside-group-list">
-            {sortedResumes.map((resumeDetail) => {
-              const isSelected = selectedResumeDetail?.id === resumeDetail.id;
-              return (
-                <li
-                  className={`${isSelected ? 'active' : ''}`}
-                  key={resumeDetail.id}
-                  onClick={() => onResumeSelect(resumeDetail)}
-                >
-                  {resumeDetail.isDefault && (
-                    <span>[대표]</span>
-                  )}
-                  <p>{resumeDetail.title}</p>
-                </li>
-              );
-            })}
-            {/* 빈 배열일 때는 아무것도 표시하지 않음 (로딩 중 이전 데이터 유지) */}
+            {isLoading ? (
+              <SidebarListSkeleton count={3} />
+            ) : (
+              sortedResumes.map((resumeDetail) => {
+                const isSelected = selectedResumeDetail?.id === resumeDetail.id;
+                return (
+                  <li
+                    className={`${isSelected ? 'active' : ''}`}
+                    key={resumeDetail.id}
+                    onClick={() => onResumeSelect(resumeDetail)}
+                  >
+                    {resumeDetail.isDefault && (
+                      <span>[대표]</span>
+                    )}
+                    <p>{resumeDetail.title}</p>
+                  </li>
+                );
+              })
+            )}
           </ul>
         </div>
       </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TurnOver, TurnOverDetail } from '@/generated/common';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
+import SidebarListSkeleton from '@/components/portal/ui/skeleton/SidebarListSkeleton';
 
 interface TurnOversSidebarProps {
   turnOvers: TurnOver[];
@@ -10,9 +11,10 @@ interface TurnOversSidebarProps {
   refreshTurnOvers: () => void;
   onTurnOverSelect: (id: string) => void;
   onTurnOverCreated: () => void;
+  isLoading?: boolean;
 }
 
-const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, selectedTurnOver, onGoHome, onTurnOverSelect, onTurnOverCreated }) => {
+const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, selectedTurnOver, onGoHome, onTurnOverSelect, onTurnOverCreated, isLoading = false }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   
   const handleTurnOverSelect = (id: string) => {
@@ -38,18 +40,21 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({ turnOvers, selected
             <div className="aside-group">
                 <p className="aside-group-title">내 이직 활동</p>
                 <ul className="aside-group-list">
-                    {turnOvers.map((turnOver) => {
-                        return (
-                            <li
-                                key={turnOver.id}
-                                className={turnOver.id === selectedTurnOver?.id ? 'active' : ''}  
-                                onClick={() => handleTurnOverSelect(turnOver.id)}
-                            >
-                                <p>{turnOver.name}</p>
-                            </li>
-                        );
-                    })}
-                    {/* 빈 배열일 때는 아무것도 표시하지 않음 (로딩 중 이전 데이터 유지) */}
+                    {isLoading ? (
+                        <SidebarListSkeleton count={3} />
+                    ) : (
+                        turnOvers.map((turnOver) => {
+                            return (
+                                <li
+                                    key={turnOver.id}
+                                    className={turnOver.id === selectedTurnOver?.id ? 'active' : ''}  
+                                    onClick={() => handleTurnOverSelect(turnOver.id)}
+                                >
+                                    <p>{turnOver.name}</p>
+                                </li>
+                            );
+                        })
+                    )}
                 </ul>
             </div>
         </div>

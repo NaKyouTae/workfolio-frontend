@@ -7,6 +7,7 @@ import Dropdown from '../../ui/Dropdown';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 import EmptyState from '@/components/portal/ui/EmptyState';
+import SummaryListSkeleton from '@/components/portal/ui/skeleton/SummaryListSkeleton';
 
 interface CareerIntegrationProps {
   resumeDetails: ResumeDetail[];
@@ -18,6 +19,7 @@ interface CareerIntegrationProps {
   copyURL: (publicId?: string) => Promise<void>;
   calculateTotalCareer: (resume: ResumeDetail) => string;
   changeDefault: (resumeId?: string) => Promise<void>;
+  isLoading?: boolean;
 }
 
 const CareerIntegration: React.FC<CareerIntegrationProps> = ({
@@ -30,6 +32,7 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
   // copyURL,
   calculateTotalCareer,
   changeDefault,
+  isLoading = false,
 }) => {
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -134,7 +137,9 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                             />
                         </div>
                     </div>
-                    {sortedResumes.length === 0 ? (
+                    {isLoading ? (
+                        <SummaryListSkeleton count={3} />
+                    ) : sortedResumes.length === 0 ? (
                         <EmptyState text="등록된 이력서가 없습니다." />
                     ) : (
                         <ul className="summary-list">

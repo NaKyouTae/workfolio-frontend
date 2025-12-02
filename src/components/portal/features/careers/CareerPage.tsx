@@ -25,6 +25,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
   // 이력서 목록 관리
   const { 
     resumeDetails, 
+    isLoading: isLoadingResumes,
     fetchResumeDetails,
     refreshResumeDetails,
     duplicateResume,
@@ -203,6 +204,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
           onResumeSelect={viewResumeDetail}
           onResumeCreated={handleResumeCreated}
           onGoHome={goHome}
+          isLoading={isLoadingResumes}
         />
         <LoadingScreen />
       </main>
@@ -218,6 +220,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
         onResumeSelect={viewResumeDetail}
         onResumeCreated={handleResumeCreated}
         onGoHome={goHome}
+        isLoading={isLoadingResumes}
       />
       
       {/* 이력서 홈 (목록) */}
@@ -232,6 +235,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
           copyURL={copyURL}
           calculateTotalCareer={calculateTotalCareer}
           changeDefault={changeDefault}
+          isLoading={isLoadingResumes}
         />
       )}
       

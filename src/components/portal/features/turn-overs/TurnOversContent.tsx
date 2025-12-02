@@ -190,7 +190,8 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
             onSelectTurnOver={handleTurnOverSelect} 
             onEdit={handleTurnOverEdit} 
             onDuplicate={handleDuplicate} 
-            onDelete={handleDelete} 
+            onDelete={handleDelete}
+            isLoading={isLoading && viewMode === 'home'}
           />
         )}
         {currentViewMode === 'view' && selectedTurnOver && (

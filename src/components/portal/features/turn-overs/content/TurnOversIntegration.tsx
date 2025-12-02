@@ -6,16 +6,20 @@ import Dropdown from '@/components/portal/ui/Dropdown';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 import EmptyState from '@/components/portal/ui/EmptyState';
+import SummaryListSkeleton from '@/components/portal/ui/skeleton/SummaryListSkeleton';
+import StatsSummarySkeleton from '@/components/portal/ui/skeleton/StatsSummarySkeleton';
 
 interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDuplicate?: (id: string) => void;
   onDelete?: (id: string) => void;
+  isLoading?: boolean;
 }
 
-const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete }) => {
-  const { turnOvers } = useTurnOver();
+const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTurnOver, onEdit, onDuplicate, onDelete, isLoading: externalIsLoading = false }) => {
+  const { turnOvers, isLoading: internalIsLoading } = useTurnOver();
+  const isLoading = externalIsLoading || internalIsLoading;
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -149,25 +153,28 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                         <h3>내 이직 현황</h3>
                     </div>
                 </div>
-                <ul className="stats-summary">
-                    <li key="avgDuration">
-                        <p>평균 이직 기간</p>
-                        <div>
-                          {statistics.avgDuration.months > 0 && `${statistics.avgDuration.months}개월 `}
-                          {statistics.avgDuration.days > 0 && `${statistics.avgDuration.days}일`}
-                          {statistics.avgDuration.months === 0 && statistics.avgDuration.days === 0 && '0일'}
-                        </div>
-                    </li>
-                    <li>
-                        <p>평균 지원 회사</p>
-                        <div>{statistics.avgApplications.toFixed(1)}<span>개</span></div>
-                    </li>
-                    <li>
-                        <p>평균 연봉 상승률</p>
-                        <div>{statistics.avgSalaryIncreaseRate.toFixed(1)}<span>%</span></div>
-                    </li>
-                    
-                </ul>
+                {isLoading ? (
+                    <StatsSummarySkeleton count={3} />
+                ) : (
+                    <ul className="stats-summary">
+                        <li key="avgDuration">
+                            <p>평균 이직 기간</p>
+                            <div>
+                              {statistics.avgDuration.months > 0 && `${statistics.avgDuration.months}개월 `}
+                              {statistics.avgDuration.days > 0 && `${statistics.avgDuration.days}일`}
+                              {statistics.avgDuration.months === 0 && statistics.avgDuration.days === 0 && '0일'}
+                            </div>
+                        </li>
+                        <li>
+                            <p>평균 지원 회사</p>
+                            <div>{statistics.avgApplications.toFixed(1)}<span>개</span></div>
+                        </li>
+                        <li>
+                            <p>평균 연봉 상승률</p>
+                            <div>{statistics.avgSalaryIncreaseRate.toFixed(1)}<span>%</span></div>
+                        </li>
+                    </ul>
+                )}
             </div>
             <div className="cont-box">
                 <div className="cont-tit">
@@ -186,7 +193,9 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                         />
                     </div>
                 </div>
-                {sortedTurnOvers.length === 0 ? (
+                {isLoading ? (
+                    <SummaryListSkeleton count={3} />
+                ) : sortedTurnOvers.length === 0 ? (
                     <EmptyState text="등록된 이직 활동이 없습니다." />
                 ) : (
                     <ul className="summary-list">

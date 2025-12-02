@@ -213,7 +213,8 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
             onGoHome={onGoHome} 
             refreshTurnOvers={refreshTurnOvers} 
             onTurnOverSelect={onTurnOverSelect} 
-            onTurnOverCreated={onTurnOverCreated} 
+            onTurnOverCreated={onTurnOverCreated}
+            isLoading={isLoading}
         />
         <TurnOversContent 
             selectedTurnOver={selectedTurnOver} 
