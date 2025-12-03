@@ -6,16 +6,15 @@ import { WorkerListResponse, WorkerUpdateNickNameResponse } from "@/generated/wo
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function GET(req: Request, { params }: { params: { nickname: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ nickname: string }> }) {
     try {
+        const { nickname } = await params;
         const accessToken = await getCookie('accessToken');
         const refreshToken = await getCookie('refreshToken');
         
         if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
-        
-        const { nickname } = params;
         
         const res = await apiFetchHandler<WorkerListResponse>(
             `${API_BASE_URL}/api/workers/${encodeURIComponent(nickname)}`, 
@@ -36,17 +35,16 @@ export async function GET(req: Request, { params }: { params: { nickname: string
 
 export async function PUT(
     request: Request,
-    { params }: { params: { nickname: string } }
+    { params }: { params: Promise<{ nickname: string }> }
 ) {
     try {
+        const { nickname } = await params;
         const accessToken = await getCookie('accessToken');
         const refreshToken = await getCookie('refreshToken');
         
         if (accessToken == null && !refreshToken) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
         }
-        
-        const { nickname } = params;
         
         const res = await apiFetchHandler<WorkerUpdateNickNameResponse>(
             `${API_BASE_URL}/api/workers/${encodeURIComponent(nickname)}`, 

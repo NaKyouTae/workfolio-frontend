@@ -232,7 +232,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
     } catch (error) {
       console.error('Error updating resume:', error);
     }
-  }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, position, description, isDefault, careers, projects, educations, activities, languages, attachments, onSave]);
+  }, [selectedResumeDetail, title, name, birthDate, gender, email, phone, position, description, isDefault, careers, projects, educations, activities, languages, attachments, onSave, updateResume]);
 
   return (
     <>

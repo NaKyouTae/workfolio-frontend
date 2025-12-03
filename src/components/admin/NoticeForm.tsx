@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { NoticeCreateRequest, NoticeUpdateRequest } from '@/generated/notice';
 
 interface NoticeFormProps {
   formData: {

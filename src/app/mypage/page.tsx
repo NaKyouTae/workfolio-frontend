@@ -10,7 +10,7 @@ import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 
 const Mypage: React.FC = () => {
-    const { deleteAccount, isLoading, isLoggedIn: userIsLoggedIn } = useUser();
+    const { deleteAccount, isLoading } = useUser();
     const { showNotification } = useNotification();
     const [activeMenu, setActiveMenu] = useState('profile');
     const [isDeleting, setIsDeleting] = useState(false);

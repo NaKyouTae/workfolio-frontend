@@ -1,8 +1,6 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useDndContext } from '@dnd-kit/core';
-import Image from 'next/image';
 
 interface DraggableItemProps {
   id: string;
@@ -26,8 +24,6 @@ interface DraggableItemProps {
 const DraggableItem: React.FC<DraggableItemProps> = ({
   id,
   children,
-  className = '',
-  dragButtonSize = 24,
   showDragButton = true,
   style: customStyle = {},
 }) => {
@@ -41,11 +37,8 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
   } = useSortable({ id });
 
   // 전역 드래그 상태 감지
-  const { active } = useDndContext();
-  const isAnyItemDragging = active !== null;
-  
-  // 드래그 중이거나 다른 아이템이 드래그 중일 때 border 표시
-  const showBorder = isAnyItemDragging;
+  // const { active } = useDndContext();
+  // const _isAnyItemDragging = active !== null;
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),

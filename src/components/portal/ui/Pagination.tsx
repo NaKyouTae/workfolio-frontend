@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './Pagination.module.css';
 
 interface PaginationProps {
@@ -8,20 +8,14 @@ interface PaginationProps {
   totalPages: number;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
-  onItemsPerPageChange: (itemsPerPage: number) => void;
   itemsPerPageOptions?: number[];
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
-  itemsPerPage,
   onPageChange,
-  onItemsPerPageChange,
-  itemsPerPageOptions = [10, 30, 50, 100],
 }) => {
-  const [showItemsPerPage, setShowItemsPerPage] = useState(false);
-
   const handleFirstPage = () => {
     if (currentPage > 1) {
       onPageChange(1);

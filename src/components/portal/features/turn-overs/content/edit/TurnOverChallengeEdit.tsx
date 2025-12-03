@@ -17,9 +17,9 @@ const TurnOverChallengeEdit = forwardRef<TurnOverEditRef, TurnOverChallengeEditP
   const [activeSection, setActiveSection] = useState<string>('jobApplication');
   
   // 초기값을 turnOverRequest에서 바로 계산하여 깜빡임 방지
-  const initialJobApplications = useMemo(() => turnOverRequest?.turnOverChallenge?.jobApplications || [], [turnOverRequest?.id]);
-  const initialMemos = useMemo(() => turnOverRequest?.turnOverChallenge?.memos || [], [turnOverRequest?.id]);
-  const initialAttachments = useMemo(() => turnOverRequest?.turnOverChallenge?.attachments || [], [turnOverRequest?.id]);
+  const initialJobApplications = useMemo(() => turnOverRequest?.turnOverChallenge?.jobApplications || [], [turnOverRequest?.turnOverChallenge?.jobApplications]);
+  const initialMemos = useMemo(() => turnOverRequest?.turnOverChallenge?.memos || [], [turnOverRequest?.turnOverChallenge?.memos]);
+  const initialAttachments = useMemo(() => turnOverRequest?.turnOverChallenge?.attachments || [], [turnOverRequest?.turnOverChallenge?.attachments]);
   
   const [jobApplications, setJobApplications] = useState<TurnOverUpsertRequest_TurnOverChallengeRequest_JobApplicationRequest[]>(initialJobApplications);
   const [memos, setMemos] = useState<TurnOverUpsertRequest_MemoRequest[]>(initialMemos);

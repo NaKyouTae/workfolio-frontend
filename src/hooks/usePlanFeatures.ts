@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
 import {
-  PlanFeature,
   PlanFeatureListResponse,
   PlanFeatureGetResponse,
   PlanFeatureCreateRequest,
   PlanFeatureUpdateRequest,
 } from '@/generated/plan_feature';
-import { SuccessResponse } from '@/generated/common';
+import { PlanFeature, SuccessResponse } from '@/generated/common';
 
 export const usePlanFeatures = () => {
   const [planFeatures, setPlanFeatures] = useState<PlanFeature[]>([]);
@@ -53,7 +52,7 @@ export const usePlanFeatures = () => {
         throw new Error('Failed to fetch plan-feature');
       }
       const data: PlanFeatureGetResponse = await response.json();
-      return data.planFeature;
+      return data.planFeature || null;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);

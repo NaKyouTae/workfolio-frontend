@@ -21,7 +21,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({ value, onChange, showTime
     useEffect(() => {
         setDateInputValue(dateTime.toFormat('yyyy. MM. dd.'));
         setTimeInputValue(dateTime.toFormat('HH:mm'));
-    }, [value]);
+    }, [value, dateTime]);
     
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

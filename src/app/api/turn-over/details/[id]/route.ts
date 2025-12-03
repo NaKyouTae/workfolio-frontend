@@ -6,9 +6,9 @@ import { TurnOverDetailResponse } from '@/generated/turn_over';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = params.id;
+    const { id } = await params;
     const accessToken = await getCookie('accessToken');
       
     // accessToken이 없으면 401 응답 반환

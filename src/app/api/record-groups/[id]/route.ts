@@ -7,10 +7,10 @@ import { SuccessResponse } from "@/generated/common";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const requestData = await req.json();
-        const id = params.id;
+        const { id } = await params;
         const accessToken = await getCookie('accessToken');
         const refreshToken = await getCookie('refreshToken');
         
@@ -28,9 +28,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = params.id;
+        const { id } = await params;
         const accessToken = await getCookie('accessToken');
         const refreshToken = await getCookie('refreshToken');
         

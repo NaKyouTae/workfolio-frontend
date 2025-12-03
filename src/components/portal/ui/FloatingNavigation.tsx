@@ -68,7 +68,6 @@ interface FloatingNavigationProps {
  */
 const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   navigationItems,
-  width,
   onSave,
   onCancel,
   showCancelConfirm = false,

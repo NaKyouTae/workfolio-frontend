@@ -7,9 +7,9 @@ import { SystemConfigGetResponse } from "@/generated/system_config";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function GET(req: Request, { params }: { params: { type: SystemConfig_SystemConfigType } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ type: SystemConfig_SystemConfigType }> }) {
     try {
-        const type = params.type;
+        const { type } = await params;
         const accessToken = await getCookie('accessToken');
         const refreshToken = await getCookie('refreshToken');
         

@@ -9,7 +9,7 @@ interface InputProps {
     readOnly?: boolean; // 입력 필드의 읽기 전용 여부
 }
 
-const Input = ({ type = 'text', placeholder, value, onChange, label, readOnly = false }: InputProps) => {
+const Input = ({ type = 'text', placeholder, value, onChange, readOnly = false }: InputProps) => {
     return (
         <input
             type={type}

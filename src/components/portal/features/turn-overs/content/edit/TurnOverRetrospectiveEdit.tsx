@@ -180,7 +180,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     return turnOverRequest.turnOverChallenge.jobApplications.filter(app =>
       compareEnumValue(app.status, JobApplication_JobApplicationStatus.PASSED, JobApplication_JobApplicationStatus)
     );
-  }, [jobApplicationsKey]);
+  }, [jobApplicationsKey, turnOverRequest?.turnOverChallenge?.jobApplications]);
 
   // turnOverRequest의 id가 변경될 때만 state 업데이트
   useEffect(() => {

@@ -6,9 +6,9 @@ import { getCookie } from '@/utils/cookie';
 import { apiFetchHandler } from '@/utils/ApiFetchHandler';
 import { SuccessResponse } from '@/generated/common';
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     const accessToken = await getCookie('accessToken');
       
@@ -35,10 +35,10 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 // DELETE /api/resumes/{id} - 이력서 삭제
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     const accessToken = await getCookie('accessToken');
       

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNotices, Notice } from '@/hooks/useNotices';
 import ExpandableCard from '@/components/portal/ui/ExpandableCard';
 import Pagination from '@/components/portal/ui/Pagination';
@@ -17,7 +17,7 @@ interface NoticesProps {
 const Notices: React.FC<NoticesProps> = ({ onNoticeClick }) => {
   const { notices, isLoading } = useNotices();
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const itemsPerPage = 10;
 
   // 페이지네이션 계산
   const paginatedNotices = useMemo(() => {
@@ -28,19 +28,10 @@ const Notices: React.FC<NoticesProps> = ({ onNoticeClick }) => {
 
   const totalPages = Math.ceil(notices.length / itemsPerPage);
 
-  // 페이지 변경 시 페이지를 1로 리셋
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [itemsPerPage]);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     // 페이지 변경 시 스크롤을 맨 위로
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
   };
 
   if (isLoading) {
@@ -110,7 +101,6 @@ const Notices: React.FC<NoticesProps> = ({ onNoticeClick }) => {
                     totalPages={totalPages}
                     itemsPerPage={itemsPerPage}
                     onPageChange={handlePageChange}
-                    onItemsPerPageChange={handleItemsPerPageChange}
                 />
             )}
         </div>

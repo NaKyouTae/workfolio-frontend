@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
 import {
-  Feature,
   FeatureListResponse,
   FeatureGetResponse,
   FeatureCreateRequest,
   FeatureUpdateRequest,
 } from '@/generated/feature';
-import { SuccessResponse } from '@/generated/common';
+import { Feature, SuccessResponse } from '@/generated/common';
 
 export const useFeatures = () => {
   const [features, setFeatures] = useState<Feature[]>([]);
@@ -46,7 +45,7 @@ export const useFeatures = () => {
         throw new Error('Failed to fetch feature');
       }
       const data: FeatureGetResponse = await response.json();
-      return data.feature;
+      return data.feature || null;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);

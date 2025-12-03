@@ -60,7 +60,6 @@ const RecordGroupDetailForm: React.FC<RecordGroupDetailFormProps> = ({
     createMode = false,
     user,
     onTitleChange,
-    onColorChange,
     onRecordTypeChange,
     onDefaultRoleChange,
     onShareNicknameChange,
@@ -190,12 +189,8 @@ const RecordGroupDetailForm: React.FC<RecordGroupDetailFormProps> = ({
                                                         { value: WorkerRecordGroup_RecordGroupRole.VIEW, label: '보기 권한' }
                                                     ]}
                                                     setValue={(value) => {
-                                                        if (onNewWorkerRoleChange) {
-                                                            onNewWorkerRoleChange(value as WorkerRecordGroup_RecordGroupRole, worker);
-                                                        } else {
-                                                            const result = onWorkerRoleChange(selectedNewWorkers, worker, value as WorkerRecordGroup_RecordGroupRole, true);
-                                                            // 부모 컴포넌트에서 상태 업데이트를 처리하도록 콜백 전달
-                                                        }
+                                                        onWorkerRoleChange(selectedNewWorkers, worker, value as WorkerRecordGroup_RecordGroupRole, true);
+                                                        // 부모 컴포넌트에서 상태 업데이트를 처리하도록 콜백 전달
                                                     }}
                                                     disabled={compareEnumValue(recordType, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType) || !isAdmin}
                                                 />
@@ -231,15 +226,11 @@ const RecordGroupDetailForm: React.FC<RecordGroupDetailFormProps> = ({
                                                             { value: WorkerRecordGroup_RecordGroupRole.VIEW, label: '보기 권한' },
                                                         ]}
                                                         setValue={(value) => {
-                                                            if (onExistWorkerRoleChange) {
-                                                                onExistWorkerRoleChange(value as WorkerRecordGroup_RecordGroupRole, worker);
-                                                            } else {
-                                                                const currentWorkers = selectedExistWorkers.length > 0 
-                                                                    ? selectedExistWorkers 
-                                                                    : (recordGroupDetails?.workers || []);
-                                                                const result = onWorkerRoleChange(currentWorkers, worker, value as WorkerRecordGroup_RecordGroupRole, false);
-                                                                // 부모 컴포넌트에서 상태 업데이트를 처리하도록 콜백 전달
-                                                            }
+                                                            const currentWorkers = selectedExistWorkers.length > 0 
+                                                                ? selectedExistWorkers 
+                                                                : (recordGroupDetails?.workers || []);
+                                                            onWorkerRoleChange(currentWorkers, worker, value as WorkerRecordGroup_RecordGroupRole, false);
+                                                            // 부모 컴포넌트에서 상태 업데이트를 처리하도록 콜백 전달
                                                         }}
                                                         disabled={compareEnumValue(recordType, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType) || !isAdmin}
                                                     />

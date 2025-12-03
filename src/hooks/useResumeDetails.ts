@@ -172,7 +172,7 @@ export const useResumeDetails = () => {
       console.error('이력서 삭제 중 오류 발생:', error);
       showNotification('이력서 삭제 중 오류가 발생했습니다.', 'error');
     }
-  }, [fetchResumeDetails, confirm]);
+  }, [fetchResumeDetails, confirm, showNotification]);
 
   // PDF 내보내기 (콜백 처리)
   const exportPDF = useCallback(async (resumeId?: string, onSuccess?: () => void): Promise<void> => {

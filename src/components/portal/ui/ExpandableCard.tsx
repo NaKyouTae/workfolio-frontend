@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import styles from './ExpandableCard.module.css';
 
 interface ExpandableCardProps {
   title: string;

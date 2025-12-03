@@ -10,13 +10,14 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 // GET /api/notices/[id] - 공지사항 상세 조회
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const accessToken = await getCookie('admin_access_token');
     
     const response = await apiFetchHandler<NoticeGetResponse>(
-      `${API_BASE_URL}/api/notices/${params.id}`,
+      `${API_BASE_URL}/api/notices/${id}`,
       HttpMethod.GET,
       null,
       accessToken
@@ -36,13 +37,14 @@ export async function GET(
 // DELETE /api/notices/[id] - 공지사항 삭제
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const accessToken = await getCookie('admin_access_token');
 
     const response = await apiFetchHandler<SuccessResponse>(
-      `${API_BASE_URL}/api/notices/${params.id}`,
+      `${API_BASE_URL}/api/notices/${id}`,
       HttpMethod.DELETE,
       null,
       accessToken

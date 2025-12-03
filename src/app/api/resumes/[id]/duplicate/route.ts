@@ -9,10 +9,10 @@ import { ResumeResponse } from '@/generated/resume';
 // POST /api/resumes/{id}/duplicate - 이력서 복제
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     const accessToken = await getCookie('accessToken');
       

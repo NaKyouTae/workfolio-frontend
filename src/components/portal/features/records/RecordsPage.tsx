@@ -1,5 +1,5 @@
 // src/components/portal/features/records/RecordsPage.tsx
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, Suspense } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from "@/components/portal/features/records/sidebar/Sidebar"
 import RecordContents, { RecordContentsRef } from "@/components/portal/features/records/RecordContents"
@@ -63,10 +63,12 @@ const RecordsPage = React.memo(() => {
                         recordGroupsData={recordGroupsData}
                     />
                 ) : (
-                    <RecordContents 
-                        ref={recordContentsRef}
-                        recordGroupsData={recordGroupsData}
-                    />
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <RecordContents 
+                            ref={recordContentsRef}
+                            recordGroupsData={recordGroupsData}
+                        />
+                    </Suspense>
                 )}
                 <Footer/>
             </section>

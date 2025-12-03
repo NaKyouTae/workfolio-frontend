@@ -10,10 +10,10 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 // GET /api/features/{id} - 기능 상세 조회
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const accessToken = await getCookie('admin_access_token');
 
     const response = await apiFetchHandler<FeatureGetResponse>(
@@ -37,10 +37,10 @@ export async function GET(
 // DELETE /api/features/{id} - 기능 삭제
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const accessToken = await getCookie('admin_access_token');
 
     const response = await apiFetchHandler<SuccessResponse>(
