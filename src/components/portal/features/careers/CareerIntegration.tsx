@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { ResumeDetail } from '@/generated/common';
 import DateUtil from '@/utils/DateUtil';
-
-import Footer from "@/components/portal/layouts/Footer"
 import Dropdown from '../../ui/Dropdown';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
@@ -198,7 +196,6 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                 </div>
             </div>
         </div>
-        <Footer/>
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </section>
   );
