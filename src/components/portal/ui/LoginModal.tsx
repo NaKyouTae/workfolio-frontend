@@ -109,7 +109,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <div className="modal-btn">
                     <button className="btn-kakao" onClick={() => window.location.href = KAKAO_AUTH_URL}><span>카카오로 시작하기</span></button>
-                    <button className="back">돌아가기</button>
+                    <button className="back" onClick={onClose}>돌아가기</button>
                 </div>
             </div>
         </div>
