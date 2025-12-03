@@ -8,7 +8,7 @@ import { TurnOverUpsertRequest } from '@/generated/turn_over';
 import { useConfirm } from '@/hooks/useConfirm';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
-import LoadingScreen from '@/components/portal/ui/LoadingScreen';
+import TurnOverContentViewSkeleton from '@/components/portal/ui/skeleton/TurnOverContentViewSkeleton';
 
 import Footer from "@/components/portal/layouts/Footer"
 
@@ -172,11 +172,11 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
     }
   };
 
-  // 로딩 중이고 view 모드일 때 로딩 화면 표시
+  // 로딩 중이고 view 모드일 때 스켈레톤 UI 표시
   if (isLoading && currentViewMode === 'view') {
     return (
       <section>
-        <LoadingScreen />
+        <TurnOverContentViewSkeleton />
         <Footer/>
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       </section>

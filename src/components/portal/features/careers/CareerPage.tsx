@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import CareerSidebar from './CareerSidebar';
-import CareerIntegration from './CareerIntegration';
+import CareerContent from './CareerContent';
 import { useUser } from '@/hooks/useUser';
 import { useResumeDetails } from '@/hooks/useResumeDetails';
 import { ResumeDetail } from '@/generated/common';
-import CareerContentView from './CareerContentView';
-import CareerContentEdit from './CareerContentEdit';
-import CareerContentCreate from './CareerContentCreate';
-import LoadingScreen from '@/components/portal/ui/LoadingScreen';
 
-import Footer from "@/components/portal/layouts/Footer"
+type ViewMode = 'home' | 'view' | 'edit';
 
 interface CareerPageProps {
   initialResumeId?: string;
@@ -38,15 +34,11 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
 
   // 선택된 이력서
   const [selectedResumeDetail, setSelectedResumeDetail] = useState<ResumeDetail | null>(null);
-  
-  // 편집 모드 상태
-  // initialResumeId가 있으면 초기 상태를 바로 설정하여 홈 화면이 먼저 보이는 것을 방지
-  const [isEditMode, setIsEditMode] = useState(initialEditMode);
-  const [isCreateMode, setIsCreateMode] = useState(false);
+  const [isNewResume, setIsNewResume] = useState(false);
+  // initialResumeId가 있으면 초기 viewMode를 바로 설정하여 홈 화면이 먼저 보이는 것을 방지
+  const [viewMode, setViewMode] = useState<ViewMode>(initialResumeId ? (initialEditMode ? 'edit' : 'view') : 'home');
+  const [previousMode, setPreviousMode] = useState<ViewMode>('home'); // edit로 들어가기 전 모드 저장
   const [isLoadingDetail, setIsLoadingDetail] = useState(!!initialResumeId); // 초기 로딩 상태
-
-  // 편집 모드 진입 위치 추적 ('home' | 'view')
-  const [editFrom, setEditFrom] = useState<'home' | 'view'>('view');
 
   // 초기 로드 여부를 추적하는 ref
   const userFetchAttempted = useRef(false);
@@ -75,23 +67,30 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // URL 파라미터로 초기 상태 설정 (resumeDetails가 로드된 후에만 실행)
+  // URL 파라미터로 초기 상태 설정
   useEffect(() => {
-    if (initialResumeId && resumeDetails.length > 0) {
+    if (initialResumeId) {
+      // 이미 같은 이력서가 선택되어 있고 편집 모드도 같으면 업데이트하지 않음
+      if (selectedResumeDetail?.id === initialResumeId && viewMode === (initialEditMode ? 'edit' : 'view')) {
+        setIsLoadingDetail(false);
+        return;
+      }
+      
       setIsLoadingDetail(true);
+      setViewMode(initialEditMode ? 'edit' : 'view');
+      setPreviousMode(initialEditMode ? 'view' : 'home');
+      
+      // resumeDetails에서 해당 id의 데이터를 찾아서 바로 표시
       const resume = resumeDetails.find(r => r.id === initialResumeId);
       if (resume) {
-        // 이미 같은 이력서가 선택되어 있고 편집 모드도 같으면 업데이트하지 않음
-        if (selectedResumeDetail?.id === resume.id && isEditMode === initialEditMode) {
-          setIsLoadingDetail(false);
-          return;
-        }
         setSelectedResumeDetail(resume);
-        setIsEditMode(initialEditMode);
-        setEditFrom(initialEditMode ? 'view' : 'view');
+        setIsNewResume(false);
+        setIsLoadingDetail(false);
+      } else if (resumeDetails.length > 0) {
+        // resumeDetails가 로드되었지만 해당 id를 찾지 못한 경우
+        setIsLoadingDetail(false);
       }
-      setIsLoadingDetail(false);
-    } else if (!initialResumeId) {
+    } else {
       setIsLoadingDetail(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,51 +113,46 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
 
   // 이력서 상세 보기 (View 모드)
   const viewResumeDetail = (resumeDetail: ResumeDetail) => {
-    setSelectedResumeDetail(resumeDetail);
-    setIsEditMode(false);
+    setViewMode('view');
     router.push(`/careers/${resumeDetail.id}`);
+    // resumeDetails에서 해당 id의 데이터를 찾아서 바로 표시 (API 조회 없이)
+    const foundResume = resumeDetails.find(r => r.id === resumeDetail.id);
+    if (foundResume) {
+      setSelectedResumeDetail(foundResume);
+      setIsNewResume(false);
+    }
   };
 
   // 이력서 편집 (Edit 모드) - Home에서 진입
   const editResumeDetail = (resumeDetail: ResumeDetail) => {
-    setSelectedResumeDetail(resumeDetail);
-    setIsEditMode(true);
-    setEditFrom('home'); // Home에서 왔음을 기록
+    setPreviousMode('home');
+    setViewMode('edit');
     router.push(`/careers/${resumeDetail.id}/edit`);
-  };
-
-  // 편집 모드 토글 - View에서 진입
-  const toggleEditMode = () => {
-    if (selectedResumeDetail) {
-      setIsEditMode(true);
-      setEditFrom('view'); // View에서 왔음을 기록
-      router.push(`/careers/${selectedResumeDetail.id}/edit`);
+    // resumeDetails에서 해당 id의 데이터를 찾아서 바로 표시 (API 조회 없이)
+    const foundResume = resumeDetails.find(r => r.id === resumeDetail.id);
+    if (foundResume) {
+      setSelectedResumeDetail(foundResume);
+      setIsNewResume(false);
     }
   };
 
   // 편집 완료 (저장 후 View 모드로 전환)
-  const handleEditComplete = async () => {
-    setIsEditMode(false);
+  const handleSave = async () => {
+    // CareerContentEdit가 내부에서 저장을 처리하므로 여기서는 목록만 새로고침
     forceUpdateAfterSave.current = true; // 강제 업데이트 플래그 설정
     await refreshResumeDetails();
     resumeDetailsFetched.current = true; // 패칭 완료 플래그 유지
-    if (selectedResumeDetail) {
-      router.push(`/careers/${selectedResumeDetail.id}`);
-    }
   };
 
   // 편집 취소 (이전 화면으로 복귀)
-  const handleEditCancel = () => {
-    if (editFrom === 'home') {
-      // Home에서 왔으면 Home으로 복귀
-      goHome();
-    } else {
-      // View에서 왔으면 View 모드로 전환
-      setIsEditMode(false);
-      setIsCreateMode(false);
-      if (selectedResumeDetail) {
-        router.push(`/careers/${selectedResumeDetail.id}`);
-      }
+  const handleCancelEdit = () => {
+    if (previousMode === 'home') {
+      setSelectedResumeDetail(null);
+      setIsNewResume(false);
+      router.push('/careers');
+    } else if (selectedResumeDetail?.id) {
+      setViewMode('view');
+      router.push(`/careers/${selectedResumeDetail.id}`);
     }
   };
 
@@ -171,47 +165,39 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
 
   // 이력서 홈으로 이동
   const goHome = () => {
+    setViewMode('home');
     setSelectedResumeDetail(null);
-    setIsEditMode(false);
-    setIsLoadingDetail(false);
+    setIsNewResume(false);
     router.push('/careers');
   };
 
   // 이력서 생성 모드
   const handleResumeCreated = () => {
-    setIsCreateMode(true);
+    setSelectedResumeDetail(null);
+    setIsNewResume(true);
+    setViewMode('edit');
+    // 새로 생성하는 경우 URL은 변경하지 않음 (아직 id가 없음)
   };
 
-  // 이력서 생성 완료 후 모드 종료
-  const handleResumeCreatedSuccess = async (resumeId?: string) => {
-    setIsEditMode(false);
-    setIsCreateMode(false);
-    await refreshResumeDetails();
-    resumeDetailsFetched.current = true; // 패칭 완료 플래그 유지
-    // 생성된 이력서가 있으면 해당 페이지로 이동
-    if (resumeId) {
-      router.push(`/careers/${resumeId}`);
+  // 저장 후 모드 변경
+  const handleSaveComplete = (mode: ViewMode) => {
+    // mode가 'edit'이 아닌 경우에만 viewMode 업데이트
+    if (mode !== 'edit') {
+      setViewMode(mode);
+      setPreviousMode(mode);
     }
   };
 
-  // 데이터 로딩 중이면 로딩 화면 표시 (홈 화면이 먼저 보이는 것을 방지)
-  if (isLoadingDetail) {
-    return (
-      <main>
-        <CareerSidebar 
-          resumeDetails={resumeDetails}
-          selectedResumeDetail={selectedResumeDetail || null}
-          onResumeSelect={viewResumeDetail}
-          onResumeCreated={handleResumeCreated}
-          onGoHome={goHome}
-          isLoading={isLoadingResumes}
-        />
-        <LoadingScreen />
-      </main>
-    );
-  }
+  // edit 모드로 진입 (이전 모드 저장)
+  const handleEnterEdit = (fromMode: ViewMode) => {
+    if (selectedResumeDetail?.id) {
+      setPreviousMode(fromMode);
+      setViewMode('edit');
+      router.push(`/careers/${selectedResumeDetail.id}/edit`);
+    }
+  };
 
-  // 메인 뷰
+
   return (
     <main>
       <CareerSidebar 
@@ -222,64 +208,37 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
         onGoHome={goHome}
         isLoading={isLoadingResumes}
       />
-      
-      {/* 이력서 홈 (목록) */}
-      {!selectedResumeDetail && !isCreateMode && (
-        <CareerIntegration 
-          resumeDetails={resumeDetails}
-          onView={viewResumeDetail}
-          onEdit={editResumeDetail}
-          duplicateResume={(resumeId) => duplicateResume(resumeId, handleDeleteSuccess)}
-          deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}
-          exportPDF={exportPDF}
-          copyURL={copyURL}
-          calculateTotalCareer={calculateTotalCareer}
-          changeDefault={changeDefault}
-          isLoading={isLoadingResumes}
-        />
-      )}
-      
-      {/* 이력서 상세 보기 (View 모드) */}
-      {selectedResumeDetail && !isEditMode && !isCreateMode && (
-        <section>
-          <CareerContentView 
-            selectedResumeDetail={selectedResumeDetail}
-            onEdit={toggleEditMode}
-            duplicateResume={(resumeId) => duplicateResume(resumeId, handleDeleteSuccess)}
-            deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}
-            exportPDF={exportPDF}
-            copyURL={copyURL}
-            changeDefault={changeDefault}
-          />
-          <Footer/>
-        </section>
-      )}
-      
-      {/* 이력서 편집 (Edit 모드) */}
-      {selectedResumeDetail && isEditMode && !isCreateMode && (
-        <div style={{ 
-          flex: 1, 
-          display: 'flex', 
-          flexDirection: 'column',
-          overflow: 'hidden'
-        }}>
-          <CareerContentEdit 
-            selectedResumeDetail={selectedResumeDetail}
-            onSave={handleEditComplete}
-            onCancel={handleEditCancel}
-          />
-          <Footer/>
-        </div>
-      )}
-      {/* 이력서 생성 모달 */}
-      {
-        isCreateMode && (
-          <CareerContentCreate
-            onCancel={handleEditCancel}
-            onSuccess={handleResumeCreatedSuccess}
-          />
-        )
-      }
+      <CareerContent 
+        selectedResumeDetail={selectedResumeDetail} 
+        resumeDetails={resumeDetails}
+        isNewResume={isNewResume}
+        viewMode={viewMode}
+        isLoading={isLoadingResumes || isLoadingDetail}
+        onResumeSelect={(id) => {
+          const resume = resumeDetails.find(r => r.id === id);
+          if (resume) {
+            viewResumeDetail(resume);
+          }
+        }} 
+        onResumeSelectAndEdit={(id) => {
+          const resume = resumeDetails.find(r => r.id === id);
+          if (resume) {
+            editResumeDetail(resume);
+          }
+        }}
+        onSave={handleSave} 
+        onDuplicate={(id) => duplicateResume(id, handleDeleteSuccess)} 
+        onDelete={(id) => deleteResume(id, handleDeleteSuccess)}
+        onEnterEdit={handleEnterEdit}
+        onCancelEdit={handleCancelEdit}
+        onSaveComplete={handleSaveComplete}
+        duplicateResume={(resumeId) => duplicateResume(resumeId, handleDeleteSuccess)}
+        deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}
+        exportPDF={exportPDF}
+        copyURL={copyURL}
+        changeDefault={changeDefault}
+        calculateTotalCareer={calculateTotalCareer}
+      />
     </main>
   );
 };

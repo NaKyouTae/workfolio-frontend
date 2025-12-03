@@ -11,9 +11,11 @@ import { normalizeEnumValue } from '@/utils/commonUtils';
 import DateUtil from '@/utils/DateUtil';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
+import CareerContentViewSkeleton from '@/components/portal/ui/skeleton/CareerContentViewSkeleton';
 
 interface CareerContentViewProps {
   selectedResumeDetail: ResumeDetail | null;
+  isLoading?: boolean;
   onEdit: () => void;
   duplicateResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   deleteResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
@@ -28,6 +30,7 @@ interface CareerContentViewProps {
  */
 const CareerContentView: React.FC<CareerContentViewProps> = ({ 
   selectedResumeDetail, 
+  isLoading = false,
   onEdit, 
   duplicateResume,
   deleteResume,
@@ -38,6 +41,10 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   // 비공개 정보 보기 상태
   const [showHidden, setShowHidden] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  if (isLoading) {
+    return <CareerContentViewSkeleton />;
+  }
 
   // 편집 핸들러
   const handleEdit = () => {

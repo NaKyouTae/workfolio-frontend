@@ -40,7 +40,7 @@ const TurnOverContentViewSkeleton: React.FC = () => {
                   className="skeleton-item"
                   style={{
                     height: '32px',
-                    width: '200px',
+                    width: '33.3%',
                     borderRadius: '4px 4px 0 0',
                     marginBottom: '-1px',
                   }}
@@ -177,3 +177,4 @@ const TurnOverContentViewSkeleton: React.FC = () => {
 };
 
 export default TurnOverContentViewSkeleton;
+

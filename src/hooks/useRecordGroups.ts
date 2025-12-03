@@ -54,14 +54,16 @@ export const useRecordGroups = () => {
             // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
             // 로그인하지 않은 경우에만 샘플 데이터 사용
             // ============================================
-            const { ownedGroups: sampleOwnedGroups } = getSampleRecordGroups();
+            const { ownedGroups: sampleOwnedGroups, sharedGroups: sampleSharedGroups } = getSampleRecordGroups();
             const sampleAllGroupIds = [
                 ...sampleOwnedGroups.map((group: RecordGroup) => group.id),
+                ...sampleSharedGroups.map((group: RecordGroup) => group.id),
             ];
             
             // 샘플 데이터 설정
             initializeGroups(sampleAllGroupIds);
             setOwnedRecordGroups(sampleOwnedGroups);
+            setSharedRecordGroups(sampleSharedGroups);
             // ============================================
             setIsLoading(false);
             return;

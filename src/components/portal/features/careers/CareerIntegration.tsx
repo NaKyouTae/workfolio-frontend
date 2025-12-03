@@ -15,8 +15,8 @@ interface CareerIntegrationProps {
   onEdit: (resume: ResumeDetail) => void;
   duplicateResume: (resumeId?: string) => Promise<void>;
   deleteResume: (resumeId?: string) => Promise<void>;
-  exportPDF: (resumeId?: string) => Promise<void>;
-  copyURL: (publicId?: string) => Promise<void>;
+  // exportPDF: (resumeId?: string) => Promise<void>;
+  // copyURL: (publicId?: string) => Promise<void>;
   calculateTotalCareer: (resume: ResumeDetail) => string;
   changeDefault: (resumeId?: string) => Promise<void>;
   isLoading?: boolean;

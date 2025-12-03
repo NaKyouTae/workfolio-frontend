@@ -6,7 +6,7 @@ import TurnOverChallengeView from './view/TurnOverChallengeView';
 import TurnOverContentViewHeader from './TurnOverContentViewHeader';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
 import FloatingNavigation, { FloatingNavigationItem } from '@/components/portal/ui/FloatingNavigation';
-import LoadingScreen from '@/components/portal/ui/LoadingScreen';
+import TurnOverContentViewSkeleton from '@/components/portal/ui/skeleton/TurnOverContentViewSkeleton';
 
 interface TurnOversContentViewProps {
   selectedTurnOver: TurnOverDetail | null;
@@ -67,11 +67,7 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
   }, [updateNavigationItems]);
 
   if (isLoading) {
-    return (
-      <div className="contents">
-        <LoadingScreen />
-      </div>
-    );
+    return <TurnOverContentViewSkeleton />;
   }
 
   if (!selectedTurnOver) {
