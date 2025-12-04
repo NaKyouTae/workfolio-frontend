@@ -30,6 +30,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     }}
                 />
                 {/* End Google Tag Manager */}
+                {/* Google tag (gtag.js) */}
+                <script
+                    async
+                    src="https://www.googletagmanager.com/gtag/js?id=G-8J6C1GC0QS"
+                />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-8J6C1GC0QS');
+                        `,
+                    }}
+                />
+                {/* End Google tag (gtag.js) */}
                 <link rel="icon" type="image/svg+xml" href="../../public/assets/img/favicon.svg" />
             </head>
             <body>
