@@ -47,6 +47,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     }}
                 />
                 {/* End Google tag (gtag.js) */}
+                {/* Google AdSense */}
+                <script
+                    async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6008464533427245"
+                    crossOrigin="anonymous"
+                />
+                {/* End Google AdSense */}
                 <link rel="icon" type="image/svg+xml" href="../../public/assets/img/favicon.svg" />
             </head>
             <body>
