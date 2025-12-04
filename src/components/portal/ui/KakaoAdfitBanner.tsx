@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef } from "react";
 
 interface WindowWithAdfit extends Window {
     adfit?: {
+        request?: (unit: string) => void;
+        init?: () => void;
         destroy: (unit: string) => void;
     };
     [key: string]: unknown;
@@ -37,9 +39,15 @@ export function KakaoAdfitBanner({
     }, [unit]);
 
     useEffect(() => {
-        if (disabled || !unit) return;
+        if (disabled || !unit) {
+            if (!unit) {
+                console.warn("KakaoAdfitBanner: unit이 비어있습니다.");
+            }
+            return;
+        }
         if (!scriptElementWrapper.current) return;
 
+        console.log("KakaoAdfitBanner 초기화:", unit, "width:", width, "height:", height);
         const globalFunctionName = `handleAdFail_${unit}`;
         (window as unknown as WindowWithAdfit)[globalFunctionName] = triggerAdFail;
 
@@ -57,21 +65,58 @@ export function KakaoAdfitBanner({
         // 이미 스크립트가 로드되어 있는지 확인
         const existingScript = document.querySelector('script[src="https://t1.daumcdn.net/kas/static/ba.min.js"]');
         
-        if (!existingScript) {
-            // 스크립트가 없으면 새로 로드 (카카오 애드핏이 자동으로 ins 태그를 찾아서 초기화)
+        const initializeAd = () => {
+            const globalAdfit = (window as unknown as WindowWithAdfit).adfit;
+            if (globalAdfit) {
+                // 카카오 애드핏이 이미 로드되어 있으면 명시적으로 광고 초기화
+                if (globalAdfit.request) {
+                    console.log("카카오 애드핏 광고 초기화 시도:", unit);
+                    globalAdfit.request(unit);
+                } else if (globalAdfit.init) {
+                    console.log("카카오 애드핏 init 호출:", unit);
+                    globalAdfit.init();
+                } else {
+                    // adfit 객체는 있지만 request나 init 메서드가 없는 경우
+                    // 카카오 애드핏이 자동으로 ins 태그를 찾을 때까지 대기
+                    console.log("카카오 애드핏 객체는 존재하지만 초기화 메서드를 찾을 수 없음:", unit);
+                }
+            } else {
+                console.warn("카카오 애드핏 객체가 아직 로드되지 않음:", unit);
+            }
+        };
+        
+        let timeoutId: NodeJS.Timeout | null = null;
+        
+        if (existingScript) {
+            // 스크립트가 이미 로드되어 있으면 바로 광고 초기화 시도
+            // 약간의 지연을 두어 DOM이 완전히 렌더링된 후 초기화
+            timeoutId = setTimeout(() => {
+                initializeAd();
+            }, 100);
+        } else {
+            // 스크립트가 없으면 새로 로드
             const script = document.createElement("script");
             script.setAttribute("src", "https://t1.daumcdn.net/kas/static/ba.min.js");
+            
+            script.onload = () => {
+                // 스크립트 로드 완료 후 광고 초기화
+                initializeAd();
+            };
+            
             scriptElementWrapper.current.appendChild(script);
         }
 
         return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
             const globalAdfit = (window as unknown as WindowWithAdfit).adfit;
             if (globalAdfit && globalAdfit.destroy) {
                 globalAdfit.destroy(unit);
             }
             delete (window as unknown as WindowWithAdfit)[globalFunctionName];
         };
-    }, [unit, disabled, forceFail, triggerAdFail]);
+    }, [unit, disabled, forceFail, triggerAdFail, width, height]);
 
     return (
         <div ref={scriptElementWrapper}>
