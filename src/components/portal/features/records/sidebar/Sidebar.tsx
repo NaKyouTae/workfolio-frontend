@@ -7,6 +7,9 @@ import SidebarButton from './SidebarButton';
 import SidebarConfig from './SidebarConfig';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { useShallow } from 'zustand/react/shallow';
+import { KakaoAdfitBanner } from '@/components/portal/ui/KakaoAdfitBanner';
+
+const KAKAO_ADFIT_RECORD_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_RECORD_KEY;
 
 interface SidebarProps {
     onConfigToggle: () => void;
@@ -51,6 +54,9 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
                     recordGroups={sharedRecordGroups}
                     onRefresh={refreshRecordGroups}
                 />
+            </div>
+            <div>
+                <KakaoAdfitBanner unit={KAKAO_ADFIT_RECORD_KEY || ''} width={320} height={100} disabled={false} />
             </div>
         </aside>
     );
