@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
                 />
             </div>
             <div>
-                <KakaoAdfitBanner unit={KAKAO_ADFIT_RECORD_KEY || ''} width={320} height={100} disabled={false} />
+                <KakaoAdfitBanner unit={KAKAO_ADFIT_RECORD_KEY || ''} width={297} height={100} disabled={false} />
             </div>
         </aside>
     );
