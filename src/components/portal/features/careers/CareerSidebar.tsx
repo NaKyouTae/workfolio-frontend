@@ -73,7 +73,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({ resumeDetails, selectedRe
         </div>
       </div>
       <div>
-        <KakaoAdfitBanner unit={NEXT_PUBLIC_KAKAO_ADFIT_CAREERS_KEY || ''} width={250} height={250} disabled={false} />
+        {/* <KakaoAdfitBanner unit={NEXT_PUBLIC_KAKAO_ADFIT_CAREERS_KEY || ''} width={250} height={250} disabled={false} /> */}
       </div>
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </aside>
