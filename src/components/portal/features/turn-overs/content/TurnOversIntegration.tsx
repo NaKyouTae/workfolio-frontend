@@ -71,7 +71,7 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
       }, 0);
       
       const avgDays = totalDays / completedTurnOvers.length;
-      console.log('avgDays', avgDays);
+      
       avgDuration = {
         months: Math.floor(avgDays / 30),
         days: Math.round(avgDays % 30)
