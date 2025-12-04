@@ -3,9 +3,9 @@ import { TurnOver, TurnOverDetail } from '@/generated/common';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 import SidebarListSkeleton from '@/components/portal/ui/skeleton/SidebarListSkeleton';
-import { KakaoAdfitBanner } from '../../ui/KakaoAdfitBanner';
+// import { KakaoAdfitBanner } from '../../ui/KakaoAdfitBanner';
 
-const NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY;
+// const NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY;
 
 interface TurnOversSidebarProps {
   turnOvers: TurnOver[];

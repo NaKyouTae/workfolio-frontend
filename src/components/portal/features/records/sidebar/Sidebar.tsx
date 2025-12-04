@@ -7,9 +7,9 @@ import SidebarButton from './SidebarButton';
 import SidebarConfig from './SidebarConfig';
 import { useRecordGroupStore } from '@/store/recordGroupStore';
 import { useShallow } from 'zustand/react/shallow';
-import { KakaoAdfitBanner } from '@/components/portal/ui/KakaoAdfitBanner';
+// import { KakaoAdfitBanner } from '@/components/portal/ui/KakaoAdfitBanner';
 
-const NEXT_PUBLIC_KAKAO_ADFIT_RECORDS_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_RECORDS_KEY;
+// const NEXT_PUBLIC_KAKAO_ADFIT_RECORDS_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_RECORDS_KEY;
 
 interface SidebarProps {
     onConfigToggle: () => void;
