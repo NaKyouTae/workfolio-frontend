@@ -247,6 +247,34 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
 
   return (
     <>
+        {/* 이직 기간 회고 */}
+        <div ref={finalChoiceRef} className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>이직 기간 회고</h3>
+                </div>
+            </div>
+            <ul className="edit-list type1">
+                <li>
+                    <p>이직 시작일</p>
+                    <DatePicker
+                      value={DateUtil.formatTimestamp(endedAt || 0)}
+                      onChange={(date) => setEndedAt(DateTime.fromISO(date).toMillis())}
+                      required={false}
+                      readOnly
+                    />
+                </li>
+                <li>
+                    <p>이직 종료일</p>
+                    <DatePicker
+                      value={DateUtil.formatTimestamp(endedAt || 0)}
+                      onChange={(date) => setEndedAt(DateTime.fromISO(date).toMillis())}
+                      required={false}
+                    />
+                </li>
+            </ul>
+        </div>
+
         {/* 최종 선택 */}
         <div ref={finalChoiceRef} className="cont-box">
             <div className="cont-tit">
@@ -255,14 +283,6 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
                 </div>
             </div>
             <ul className="edit-list type1">
-                <li>
-                    <p>종료일</p>
-                    <DatePicker
-                      value={DateUtil.formatTimestamp(endedAt || 0)}
-                      onChange={(date) => setEndedAt(DateTime.fromISO(date).toMillis())}
-                      required={false}
-                    />
-                </li>
                 <li>
                     <p>회사명</p>
                     <Dropdown

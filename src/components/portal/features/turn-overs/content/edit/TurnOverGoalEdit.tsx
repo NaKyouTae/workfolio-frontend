@@ -206,6 +206,33 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
 
   return (
     <>
+        {/* 이직 기간 설정 */}
+        <div className="cont-box">
+            <div className="cont-tit">
+                <div>
+                    <h3>이직 기간 설정</h3>
+                </div>
+            </div>
+            <ul className="edit-list">
+                <li>
+                    <p>이직 시작일</p>
+                    <DatePicker
+                      value={DateUtil.formatTimestamp(startedAt || 0)}
+                      onChange={(date) => setStartedAt(DateTime.fromISO(date).toMillis())}
+                      required={false}
+                    />
+                </li>
+                <li>
+                    <p>목표 종료일</p>
+                    <DatePicker
+                      value={DateUtil.formatTimestamp(startedAt || 0)}
+                      onChange={(date) => setStartedAt(DateTime.fromISO(date).toMillis())}
+                      required={false}
+                    />
+                </li>
+            </ul>
+        </div>
+    
         {/* 이직 방향 설정 */}
         <div ref={directionRef} className="cont-box">
             <div className="cont-tit">
@@ -215,14 +242,6 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
                 </div>
             </div>
             <ul className="edit-list type2">
-                <li>
-                    <p>시작일</p>
-                    <DatePicker
-                      value={DateUtil.formatTimestamp(startedAt || 0)}
-                      onChange={(date) => setStartedAt(DateTime.fromISO(date).toMillis())}
-                      required={false}
-                    />
-                </li>
                 <li>
                     <p>이직 사유</p>
                     <Input 
