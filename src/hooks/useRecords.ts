@@ -22,10 +22,12 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
     const [forceRefreshTrigger, setForceRefreshTrigger] = useState(0);
     
     // ✅ checkedGroups Set을 직접 구독하여 변경사항을 즉시 감지
-    const { checkedGroups, recordRefreshTrigger } = useRecordGroupStore(
+    const { checkedGroups, recordRefreshTrigger, sampleRecords, setSampleRecords } = useRecordGroupStore(
         useShallow((state) => ({
             checkedGroups: state.checkedGroups,
-            recordRefreshTrigger: state.recordRefreshTrigger
+            recordRefreshTrigger: state.recordRefreshTrigger,
+            sampleRecords: state.sampleRecords,
+            setSampleRecords: state.setSampleRecords
         }))
     );
     
@@ -75,19 +77,26 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
     // ============================================
     // TODO: 샘플 데이터 관련 함수 - 추후 제거 예정
     // ============================================
+    // 샘플 레코드 데이터를 한 번만 생성하고 캐시에서 재사용
     const getSampleRecords = useCallback((): Record[] => {
-        const sampleRecordGroups = createSampleRecordGroups();
-        const sampleRecords = createSampleRecords(sampleRecordGroups);
-        
-        // 체크된 그룹에 해당하는 샘플 레코드만 필터링
-        if (checkedGroupIds.length === 0) {
-            return sampleRecords as unknown as Record[];
+        // 캐시된 샘플 레코드가 없으면 생성
+        if (sampleRecords.length === 0) {
+            const sampleRecordGroups = createSampleRecordGroups();
+            const newSampleRecords = createSampleRecords(sampleRecordGroups) as unknown as Record[];
+            setSampleRecords(newSampleRecords);
+            return newSampleRecords;
         }
         
-        return sampleRecords.filter((record: unknown) => 
-            checkedGroupIds.includes((record as { recordGroup?: { id?: string } }).recordGroup?.id || '')
-        ) as unknown as Record[];
-    }, [checkedGroupIds]);
+        // 캐시된 샘플 레코드 사용 (재생성하지 않음)
+        // 체크된 그룹에 해당하는 샘플 레코드만 필터링
+        if (checkedGroupIds.length === 0) {
+            return sampleRecords;
+        }
+        
+        return sampleRecords.filter((record: Record) => 
+            checkedGroupIds.includes(record.recordGroup?.id || '')
+        );
+    }, [checkedGroupIds, sampleRecords, setSampleRecords]);
     // ============================================
 
     // 통합된 데이터 로드 useEffect
@@ -173,11 +182,14 @@ export const useRecords = (recordType: CalendarViewType = 'weekly', month?: numb
             });
     }, [apiParams, checkedGroupIds, forceRefreshTrigger, getSampleRecords]);
 
-    // recordRefreshTrigger 변경 시 새로고침
+    // recordRefreshTrigger 변경 시 새로고침 (로그인한 경우에만)
+    // 로그인하지 않은 경우 샘플 데이터는 재생성하지 않음
     useEffect(() => {
-        if (recordRefreshTrigger > 0) {
+        if (recordRefreshTrigger > 0 && isLoggedIn()) {
             refreshRecords();
         }
+        // 로그인하지 않은 경우 checkedGroupIds 변경 시 필터링만 수행
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [recordRefreshTrigger, refreshRecords]);
 
     // 키워드로 레코드 검색
