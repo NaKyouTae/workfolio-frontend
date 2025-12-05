@@ -6,6 +6,12 @@ if command -v protoc &> /dev/null; then
   exit 0
 fi
 
+# 캐시된 protoc가 있으면 사용 (Vercel 빌드 캐시 활용)
+if [ -f "/tmp/protoc/bin/protoc" ] && [ -x "/tmp/protoc/bin/protoc" ]; then
+  echo "Using cached protoc from /tmp/protoc/bin/protoc"
+  exit 0
+fi
+
 # OS에 따라 적절한 바이너리 다운로드
 OS=$(uname -s)
 ARCH=$(uname -m)
