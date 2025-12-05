@@ -1,278 +1,708 @@
 .infoPage {
-  display: block;
-  min-height: 100vh;
-  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-  padding: 2rem 0;
+    width: 100%;
+    min-height: 100vh;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
+/* Top Section - Hero with Speech Bubbles */
+.topSection {
+    width: 100%;
+    height: calc(100vh - 88px);
+    min-height: calc(100vh - 88px);
+    background: #ffffff;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    box-sizing: border-box;
 }
 
-/* Hero Section */
-.hero {
-  text-align: center;
-  padding: 4rem 0 6rem;
-  border-bottom: 1px solid #e9ecef;
-  margin-bottom: 4rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.speechBubblesContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 
-.heroTitle {
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: #212529;
-  margin-bottom: 1rem;
-  letter-spacing: -0.02em;
+.speechBubbles {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.heroSubtitle {
-  font-size: 1.5rem;
-  color: #495057;
-  margin-bottom: 1.5rem;
-  font-weight: 500;
+.speechBubble {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 400px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.heroDescription {
-  font-size: 1.125rem;
-  color: #6c757d;
-  line-height: 1.8;
-  max-width: 800px;
-  margin: 0 auto;
+.avatar {
+    font-size: 2.5rem;
+    flex-shrink: 0;
 }
 
-/* Features Section */
-.features {
-  margin-bottom: 6rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.speechBubble p {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: #212529;
 }
 
-.sectionTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #212529;
-  text-align: center;
-  margin-bottom: 3rem;
-  letter-spacing: -0.02em;
+.logoSection {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
-.featureGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-  width: 100%;
-  max-width: 1200px;
+.logo {
+    margin-bottom: 1rem;
 }
 
-.featureCard {
-  background: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  padding: 2rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.tagline {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin: 0;
 }
 
-.featureCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-color: #dee2e6;
+.highlight {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
 }
 
-.featureIcon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  text-align: center;
+.highlightText {
+    background-color: #ffc107;
+    color: #fff;
 }
 
-.featureTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #212529;
-  margin-bottom: 1rem;
-  text-align: center;
+.highlightYellow {
+    color: #ffc107;
 }
 
-.featureDescription {
-  font-size: 1rem;
-  color: #6c757d;
-  line-height: 1.7;
-  text-align: center;
+.middleHeader {
+    text-align: center;
+    margin-top: 6rem;
 }
 
-/* Benefits Section */
-.benefits {
-  margin-bottom: 6rem;
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 3rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.taglineWhite {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin: 0;
+    text-align: center;
+    color: #fff;
 }
 
-.benefitList {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  width: 100%;
-  max-width: 800px;
+.middleTitleWhite {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+    text-align: center;
+    color: #fff;
 }
 
-.benefitItem {
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid #e9ecef;
-  text-align: center;
+/* Middle Section - Black Background with White Block */
+.middleSection {
+    width: 100%;
+    height: calc(100vh - 88px);
+    min-height: calc(100vh - 88px);
+    background: #000000;
+    padding: 6rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    box-sizing: border-box;
 }
 
-.benefitItem:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+/* Scroll Section - Features with Points (가로 스크롤) */
+.scrollSection {
+    width: 100%;
+    min-height: calc(100vh - 88px); /* 헤더(88px) + 풋터(88px) 제외 */
+    background: #ffffff;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    box-sizing: border-box;
+    position: relative;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
-.benefitTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #212529;
-  margin-bottom: 1rem;
-  text-align: center;
+.whiteBlock {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 4rem;
+    max-width: 900px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.benefitItem p {
-  font-size: 1.125rem;
-  color: #495057;
-  line-height: 1.8;
-  margin: 0;
-  text-align: center;
+.middleTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 2rem;
+    line-height: 1.4;
 }
 
-/* CTA Section */
-.cta {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  color: #ffffff;
-  margin-bottom: 2rem;
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.middleContent {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
 }
 
-.ctaTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #ffffff;
+/* Comparison Container */
+.comparisonContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    max-width: 1200px;
+    width: 100%;
+    margin: 4rem auto 0;
 }
 
-.ctaDescription {
-  font-size: 1.25rem;
-  margin-bottom: 2.5rem;
-  opacity: 0.95;
-  color: #ffffff;
+.applicantColumn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 450px;
 }
 
-.ctaButtons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
+.applicantTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+    text-align: center;
 }
 
-.ctaButtonPrimary,
-.ctaButtonSecondary {
-  display: inline-block;
-  padding: 1rem 2.5rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  cursor: pointer;
+.applicantPoint {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #212529;
+    text-align: center;
 }
 
-.ctaButtonPrimary {
-  background: #ffffff;
-  color: #667eea;
+.applicantResult {
+    background: #6c757d;
+    padding: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    margin-top: 0.5rem;
 }
 
-.ctaButtonPrimary:hover {
-  background: #f8f9fa;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.applicantColumn:first-child .applicantPoint {
+    position: relative;
+    left: 1.7rem;
 }
 
-.ctaButtonSecondary {
-  background: transparent;
-  color: #ffffff;
-  border: 2px solid #ffffff;
+.applicantColumn:first-child .applicantResult {
+    position: relative;
+    left: 1.7rem;
 }
 
-.ctaButtonSecondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
+.applicantColumn:last-child .applicantPoint {
+    position: relative;
+    left: -1.7rem;
+    background: #fff3cd;
+    color: #212529;
+}
+
+.applicantColumn:last-child .applicantResult {
+    position: relative;
+    left: -1.7rem;
+    background: #ff9800;
+    color: #ffffff;
+}
+
+.vsBadge {
+    position: relative;
+    top: 11rem;
+    z-index: 1;
+}
+
+.middleText {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.middleText p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #495057;
+    margin: 0;
+}
+
+.middleFeatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.featureColumn ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.featureColumn li {
+    font-size: 1rem;
+    color: #495057;
+    line-height: 1.6;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.featureColumn li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #ffc107;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.middleButtons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.grayButton,
+.yellowButton {
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+}
+
+.grayButton {
+    background: #6c757d;
+    color: #ffffff;
+}
+
+.grayButton:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.yellowButton {
+    background: #ffc107;
+    color: #212529;
+}
+
+.yellowButton:hover {
+    background: #ffb300;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.pointsScrollContainer {
+    width: 100%;
+    height: calc(100vh - 88px);
+    position: relative;
+}
+
+.swiperContainer {
+    width: 100%;
+    height: 100%;
+}
+
+/* Swiper 슬라이드 스타일 */
+.swiperContainer :global(.swiper-slide) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+/* Swiper 네비게이션 버튼 */
+.swiperContainer :global(.swiper-button-next),
+.swiperContainer :global(.swiper-button-prev) {
+    color: #ffc107;
+}
+
+/* Swiper 페이지네이션 */
+.swiperContainer :global(.swiper-pagination-bullet-active) {
+    background: #ffc107;
+}
+
+/* Swiper 스크롤바 */
+.swiperContainer :global(.swiper-scrollbar-drag) {
+    background: #ffc107;
+}
+
+.pointCard {
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 88px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 0rem 2rem;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.pointCard img {
+    height: auto;
+    object-fit: contain;
+}
+
+.pointBadge {
+    display: inline-block;
+    background: #ffc107;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    width: fit-content;
+}
+
+.pointTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+    line-height: 1.4;
+    text-align: center;
+    max-width: 800px;
+}
+
+.pointDescription {
+    font-size: 1rem;
+    color: #6c757d;
+    line-height: 1.7;
+    margin: 0;
+    text-align: center;
+    max-width: 800px;
+}
+
+.pointMockup {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Calendar Mockup */
+.calendarMockup {
+    width: 100%;
+    max-width: 300px;
+}
+
+.calendarHeader {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendarDay {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Table Mockup */
+.tableMockup {
+    width: 100%;
+    max-width: 400px;
+}
+
+.tableRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tableRow:first-child {
+    font-weight: 600;
+    color: #212529;
+}
+
+.tableCell {
+    padding: 0.75rem;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #495057;
+    text-align: center;
+}
+
+.tableRow:first-child .tableCell {
+    background: #f8f9fa;
+}
+
+/* List Mockup */
+.listMockup {
+    width: 100%;
+    max-width: 300px;
+}
+
+.listItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.listItem input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.listItem span {
+    font-size: 0.875rem;
+    color: #495057;
+}
+
+/* Final Message */
+/* Final Message Section */
+.finalSection {
+    width: 100%;
+    height: 312px;
+    min-height: 312px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff8e1 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: end; /* 마지막 섹션은 end로 스냅 */
+    scroll-snap-stop: always;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.finalMessage {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 2rem;
+}
+
+.finalText {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.finalButton {
+    padding: 1.25rem 3rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: #ffc107;
+    color: #212529;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.finalButton:hover {
+    background: #ffb300;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .heroTitle {
-    font-size: 2.5rem;
-  }
+    .topSection {
+        padding: 2rem 1rem;
+        height: calc(100vh - 88px);
+        min-height: calc(100vh - 88px);
+    }
 
-  .heroSubtitle {
-    font-size: 1.25rem;
-  }
+    .speechBubble {
+        padding: 1rem 1.5rem;
+    }
 
-  .heroDescription {
-    font-size: 1rem;
-  }
+    .speechBubble p {
+        font-size: 1rem;
+    }
 
-  .sectionTitle {
-    font-size: 2rem;
-  }
+    .middleSection {
+        padding: 3rem 1rem;
+        height: calc(100vh - 88px);
+        min-height: calc(100vh - 88px);
+    }
 
-  .featureGrid {
-    grid-template-columns: 1fr;
-  }
+    .whiteBlock {
+        padding: 2rem;
+    }
 
-  .benefits {
-    padding: 2rem 1.5rem;
-  }
+    .middleTitle {
+        font-size: 1.75rem;
+    }
 
-  .cta {
-    padding: 3rem 1.5rem;
-  }
+    .middleFeatures {
+        grid-template-columns: 1fr;
+    }
 
-  .ctaTitle {
-    font-size: 2rem;
-  }
+    .middleText p {
+        font-size: 1rem;
+    }
 
-  .ctaDescription {
-    font-size: 1.125rem;
-  }
+    .middleButtons {
+        flex-direction: column;
+    }
 
-  .ctaButtons {
-    flex-direction: column;
-    align-items: stretch;
-  }
+    .grayButton,
+    .yellowButton {
+        width: 100%;
+        text-align: center;
+    }
 
-  .ctaButtonPrimary,
-  .ctaButtonSecondary {
-    width: 100%;
-  }
+    .bottomSection {
+        padding: 0;
+        height: calc(100vh - 88px);
+        min-height: calc(100vh - 88px);
+    }
+
+    .pointCard {
+        padding: 3rem 1.5rem;
+    }
+
+    .pointTitle {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .pointDescription {
+        text-align: center;
+    }
+
+    .finalText {
+        font-size: 1.25rem;
+    }
+
+    .finalButton {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .finalSection {
+        height: calc(100vh - 88px);
+        min-height: calc(100vh - 88px);
+    }
+
+    .finalMessage {
+        padding: 0 1rem;
+    }
+
+    .comparisonContainer {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+
+    .vsBadge {
+        width: 60px;
+        height: 60px;
+        font-size: 1.25rem;
+        margin-top: 0;
+        order: 2;
+    }
+
+    .applicantColumn {
+        max-width: 100%;
+    }
+
+    .applicantColumn:first-child {
+        order: 1;
+    }
+
+    .applicantColumn:last-child {
+        order: 3;
+    }
+
+    .applicantTitle {
+        font-size: 1.25rem;
+    }
+
+    .applicantPoint {
+        padding: 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    .applicantResult {
+        padding: 1.25rem;
+        font-size: 1.125rem;
+    }
 }
-

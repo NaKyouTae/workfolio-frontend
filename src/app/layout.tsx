@@ -1,25 +1,31 @@
-import Script from "next/script"
-import "../styles/globals.css"
-import "../../public/assets/css/reset.css"
-import "../../public/assets/css/font.css"
-import "../../public/assets/css/ico.css"
-import "../../public/assets/css/common.css"
-import "../../public/assets/css/style.css"
-import ConfirmDialogProvider from "@/components/portal/ui/ConfirmDialogProvider"
-import NotificationProvider from "@/components/portal/ui/NotificationProvider"
-import GoogleAnalytics from "@/components/portal/ui/GoogleAnalytics"
+import Script from "next/script";
+import "../styles/globals.css";
+import "../../public/assets/css/reset.css";
+import "../../public/assets/css/font.css";
+import "../../public/assets/css/ico.css";
+import "../../public/assets/css/common.css";
+import "../../public/assets/css/style.css";
+import ConfirmDialogProvider from "@/components/portal/ui/ConfirmDialogProvider";
+import NotificationProvider from "@/components/portal/ui/NotificationProvider";
+import GoogleAnalytics from "@/components/portal/ui/GoogleAnalytics";
 
 export const metadata = {
     title: "워크폴리오 - 나만의 기록장",
-    description: "일과 이력을 한곳에 쌓아두는 기록 플랫폼, 워크폴리오. 경험을 정리하고 커리어를 성장시켜 보세요.",
+    description:
+        "일과 이력을 한곳에 쌓아두는 기록 플랫폼, 워크폴리오. 경험을 정리하고 커리어를 성장시켜 보세요.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="ko">
-            <head>
+        <html lang="ko" suppressHydrationWarning>
+            <head suppressHydrationWarning>
+                <link rel="icon" type="image/svg+xml" href="../../public/assets/img/favicon.svg" />
+            </head>
+            <body>
                 {/* Google Tag Manager */}
-                <script
+                <Script
+                    id="google-tag-manager"
+                    strategy="afterInteractive"
                     dangerouslySetInnerHTML={{
                         __html: `
                             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -31,12 +37,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     }}
                 />
                 {/* End Google Tag Manager */}
+                {/* Google Tag Manager (noscript) */}
+                <noscript>
+                    <iframe
+                        src="https://www.googletagmanager.com/ns.html?id=GTM-54V8GMJ8"
+                        height="0"
+                        width="0"
+                        style={{ display: "none", visibility: "hidden" }}
+                    />
+                </noscript>
+                {/* End Google Tag Manager (noscript) */}
                 {/* Google tag (gtag.js) */}
-                <script
-                    async
+                <Script
                     src="https://www.googletagmanager.com/gtag/js?id=G-8J6C1GC0QS"
+                    strategy="afterInteractive"
                 />
-                <script
+                <Script
+                    id="google-analytics"
+                    strategy="afterInteractive"
                     dangerouslySetInnerHTML={{
                         __html: `
                             window.dataLayer = window.dataLayer || [];
@@ -48,25 +66,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 />
                 {/* End Google tag (gtag.js) */}
                 {/* Google AdSense */}
-                <script
-                    async
+                <Script
                     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6008464533427245"
+                    strategy="afterInteractive"
                     crossOrigin="anonymous"
                 />
                 {/* End Google AdSense */}
-                <link rel="icon" type="image/svg+xml" href="../../public/assets/img/favicon.svg" />
-            </head>
-            <body>
-                {/* Google Tag Manager (noscript) */}
-                <noscript>
-                    <iframe
-                        src="https://www.googletagmanager.com/ns.html?id=GTM-54V8GMJ8"
-                        height="0"
-                        width="0"
-                        style={{ display: 'none', visibility: 'hidden' }}
-                    />
-                </noscript>
-                {/* End Google Tag Manager (noscript) */}
                 <Script
                     id="microsoft-clarity"
                     strategy="afterInteractive"

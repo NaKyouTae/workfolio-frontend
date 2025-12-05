@@ -1,11 +1,11 @@
-import React, { useEffect, useCallback, useState } from 'react'
-import HttpMethod from "@/enums/HttpMethod"
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { useUser } from '@/hooks/useUser';
-import { isLoggedIn } from '@/utils/authUtils';
-import LoginModal from '@/components/portal/ui/LoginModal';
+import React, { useEffect, useCallback, useState } from "react";
+import HttpMethod from "@/enums/HttpMethod";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
+import { isLoggedIn } from "@/utils/authUtils";
+import LoginModal from "@/components/portal/ui/LoginModal";
 
 const Header = () => {
     const router = useRouter();
@@ -13,7 +13,7 @@ const Header = () => {
     const { user, isHydrated, fetchUser, logout: userLogout } = useUser();
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [hasInitialized, setHasInitialized] = useState(false);
-    
+
     // 로그인 상태 확인 및 유저 정보 가져오기 (한 번만 실행)
     useEffect(() => {
         if (!hasInitialized) {
@@ -23,53 +23,62 @@ const Header = () => {
             fetchUser();
         }
     }, [fetchUser, hasInitialized]);
-    
+
     const logout = async () => {
         try {
             // 카카오 로그아웃 요청
-            const data = await fetch('/api/logout', { method: HttpMethod.GET, credentials: "include" });
-            
+            const data = await fetch("/api/logout", {
+                method: HttpMethod.GET,
+                credentials: "include",
+            });
+
             if (data) {
                 userLogout(); // 유저 정보 클리어
-                
+
                 // 로그아웃 후 리다이렉트
-                window.location.href = 'http://localhost:3000';  // 로그아웃 후 리다이렉트
+                window.location.href = "http://localhost:3000"; // 로그아웃 후 리다이렉트
             } else {
-                console.error('카카오 로그아웃 실패:', data);
+                console.error("카카오 로그아웃 실패:", data);
             }
         } catch (error) {
-            console.error('로그아웃 중 오류 발생:', error);
+            console.error("로그아웃 중 오류 발생:", error);
         }
     };
-    
+
     const handleLogoClick = () => {
         // 이미 /records 페이지에 있으면 아무것도 안함 (불필요한 _rsc 요청 방지)
-        if (pathname !== '/records') {
-            router.push('/records');
+        if (pathname !== "/records") {
+            router.push("/records");
         }
     };
 
     // 🔥 메뉴 클릭 핸들러 - _rsc 요청 방지
-    const handleMenuClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
-        // 현재 경로와 같으면 아무것도 안함
-        if (pathname === path) {
-            e.preventDefault();
-            return;
-        }
-        
-        // 다른 경로면 Link 컴포넌트가 처리하도록 함
-        // (Link는 클라이언트 사이드 네비게이션을 처리)
-    }, [pathname]);
+    const handleMenuClick = useCallback(
+        (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+            // 현재 경로와 같으면 아무것도 안함
+            if (pathname === path) {
+                e.preventDefault();
+                return;
+            }
+
+            // 다른 경로면 Link 컴포넌트가 처리하도록 함
+            // (Link는 클라이언트 사이드 네비게이션을 처리)
+        },
+        [pathname]
+    );
 
     // 마이페이지 클릭 핸들러
-    const handleMypageClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-        if (!isLoggedIn()) {
-            e.preventDefault();
-            setShowLoginModal(true);
-            return;
-        }
-        handleMenuClick(e, '/mypage');
-    }, [handleMenuClick]);
+    const handleMypageClick = useCallback(
+        (e: React.MouseEvent<HTMLAnchorElement>) => {
+            if (!isLoggedIn()) {
+                e.preventDefault();
+                setShowLoginModal(true);
+                return;
+            }
+            handleMenuClick(e, "/mypage");
+        },
+        [handleMenuClick]
+    );
 
     // 로그인 버튼 클릭 핸들러
     const handleLoginClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -77,69 +86,90 @@ const Header = () => {
         setShowLoginModal(true);
     }, []);
 
+    // 워크폴리오 소개 클릭 핸들러
+    const handleInfoClick = useCallback(
+        (e: React.MouseEvent<HTMLAnchorElement>) => {
+            e.preventDefault();
+            if (pathname !== "/info") {
+                router.push("/info");
+            }
+        },
+        [router, pathname]
+    );
+
     return (
         <header>
-            <h1 style={{ cursor: 'pointer' }} onClick={handleLogoClick}>
-                <Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} />
+            <h1 style={{ cursor: "pointer" }} onClick={handleLogoClick}>
+                <Image src="/assets/img/logo/logo-kr.svg" alt="workfolio" width={174} height={50} />
             </h1>
             <div>
                 <ul className="menu">
-                    <li className={pathname.includes('/records') ? 'active' : ''}>
-                        <Link 
-                            href="/records" 
+                    <li className={pathname.includes("/records") ? "active" : ""}>
+                        <Link
+                            href="/records"
                             prefetch={false}
-                            onClick={(e) => handleMenuClick(e, '/records')}
+                            onClick={(e) => handleMenuClick(e, "/records")}
                         >
                             기록 관리
                         </Link>
                     </li>
-                    <li className={pathname.includes('/careers') ? 'active' : ''}>
+                    <li className={pathname.includes("/careers") ? "active" : ""}>
                         <Link
                             href="/careers"
                             prefetch={false}
-                            onClick={(e) => handleMenuClick(e, '/careers')}
+                            onClick={(e) => handleMenuClick(e, "/careers")}
                         >
                             이력 관리
                         </Link>
                     </li>
-                    <li className={pathname.includes('/turn-overs') ? 'active' : ''}>
-                        <Link 
-                            href="/turn-overs" 
+                    <li className={pathname.includes("/turn-overs") ? "active" : ""}>
+                        <Link
+                            href="/turn-overs"
                             prefetch={false}
-                            onClick={(e) => handleMenuClick(e, '/turn-overs')}
+                            onClick={(e) => handleMenuClick(e, "/turn-overs")}
                         >
                             이직 관리
                         </Link>
                     </li>
                 </ul>
-                {/* hydration이 완료된 후에만 UI 표시 (깜빡임 방지) */}
-                {isHydrated ? (
-                    user ? (
-                        <ul className="user">
+                {/* 서버와 클라이언트에서 동일한 구조 렌더링 (hydration 에러 방지) */}
+                <ul className="user">
+                    {isHydrated && user ? (
+                        <>
                             <li>{`${user.nickName} 님 반가워요 !`}</li>
-                            <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
                             <li>
-                                <Link 
-                                    href="/mypage" 
-                                    prefetch={false}
-                                    onClick={handleMypageClick}
-                                >
+                                <a onClick={handleInfoClick} style={{ cursor: "pointer" }}>
+                                    <i className="ic-rocket" />
+                                    워크폴리오 소개
+                                </a>
+                            </li>
+                            <li>
+                                <Link href="/mypage" prefetch={false} onClick={handleMypageClick}>
                                     마이페이지
                                 </Link>
                             </li>
-                            <li><a onClick={logout}>로그아웃</a></li>
-                        </ul>
+                            <li>
+                                <a onClick={logout}>로그아웃</a>
+                            </li>
+                        </>
                     ) : (
-                        <ul className="user">
-                            <li><a href="/info" target="_blank"><i className="ic-rocket" />워크폴리오 소개</a></li>
-                            <li><a onClick={handleLoginClick}>로그인</a></li>
-                        </ul>
-                    )
-                ) : null}
+                        <>
+                            <li>
+                                <a onClick={handleInfoClick} style={{ cursor: "pointer" }}>
+                                    <i className="ic-rocket" />
+                                    워크폴리오 소개
+                                </a>
+                            </li>
+                            <li>
+                                <a onClick={handleLoginClick}>로그인</a>
+                            </li>
+                        </>
+                    )}
+                </ul>
             </div>
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </header>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;

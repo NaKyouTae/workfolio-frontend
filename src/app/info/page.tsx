@@ -1,11 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import InfoContent from '@/components/portal/features/info/InfoContent';
+import React from "react";
+import InfoPage from "@/components/portal/features/info/InfoPage";
 
-export default function InfoPage() {
-  return (
-    <InfoContent />
-  );
+export default function Info() {
+    return <InfoPage />;
 }
-

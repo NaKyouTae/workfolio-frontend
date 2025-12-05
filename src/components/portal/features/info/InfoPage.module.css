@@ -1,0 +1,27 @@
+.infoPageContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.infoContentWrapper {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+/* /info 페이지에서만 header sticky 효과 제거 */
+.infoPageContainer > header {
+    position: static !important;
+    flex-shrink: 0;
+}
+
+/* footer 고정 */
+.infoPageContainer > footer {
+    flex-shrink: 0;
+}
