@@ -18,7 +18,7 @@ import "swiper/css/autoplay";
 import "swiper/css/mousewheel";
 
 const InfoContent: React.FC = () => {
-    const scrollSectionRef = useRef<HTMLElement>(null);
+    const scrollSectionRef = useRef<HTMLDivElement | null>(null);
     const swiperRef = useRef<SwiperType | null>(null);
 
     return (
@@ -131,7 +131,10 @@ const InfoContent: React.FC = () => {
                                 </li>
                             </ul>
                         </div>
-                        <div ref={scrollSectionRef} className="func">
+                        <div
+                            ref={scrollSectionRef as React.RefObject<HTMLDivElement | null>}
+                            className="func"
+                        >
                             <Swiper
                                 modules={[
                                     Navigation,
