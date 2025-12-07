@@ -35,8 +35,10 @@ const Header = () => {
             if (data) {
                 userLogout(); // 유저 정보 클리어
 
-                // 로그아웃 후 리다이렉트
-                window.location.href = "http://localhost:3000"; // 로그아웃 후 리다이렉트
+                // 로그아웃 후 리다이렉트 (현재 페이지의 프로토콜 사용)
+                const currentProtocol = window.location.protocol;
+                const currentHost = window.location.host;
+                window.location.href = `${currentProtocol}//${currentHost}`;
             } else {
                 console.error("카카오 로그아웃 실패:", data);
             }
@@ -100,7 +102,12 @@ const Header = () => {
     return (
         <header>
             <h1 style={{ cursor: "pointer" }} onClick={handleLogoClick}>
-                <Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={174} height={50} />
+                <Image
+                    src="/assets/img/logo/img-logo01.svg"
+                    alt="workfolio"
+                    width={174}
+                    height={50}
+                />
             </h1>
             <div>
                 <ul className="menu">

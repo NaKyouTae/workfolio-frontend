@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
+    // HTTP → HTTPS 강제 리다이렉트 (프로덕션 환경)
+    if (process.env.NODE_ENV === "production" && request.nextUrl.protocol === "http:") {
+        const httpsUrl = request.nextUrl.clone();
+        httpsUrl.protocol = "https:";
+        return NextResponse.redirect(httpsUrl, 301);
+    }
+
     // 루트 경로(/)로 접근하면 records로 리다이렉트
     if (request.nextUrl.pathname === "/") {
         return NextResponse.redirect(new URL("/records", request.url));
