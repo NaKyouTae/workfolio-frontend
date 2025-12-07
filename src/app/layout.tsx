@@ -13,14 +13,17 @@ export const metadata = {
     title: "워크폴리오 - 나만의 기록장",
     description:
         "일과 이력을 한곳에 쌓아두는 기록 플랫폼, 워크폴리오. 경험을 정리하고 커리어를 성장시켜 보세요.",
+    icons: {
+        icon: "/assets/img/favicon.svg",
+        shortcut: "/assets/img/favicon.ico",
+        apple: "/assets/img/favicon.svg",
+    },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="ko" suppressHydrationWarning>
-            <head suppressHydrationWarning>
-                <link rel="icon" type="image/svg+xml" href="../../public/assets/img/favicon.svg" />
-            </head>
+            <head suppressHydrationWarning>{/* favicon은 metadata에서 설정됨 */}</head>
             <body>
                 {/* Google Tag Manager */}
                 <Script
