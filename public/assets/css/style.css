@@ -568,3 +568,69 @@ article .tab-sticky {padding: 2.4rem 0 0; margin: -2.4rem 0 2rem; position: stic
 .error-wrap > div > p {text-align: center; font-size: 1.4rem; line-height: 1.6; font-weight: 500;}
 .error-wrap > div > span {text-align: center; font-size: 1.2rem; line-height: 1.6; color: var(--gray005);}
 .error-wrap > button {width: fit-content; height: 3.2rem; padding: 0 1.6rem; border-radius: .6rem; font-size: 1.2rem; font-weight: 500;}
+
+/* 소개 페이지 */
+main:has(.info-wrap), section:has(.info-wrap) {height: fit-content;}
+section:has(.info-wrap) footer {position: fixed; width: 100%; left: 0; bottom: 0; background-color: var(--white); z-index: 100;}
+.info-wrap {display: flex; flex-flow: column;}
+.info-wrap > div {width: 100%; min-height: calc(100vh - 6.4rem - 2.4rem); padding: 10rem 0;}
+
+.intro1 {display: flex; flex-flow: column; row-gap: 4.8rem; align-items: center; justify-content: center;}
+.intro1 .probl {position: relative;}
+.intro1 .probl > img {position: absolute; width: 6rem; height: 7.6rem; top: 3.2rem; left: -3.2rem;}
+.intro1 .probl > img:nth-child(2) {width: 7.2rem; height: 8.6rem; top: initial; bottom: 2.4rem; left: initial; right: -3.2rem;}
+.intro1 .probl > ul {display: flex; flex-flow: column; row-gap: 1.2rem;}
+.intro1 .probl > ul > li {width: 56rem; height: 5.6rem; border-radius: 2rem; background-color: var(--yellow002); display: flex; align-items: center; justify-content: center; font-size: 1.6rem;}
+.intro1 .probl > ul > li:nth-child(even) {background-color: var(--yellow001);}
+.intro1 .dots {display: flex; align-items: center; justify-content: center; row-gap: 1.4rem; flex-flow: column;}
+.intro1 .dots::before {content: ''; width: .4rem; height: .4rem; border-radius: 100%; background-color: var(--black);}
+.intro1 .dots::after {content: ''; width: .4rem; height: .4rem; border-radius: 100%; background-color: var(--black);}
+.intro1 .dots > span {width: .4rem; height: .4rem; border-radius: 100%; background-color: var(--black);}
+.intro1 .resolve {display: flex; flex-flow: column; row-gap: 2.4rem; align-items: center; justify-content: center;}
+.intro1 .resolve > img {width: 40rem; height: 7.4rem;}
+.intro1 .resolve > p {text-align: center; font-size: 1.6rem; line-height: 1.8;}
+.intro1 .resolve > p > span {position: relative; padding: 0 .4rem; color: var(--white); background-color: var(--yellow004);}
+
+.intro2 {background-color: var(--black); display: flex; flex-flow: column; row-gap: 7.2rem; align-items: center; justify-content: center;}
+.intro2 > img {width: 63rem; height: 24rem;}
+.intro2 > div {display: flex; flex-flow: column; row-gap: 1.2rem; align-items: center; justify-content: center; color: var(--white);}
+.intro2 > div > span {font-size: 1.6rem;}
+.intro2 > div > p {font-size: 3.6rem; font-weight: 800;}
+.intro2 > div > p > span {background: linear-gradient(90deg, #FF8F4B, #FFBB26); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+.intro2 > ul {width: 63rem; display: flex; align-items: center; justify-content: center; column-gap: 2rem; position: relative; color: var(--white);}
+.intro2 > ul > li:has(img) {position: absolute;}
+.intro2 > ul > li {flex: 1; display: flex; flex-flow: column; row-gap: 1.2rem; align-items: center;}
+.intro2 > ul > li > p {font-size: 1.4rem; font-weight: 500;}
+.intro2 > ul > li > ul {width: 100%; display: flex; flex-flow: column; row-gap: .4rem;}
+.intro2 > ul > li > ul > li {height: 9.2rem; display: flex; flex-flow: column; align-items: center; justify-content: center; background-color: var(--gray002); text-align: center; font-size: 1.4rem; font-weight: 500; line-height: 1.6; color: var(--black);}
+.intro2 > ul > li > img {width: 5.6rem; height: 5.6rem; margin-bottom: 2.6rem; position: relative; z-index: 10;}
+.intro2 > ul > li > div {width: 100%;height: 4rem; background-color: var(--gray006); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 600; color: var(--white);}
+.intro2 > ul > li:nth-last-child(1) > ul > li {background-color: var(--yellow002);}
+.intro2 > ul > li:nth-last-child(1) > div {background-color: var(--yellow004);}
+
+.func {display: flex; align-items: center; justify-content: center;}
+.func .func-swiper {width: 100%; height: 100%; display: flex; flex-flow: column; row-gap: 6.4rem; align-items: center; justify-content: center;}
+.func .func-swiper .swiper-slide {width: 100%; height: 100%; display: flex; flex-flow: column; align-items: center; justify-content: center; row-gap: 4rem;}
+.func .func-swiper .swiper-slide .num {width: fit-content; height: 3.2rem; padding: 0 1.6rem; border-radius: 2rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: var(--white); background-color: var(--yellow004);}
+.func .func-swiper .swiper-slide .desc {display: flex; flex-flow: column; row-gap: 1.6rem; align-items: center; justify-content: center;}
+.func .func-swiper .swiper-slide .desc > div {font-size: 2.4rem;}
+.func .func-swiper .swiper-slide .desc > div > span {font-weight: 600;}
+.func .func-swiper .swiper-slide .desc > p {text-align: center; font-size: 1.6rem; line-height: 1.6;}
+.func .func-swiper .swiper-slide > img {width: 63rem; height: 29.2rem;}
+.func .func-swiper .swiper-button-prev,
+.func .func-swiper .swiper-button-next {width: 4.8rem; height: 4.8rem; margin: initial; padding: initial; left: initial; right: initial; bottom: initial; top: 50%; -webkit-transform: translateY(-50%); -moz-transform: translateY(-50%); -ms-transform: translateY(-50%); -o-transform: translateY(-50%); transform: translateY(-50%); background-repeat: no-repeat; background-size: contain; background-position: center;}
+.func .func-swiper .swiper-button-prev {left: 8rem; background-image: url(../img/ico/ic-swiper-left.svg);}
+.func .func-swiper .swiper-button-next {right: 8rem; background-image: url(../img/ico/ic-swiper-right.svg);}
+.func .func-swiper .swiper-button-prev svg,
+.func .func-swiper .swiper-button-next svg {display: none;}
+.func .func-swiper .swiper-pagination {position: relative; top: initial; left: initial; right: initial; bottom: initial; display: flex; align-items: center; justify-content: center; column-gap: .8rem;}
+.func .func-swiper .swiper-pagination .swiper-pagination-bullet {width: .6rem; height: .6rem; margin: 0; padding: 0; background-color: var(--gray002); border-radius: 100%; opacity: 1;}
+.func .func-swiper .swiper-pagination .swiper-pagination-bullet-active {background-color: var(--yellow004);}
+.func .func-swiper .swiper-notification {display: none;}
+
+.action {min-height: fit-content!important; display: flex; flex-flow: column; row-gap: 4rem; align-items: center; justify-content: center; background: linear-gradient(180deg, #FDFDFE, #FFF4DC);}
+.action > div {display: flex; flex-flow: column; row-gap: 1.2rem; align-items: center; justify-content: center;}
+.action > div > span {font-size: 1.6rem;}
+.action > div > p {font-size: 3.6rem; font-weight: 800;}
+.action > div > p > span {color: var(--yellow004);}
+.action > a {width: fit-content; height: 4rem; padding: 0 2.4rem; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 500; background-color: var(--yellow004); border-radius: .6rem; color: var(--white);}

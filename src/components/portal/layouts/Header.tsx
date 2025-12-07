@@ -100,7 +100,7 @@ const Header = () => {
     return (
         <header>
             <h1 style={{ cursor: "pointer" }} onClick={handleLogoClick}>
-                <Image src="/assets/img/logo/logo-kr.svg" alt="workfolio" width={174} height={50} />
+                <Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={174} height={50} />
             </h1>
             <div>
                 <ul className="menu">
