@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-    // HTTP → HTTPS 강제 리다이렉트 (프로덕션 환경)
-    if (process.env.NODE_ENV === "production" && request.nextUrl.protocol === "http:") {
+    // HTTP → HTTPS 강제 리다이렉트
+    // Vercel에서는 x-forwarded-proto 헤더를 확인하여 HTTPS 강제
+    const protocol = request.headers.get("x-forwarded-proto") || request.nextUrl.protocol;
+    if (protocol === "http:") {
         const httpsUrl = request.nextUrl.clone();
         httpsUrl.protocol = "https:";
         return NextResponse.redirect(httpsUrl, 301);

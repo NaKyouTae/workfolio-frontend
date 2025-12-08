@@ -3,7 +3,7 @@
     background: white;
     min-height: calc(100vh - 90px);
     padding: 24px;
-    font-family: 'Pretendard', sans-serif;
+    font-family: "Pretendard", sans-serif;
 }
 
 .config-header {
@@ -101,7 +101,7 @@
     color: #333;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='https://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 8px center;
     background-repeat: no-repeat;
     background-size: 16px;
@@ -316,22 +316,22 @@
         align-items: flex-start;
         gap: 12px;
     }
-    
+
     .config-row label {
         min-width: auto;
         margin-right: 0;
     }
-    
+
     .radio-group {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .share-input-row {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .input-with-color {
         flex-direction: column;
         align-items: stretch;
