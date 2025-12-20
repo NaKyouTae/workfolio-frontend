@@ -48,6 +48,30 @@ const Company: React.FC = () => {
                                                 backgroundColor: "#f8f9fa",
                                             }}
                                         >
+                                            대표자명
+                                        </td>
+                                        <td style={{ padding: "1rem" }}>나규태</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: "1px solid #e9ecef" }}>
+                                        <td
+                                            style={{
+                                                padding: "1rem",
+                                                fontWeight: "600",
+                                                backgroundColor: "#f8f9fa",
+                                            }}
+                                        >
+                                            대표자 연락처
+                                        </td>
+                                        <td style={{ padding: "1rem" }}>010-9109-2682</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: "1px solid #e9ecef" }}>
+                                        <td
+                                            style={{
+                                                padding: "1rem",
+                                                fontWeight: "600",
+                                                backgroundColor: "#f8f9fa",
+                                            }}
+                                        >
                                             서비스명
                                         </td>
                                         <td style={{ padding: "1rem" }}>워크폴리오(workfolio)</td>
