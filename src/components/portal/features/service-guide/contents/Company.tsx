@@ -133,20 +133,6 @@ const Company: React.FC = () => {
                                             </a>
                                         </td>
                                     </tr>
-                                    <tr style={{ borderBottom: "1px solid #e9ecef" }}>
-                                        <td
-                                            style={{
-                                                padding: "1rem",
-                                                fontWeight: "600",
-                                                backgroundColor: "#f8f9fa",
-                                            }}
-                                        >
-                                            업태 - 업종
-                                        </td>
-                                        <td style={{ padding: "1rem" }}>
-                                            도매 및 소매업 - 전자상거래 소매업
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>

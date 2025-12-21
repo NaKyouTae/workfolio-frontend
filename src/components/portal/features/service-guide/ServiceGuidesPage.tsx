@@ -26,9 +26,10 @@ const ServiceGuidesPage: React.FC<ServiceGuidesPageProps> = ({ initialMenu }) =>
             setSelectedMenu("privacy");
         } else if (pathname === "/service-guides") {
             setSelectedMenu("notices");
-        } else if (pathname === "/service-guides/company") {
-            setSelectedMenu("company");
         }
+        // else if (pathname === "/service-guides/company") {
+        //     setSelectedMenu("company");
+        // }
     }, [pathname]);
 
     const handleMenuClick = (menu: MenuType) => {
@@ -40,9 +41,10 @@ const ServiceGuidesPage: React.FC<ServiceGuidesPageProps> = ({ initialMenu }) =>
             router.push("/service-guides/terms-services");
         } else if (menu === "privacy") {
             router.push("/service-guides/privacy-policies");
-        } else if (menu === "company") {
-            router.push("/service-guides/company");
         }
+        // else if (menu === "company") {
+        //     router.push("/service-guides/company");
+        // }
     };
 
     return (
