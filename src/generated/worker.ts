@@ -6,7 +6,15 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { Worker, Worker_Gender, worker_GenderFromJSON, worker_GenderToJSON } from "./common";
+import {
+  Worker,
+  Worker_Gender,
+  worker_GenderFromJSON,
+  worker_GenderToJSON,
+  Worker_WorkerStatus,
+  worker_WorkerStatusFromJSON,
+  worker_WorkerStatusToJSON,
+} from "./common";
 
 export const protobufPackage = "com.spectrum.workfolio.proto";
 
@@ -17,6 +25,7 @@ export interface WorkerUpdateRequest {
   email?: string | undefined;
   birthDate?: number | undefined;
   gender?: Worker_Gender | undefined;
+  status: Worker_WorkerStatus;
 }
 
 export interface WorkerGetResponse {
@@ -36,7 +45,15 @@ export interface WorkerCheckNickNameResponse {
 }
 
 function createBaseWorkerUpdateRequest(): WorkerUpdateRequest {
-  return { id: "", nickName: "", phone: undefined, email: undefined, birthDate: undefined, gender: undefined };
+  return {
+    id: "",
+    nickName: "",
+    phone: undefined,
+    email: undefined,
+    birthDate: undefined,
+    gender: undefined,
+    status: 0,
+  };
 }
 
 export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
@@ -58,6 +75,9 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
     }
     if (message.gender !== undefined) {
       writer.uint32(48).int32(message.gender);
+    }
+    if (message.status !== 0) {
+      writer.uint32(56).int32(message.status);
     }
     return writer;
   },
@@ -117,6 +137,14 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
           message.gender = reader.int32() as any;
           continue;
         }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -134,6 +162,7 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
       email: isSet(object.email) ? globalThis.String(object.email) : undefined,
       birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : undefined,
       gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : undefined,
+      status: isSet(object.status) ? worker_WorkerStatusFromJSON(object.status) : 0,
     };
   },
 
@@ -157,6 +186,9 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
     if (message.gender !== undefined) {
       obj.gender = worker_GenderToJSON(message.gender);
     }
+    if (message.status !== 0) {
+      obj.status = worker_WorkerStatusToJSON(message.status);
+    }
     return obj;
   },
 
@@ -171,6 +203,7 @@ export const WorkerUpdateRequest: MessageFns<WorkerUpdateRequest> = {
     message.email = object.email ?? undefined;
     message.birthDate = object.birthDate ?? undefined;
     message.gender = object.gender ?? undefined;
+    message.status = object.status ?? 0;
     return message;
   },
 };

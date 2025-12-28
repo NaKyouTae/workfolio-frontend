@@ -16,6 +16,7 @@ export interface Worker {
   email: string;
   birthDate?: number | undefined;
   gender?: Worker_Gender | undefined;
+  status: Worker_WorkerStatus;
   createdAt: number;
   updatedAt: number;
 }
@@ -54,6 +55,51 @@ export function worker_GenderToJSON(object: Worker_Gender): string {
     case Worker_Gender.FEMALE:
       return "FEMALE";
     case Worker_Gender.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum Worker_WorkerStatus {
+  WORKER_STATUS_UNKNOWN = 0,
+  ACTIVE = 1,
+  INACTIVE = 2,
+  DELETED = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function worker_WorkerStatusFromJSON(object: any): Worker_WorkerStatus {
+  switch (object) {
+    case 0:
+    case "WORKER_STATUS_UNKNOWN":
+      return Worker_WorkerStatus.WORKER_STATUS_UNKNOWN;
+    case 1:
+    case "ACTIVE":
+      return Worker_WorkerStatus.ACTIVE;
+    case 2:
+    case "INACTIVE":
+      return Worker_WorkerStatus.INACTIVE;
+    case 3:
+    case "DELETED":
+      return Worker_WorkerStatus.DELETED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Worker_WorkerStatus.UNRECOGNIZED;
+  }
+}
+
+export function worker_WorkerStatusToJSON(object: Worker_WorkerStatus): string {
+  switch (object) {
+    case Worker_WorkerStatus.WORKER_STATUS_UNKNOWN:
+      return "WORKER_STATUS_UNKNOWN";
+    case Worker_WorkerStatus.ACTIVE:
+      return "ACTIVE";
+    case Worker_WorkerStatus.INACTIVE:
+      return "INACTIVE";
+    case Worker_WorkerStatus.DELETED:
+      return "DELETED";
+    case Worker_WorkerStatus.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -1887,6 +1933,7 @@ function createBaseWorker(): Worker {
     email: "",
     birthDate: undefined,
     gender: undefined,
+    status: 0,
     createdAt: 0,
     updatedAt: 0,
   };
@@ -1911,6 +1958,9 @@ export const Worker: MessageFns<Worker> = {
     }
     if (message.gender !== undefined) {
       writer.uint32(48).int32(message.gender);
+    }
+    if (message.status !== 0) {
+      writer.uint32(776).int32(message.status);
     }
     if (message.createdAt !== 0) {
       writer.uint32(784).uint64(message.createdAt);
@@ -1976,6 +2026,14 @@ export const Worker: MessageFns<Worker> = {
           message.gender = reader.int32() as any;
           continue;
         }
+        case 97: {
+          if (tag !== 776) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
         case 98: {
           if (tag !== 784) {
             break;
@@ -2009,6 +2067,7 @@ export const Worker: MessageFns<Worker> = {
       email: isSet(object.email) ? globalThis.String(object.email) : "",
       birthDate: isSet(object.birthDate) ? globalThis.Number(object.birthDate) : undefined,
       gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : undefined,
+      status: isSet(object.status) ? worker_WorkerStatusFromJSON(object.status) : 0,
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
       updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
     };
@@ -2034,6 +2093,9 @@ export const Worker: MessageFns<Worker> = {
     if (message.gender !== undefined) {
       obj.gender = worker_GenderToJSON(message.gender);
     }
+    if (message.status !== 0) {
+      obj.status = worker_WorkerStatusToJSON(message.status);
+    }
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
     }
@@ -2054,6 +2116,7 @@ export const Worker: MessageFns<Worker> = {
     message.email = object.email ?? "";
     message.birthDate = object.birthDate ?? undefined;
     message.gender = object.gender ?? undefined;
+    message.status = object.status ?? 0;
     message.createdAt = object.createdAt ?? 0;
     message.updatedAt = object.updatedAt ?? 0;
     return message;
