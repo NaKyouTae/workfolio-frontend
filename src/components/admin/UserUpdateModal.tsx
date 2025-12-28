@@ -52,6 +52,7 @@ const UserUpdateModal: React.FC<UserUpdateModalProps> = ({ isOpen, worker, onClo
 
         const request: WorkerUpdateRequest = {
             id: worker.id,
+            status: worker.status,
             nickName: formData.nickName,
             phone: formData.phone || undefined,
             email: formData.email || undefined,

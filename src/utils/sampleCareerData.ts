@@ -19,6 +19,7 @@ import {
     Attachment_AttachmentCategory,
     Worker_Gender,
     Attachment_AttachmentTargetType,
+    Worker_WorkerStatus,
 } from "@/generated/common";
 
 // 샘플 Worker 데이터
@@ -26,6 +27,7 @@ export const createSampleWorker = (): Worker => {
     const now = Date.now();
     return {
         id: "worker-1",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-1234-5678",
         email: "hong@example.com",
         birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
@@ -561,6 +563,7 @@ export const createSampleResume2 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-2",
+        status: Worker_WorkerStatus.ACTIVE,
         nickName: "김민준",
         phone: "010-2345-6789",
         email: "minjun.kim@example.com",
@@ -691,6 +694,7 @@ export const createSampleResume3 = () => {
         birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
         gender: Worker_Gender.FEMALE,
         nickName: "이지은",
+        status: Worker_WorkerStatus.ACTIVE,
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
         updatedAt: now,
     };
@@ -793,6 +797,7 @@ export const createSampleResume4 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-4",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-4567-8901",
         email: "seoyeon.park@example.com",
         birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
@@ -939,6 +944,7 @@ export const createSampleResume5 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-5",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-5678-9012",
         email: "junho.choi@example.com",
         birthDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
@@ -1076,6 +1082,7 @@ export const createSampleResume6 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-6",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-6789-0123",
         email: "subin.jung@example.com",
         birthDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
@@ -1170,6 +1177,7 @@ export const createSampleResume7 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-7",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-7890-1234",
         email: "dongwoo.kang@example.com",
         birthDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
@@ -1264,6 +1272,7 @@ export const createSampleResume8 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-8",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-8901-2345",
         email: "seoa.yoon@example.com",
         birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
@@ -1358,6 +1367,7 @@ export const createSampleResume9 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-9",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-9012-3456",
         email: "hyunwoo.cho@example.com",
         birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
@@ -1452,6 +1462,7 @@ export const createSampleResume10 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-10",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-0123-4567",
         email: "minji.song@example.com",
         birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
@@ -1546,6 +1557,7 @@ export const createSampleResume11 = () => {
     const now = Date.now();
     const worker: Worker = {
         id: "worker-11",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-1357-2468",
         email: "jihoon.han@example.com",
         birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,

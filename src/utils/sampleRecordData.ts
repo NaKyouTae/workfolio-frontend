@@ -4,6 +4,7 @@ import {
     RecordGroup_RecordGroupType,
     Worker,
     Worker_Gender,
+    Worker_WorkerStatus,
     WorkerRecordGroup_RecordGroupRole,
 } from "@/generated/common";
 import { RecordGroupDetailResponse } from "@/generated/record_group";
@@ -194,6 +195,7 @@ export const createSampleWorkers = (): Worker[] => {
     return [
         {
             id: "worker-sample-1",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "김철수",
             phone: "010-1111-2222",
             email: "kim.cheolsu@example.com",
@@ -204,6 +206,7 @@ export const createSampleWorkers = (): Worker[] => {
         },
         {
             id: "worker-sample-2",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "이영희",
             phone: "010-2222-3333",
             email: "lee.younghee@example.com",
@@ -214,6 +217,7 @@ export const createSampleWorkers = (): Worker[] => {
         },
         {
             id: "worker-sample-3",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "박민수",
             phone: "010-3333-4444",
             email: "park.minsu@example.com",
@@ -224,6 +228,7 @@ export const createSampleWorkers = (): Worker[] => {
         },
         {
             id: "worker-sample-4",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "최지은",
             phone: "010-4444-5555",
             email: "choi.jieun@example.com",
@@ -234,6 +239,7 @@ export const createSampleWorkers = (): Worker[] => {
         },
         {
             id: "worker-sample-5",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "정대현",
             phone: "010-5555-6666",
             email: "jung.daehyun@example.com",
@@ -244,6 +250,7 @@ export const createSampleWorkers = (): Worker[] => {
         },
         {
             id: "worker-sample-6",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "한소영",
             phone: "010-6666-7777",
             email: "han.soyoung@example.com",
@@ -254,6 +261,7 @@ export const createSampleWorkers = (): Worker[] => {
         },
         {
             id: "worker-sample-7",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "윤성호",
             phone: "010-7777-8888",
             email: "yoon.sungho@example.com",
@@ -264,6 +272,7 @@ export const createSampleWorkers = (): Worker[] => {
         },
         {
             id: "worker-sample-8",
+            status: Worker_WorkerStatus.ACTIVE,
             nickName: "강미래",
             phone: "010-8888-9999",
             email: "kang.mirae@example.com",
