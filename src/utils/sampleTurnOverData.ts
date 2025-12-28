@@ -894,7 +894,7 @@ export const createSampleTurnOver4 = (): TurnOverDetail => {
                 endedAt: undefined,
                 status: JobApplication_JobApplicationStatus.PENDING,
                 applicationSource: "LinkedIn",
-                content: "AWS 서비스 기획 경험 어필. Leadership Principles 준비 필수",
+                memo: "AWS 서비스 기획 경험 어필. Leadership Principles 준비 필수",
                 isVisible: true,
                 priority: 1,
                 applicationStages: [

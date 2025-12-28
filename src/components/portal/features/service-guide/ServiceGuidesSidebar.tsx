@@ -2,6 +2,10 @@
 
 import React from "react";
 import { MenuType } from "@/models/MenuType";
+import { KakaoAdfitBanner } from "../../ui/KakaoAdfitBanner";
+
+const NEXT_PUBLIC_KAKAO_ADFIT_SERVICE_GUIDES_KEY =
+    process.env.NEXT_PUBLIC_KAKAO_ADFIT_SERVICE_GUIDES_KEY;
 
 interface ServiceGuidesSidebarProps {
     selectedMenu: MenuType;
@@ -41,6 +45,14 @@ const ServiceGuidesSidebar: React.FC<ServiceGuidesSidebarProps> = ({
                         회사소개
                     </li> */}
                 </ul>
+            </div>
+            <div>
+                <KakaoAdfitBanner
+                    unit={NEXT_PUBLIC_KAKAO_ADFIT_SERVICE_GUIDES_KEY || ""}
+                    width={250}
+                    height={250}
+                    disabled={false}
+                />
             </div>
         </aside>
     );
