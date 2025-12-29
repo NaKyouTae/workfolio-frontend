@@ -33,8 +33,6 @@ export async function POST(request: NextRequest) {
         res.cookies.delete("accessToken");
         res.cookies.delete("refreshToken");
 
-        // admin accessToken 쿠키 설정 (httpOnly, secure)
-        // domain 설정은 개발 환경에서만 localhost로 설정, 프로덕션에서는 제거
         interface CookieOptions {
             httpOnly: boolean;
             secure: boolean;
@@ -44,10 +42,12 @@ export async function POST(request: NextRequest) {
             domain?: string;
         }
 
+        // admin accessToken 쿠키 설정 (httpOnly, secure)
+        // domain 설정은 개발 환경에서만 localhost로 설정, 프로덕션에서는 제거
         const cookieOptions: CookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: "lax" as const,
             maxAge: 60 * 60 * 24, // 1일
             path: "/",
         };
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         const refreshCookieOptions: CookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: "lax" as const,
             maxAge: 60 * 60 * 24 * 7, // 7일
             path: "/",
         };
