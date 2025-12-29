@@ -26,24 +26,39 @@ const Header = () => {
 
     const logout = async () => {
         try {
-            // 카카오 로그아웃 요청
-            const data = await fetch("/api/logout", {
+            // 로그아웃 요청
+            const response = await fetch("/api/logout", {
                 method: HttpMethod.GET,
                 credentials: "include",
             });
 
-            if (data) {
-                userLogout(); // 유저 정보 클리어
+            // 응답 확인 (성공 여부와 관계없이 쿠키 삭제는 시도됨)
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    userLogout(); // 유저 정보 클리어
 
-                // 로그아웃 후 리다이렉트 (현재 페이지의 프로토콜 사용)
-                const currentProtocol = window.location.protocol;
-                const currentHost = window.location.host;
-                window.location.href = `${currentProtocol}//${currentHost}`;
+                    // 로그아웃 후 리다이렉트 (현재 페이지의 프로토콜 사용)
+                    const currentProtocol = window.location.protocol;
+                    const currentHost = window.location.host;
+                    window.location.href = `${currentProtocol}//${currentHost}`;
+                } else {
+                    console.error("로그아웃 실패:", data);
+                    // 실패해도 유저 정보는 클리어하고 리다이렉트
+                    userLogout();
+                    window.location.href = `${window.location.protocol}//${window.location.host}`;
+                }
             } else {
-                console.error("카카오 로그아웃 실패:", data);
+                console.error("로그아웃 요청 실패:", response.status);
+                // 요청 실패해도 유저 정보는 클리어하고 리다이렉트
+                userLogout();
+                window.location.href = `${window.location.protocol}//${window.location.host}`;
             }
         } catch (error) {
             console.error("로그아웃 중 오류 발생:", error);
+            // 에러가 발생해도 유저 정보는 클리어하고 리다이렉트
+            userLogout();
+            window.location.href = `${window.location.protocol}//${window.location.host}`;
         }
     };
 
