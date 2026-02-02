@@ -1,0 +1,146 @@
+/* 가로형 템플릿 2 (유료): 헤더/푸터 없음. 사이드바에 CONTACT / ABOUT 라벨 블록 */
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f0f4f0 0%, #e2e8e2 100%);
+}
+
+.resumeWrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: 100vh;
+  box-shadow: 0 8px 40px rgba(30, 60, 40, 0.12);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.profileTitleBlock {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.blockLabel {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #7dd3a0;
+  letter-spacing: 0.15em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.contactLabelBlock {
+  margin-bottom: 20px;
+}
+
+.contactLabelBlock ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.descriptionBlock {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.descriptionBlock .description {
+  margin: 0;
+}
+
+.profileSection {
+  margin-bottom: 0;
+  padding: 36px 24px 36px 24px;
+  border-bottom: none;
+  background: #243d2f;
+  color: #e8f0ea;
+  align-self: start;
+}
+
+.profileHeader {
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.35;
+}
+
+.position {
+  font-size: 13px;
+  color: #7dd3a0;
+  font-weight: 600;
+}
+
+.description {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #e0e8e2;
+}
+
+.contactItem {
+  color: #c8d8cc;
+}
+
+.contactIcon {
+  color: #7dd3a0;
+}
+
+.publicPeriod {
+  color: #b0c4b4;
+}
+
+.mainContent {
+  padding: 36px 40px 48px 40px;
+  min-width: 0;
+  background: #fff;
+}
+
+.section {
+  margin-bottom: 38px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .profileSection {
+    background: #243d2f;
+    padding: 28px 20px;
+  }
+
+  .mainContent {
+    padding: 28px 20px 40px 20px;
+  }
+
+  .name {
+    font-size: 20px;
+  }
+}

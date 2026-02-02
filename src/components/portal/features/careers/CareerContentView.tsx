@@ -7,6 +7,7 @@ import ActivityView from './view/ActivityView';
 import LanguageSkillView from './view/LanguageSkillView';
 import AttachmentView from '@/components/portal/features/common/AttachmentView';
 import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
+import { buildPublicResumeUrl } from '@/components/portal/features/public-resume/templates/resumeTemplateConfig';
 import { normalizeEnumValue } from '@/utils/commonUtils';
 import DateUtil from '@/utils/DateUtil';
 import { isLoggedIn } from '@/utils/authUtils';
@@ -99,14 +100,14 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
     }
   };
 
-  // URL 복사 핸들러
+  // URL 복사 핸들러 (선택된 템플릿 urlPath 있으면 해당 템플릿 URL로 생성)
   const handleCopyURL = async () => {
     if (!selectedResumeDetail?.publicId) {
       showNotification('공개 이력서 URL을 생성할 수 없습니다.', 'error');
       return;
     }
-
-    const publicResumeUrl = `${window.location.origin}/resumes/${selectedResumeDetail.publicId}`;
+    // TODO: 선택된 URL 템플릿이 있으면 buildPublicResumeUrl(publicId, activeTemplate?.urlPath)
+    const publicResumeUrl = buildPublicResumeUrl(selectedResumeDetail.publicId);
 
     try {
       await navigator.clipboard.writeText(publicResumeUrl);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUITemplates } from '@/hooks/useUITemplates';
 import { UITemplate, formatDuration } from '@/types/uitemplate';
 import { useCredits } from '@/hooks/useCredits';
@@ -9,6 +9,7 @@ import LoginModal from '@/components/portal/ui/LoginModal';
 import { useNotification } from '@/hooks/useNotification';
 import { useConfirm } from '@/hooks/useConfirm';
 import UITemplateCard from './UITemplateCard';
+import { getPreviewPathFromUITemplate } from '@/components/portal/features/public-resume/templates/resumeTemplateConfig';
 
 interface UITemplateListProps {
     onPurchaseSuccess?: () => void;
@@ -23,8 +24,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const [selectedUITemplate, setSelectedUITemplate] = useState<UITemplate | null>(null);
     const [ownedUITemplateIds, setOwnedUITemplateIds] = useState<Set<string>>(new Set());
 
-    const urlScrollRef = useRef<HTMLDivElement>(null);
-    const pdfScrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchUITemplates();
@@ -97,36 +96,15 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
         }
     };
 
-    const scrollLeft = (ref: React.RefObject<HTMLDivElement | null>) => {
-        if (ref.current) {
-            ref.current.scrollBy({ left: -320, behavior: 'smooth' });
-        }
-    };
-
-    const scrollRight = (ref: React.RefObject<HTMLDivElement | null>) => {
-        if (ref.current) {
-            ref.current.scrollBy({ left: 320, behavior: 'smooth' });
+    const handleTemplatePreview = (uiTemplate: UITemplate) => {
+        const path = getPreviewPathFromUITemplate(uiTemplate);
+        if (path) {
+            window.open(`/templates/preview/${path}`, '_blank', 'noopener,noreferrer');
         }
     };
 
     const urlUITemplates = uiTemplates.filter(t => t.type === 'URL');
     const pdfUITemplates = uiTemplates.filter(t => t.type === 'PDF');
-
-    const scrollContainerStyle: React.CSSProperties = {
-        display: 'flex',
-        gap: '20px',
-        overflowX: 'auto',
-        scrollSnapType: 'x mandatory',
-        scrollBehavior: 'smooth',
-        paddingBottom: '16px',
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none',
-    };
-
-    const scrollItemStyle: React.CSSProperties = {
-        flex: '0 0 280px',
-        scrollSnapAlign: 'start',
-    };
 
     const sectionStyle: React.CSSProperties = {
         marginBottom: '48px',
@@ -134,29 +112,17 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     };
 
     const sectionHeaderStyle: React.CSSProperties = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         marginBottom: '16px',
     };
 
-    const navButtonStyle: React.CSSProperties = {
-        width: '40px',
-        height: '40px',
-        borderRadius: '50%',
-        border: '1px solid #e0e0e0',
-        backgroundColor: '#fff',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '18px',
-        color: '#666',
-        transition: 'all 0.2s ease',
+    const cardGridStyle: React.CSSProperties = {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: '16px',
     };
 
     return (
-        <div className="ui-template-list" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="ui-template-list" style={{ width: '100%' }}>
             {loading && <p style={{ textAlign: 'center', padding: '40px 0' }}>로딩 중...</p>}
             {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
 
@@ -166,149 +132,79 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                 </p>
             )}
 
-            {/* URL Templates Section */}
-            {urlUITemplates.length > 0 && (
-                <div style={sectionStyle}>
-                    <div style={sectionHeaderStyle}>
-                        <div>
-                            <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{
-                                    backgroundColor: '#e3f2fd',
-                                    color: '#1976d2',
-                                    padding: '4px 10px',
-                                    borderRadius: '6px',
-                                    fontSize: '14px',
-                                    fontWeight: '600'
-                                }}>
-                                    URL
-                                </span>
-                                URL 템플릿
-                            </h3>
-                            <p style={{ color: '#666', fontSize: '14px' }}>
-                                공개 이력서 URL 공유시 사용할 수 있는 템플릿입니다.
-                            </p>
-                        </div>
-                        {urlUITemplates.length > 3 && (
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                <button
-                                    style={navButtonStyle}
-                                    onClick={() => scrollLeft(urlScrollRef)}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#f5f5f5';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#fff';
-                                    }}
-                                >
-                                    ←
-                                </button>
-                                <button
-                                    style={navButtonStyle}
-                                    onClick={() => scrollRight(urlScrollRef)}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#f5f5f5';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#fff';
-                                    }}
-                                >
-                                    →
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                    <div
-                        ref={urlScrollRef}
-                        style={scrollContainerStyle}
-                        className="hide-scrollbar"
-                    >
+            {/* URL Templates Section - 항상 표시 (플로팅 네비 스크롤용 id) */}
+            <div id="section-url" style={sectionStyle}>
+                <div style={sectionHeaderStyle}>
+                    <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{
+                            backgroundColor: '#e3f2fd',
+                            color: '#1976d2',
+                            padding: '4px 10px',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            fontWeight: '600'
+                        }}>
+                            URL
+                        </span>
+                        URL 템플릿
+                    </h3>
+                    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
+                        공개 이력서 URL 공유시 사용할 수 있는 템플릿입니다.
+                    </p>
+                </div>
+                {urlUITemplates.length === 0 ? (
+                    <p style={{ color: '#999', fontSize: '14px', margin: 0 }}>등록된 URL 템플릿이 없습니다.</p>
+                ) : (
+                    <div style={cardGridStyle}>
                         {urlUITemplates.map((uiTemplate) => (
-                            <div key={uiTemplate.id} style={scrollItemStyle}>
-                                <UITemplateCard
-                                    uiTemplate={uiTemplate}
-                                    onSelect={handleUITemplateSelect}
-                                    isOwned={ownedUITemplateIds.has(uiTemplate.id)}
-                                />
-                            </div>
+                            <UITemplateCard
+                                key={uiTemplate.id}
+                                uiTemplate={uiTemplate}
+                                onSelect={handleUITemplateSelect}
+                                onPreview={handleTemplatePreview}
+                                isOwned={ownedUITemplateIds.has(uiTemplate.id)}
+                            />
                         ))}
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
-            {/* PDF Templates Section */}
-            {pdfUITemplates.length > 0 && (
-                <div style={sectionStyle}>
-                    <div style={sectionHeaderStyle}>
-                        <div>
-                            <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{
-                                    backgroundColor: '#fce4ec',
-                                    color: '#c2185b',
-                                    padding: '4px 10px',
-                                    borderRadius: '6px',
-                                    fontSize: '14px',
-                                    fontWeight: '600'
-                                }}>
-                                    PDF
-                                </span>
-                                PDF 템플릿
-                            </h3>
-                            <p style={{ color: '#666', fontSize: '14px' }}>
-                                이력서를 PDF로 다운로드할 때 사용할 수 있는 템플릿입니다.
-                            </p>
-                        </div>
-                        {pdfUITemplates.length > 3 && (
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                <button
-                                    style={navButtonStyle}
-                                    onClick={() => scrollLeft(pdfScrollRef)}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#f5f5f5';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#fff';
-                                    }}
-                                >
-                                    ←
-                                </button>
-                                <button
-                                    style={navButtonStyle}
-                                    onClick={() => scrollRight(pdfScrollRef)}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#f5f5f5';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.backgroundColor = '#fff';
-                                    }}
-                                >
-                                    →
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                    <div
-                        ref={pdfScrollRef}
-                        style={scrollContainerStyle}
-                        className="hide-scrollbar"
-                    >
+            {/* PDF Templates Section - 항상 표시 (플로팅 네비 스크롤용 id) */}
+            <div id="section-pdf" style={sectionStyle}>
+                <div style={sectionHeaderStyle}>
+                    <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{
+                            backgroundColor: '#fce4ec',
+                            color: '#c2185b',
+                            padding: '4px 10px',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            fontWeight: '600'
+                        }}>
+                            PDF
+                        </span>
+                        PDF 템플릿
+                    </h3>
+                    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
+                        이력서를 PDF로 다운로드할 때 사용할 수 있는 템플릿입니다.
+                    </p>
+                </div>
+                {pdfUITemplates.length === 0 ? (
+                    <p style={{ color: '#999', fontSize: '14px', margin: 0 }}>등록된 PDF 템플릿이 없습니다.</p>
+                ) : (
+                    <div style={cardGridStyle}>
                         {pdfUITemplates.map((uiTemplate) => (
-                            <div key={uiTemplate.id} style={scrollItemStyle}>
-                                <UITemplateCard
-                                    uiTemplate={uiTemplate}
-                                    onSelect={handleUITemplateSelect}
-                                    isOwned={ownedUITemplateIds.has(uiTemplate.id)}
-                                />
-                            </div>
+                            <UITemplateCard
+                                key={uiTemplate.id}
+                                uiTemplate={uiTemplate}
+                                onSelect={handleUITemplateSelect}
+                                onPreview={handleTemplatePreview}
+                                isOwned={ownedUITemplateIds.has(uiTemplate.id)}
+                            />
                         ))}
                     </div>
-                </div>
-            )}
-
-            <style jsx>{`
-                .hide-scrollbar::-webkit-scrollbar {
-                    display: none;
-                }
-            `}</style>
+                )}
+            </div>
 
             <LoginModal
                 isOpen={showLoginModal}

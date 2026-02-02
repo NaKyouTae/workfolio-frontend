@@ -6,9 +6,11 @@ import styles from './CreditHistory.module.css';
 
 interface CreditBalanceProps {
     onOpenPaymentWidget?: () => void;
+    /** 플로팅 등 좁은 영역용 컴팩트 스타일 */
+    compact?: boolean;
 }
 
-const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget }) => {
+const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget, compact = false }) => {
     const { balance, loading, fetchBalance } = useCredits();
 
     useEffect(() => {
@@ -20,7 +22,7 @@ const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget }) =>
     };
 
     return (
-        <div className={styles.balanceCard}>
+        <div className={`${styles.balanceCard} ${compact ? styles.balanceCardCompact : ''}`}>
             <div className={styles.balanceHeader}>
                 <h4>보유 크레딧</h4>
             </div>

@@ -159,7 +159,7 @@ const Header = () => {
                             prefetch={false}
                             onClick={(e) => handleMenuClick(e, "/templates")}
                         >
-                            템플릿
+                            스토어
                         </Link>
                     </li>
                 </ul>

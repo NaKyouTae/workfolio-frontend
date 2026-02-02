@@ -8,6 +8,7 @@ import {
     LanguageSkill,
     LanguageTest,
     Resume,
+    ResumeDetail,
     Resume_Gender,
     Education_EducationStatus,
     Career_EmploymentType,
@@ -1903,4 +1904,41 @@ export const createEmptySampleResumeDetails = () => {
 // 모든 샘플 Resume 데이터를 한 번에 반환 (가이드에 따라 3개만)
 export const createAllSampleResumes = () => {
     return [createSampleResume2(), createSampleResume3(), createSampleResume4()];
+};
+
+/** URL 템플릿 미리보기용 샘플 ResumeDetail (공개 이력서 페이지와 동일 구조) */
+export const createSampleResumeDetailForPreview = (): ResumeDetail => {
+    const now = Date.now();
+    const resume = createSampleResume();
+    const careers = createSampleCareers();
+    const educations = createSampleEducations();
+    const projects = createSampleProjects();
+    const activities = createSampleActivities();
+    const languageSkills = createSampleLanguageSkills();
+    const attachments = createSampleAttachments();
+    return {
+        id: resume.id,
+        title: resume.title,
+        name: resume.name,
+        phone: resume.phone,
+        email: resume.email,
+        birthDate: resume.birthDate,
+        gender: resume.gender,
+        position: resume.position,
+        description: resume.description,
+        isPublic: true,
+        isDefault: resume.isDefault,
+        publicId: "preview",
+        publicStartDate: now - 365 * 24 * 60 * 60 * 1000,
+        publicEndDate: now + 365 * 24 * 60 * 60 * 1000,
+        worker: resume.worker,
+        careers,
+        educations,
+        projects,
+        activities,
+        languageSkills,
+        attachments,
+        createdAt: resume.createdAt,
+        updatedAt: resume.updatedAt,
+    };
 };

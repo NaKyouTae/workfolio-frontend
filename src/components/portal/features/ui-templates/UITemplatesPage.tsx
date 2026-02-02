@@ -1,34 +1,54 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '@/components/portal/layouts/Header';
 import Footer from '@/components/portal/layouts/Footer';
 import UITemplateList from './UITemplateList';
 import CreditBalance from '@/components/portal/features/credits/CreditBalance';
+import FloatingNavigation from '@/components/portal/ui/FloatingNavigation';
+import PaymentWidget from '@/components/portal/features/payments/PaymentWidget';
+import styles from './UITemplatesPage.module.css';
+
+const STORE_FLOATING_NAV_ITEMS = [
+    { id: 'section-url', label: 'URL 템플릿' },
+    { id: 'section-pdf', label: 'PDF 템플릿' },
+];
 
 const UITemplatesPage: React.FC = () => {
+    const [showPaymentWidget, setShowPaymentWidget] = useState(false);
+
     return (
         <>
             <Header />
             <main>
-                <section className="full-width">
-                    <div className="contents" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
-                        <div className="page-title" style={{ textAlign: 'center', marginBottom: '40px' }}>
-                            <div style={{ marginBottom: '16px' }}>
-                                <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '12px' }}>템플릿 스토어</h2>
-                                <p style={{ color: '#666', fontSize: '16px' }}>공개 이력서 URL과 PDF 다운로드에 사용할 수 있는 템플릿을 구매하세요.</p>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <CreditBalance />
-                            </div>
-                        </div>
-                        <div className="page-cont">
+                <section className={styles.storeSection} style={{ width: '75%', margin: '0 auto' }}>
+                    <div className="page-cont">
+                        <article className={styles.storeArticle}>
                             <UITemplateList />
+                        </article>
+                        <div className={styles.storeFloatingColumn}>
+                            <FloatingNavigation navigationItems={STORE_FLOATING_NAV_ITEMS} />
+                            <div className={styles.storeCreditArea}>
+                                <CreditBalance compact />
+                            </div>
+                            <div>
+                                <button
+                                    type="button"
+                                    className={styles.storeChargeButton}
+                                    onClick={() => setShowPaymentWidget(true)}
+                                >
+                                    크레딧 충전
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <Footer />
                 </section>
             </main>
+            <PaymentWidget
+                isOpen={showPaymentWidget}
+                onClose={() => setShowPaymentWidget(false)}
+            />
         </>
     );
 };

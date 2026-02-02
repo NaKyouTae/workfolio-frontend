@@ -1,0 +1,109 @@
+/* 세로형 템플릿 2 (유료): 헤더/푸터 없음. 1행에 이름+포지션 | 연락처, 다음 줄 소개 */
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #fef8f3 0%, #f5e6dc 100%);
+}
+
+.resumeWrapper {
+  max-width: 780px;
+  margin: 0 auto;
+  background: #fffefc;
+  min-height: 100vh;
+  box-shadow: 0 4px 32px rgba(180, 120, 80, 0.12);
+  border-left: 1px solid #f0e8e0;
+  border-right: 1px solid #f0e8e0;
+}
+
+.main {
+  padding: 48px 40px 56px;
+}
+
+/* 1행: 왼쪽 이름+포지션, 오른쪽 연락처 */
+.profileRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 48px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #e8dcd2;
+}
+
+.profileTitleBlock {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.contactBlock {
+  flex: 0 1 auto;
+}
+
+.contactBlock ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  justify-content: flex-end;
+}
+
+.profileSection {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.name {
+  font-size: 34px;
+  font-weight: 700;
+  color: #2c1810;
+  letter-spacing: -0.02em;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.position {
+  font-size: 17px;
+  color: #c45c2a;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.description {
+  background: #fdf6f0;
+  padding: 22px 28px;
+  border-radius: 8px;
+  border-left: 4px solid #c45c2a;
+  color: #3d2c20;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.section {
+  margin-bottom: 44px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 36px 20px;
+  }
+
+  .profileRow {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .contactBlock ul {
+    justify-content: flex-start;
+  }
+
+  .name {
+    font-size: 28px;
+  }
+
+  .position {
+    font-size: 15px;
+  }
+}

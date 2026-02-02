@@ -1,0 +1,127 @@
+/* 가로형 템플릿 1 (유료): 헤더/푸터 없음. 사이드바에 "연락처" / "소개" 라벨 블록 */
+
+.container {
+  min-height: 100vh;
+  background: #e8ecf0;
+}
+
+.resumeWrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: 100vh;
+  box-shadow: 0 0 48px rgba(0, 0, 0, 0.06);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.blockLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.contactLabelBlock {
+  margin-bottom: 20px;
+}
+
+.contactLabelBlock ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.descriptionBlock {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e8ecf0;
+}
+
+.descriptionBlock .description {
+  margin: 0;
+}
+
+.profileSection {
+  margin-bottom: 0;
+  padding: 32px 28px 32px 28px;
+  border-bottom: none;
+  border-right: 1px solid #e8ecf0;
+  background: #f8f9fc;
+  align-self: start;
+}
+
+.profileHeader {
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a2332;
+  line-height: 1.35;
+}
+
+.position {
+  font-size: 14px;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.description {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid #e8ecf0;
+  border-radius: 8px;
+}
+
+.mainContent {
+  padding: 32px 40px 48px 40px;
+  min-width: 0;
+}
+
+.section {
+  margin-bottom: 36px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .profileSection {
+    border-right: none;
+    border-bottom: 1px solid #e8ecf0;
+    padding: 24px 20px;
+  }
+
+  .mainContent {
+    padding: 24px 20px 40px 20px;
+  }
+
+  .name {
+    font-size: 22px;
+  }
+}

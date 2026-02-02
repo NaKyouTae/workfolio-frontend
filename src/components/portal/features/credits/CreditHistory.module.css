@@ -8,6 +8,38 @@
     box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
 }
 
+.balanceCardCompact {
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 0;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25);
+}
+
+.balanceCardCompact .balanceHeader {
+    margin-bottom: 0.4rem;
+}
+
+.balanceCardCompact .balanceHeader h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.balanceCardCompact .balanceAmount {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+.balanceCardCompact .amount {
+    font-size: 2.4rem;
+}
+
+.balanceCardCompact .unit {
+    font-size: 1.3rem;
+}
+
 .balanceHeader {
     margin-bottom: 8px;
 }

@@ -264,3 +264,44 @@
     font-size: 14px;
   }
 }
+
+/* ========== PDF 미리보기: 페이지 단위 문서 형태 ========== */
+.pdfPreviewFrame {
+  min-height: 100vh;
+  background: #6b7280;
+  padding: 24px 0 48px;
+  box-sizing: border-box;
+}
+
+.pdfPreviewPaper {
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  min-height: 297mm;
+  position: relative;
+}
+
+.pdfPreviewPaper .containerPdf {
+  min-height: 0;
+  background: #fff;
+}
+
+.pdfPreviewPaper .resumeWrapperPdf {
+  max-width: 100%;
+  box-shadow: none;
+  min-height: 0;
+}
+
+/* A4 높이(297mm)마다 페이지 구분선 표시 */
+.mainPdfPages {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(297mm - 1px),
+    rgba(0, 0, 0, 0.12) calc(297mm - 1px),
+    rgba(0, 0, 0, 0.12) 297mm
+  );
+  background-attachment: local;
+  padding-bottom: 1px;
+}
