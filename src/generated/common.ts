@@ -172,6 +172,8 @@ export interface Resume {
   isPublic?: boolean | undefined;
   isDefault?: boolean | undefined;
   description: string;
+  publicStartDate?: number | undefined;
+  publicEndDate?: number | undefined;
   worker?: Worker | undefined;
   createdAt: number;
   updatedAt: number;
@@ -229,6 +231,8 @@ export interface ResumeDetail {
   isDefault?: boolean | undefined;
   publicId: string;
   description: string;
+  publicStartDate?: number | undefined;
+  publicEndDate?: number | undefined;
   worker?: Worker | undefined;
   careers: Career[];
   educations: Education[];

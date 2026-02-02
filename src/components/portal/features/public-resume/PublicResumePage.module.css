@@ -1,0 +1,266 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+}
+
+.resumeWrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: 100vh;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+}
+
+/* 헤더 */
+.header {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 16px 32px;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: inline-block;
+  text-decoration: none;
+  line-height: 0;
+}
+
+.logo img {
+  display: block;
+}
+
+/* 메인 컨텐츠 - 전역 style.css의 main grid/height/min-width 덮어서 세로 나열 */
+.main {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  padding: 48px 32px;
+}
+
+/* 프로필 섹션 */
+.profileSection {
+  margin-bottom: 48px;
+  padding-bottom: 48px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.profileInfo {
+  width: 100%;
+}
+
+.name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #121212;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.position {
+  font-size: 18px;
+  color: #3182f6;
+  font-weight: 500;
+  margin: 0;
+}
+
+.publicPeriod {
+  font-size: 12px;
+  color: #888;
+  margin: 8px 0 0 0;
+}
+
+.contactList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.contactIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #999;
+}
+
+.description {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #444;
+  margin: 0;
+  white-space: pre-wrap;
+  background: #f9fafb;
+  padding: 20px 24px;
+  border-radius: 12px;
+}
+
+/* 섹션 - 전역 section 고정 높이 제거, 세로로만 쌓이게 */
+.section {
+  height: auto;
+  min-height: 0;
+  margin-bottom: 40px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+/* 푸터 */
+.footer {
+  text-align: center;
+  padding: 32px;
+  background: #f9fafb;
+  border-top: 1px solid #eee;
+}
+
+.footer p {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.footer a {
+  color: #3182f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* 로딩 */
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f0f0f0;
+  border-top-color: #3182f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingWrapper p {
+  font-size: 14px;
+  color: #888;
+}
+
+/* 에러 */
+.errorWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+  padding: 32px;
+  text-align: center;
+}
+
+.errorIcon {
+  margin-bottom: 8px;
+}
+
+.errorWrapper h2 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+.errorWrapper p {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+.homeButton {
+  margin-top: 16px;
+  padding: 12px 24px;
+  background: #3182f6;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.homeButton:hover {
+  background: #1b64da;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .main {
+    padding: 32px 20px;
+  }
+
+  .header {
+    padding: 16px 20px;
+  }
+
+  .profileHeader {
+    gap: 16px;
+  }
+
+  .name {
+    font-size: 26px;
+  }
+
+  .position {
+    font-size: 16px;
+  }
+
+  .contactList {
+    gap: 12px 16px;
+  }
+
+  .description {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+}

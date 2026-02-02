@@ -1,0 +1,246 @@
+/* Credit Balance Card */
+.balanceCard {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.balanceHeader {
+    margin-bottom: 8px;
+}
+
+.balanceHeader h4 {
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.balanceAmount {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.amount {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.unit {
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.loading {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+.chargeButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chargeButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Filter Container */
+.filterContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filterSelect {
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #374151;
+    background: #ffffff;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.filterSelect:focus {
+    outline: none;
+    border-color: #ff6b35;
+}
+
+/* History List */
+.historyList {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.historyHeader {
+    display: grid;
+    grid-template-columns: 160px 80px 100px 100px 1fr;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.headerDate,
+.headerType,
+.headerAmount,
+.headerBalance,
+.headerDescription {
+    text-align: left;
+}
+
+.headerAmount,
+.headerBalance {
+    text-align: right;
+}
+
+.historyItem {
+    display: grid;
+    grid-template-columns: 160px 80px 100px 100px 1fr;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #374151;
+    transition: background-color 0.15s;
+}
+
+.historyItem:last-child {
+    border-bottom: none;
+}
+
+.historyItem:hover {
+    background: #f9fafb;
+}
+
+.date {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.type {
+    font-weight: 500;
+}
+
+.amount {
+    text-align: right;
+    font-weight: 600;
+}
+
+.amount.positive {
+    color: #10b981;
+}
+
+.amount.negative {
+    color: #ef4444;
+}
+
+.balance {
+    text-align: right;
+    color: #374151;
+}
+
+.description {
+    color: #6b7280;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* States */
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 0;
+    color: #6b7280;
+}
+
+.emptyMessage {
+    text-align: center;
+    padding: 60px 0;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.errorMessage {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .historyHeader {
+        display: none;
+    }
+
+    .historyItem {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .historyItem::before {
+        content: none;
+    }
+
+    .date {
+        order: 1;
+    }
+
+    .type {
+        order: 2;
+    }
+
+    .amount {
+        order: 3;
+        text-align: left;
+    }
+
+    .balance {
+        order: 4;
+        text-align: left;
+    }
+
+    .balance::before {
+        content: '잔액: ';
+        color: #9ca3af;
+    }
+
+    .description {
+        order: 5;
+    }
+
+    .balanceAmount {
+        flex-wrap: wrap;
+    }
+
+    .amount {
+        font-size: 28px;
+    }
+}

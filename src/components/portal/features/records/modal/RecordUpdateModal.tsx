@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo} from 'react'
+import React, {useEffect, useState, useMemo, useRef} from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/portal/ui/Dropdown"
@@ -32,8 +32,8 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
-    // TODO: 파일 업로드 기능 추후 오픈 예정
-    // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
@@ -67,8 +67,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
             setEndedAt(record.endedAt ? dayjs(parseInt(record.endedAt.toString())).toISOString() : dayjs().add(1, 'hour').toISOString());
             setRecordGroupId(record.recordGroup?.id || '');
             setIsAllDay(false); // 기본값으로 설정
-            // TODO: 파일 업로드 기능 추후 오픈 예정
-            // setSelectedFile(null);
+            setSelectedFile(null);
         }
     }, [isOpen, record]);
 
@@ -122,11 +121,10 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
         }
     };
 
-    // TODO: 파일 업로드 기능 추후 오픈 예정
-    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = e.target.files?.[0] || null;
-    //     setSelectedFile(file);
-    // };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setSelectedFile(file);
+    };
 
     if (!isOpen || !record) return null;
 
@@ -197,27 +195,27 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                                     rows={4}
                                 />
                             </li>
-                            {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
-                            {/* <li>
+                            <li>
                                 <p>첨부파일</p>
                                 <label className="file">
                                     <input
+                                        ref={fileInputRef}
                                         type="file"
                                         id="file"
                                         onChange={handleFileChange}
                                     />
-                                    <input type="text" placeholder="파일을 선택해 주세요." readOnly />
-                                    <button>파일 찾기</button>
+                                    <input type="text" placeholder="파일을 선택해 주세요." readOnly value={selectedFile?.name ?? ''} />
+                                    <button type="button" onClick={() => fileInputRef.current?.click()}>파일 찾기</button>
                                 </label>
                                 {selectedFile && (
                                     <ul className="file-list">
                                         <li>
                                             <p>{selectedFile.name}</p>
-                                            <button><i className="ic-delete"/></button>
+                                            <button type="button"><i className="ic-delete"/></button>
                                         </li>
                                     </ul>
                                 )}
-                            </li> */}
+                            </li>
                         </ul>
                     </div>
                     <div className="modal-btn">

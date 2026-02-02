@@ -1,0 +1,340 @@
+/* Add Payment Button */
+.addPaymentButton {
+    background: #ff6b35;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.addPaymentButton:hover {
+    background: #e55a2b;
+}
+
+/* Payment List */
+.paymentList {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.paymentHeader {
+    display: grid;
+    grid-template-columns: 160px 1fr 100px 120px 80px 80px;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.headerDate,
+.headerPlan,
+.headerMethod,
+.headerAmount,
+.headerStatus,
+.headerAction {
+    text-align: left;
+}
+
+.headerAmount {
+    text-align: right;
+}
+
+.headerStatus,
+.headerAction {
+    text-align: center;
+}
+
+.paymentItem {
+    display: grid;
+    grid-template-columns: 160px 1fr 100px 120px 80px 80px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #374151;
+    transition: background-color 0.15s;
+    align-items: center;
+}
+
+.paymentItem:last-child {
+    border-bottom: none;
+}
+
+.paymentItem:hover {
+    background: #f9fafb;
+}
+
+.date {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.plan {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.method {
+    color: #6b7280;
+}
+
+.amount {
+    text-align: right;
+    font-weight: 600;
+    color: #374151;
+}
+
+.status {
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.statusCompleted {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.statusPending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.statusFailed {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.statusRefunded {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+.action {
+    text-align: center;
+}
+
+.refundButton {
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.refundButton:hover:not(:disabled) {
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.refundButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* States */
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 0;
+    color: #6b7280;
+}
+
+.emptyMessage {
+    text-align: center;
+    padding: 60px 0;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.errorMessage {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+/* Refund Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modalHeader h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.closeButton:hover {
+    color: #374151;
+}
+
+.modalBody {
+    padding: 20px;
+}
+
+.label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    margin-top: 8px;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: #ff6b35;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.cancelButton {
+    background: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancelButton:hover {
+    background: #f3f4f6;
+}
+
+.submitButton {
+    background: #dc2626;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+    background: #b91c1c;
+}
+
+.submitButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .paymentHeader {
+        display: none;
+    }
+
+    .paymentItem {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .date {
+        order: 1;
+    }
+
+    .plan {
+        order: 2;
+    }
+
+    .method {
+        order: 3;
+    }
+
+    .amount {
+        order: 4;
+        text-align: left;
+    }
+
+    .status {
+        order: 5;
+        width: fit-content;
+    }
+
+    .action {
+        order: 6;
+        text-align: left;
+    }
+
+    .modal {
+        margin: 0 16px;
+    }
+}

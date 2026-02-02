@@ -231,7 +231,6 @@ const CareerContent: React.FC<CareerContentProps> = ({
               }}
           />
         )}
-        <Footer/>
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </section>
   );

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run proto && next dev --turbopack",
-    "dev:parallel": "npm run proto & next dev --turbopack",
+    "dev": "npm run proto && next dev --turbopack -p 4000",
+    "dev:parallel": "npm run proto & next dev --turbopack -p 4000",
     "build": "npm run install-protoc && npm run proto && next build",
-    "start": "next start",
+    "start": "next start -p 4000",
     "lint": "next lint",
     "install-protoc": "bash scripts/install-protoc.sh",
     "proto": "bash scripts/compile-proto.sh"

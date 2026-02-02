@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AttachmentRequest } from '@/generated/attachment';
 import { Attachment_AttachmentCategory, Attachment_AttachmentType } from '@/generated/common';
 import Input from '@/components/portal/ui/Input';
@@ -15,15 +15,14 @@ type AttachmentWithMode = AttachmentRequest & {
   _file?: File; // 선택된 파일 객체 (UI 표시용)
 };
 
-// Uint8Array를 base64 문자열로 변환
-// const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
-//   let binary = '';
-//   const len = bytes.byteLength;
-//   for (let i = 0; i < len; i++) {
-//     binary += String.fromCharCode(bytes[i]);
-//   }
-//   return btoa(binary);
-// };
+const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
+  let binary = '';
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+};
 
 interface AttachmentEditProps {
   attachments: AttachmentRequest[];
@@ -36,7 +35,7 @@ interface AttachmentItemProps {
   handleAttachmentChange: (index: number, field: keyof AttachmentRequest, value: string | number | boolean | undefined) => void;
   toggleVisible: (index: number) => void;
   handleDeleteAttachment: (index: number) => void;
-  // handleFileUpload: (index: number, file: File) => Promise<void>;
+  handleFileUpload: (index: number, file: File) => Promise<void>;
 }
 
 const AttachmentItem: React.FC<AttachmentItemProps> = ({
@@ -45,16 +44,15 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
   handleAttachmentChange,
   toggleVisible,
   handleDeleteAttachment,
-  // handleFileUpload,
+  handleFileUpload,
 }) => {
-  // TODO: 파일 업로드 기능 추후 오픈 예정
-  // const fileInputRef = useRef<HTMLInputElement>(null);
-  // const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     await handleFileUpload(index, file);
-  //   }
-  // };
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await handleFileUpload(index, file);
+    }
+  };
 
   return (
     <DraggableItem 
@@ -76,9 +74,7 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                         setValue={(value) => handleAttachmentChange(index, 'type', normalizeEnumValue(value, Attachment_AttachmentType))}
                     />
                 </li>
-                {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
-                {/* 파일 업로드 (파일 모드일 때) */}
-                {/* {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
+                {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.FILE && (
                 <li>
                     <p>파일 첨부</p>
                     <label className="file">
@@ -95,15 +91,12 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                             value={attachment.fileName || ''}
                             onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
                         />
-                        <button
-                            onClick={() => fileInputRef.current?.click()}>파일 찾기</button>
+                        <button type="button" onClick={() => fileInputRef.current?.click()}>파일 찾기</button>
                     </label>
                 </li>
-                )} */}
-                {/* 파일 URL (URL 모드일 때만) */}
-                {/* {normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL && (
-                
-                )} */}
+                )}
+                {(normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) === Attachment_AttachmentCategory.URL ||
+                  normalizeEnumValue(attachment.category, Attachment_AttachmentCategory) !== Attachment_AttachmentCategory.FILE) && (
                 <li>
                     <p>URL</p>
                     <Input 
@@ -114,6 +107,7 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                         onChange={(e) => handleAttachmentChange(index, 'url', e.target.value)}
                     />
                 </li>
+                )}
             </ul>
             <CardActions
                 isVisible={attachment.isVisible ?? true}
@@ -130,20 +124,18 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
  * sectionHeader, 추가 버튼, 개별 첨부 항목 포함
  */
 const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }) => {
-  // 파일 모드로 attachment 생성 (fileName 필드 사용)
-  // const createFileAttachment = (priority: number = 0): AttachmentWithMode => ({
-  //   id: undefined,
-  //   type: undefined,
-  //   category: Attachment_AttachmentCategory.FILE,
-  //   url: '',    
-  //   fileName: '',
-  //   fileUrl: '',
-  //   fileData: undefined,    
-  //   priority,
-  //   isVisible: true,
-  // });
+  const createFileAttachment = (priority: number = 0): AttachmentWithMode => ({
+    id: undefined,
+    type: undefined,
+    category: Attachment_AttachmentCategory.FILE,
+    url: '',
+    fileName: '',
+    fileUrl: '',
+    fileData: undefined,
+    priority,
+    isVisible: true,
+  });
 
-  // URL 모드로 attachment 생성 (fileUrl 필드 사용)
   const createUrlAttachment = (priority: number = 0): AttachmentWithMode => ({
     id: undefined,
     type: undefined,
@@ -177,11 +169,10 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attachments.length]);
 
-  // TODO: 파일 업로드 기능 추후 오픈 예정
-  // const handleAddFileAttachment = () => {
-  //   const newAttachment = createFileAttachment(attachments.length);
-  //   onUpdate([...attachments, newAttachment]);
-  // };
+  const handleAddFileAttachment = () => {
+    const newAttachment = createFileAttachment(attachments.length);
+    onUpdate([...attachments, newAttachment]);
+  };
 
   const handleAddUrlAttachment = () => {
     const newAttachment = createUrlAttachment(attachments.length);
@@ -226,50 +217,34 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
     onUpdate(updatedAttachments);
   };
 
-  // const handleFileUpload = async (index: number, file: File) => {
-  //   try {
-  //     // 파일을 attachments에 포함
-  //     const newAttachments = [...attachments];
-  //     const attachment = newAttachments[index] as AttachmentWithMode;
-      
-  //     // 파일 데이터를 Uint8Array로 변환
-  //     const uint8Array = await new Promise<Uint8Array>((resolve, reject) => {
-  //       const reader = new FileReader();
-        
-  //       reader.onload = () => {
-  //         const arrayBuffer = reader.result as ArrayBuffer;
-  //         const bytes = new Uint8Array(arrayBuffer);
-  //         resolve(bytes);
-  //       };
-        
-  //       reader.onerror = () => {
-  //         reject(new Error('파일 읽기 실패'));
-  //       };
-        
-  //       // ArrayBuffer로 읽기
-  //       reader.readAsArrayBuffer(file);
-  //     });
-      
-  //     // Uint8Array를 base64로 변환하여 저장 (JSON 직렬화 가능)
-  //     const base64String = uint8ArrayToBase64(uint8Array);
-      
-  //     // fileData를 base64 문자열로 저장 (proto bytes 타입은 JSON에서 base64로 직렬화됨)
-  //     Object.assign(attachment, { fileData: base64String });
-      
-  //     // 파일명이 비어있으면 자동으로 설정
-  //     if (!attachment.fileName) {
-  //       attachment.fileName = file.name;
-  //     }
-      
-  //     // UI 표시를 위해 파일 객체도 임시로 저장
-  //     attachment._file = file;
-      
-  //     onUpdate(newAttachments);
-  //   } catch (error) {
-  //     console.error('파일 읽기 오류:', error);
-  //     alert('파일을 읽는 중 오류가 발생했습니다.');
-  //   }
-  // };
+  const handleFileUpload = async (index: number, file: File) => {
+    try {
+      const newAttachments = [...attachments];
+      const attachment = newAttachments[index] as AttachmentWithMode;
+
+      const uint8Array = await new Promise<Uint8Array>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const arrayBuffer = reader.result as ArrayBuffer;
+          const bytes = new Uint8Array(arrayBuffer);
+          resolve(bytes);
+        };
+        reader.onerror = () => reject(new Error('파일 읽기 실패'));
+        reader.readAsArrayBuffer(file);
+      });
+
+      const base64String = uint8ArrayToBase64(uint8Array);
+      Object.assign(attachment, { fileData: base64String as unknown as Uint8Array });
+      if (!attachment.fileName) {
+        attachment.fileName = file.name;
+      }
+      attachment._file = file;
+      onUpdate(newAttachments);
+    } catch (error) {
+      console.error('파일 읽기 오류:', error);
+      alert('파일을 읽는 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <>
@@ -279,9 +254,8 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
                 {/* <p>{attachments.length}개</p> */}
             </div>
             <div>
-                {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
-                {/* <button onClick={handleAddFileAttachment}><i className="ic-add" />파일 추가</button> */}
-                <button onClick={handleAddUrlAttachment}><i className="ic-add" />추가</button>
+                <button type="button" onClick={handleAddFileAttachment}><i className="ic-add" />파일 추가</button>
+                <button type="button" onClick={handleAddUrlAttachment}><i className="ic-add" />추가</button>
             </div>
         </div>
 
@@ -302,7 +276,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
                 handleAttachmentChange={handleAttachmentChange}
                 toggleVisible={toggleVisible}
                 handleDeleteAttachment={handleDeleteAttachment}
-                // handleFileUpload={handleFileUpload}
+                handleFileUpload={handleFileUpload}
                 />
             );
             }}

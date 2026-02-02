@@ -12,6 +12,7 @@ import DateUtil from '@/utils/DateUtil';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 import CareerContentViewSkeleton from '@/components/portal/ui/skeleton/CareerContentViewSkeleton';
+import { useNotification } from '@/hooks/useNotification';
 
 interface CareerContentViewProps {
   selectedResumeDetail: ResumeDetail | null;
@@ -20,7 +21,6 @@ interface CareerContentViewProps {
   duplicateResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   deleteResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   exportPDF?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
-  copyURL?: (publicId?: string, onSuccess?: () => void) => Promise<void>;
   changeDefault?: (resumeId?: string) => Promise<void>;
 }
 
@@ -28,19 +28,19 @@ interface CareerContentViewProps {
  * 이력서 상세 정보를 읽기 전용으로 표시하는 컴포넌트
  * 모든 View 컴포넌트들을 포함합니다
  */
-const CareerContentView: React.FC<CareerContentViewProps> = ({ 
-  selectedResumeDetail, 
+const CareerContentView: React.FC<CareerContentViewProps> = ({
+  selectedResumeDetail,
   isLoading = false,
-  onEdit, 
+  onEdit,
   duplicateResume,
   deleteResume,
-  // exportPDF,
-  // copyURL,
+  exportPDF,
   changeDefault,
 }) => {
   // 비공개 정보 보기 상태
   const [showHidden, setShowHidden] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const { showNotification } = useNotification();
 
   if (isLoading) {
     return <CareerContentViewSkeleton />;
@@ -88,19 +88,33 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
     }
   };
 
-  // // PDF 내보내기 핸들러
-  // const handleExportPDF = () => {
-  //   if (exportPDF) {
-  //     exportPDF(selectedResumeDetail?.id);
-  //   }
-  // };
+  // PDF 내보내기 핸들러
+  const handleExportPDF = () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (exportPDF) {
+      exportPDF(selectedResumeDetail?.id);
+    }
+  };
 
-  // // URL 복사 핸들러
-  // const handleCopyURL = () => {
-  //   if (copyURL) {
-  //     copyURL(selectedResumeDetail?.publicId);
-  //   }
-  // };
+  // URL 복사 핸들러
+  const handleCopyURL = async () => {
+    if (!selectedResumeDetail?.publicId) {
+      showNotification('공개 이력서 URL을 생성할 수 없습니다.', 'error');
+      return;
+    }
+
+    const publicResumeUrl = `${window.location.origin}/resumes/${selectedResumeDetail.publicId}`;
+
+    try {
+      await navigator.clipboard.writeText(publicResumeUrl);
+      showNotification('공개 이력서 URL이 복사되었습니다.', 'success');
+    } catch {
+      showNotification('URL 복사에 실패했습니다.', 'error');
+    }
+  };
 
   // 비공개 정보 토글 핸들러
   const handleTogglePrivateInfo = () => {
@@ -293,16 +307,16 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                         onClick: handleTogglePrivateInfo,
                         className: 'line gray',
                     },
-                    // {
-                    //     label: 'PDF 내보내기',
-                    //     onClick: handleExportPDF,
-                    //     className: 'dark-gray',
-                    // },
-                    // {
-                    //     label: 'URL 공유하기',
-                    //     onClick: handleCopyURL,
-                    //     className: 'dark-gray',
-                    // },
+                    {
+                        label: 'PDF 내보내기',
+                        onClick: handleExportPDF,
+                        className: 'dark-gray',
+                    },
+                    {
+                        label: 'URL 공유하기',
+                        onClick: handleCopyURL,
+                        className: 'dark-gray',
+                    },
                 ]}
             />
         </div>

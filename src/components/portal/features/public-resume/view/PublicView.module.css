@@ -1,0 +1,283 @@
+.viewContainer {
+  padding: 0;
+}
+
+/* 섹션 헤더 */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #121212;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #121212;
+  display: inline-block;
+  width: auto;
+}
+
+.sectionBadge {
+  font-size: 13px;
+  color: #3182f6;
+  font-weight: 600;
+  background: #e8f3ff;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* 아이템 리스트 */
+.itemList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.item {
+  padding: 20px 24px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.itemHeader {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.itemTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.itemTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: #121212;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.itemSubtitle {
+  font-size: 14px;
+  color: #666;
+  font-weight: 400;
+}
+
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+.itemPeriod {
+  font-size: 13px;
+  color: #888;
+  font-weight: 500;
+}
+
+.itemTag {
+  font-size: 12px;
+  color: #fff;
+  background: #3182f6;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.itemDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.itemDetail {
+  font-size: 13px;
+  color: #666;
+  background: #f5f5f5;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.itemDescription {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #444;
+  margin: 12px 0 0 0;
+  white-space: pre-wrap;
+}
+
+/* 서브 리스트 (어학 시험 등) */
+.subList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.subItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.subItemName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.subItemValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3182f6;
+}
+
+.subItemDate {
+  font-size: 12px;
+  color: #888;
+  margin-left: auto;
+}
+
+/* 첨부파일 리스트 */
+.attachmentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f9fafb;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.attachmentItem:hover {
+  background: #f0f2f5;
+}
+
+.attachmentIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #e8f3ff;
+  border-radius: 8px;
+  color: #3182f6;
+  flex-shrink: 0;
+}
+
+.attachmentInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.attachmentName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachmentType {
+  font-size: 12px;
+  color: #888;
+}
+
+.attachmentLink {
+  font-size: 13px;
+  color: #3182f6;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #e8f3ff;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.attachmentLink:hover {
+  background: #d0e6ff;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .sectionHeader {
+    flex-wrap: wrap;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+    padding-bottom: 8px;
+  }
+
+  .item {
+    padding: 16px 18px;
+  }
+
+  .itemHeader {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .itemMeta {
+    justify-content: flex-start;
+  }
+
+  .itemTitle {
+    font-size: 16px;
+  }
+
+  .subItem {
+    flex-wrap: wrap;
+  }
+
+  .subItemDate {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .attachmentItem {
+    flex-wrap: wrap;
+  }
+
+  .attachmentLink {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+}

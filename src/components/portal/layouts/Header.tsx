@@ -153,6 +153,15 @@ const Header = () => {
                             이직 관리
                         </Link>
                     </li>
+                    <li className={pathname.includes("/templates") ? "active" : ""}>
+                        <Link
+                            href="/templates"
+                            prefetch={false}
+                            onClick={(e) => handleMenuClick(e, "/templates")}
+                        >
+                            템플릿
+                        </Link>
+                    </li>
                 </ul>
                 {/* 서버와 클라이언트에서 동일한 구조 렌더링 (hydration 에러 방지) */}
                 <ul className="user">

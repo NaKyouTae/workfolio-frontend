@@ -179,12 +179,15 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
     // 새로 생성하는 경우 URL은 변경하지 않음 (아직 id가 없음)
   };
 
-  // 저장 후 모드 변경
+  // 저장 후 모드 변경 및 해당 URL로 이동 (편집 화면에서 벗어나기)
   const handleSaveComplete = (mode: ViewMode) => {
-    // mode가 'edit'이 아닌 경우에만 viewMode 업데이트
-    if (mode !== 'edit') {
-      setViewMode(mode);
-      setPreviousMode(mode);
+    if (mode === 'edit') return;
+    setViewMode(mode);
+    setPreviousMode(mode);
+    if (mode === 'home') {
+      router.push('/careers');
+    } else if (mode === 'view' && selectedResumeDetail?.id) {
+      router.push(`/careers/${selectedResumeDetail.id}`);
     }
   };
 

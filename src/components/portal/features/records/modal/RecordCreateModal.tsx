@@ -1,8 +1,9 @@
-import React, {useEffect, useState, useMemo} from 'react'
+import React, {useEffect, useState, useMemo, useRef} from 'react'
 import HttpMethod from "@/enums/HttpMethod"
 import { DateUtil } from "@/utils/DateUtil"
 import Dropdown, {IDropdown} from "@/components/portal/ui/Dropdown"
 import DateTimeInput from "@/components/portal/ui/DateTimeInput"
+import Input from '@/components/portal/ui/Input'
 import {RecordGroup} from "@/generated/common"
 import { RecordCreateRequest, RecordCreateRequest_Attachment } from '@/generated/record'
 import { useRecordGroupStore } from '@/store/recordGroupStore'
@@ -28,6 +29,8 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [attachments, setAttachments] = useState<RecordCreateRequest_Attachment[]>([]);
+    const [selectedAttachment, setSelectedAttachment] = useState<string>('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // store에서 triggerRecordRefresh 가져오기
     const { triggerRecordRefresh } = useRecordGroupStore();
@@ -108,6 +111,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
             setRecordGroupId(dropdownOptions[0]?.value as string || undefined);
             setIsAllDay(false);
             setAttachments([]);
+            setSelectedAttachment('');
         }
     }, [isOpen, selectedDate, dropdownOptions]);
     
@@ -142,60 +146,57 @@ const RecordCreateModal: React.FC<ModalProps> = ({
         }
     };
 
-    // TODO: 파일 업로드 기능 추후 오픈 예정
-    // const handleAttachmentChange = (value: string | number | boolean | undefined) => {
-    //     setSelectedAttachment(value as string);
-    //     setAttachments([...attachments, {
-    //         fileName: value as string,
-    //         fileData: new Uint8Array([]),
-    //     }]);
-    // };
+    const handleAttachmentChange = (value: string | number | boolean | undefined) => {
+        setSelectedAttachment(value as string);
+        setAttachments(prev => [...prev, {
+            fileName: value as string,
+            fileData: new Uint8Array([]),
+        }]);
+    };
 
-    // const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = e.target.files?.[0];
-    //     if (file) {
-    //       await handleFileUpload(file);
-    //     }
-    //   };
-    
-    // const handleFileUpload = async (file: File) => {
-    //     try {
-    //       // 파일 데이터를 Uint8Array로 변환
-    //       const uint8Array = await new Promise<Uint8Array>((resolve, reject) => {
-    //         const reader = new FileReader();            
-    //         reader.onload = () => {
-    //           const arrayBuffer = reader.result as ArrayBuffer;
-    //           const bytes = new Uint8Array(arrayBuffer);
-    //           resolve(bytes);  
-    //         };  
-    //         reader.onerror = () => {
-    //           reject(new Error('파일 읽기 실패'));
-    //         };  
-    //         reader.readAsArrayBuffer(file);
-    //       });  
+    const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            await handleFileUpload(file);
+        }
+    };
 
-    //       // Uint8Array를 base64로 변환하여 저장 (JSON 직렬화 가능)
-    //         const base64String = uint8ArrayToBase64(uint8Array);
+    const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
+        let binary = '';
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+    };
 
-    //         setAttachments([...attachments, {
-    //             fileName: file.name,
-    //             fileData: base64String as unknown as Uint8Array,
-    //         }]);
-    //     } catch (error) {
-    //       console.error('파일 읽기 오류:', error);
-    //       alert('파일을 읽는 중 오류가 발생했습니다.');
-    //     }
-    // };
+    const handleFileUpload = async (file: File) => {
+        try {
+            const uint8Array = await new Promise<Uint8Array>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const arrayBuffer = reader.result as ArrayBuffer;
+                    const bytes = new Uint8Array(arrayBuffer);
+                    resolve(bytes);
+                };
+                reader.onerror = () => {
+                    reject(new Error('파일 읽기 실패'));
+                };
+                reader.readAsArrayBuffer(file);
+            });
 
-    // const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
-    //     let binary = '';
-    //     const len = bytes.byteLength;
-    //     for (let i = 0; i < len; i++) {
-    //         binary += String.fromCharCode(bytes[i]);
-    //     }
-    //     return btoa(binary);
-    // };
-    
+            const base64String = uint8ArrayToBase64(uint8Array);
+            setAttachments(prev => [...prev, {
+                fileName: file.name,
+                fileData: base64String as unknown as Uint8Array,
+            }]);
+            setSelectedAttachment(file.name);
+        } catch (error) {
+            console.error('파일 읽기 오류:', error);
+            alert('파일을 읽는 중 오류가 발생했습니다.');
+        }
+    };
+
     if (!isOpen) return null;
     
     return (
@@ -267,8 +268,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                                     rows={4}
                                 />
                             </li>
-                            {/* TODO: 파일 업로드 기능 추후 오픈 예정 */}
-                            {/* <li>
+                            <li>
                                 <p>첨부파일</p>
                                 <label className="file">
                                     <input
@@ -290,11 +290,11 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                                     <ul className="file-list" key={attachment.fileName}>
                                         <li>
                                             <p>{attachment.fileName}</p>
-                                            <button><i className="ic-delete"/></button>
+                                            <button type="button"><i className="ic-delete"/></button>
                                         </li>
                                     </ul>
                                 ))}
-                            </li> */}
+                            </li>
                         </ul>
                     </div>
                     <div className="modal-btn">
