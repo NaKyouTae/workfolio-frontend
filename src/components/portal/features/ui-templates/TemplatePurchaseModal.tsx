@@ -73,22 +73,28 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
                 <div className={styles.content}>
                     {plans.length > 0 ? (
                         <>
-                            <p className={styles.noPlanHint}>이용 기간을 선택하세요.</p>
-                            <div className={styles.planList}>
+                            <p className={styles.planHint}>이용 기간을 선택하세요.</p>
+                            <div className={styles.planList} role="radiogroup" aria-label="이용 기간 선택">
                                 {plans.map((plan) => (
-                                    <button
+                                    <label
                                         key={plan.id}
-                                        type="button"
                                         className={styles.planRow + (selectedPlanId === plan.id ? ` ${styles.selected}` : '')}
-                                        onClick={() => setSelectedPlanId(plan.id)}
                                     >
+                                        <input
+                                            type="radio"
+                                            name="plan"
+                                            value={plan.id}
+                                            checked={selectedPlanId === plan.id}
+                                            onChange={() => setSelectedPlanId(plan.id)}
+                                            className={styles.planRadio}
+                                        />
                                         <span className={styles.planRowLabel}>
                                             {formatDuration(plan.durationDays)}
                                         </span>
                                         <span className={styles.planRowPrice}>
                                             {plan.price.toLocaleString()} 크레딧
                                         </span>
-                                    </button>
+                                    </label>
                                 ))}
                             </div>
                         </>
@@ -102,7 +108,7 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
                         <span className={styles.finalAmount}>{finalPrice.toLocaleString()} 크레딧</span>
                     </div>
                     {balance < finalPrice && (
-                        <p style={{ marginTop: '8px', fontSize: '13px', color: '#dc2626' }}>
+                        <p className={styles.balanceError}>
                             보유 크레딧이 부족합니다. (보유: {balance.toLocaleString()} 크레딧)
                         </p>
                     )}

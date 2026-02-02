@@ -21,7 +21,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const { showNotification } = useNotification();
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [purchaseModalTemplate, setPurchaseModalTemplate] = useState<UITemplate | null>(null);
-    const [selectedUITemplate, setSelectedUITemplate] = useState<UITemplate | null>(null);
     const [ownedUITemplateIds, setOwnedUITemplateIds] = useState<Set<string>>(new Set());
 
 
@@ -51,7 +50,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
 
     const handleUITemplateSelect = (uiTemplate: UITemplate) => {
         if (!isLoggedIn()) {
-            setSelectedUITemplate(uiTemplate);
             setShowLoginModal(true);
             return;
         }
@@ -81,15 +79,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
         }
     };
 
-    const handleLoginSuccess = () => {
-        setShowLoginModal(false);
-        fetchBalance();
-        checkOwnedUITemplates();
-        if (selectedUITemplate) {
-            setPurchaseModalTemplate(selectedUITemplate);
-        }
-    };
-
     const handleTemplatePreview = (uiTemplate: UITemplate) => {
         const path = getPreviewPathFromUITemplate(uiTemplate);
         if (path) {
@@ -99,11 +88,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
 
     const urlUITemplates = uiTemplates.filter(t => t.type === 'URL');
     const pdfUITemplates = uiTemplates.filter(t => t.type === 'PDF');
-
-    const sectionStyle: React.CSSProperties = {
-        marginBottom: '48px',
-        position: 'relative',
-    };
 
     const sectionHeaderStyle: React.CSSProperties = {
         marginBottom: '16px',
@@ -127,7 +111,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             )}
 
             {/* URL Templates Section - 항상 표시 (플로팅 네비 스크롤용 id) */}
-            <div id="section-url" style={sectionStyle}>
+            <div id="section-url" style={{ marginBottom: '48px' }}>
                 <div style={sectionHeaderStyle}>
                     <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{
@@ -164,7 +148,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             </div>
 
             {/* PDF Templates Section - 항상 표시 (플로팅 네비 스크롤용 id) */}
-            <div id="section-pdf" style={sectionStyle}>
+            <div id="section-pdf">
                 <div style={sectionHeaderStyle}>
                     <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{

@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { UITemplate, getUITemplateTypeLabel, formatDuration } from '@/types/uitemplate';
 import {
@@ -20,6 +20,7 @@ interface UITemplateCardProps {
 }
 
 const UITemplateCard: React.FC<UITemplateCardProps> = ({ uiTemplate, onSelect, onPreview, isOwned = false }) => {
+    const [buttonHover, setButtonHover] = useState(false);
     const plans = (uiTemplate.plans ?? []).slice().sort((a, b) => a.displayOrder - b.displayOrder);
 
     const resumeSlug = getResumeTemplateSlugFromUITemplate(uiTemplate) ?? getResumeTemplateSlugFromPdfUrlPath(uiTemplate.urlPath);
@@ -81,13 +82,14 @@ const UITemplateCard: React.FC<UITemplateCardProps> = ({ uiTemplate, onSelect, o
         width: '100%',
         padding: '6px 12px',
         minHeight: '32px',
-        backgroundColor: '#3182f6',
+        backgroundColor: buttonHover ? '#2563eb' : '#3182f6',
         color: '#fff',
         border: 'none',
         borderRadius: '6px',
         fontSize: '13px',
         fontWeight: '600',
         cursor: 'pointer',
+        transition: 'background-color 0.2s ease',
     };
 
     return (
@@ -200,9 +202,14 @@ const UITemplateCard: React.FC<UITemplateCardProps> = ({ uiTemplate, onSelect, o
                 {plans.length > 0 ? (
                     <div style={{ marginBottom: '10px' }}>
                         <div style={{ fontSize: '12px', color: '#666', marginBottom: '6px' }}>이용 기간 · 크레딧</div>
-                        <p style={{ fontSize: '13px', color: '#333', margin: 0, lineHeight: 1.5 }}>
-                            {plans.map((plan) => `${formatDuration(plan.durationDays)} ${plan.price.toLocaleString()} 크레딧`).join(' · ')}
-                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {plans.map((plan) => (
+                                <div key={plan.id} style={{ fontSize: '13px', color: '#333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span>{formatDuration(plan.durationDays)}</span>
+                                    <span>{plan.price.toLocaleString()} 크레딧</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 ) : (
                     <div style={priceRowStyle}>
@@ -218,7 +225,13 @@ const UITemplateCard: React.FC<UITemplateCardProps> = ({ uiTemplate, onSelect, o
                     </div>
                 )}
                 {showPurchaseButton && (
-                    <button type="button" onClick={handlePurchaseClick} style={buttonStyle}>
+                    <button
+                        type="button"
+                        onClick={handlePurchaseClick}
+                        style={buttonStyle}
+                        onMouseEnter={() => setButtonHover(true)}
+                        onMouseLeave={() => setButtonHover(false)}
+                    >
                         구매하기
                     </button>
                 )}

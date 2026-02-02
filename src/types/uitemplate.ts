@@ -105,10 +105,10 @@ export function getUITemplateTypeLabel(type: UITemplateType | string): string {
     const typeValue = typeof type === 'string' ? type : UITemplateType[type];
     switch (typeValue) {
         case 'URL':
-        case UITemplateType.URL:
+        case UITemplateType.URL.toString():
             return 'URL 템플릿';
         case 'PDF':
-        case UITemplateType.PDF:
+        case UITemplateType.PDF.toString():
             return 'PDF 템플릿';
         default:
             return '알 수 없음';

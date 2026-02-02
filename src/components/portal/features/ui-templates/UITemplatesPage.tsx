@@ -26,18 +26,18 @@ const UITemplatesPage: React.FC = () => {
         <>
             <main className={styles.mainLayout}>
                 <div className={styles.storeSection} data-scroll-container>
-                    <div className={styles.storePageCont}>
-                        <article className={styles.storeArticle}>
-                            <UITemplateList />
-                        </article>
-                        <div className={styles.storeFloatingColumn}>
-                            <FloatingNavigation navigationItems={STORE_FLOATING_NAV_ITEMS} />
-                            {loggedIn && (
-                                <>
-                                    <div className={styles.storeCreditArea}>
-                                        <CreditBalance compact />
-                                    </div>
-                                    <div>
+                    <div className="contents">
+                        <div className="page-cont">
+                            <article>
+                                <UITemplateList />
+                            </article>
+                            <div className={styles.floatingColumn}>
+                                <FloatingNavigation navigationItems={STORE_FLOATING_NAV_ITEMS} />
+                                {loggedIn && (
+                                    <>
+                                        <div className={styles.storeCreditArea}>
+                                            <CreditBalance compact />
+                                        </div>
                                         <button
                                             type="button"
                                             className={styles.storeChargeButton}
@@ -45,9 +45,9 @@ const UITemplatesPage: React.FC = () => {
                                         >
                                             크레딧 충전
                                         </button>
-                                    </div>
-                                </>
-                            )}
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
