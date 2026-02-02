@@ -6,6 +6,14 @@ export enum UITemplateType {
     PDF = 2,
 }
 
+/** 템플릿 이용 기간 옵션 (1/3/6/9/12개월 등) */
+export interface UiTemplatePlan {
+    id: string;
+    durationDays: number;
+    price: number;
+    displayOrder: number;
+}
+
 export interface UITemplate {
     id: string;
     name: string;
@@ -19,6 +27,8 @@ export interface UITemplate {
     isActive: boolean;
     isPopular: boolean;
     displayOrder: number;
+    /** 이용 기간별 가격 (1/3/6/9/12개월). 없으면 template.price/durationDays 사용 */
+    plans?: UiTemplatePlan[];
     createdAt: number;
     updatedAt: number;
 }
@@ -71,6 +81,8 @@ export interface WorkerUITemplateGetResponse {
 
 export interface UITemplatePurchaseRequest {
     uiTemplateId: string;
+    /** 이용 기간 플랜 ID (선택 시 해당 기간·가격으로 결제) */
+    planId?: string;
 }
 
 export interface UITemplatePurchaseResponse {

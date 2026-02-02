@@ -1,0 +1,16 @@
+/* 스토어 페이지: 최소 뷰포트 높이, main이 남은 공간 차지 → 컨텐츠 스크롤 + 푸터 하단 고정 */
+.pageWrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.pageWrapper > :first-child {
+    flex-shrink: 0;
+}
+
+.pageWrapper > main {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}

@@ -1,0 +1,172 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.closeButton {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 24px;
+    line-height: 1;
+    padding: 0;
+}
+
+.closeButton:hover {
+    color: #374151;
+}
+
+.content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.planList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.planRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.planRow:hover {
+    background-color: #f9fafb;
+}
+
+.planRow.selected {
+    border-color: #3182f6;
+    background-color: #eff6ff;
+}
+
+.planRowLabel {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.planRowPrice {
+    font-size: 15px;
+    font-weight: 600;
+    color: #3182f6;
+}
+
+.finalRow {
+    margin-top: 20px;
+    padding: 16px;
+    background: #f0f9ff;
+    border-radius: 10px;
+    border: 1px solid #bae6fd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.finalLabel {
+    font-size: 14px;
+    color: #0c4a6e;
+    font-weight: 600;
+}
+
+.finalAmount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0369a1;
+}
+
+.footer {
+    padding: 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.footer button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.cancelButton {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.cancelButton:hover {
+    background: #e5e7eb;
+}
+
+.purchaseButton {
+    background: #3182f6;
+    color: #fff;
+}
+
+.purchaseButton:hover {
+    background: #1d6fe8;
+}
+
+.purchaseButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.noPlanHint {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 12px;
+}

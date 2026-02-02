@@ -12,6 +12,7 @@ import {
 
 interface UITemplateCardProps {
     uiTemplate: UITemplate;
+    /** 구매하기 클릭 시 호출 (모달에서 플랜 선택) */
     onSelect: (uiTemplate: UITemplate) => void;
     /** URL/PDF 템플릿: 클릭 시 미리보기로 이동 (미설정이면 카드 클릭 = 구매) */
     onPreview?: (uiTemplate: UITemplate) => void;
@@ -19,6 +20,8 @@ interface UITemplateCardProps {
 }
 
 const UITemplateCard: React.FC<UITemplateCardProps> = ({ uiTemplate, onSelect, onPreview, isOwned = false }) => {
+    const plans = (uiTemplate.plans ?? []).slice().sort((a, b) => a.displayOrder - b.displayOrder);
+
     const resumeSlug = getResumeTemplateSlugFromUITemplate(uiTemplate) ?? getResumeTemplateSlugFromPdfUrlPath(uiTemplate.urlPath);
     const templateLabel = resumeSlug ? getResumeTemplateConfig(resumeSlug).label : null;
     const previewPath = getPreviewPathFromUITemplate(uiTemplate);
@@ -194,17 +197,26 @@ const UITemplateCard: React.FC<UITemplateCardProps> = ({ uiTemplate, onSelect, o
             </div>
 
             <div style={bottomBlockStyle}>
-                <div style={priceRowStyle}>
-                    <div>
-                        <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#333' }}>
-                            {uiTemplate.price.toLocaleString()}
-                        </span>
-                        <span style={{ fontSize: '12px', color: '#666' }}> 크레딧</span>
+                {plans.length > 0 ? (
+                    <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontSize: '12px', color: '#666', marginBottom: '6px' }}>이용 기간 · 크레딧</div>
+                        <p style={{ fontSize: '13px', color: '#333', margin: 0, lineHeight: 1.5 }}>
+                            {plans.map((plan) => `${formatDuration(plan.durationDays)} ${plan.price.toLocaleString()} 크레딧`).join(' · ')}
+                        </p>
                     </div>
-                    <span style={{ fontSize: '12px', color: '#999' }}>
-                        {formatDuration(uiTemplate.durationDays)}
-                    </span>
-                </div>
+                ) : (
+                    <div style={priceRowStyle}>
+                        <div>
+                            <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#333' }}>
+                                {uiTemplate.price.toLocaleString()}
+                            </span>
+                            <span style={{ fontSize: '12px', color: '#666' }}> 크레딧</span>
+                        </div>
+                        <span style={{ fontSize: '12px', color: '#999' }}>
+                            {formatDuration(uiTemplate.durationDays)}
+                        </span>
+                    </div>
+                )}
                 {showPurchaseButton && (
                     <button type="button" onClick={handlePurchaseClick} style={buttonStyle}>
                         구매하기

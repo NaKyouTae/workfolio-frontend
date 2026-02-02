@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useUITemplates } from '@/hooks/useUITemplates';
-import { UITemplate, formatDuration } from '@/types/uitemplate';
+import { UITemplate } from '@/types/uitemplate';
 import { useCredits } from '@/hooks/useCredits';
 import { isLoggedIn } from '@/utils/authUtils';
 import LoginModal from '@/components/portal/ui/LoginModal';
 import { useNotification } from '@/hooks/useNotification';
-import { useConfirm } from '@/hooks/useConfirm';
 import UITemplateCard from './UITemplateCard';
+import TemplatePurchaseModal from './TemplatePurchaseModal';
 import { getPreviewPathFromUITemplate } from '@/components/portal/features/public-resume/templates/resumeTemplateConfig';
 
 interface UITemplateListProps {
@@ -19,8 +19,8 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const { uiTemplates, fetchUITemplates, purchaseUITemplate, checkOwnership, loading, error } = useUITemplates();
     const { balance, fetchBalance } = useCredits();
     const { showNotification } = useNotification();
-    const { confirm } = useConfirm();
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [purchaseModalTemplate, setPurchaseModalTemplate] = useState<UITemplate | null>(null);
     const [selectedUITemplate, setSelectedUITemplate] = useState<UITemplate | null>(null);
     const [ownedUITemplateIds, setOwnedUITemplateIds] = useState<Set<string>>(new Set());
 
@@ -49,7 +49,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
         setOwnedUITemplateIds(owned);
     };
 
-    const handleUITemplateSelect = async (uiTemplate: UITemplate) => {
+    const handleUITemplateSelect = (uiTemplate: UITemplate) => {
         if (!isLoggedIn()) {
             setSelectedUITemplate(uiTemplate);
             setShowLoginModal(true);
@@ -61,29 +61,23 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             return;
         }
 
-        const result = await confirm({
-            icon: '/assets/img/ico/ic-info.svg',
-            title: `${uiTemplate.name} 템플릿을 구매하시겠어요?`,
-            description: `${uiTemplate.price.toLocaleString()} 크레딧이 차감됩니다. (현재 잔액: ${balance.toLocaleString()} 크레딧)\n이용 기간: ${formatDuration(uiTemplate.durationDays)}`,
-            confirmText: '구매하기',
-            cancelText: '취소',
-        });
+        setPurchaseModalTemplate(uiTemplate);
+    };
 
-        if (result) {
-            if (balance < uiTemplate.price) {
-                showNotification('크레딧이 부족합니다. 크레딧을 충전해주세요.', 'error');
-                return;
-            }
+    const handlePurchaseModalSuccess = () => {
+        if (purchaseModalTemplate) {
+            showNotification('템플릿 구매가 완료되었습니다.', 'success');
+            fetchBalance();
+            setOwnedUITemplateIds(prev => new Set(prev).add(purchaseModalTemplate.id));
+            onPurchaseSuccess?.();
+        }
+        setPurchaseModalTemplate(null);
+    };
 
-            const purchaseResult = await purchaseUITemplate(uiTemplate.id);
-            if (purchaseResult) {
-                showNotification('템플릿 구매가 완료되었습니다.', 'success');
-                fetchBalance();
-                setOwnedUITemplateIds(prev => new Set(prev).add(uiTemplate.id));
-                onPurchaseSuccess?.();
-            } else {
-                showNotification(error || '템플릿 구매에 실패했습니다.', 'error');
-            }
+    const handlePurchaseModalPurchase = async (uiTemplateId: string, planId?: string) => {
+        const result = await purchaseUITemplate(uiTemplateId, planId);
+        if (!result) {
+            throw new Error(error || '템플릿 구매에 실패했습니다.');
         }
     };
 
@@ -92,7 +86,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
         fetchBalance();
         checkOwnedUITemplates();
         if (selectedUITemplate) {
-            handleUITemplateSelect(selectedUITemplate);
+            setPurchaseModalTemplate(selectedUITemplate);
         }
     };
 
@@ -209,6 +203,14 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             <LoginModal
                 isOpen={showLoginModal}
                 onClose={() => setShowLoginModal(false)}
+            />
+            <TemplatePurchaseModal
+                isOpen={!!purchaseModalTemplate}
+                onClose={() => setPurchaseModalTemplate(null)}
+                template={purchaseModalTemplate}
+                balance={balance}
+                onPurchase={handlePurchaseModalPurchase}
+                onSuccess={handlePurchaseModalSuccess}
             />
         </div>
     );

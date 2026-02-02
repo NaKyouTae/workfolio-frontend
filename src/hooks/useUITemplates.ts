@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import HttpMethod from '@/enums/HttpMethod';
 import {
     UITemplate,
+    UiTemplatePlan,
     WorkerUITemplate,
     UITemplateListResponse,
     WorkerUITemplateListResponse,
@@ -10,6 +11,38 @@ import {
     ActiveUITemplatesResponse,
     UITemplateType,
 } from '@/types/uitemplate';
+
+/** Backend proto JSON uses snake_case; normalize to camelCase for frontend */
+function normalizePlan(raw: Record<string, unknown>): UiTemplatePlan {
+    return {
+        id: String(raw.id ?? ''),
+        durationDays: Number(raw.duration_days ?? raw.durationDays ?? 0),
+        price: Number(raw.price ?? 0),
+        displayOrder: Number(raw.display_order ?? raw.displayOrder ?? 0),
+    };
+}
+
+function normalizeUITemplate(raw: Record<string, unknown>): UITemplate {
+    const rawPlans = raw.plans as Record<string, unknown>[] | undefined;
+    const plans = Array.isArray(rawPlans) ? rawPlans.map(normalizePlan) : undefined;
+    return {
+        id: String(raw.id ?? ''),
+        name: String(raw.name ?? ''),
+        description: raw.description != null ? String(raw.description) : undefined,
+        type: (raw.type as UITemplate['type']) ?? UITemplateType.UNKNOWN,
+        price: Number(raw.price ?? 0),
+        durationDays: Number(raw.duration_days ?? raw.durationDays ?? 0),
+        urlPath: raw.url_path != null ? String(raw.url_path) : raw.urlPath != null ? String(raw.urlPath) : undefined,
+        previewImageUrl: raw.preview_image_url != null ? String(raw.preview_image_url) : raw.previewImageUrl != null ? String(raw.previewImageUrl) : undefined,
+        thumbnailUrl: raw.thumbnail_url != null ? String(raw.thumbnail_url) : raw.thumbnailUrl != null ? String(raw.thumbnailUrl) : undefined,
+        isActive: Boolean(raw.is_active ?? raw.isActive ?? true),
+        isPopular: Boolean(raw.is_popular ?? raw.isPopular ?? false),
+        displayOrder: Number(raw.display_order ?? raw.displayOrder ?? 0),
+        plans: plans?.length ? plans : undefined,
+        createdAt: Number(raw.created_at ?? raw.createdAt ?? 0),
+        updatedAt: Number(raw.updated_at ?? raw.updatedAt ?? 0),
+    };
+}
 
 interface UseUITemplatesReturn {
     uiTemplates: UITemplate[];
@@ -23,7 +56,7 @@ interface UseUITemplatesReturn {
     fetchUITemplates: (type?: UITemplateType | string) => Promise<void>;
     fetchMyUITemplates: (page?: number, size?: number) => Promise<void>;
     fetchActiveUITemplates: (type?: UITemplateType | string) => Promise<void>;
-    purchaseUITemplate: (uiTemplateId: string) => Promise<UITemplatePurchaseResponse | null>;
+    purchaseUITemplate: (uiTemplateId: string, planId?: string) => Promise<UITemplatePurchaseResponse | null>;
     checkOwnership: (uiTemplateId: string) => Promise<UITemplateOwnershipResponse | null>;
 }
 
@@ -55,8 +88,10 @@ export const useUITemplates = (): UseUITemplatesReturn => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data: UITemplateListResponse = await response.json();
-            setUITemplates(data.uiTemplates ?? []);
+            const data = (await response.json()) as Record<string, unknown>;
+            const rawList = (data.ui_templates ?? data.uiTemplates) as Record<string, unknown>[] | undefined;
+            const list = Array.isArray(rawList) ? rawList.map(normalizeUITemplate) : [];
+            setUITemplates(list);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '템플릿 조회 중 오류가 발생했습니다.';
             setError(errorMessage);
@@ -130,18 +165,21 @@ export const useUITemplates = (): UseUITemplatesReturn => {
         }
     }, []);
 
-    // Purchase UI template
-    const purchaseUITemplate = useCallback(async (uiTemplateId: string): Promise<UITemplatePurchaseResponse | null> => {
+    // Purchase UI template (optionally with planId for duration-based pricing)
+    const purchaseUITemplate = useCallback(async (uiTemplateId: string, planId?: string): Promise<UITemplatePurchaseResponse | null> => {
         try {
             setLoading(true);
             setError(null);
+
+            const body: Record<string, string> = { ui_template_id: uiTemplateId };
+            if (planId) body.plan_id = planId;
 
             const response = await fetch('/api/ui-templates/purchase', {
                 method: HttpMethod.POST,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ uiTemplateId }),
+                body: JSON.stringify(body),
             });
 
             if (!response.ok) {

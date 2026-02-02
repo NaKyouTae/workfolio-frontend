@@ -107,7 +107,7 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
     const firstElement = document.getElementById(firstItem.id);
     if (!firstElement) return;
     
-    const scrollContainer = firstElement.closest('.page-cont') as HTMLElement;
+    const scrollContainer = (firstElement.closest('.page-cont') || firstElement.closest('[data-scroll-container]')) as HTMLElement;
 
     const handleScroll = () => {
       if (scrollContainer) {
