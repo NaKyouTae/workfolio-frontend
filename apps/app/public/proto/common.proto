@@ -1,0 +1,859 @@
+syntax = "proto3";
+
+package com.spectrum.workfolio.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spectrum.workfolio.proto.common";
+option java_outer_classname = "CommonProto";
+
+message Worker {
+  enum Gender {
+    UNKNOWN = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+  enum WorkerStatus {
+    WORKER_STATUS_UNKNOWN = 0;
+    ACTIVE = 1;
+    INACTIVE = 2;
+    DELETED = 3;
+  }
+
+  string id = 1;
+  string nick_name = 2;
+  string phone = 3;
+  string email = 4;
+  optional uint64 birth_date = 5;
+  optional Gender gender = 6;
+
+  WorkerStatus status = 97;
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Account {
+  enum AccountType {
+    UNKNOWN = 0;
+    UNSPECIFIED = 1;
+    BASIC = 2;
+    PREMIUM = 3;
+  }
+
+  string id = 1;
+  AccountType type = 2;
+  string provider_id = 3;
+  string email = 4;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Resume {
+  enum Gender {
+    UNKNOWN = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+
+  string id = 1;
+  string title = 2;
+  string name = 3;
+  string phone = 4;
+  string email = 5;
+  optional uint64 birth_date = 6;
+  optional Resume.Gender gender = 7;
+  string position = 8;
+  optional bool is_public = 9;
+  optional bool is_default = 10;
+  string description = 11;
+  optional uint64 public_start_date = 12;
+  optional uint64 public_end_date = 13;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message ResumeDetail {
+  string id = 1;
+  string title = 2;
+  string name = 3;
+  string phone = 4;
+  string email = 5;
+  optional uint64 birth_date = 6;
+  optional Resume.Gender gender = 7;
+  string position = 8;
+  optional bool is_public = 9;
+  optional bool is_default = 10;
+  string public_id = 11;
+  string description = 12;
+  optional uint64 public_start_date = 13;
+  optional uint64 public_end_date = 14;
+
+  Worker worker = 50;
+
+  repeated Career careers = 51;
+  repeated Education educations = 52;
+  repeated Activity activities = 53;
+  repeated Project projects = 54;
+  repeated LanguageSkill language_skills = 55;
+  repeated Attachment attachments = 56;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Career {
+  enum EmploymentType {
+    UNKNOWN = 0;
+    FULL_TIME = 1;
+    CONTRACT = 2;
+    INTERN = 3;
+    FREELANCER = 4;
+  }
+
+  string id = 1;
+  string name = 2;
+  optional uint64 started_at = 3;
+  optional uint64 ended_at = 4;
+  optional bool is_working = 5;
+  string position = 6;
+  optional EmploymentType employmentType = 7;
+  string department = 8;
+  string job_title = 9;
+  string rank = 10;
+  uint32 salary = 11;
+  string description = 12;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+  repeated Salary salaries = 51;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Salary {
+  string id = 1;
+  uint64 amount = 2;
+  string memo = 3;
+  optional uint64 negotiation_date = 4;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Career career = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Education {
+  enum EducationStatus {
+    UNKNOWN = 0;
+    GRADUATED = 1;
+    GRADUATING = 2;
+    ENROLLED = 3;
+    DROPPED_OUT = 4;
+    COMPLETED = 5;
+    ON_LEAVE = 6;
+  }
+
+  string id = 1;
+  string major = 2;
+  string name = 3;
+  string description = 4;
+  optional EducationStatus status = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Activity {
+  enum ActivityType {
+    UNKNOWN = 0;
+    EXTERNAL = 1;
+    EDUCATION = 2;
+    CERTIFICATION = 3;
+    AWARD = 4;
+    COMPETITION = 5;
+    ETC = 6;
+  }
+
+  string id = 1;
+  optional ActivityType type = 2;
+  string name = 3;
+  string organization = 4;
+  string certificate_number = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+  string description = 8;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Project {
+  string id = 1;
+  string title = 2;
+  string affiliation = 3;
+  string role = 4;
+  string description = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message LanguageSkill {
+  enum Language {
+    LANGUAGE_UNKNOWN = 0;
+    ENGLISH = 1;
+    JAPANESE = 2;
+    CHINESE = 3;
+    KOREAN = 4;
+    FRENCH = 5;
+    SPANISH = 6;
+    GERMAN = 7;
+    RUSSIAN = 8;
+    VIETNAMESE = 9;
+    ITALIAN = 10;
+    THAI = 11;
+    ARABIC = 12;
+    PORTUGUESE = 13;
+    INDONESIAN = 14;
+    MONGOLIAN = 15;
+    TURKISH = 16;
+  }
+  enum LanguageLevel {
+    LANGUAGE_LEVEL_UNKNOWN = 0;
+    DAILY_CONVERSATION = 1;
+    BUSINESS_CONVERSATION = 2;
+    NATIVE_LEVEL = 3;
+  }
+
+  string id = 1;
+  optional Language language = 2;
+  optional LanguageLevel level = 3;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  Resume resume = 50;
+  repeated LanguageTest language_tests = 51;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message LanguageTest {
+  string id = 1;
+  string name = 2;
+  string score = 3;
+  optional uint64 acquired_at = 4;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  LanguageSkill language_skill = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Record {
+  enum RecordType {
+    UNKNOWN = 0;
+    TIME = 1;
+    DAY = 2;
+    MULTI_DAY = 3;
+  }
+
+  string id = 1;
+  string title = 2;
+  RecordType type = 3;
+  string description = 4;
+  uint64 started_at = 5;
+  uint64 ended_at = 6;
+
+  Worker worker = 50;
+  RecordGroup record_group = 51;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message RecordGroup {
+  enum RecordGroupType {
+    UNKNOWN = 0;
+    PUBLIC = 1;
+    PRIVATE = 2;
+    SHARED = 3;
+  }
+  enum RecordGroupRole {
+    ROLE_UNKNOWN = 0;
+    ADMIN = 1;
+    FULL = 2;
+    VIEW = 3;
+  }
+
+  string id = 1;
+  RecordGroupType type = 2;
+  string title = 3;
+  bool is_default = 4;
+  string public_id = 5;
+  string color = 6;
+  RecordGroupRole default_role = 7;
+
+  uint64 priority = 30;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message WorkerRecordGroup {
+  enum RecordGroupRole {
+    UNKNOWN = 0;
+    ADMIN = 1;
+    FULL = 2;
+    VIEW = 3;
+  }
+
+  string id = 1;
+  string public_id = 2;
+  RecordGroupRole role = 3;
+  uint64 priority = 4;
+
+  Worker worker = 50;
+  RecordGroup record_group = 51;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message SuccessResponse {
+  bool is_success = 1;
+}
+
+message SystemConfig {
+  enum SystemConfigType {
+    UNKNOWN = 0;
+    DEFAULT_RECORD_TYPE = 1;
+  }
+
+  string id = 1;
+  SystemConfigType type = 2;
+  string value = 3;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOver {
+  string id = 1;
+  string name = 2;
+  optional uint64 started_at = 3;
+  optional uint64 ended_at = 4;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOverDetail {
+  string id = 1;
+  string name = 2;
+  optional uint64 started_at = 3;
+  optional uint64 ended_at = 4;
+
+  Worker worker = 50;
+  TurnOverGoalDetail turn_over_goal = 51;
+  TurnOverChallengeDetail turn_over_challenge = 52;
+  TurnOverRetrospectiveDetail turn_over_retrospective = 53;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOverGoal {
+  string id = 1;
+  string reason = 2;
+  string goal = 3;
+
+  TurnOver turn_over = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOverGoalDetail {
+  string id = 1;
+  string reason = 2;
+  string goal = 3;
+
+  repeated SelfIntroduction self_introductions = 50;
+  repeated InterviewQuestion interview_questions = 51;
+  repeated CheckList check_list = 52;
+  repeated Memo memos = 53;
+  repeated Attachment attachments = 54;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message SelfIntroduction {
+  string id = 1;
+  string question = 2;
+  string content = 3;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  TurnOver turn_over = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message InterviewQuestion {
+  string id = 1;
+  string question = 2;
+  string answer = 3;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  TurnOver turn_over = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message CheckList {
+  string id = 1;
+  bool checked = 2;
+  string content = 3;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  TurnOver turn_over = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOverChallenge {
+  string id = 1;
+
+  TurnOver turn_over = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOverChallengeDetail {
+  string id = 1;
+
+  repeated JobApplicationDetail job_applications = 50;
+  repeated Memo memos = 51;
+  repeated Attachment attachments = 52;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message JobApplication {
+  enum JobApplicationStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    RUNNING = 2;
+    PASSED = 3;
+    FAILED = 4;
+    CANCELLED = 5;
+  }
+  string id = 1;
+  string name = 2;
+  string position = 3;
+  string job_posting_title = 4;
+  string job_posting_url = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+  string application_source = 8;
+  string memo = 9;
+
+  JobApplicationStatus status = 29;
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  TurnOver turn_over = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message JobApplicationDetail {
+  string id = 1;
+  string name = 2;
+  string position = 3;
+  string job_posting_title = 4;
+  string job_posting_url = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+  string application_source = 8;
+  string memo = 9;
+
+  JobApplication.JobApplicationStatus status = 29;
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  repeated ApplicationStage application_stages = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message ApplicationStage {
+  enum ApplicationStageStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    PASSED = 2;
+    FAILED = 3;
+    SCHEDULED = 4;
+    CANCELLED = 5;
+  }
+
+  string id = 1;
+  string name = 2;
+  ApplicationStageStatus status = 3;
+  optional uint64 started_at = 4;
+  string memo = 5;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  JobApplication job_application = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOverRetrospective {
+  enum EmploymentType {
+    EMPLOYMENT_TYPE_UNKNOWN = 0;
+    FULL_TIME = 1;
+    CONTRACT = 2;
+    FREELANCER = 3;
+    INTERN = 4;
+  }
+
+  string id = 1;
+  string name = 2;
+  uint32 salary = 3;
+  string position = 4;
+  string job_title = 5;
+  string rank = 6;
+  string department = 7;
+  string reason = 8;
+  uint32 score = 9;
+  string review_summary = 10;
+  optional uint64 joined_at = 11;
+  string work_type = 12;
+  optional EmploymentType employment_type = 13;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message TurnOverRetrospectiveDetail {
+  enum EmploymentType {
+    EMPLOYMENT_TYPE_UNKNOWN = 0;
+    FULL_TIME = 1;
+    CONTRACT = 2;
+    FREELANCER = 3;
+    INTERN = 4;
+  }
+
+  string id = 1;
+  string name = 2;
+  uint32 salary = 3;
+  string position = 4;
+  string job_title = 5;
+  string rank = 6;
+  string department = 7;
+  string reason = 8;
+  uint32 score = 9;
+  string review_summary = 10;
+  optional uint64 joined_at = 11;
+  string work_type = 12;
+  optional EmploymentType employment_type = 13;
+
+  repeated Memo memos = 51;
+  repeated Attachment attachments = 52;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Attachment {
+  enum AttachmentType {
+    TYPE_UNKNOWN = 0;
+    RESUME = 1;
+    PORTFOLIO = 2;
+    CERTIFICATE = 3;
+    CAREER_STATEMENT = 4;
+    ETC = 5;
+  }
+
+  enum AttachmentCategory {
+    CATEGORY_UNKNOWN = 0;
+    FILE = 1;
+    URL = 2;
+  }
+
+  enum AttachmentTargetType {
+    TARGET_TYPE_UNKNOWN = 0;
+    ENTITY_RECORD = 1;
+    ENTITY_RESUME = 2;
+    ENTITY_TURN_OVER_GOAL = 3;
+    ENTITY_TURN_OVER_CHALLENGE = 4;
+    ENTITY_TURN_OVER_RETROSPECTIVE = 5;
+  }
+
+  string id = 1;
+  optional AttachmentType type = 2;
+  AttachmentCategory category = 3;
+  string url = 4;
+  string file_name = 5;
+  string file_url = 6;
+  string target_id = 7;
+  AttachmentTargetType target_type = 8;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Memo {
+  enum MemoTargetType {
+    UNKNOWN = 0;
+    TURN_OVER_GOAL = 1;
+    TURN_OVER_CHALLENGE = 2;
+    TURN_OVER_RETROSPECT = 3;
+  }
+
+  string id = 1;
+  string content = 2;
+  string target_id = 3;
+  MemoTargetType target_type = 4;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Notice {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  bool is_pinned = 4;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Plan {
+  enum PlanType {
+    UNKNOWN = 0;
+    FREE = 1;
+    PREMIUM = 2;
+  }
+
+  string id = 1;
+  string name = 2;
+  PlanType type = 3;
+  uint64 price = 4;
+  string currency = 5;
+  int32 priority = 6;
+  optional string description = 7;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message PlanSubscription {
+  string id = 1;
+  string duration_months = 2;
+  uint64 total_price = 3;
+  uint64 monthly_equivalent = 4;
+  uint64 savings_amount = 5;
+  uint32 discount_rate = 6;
+  uint32 priority = 7;
+
+  Plan plan = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Feature {
+  string id = 1;
+  string name = 2;
+  string domain = 3;
+  string action = 4;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message WorkerSubscription {
+  enum SubscriptionStatus {
+    UNKNOWN = 0;
+    ACTIVE = 1;
+    EXPIRED = 2;
+    CANCELLED = 3;
+  }
+
+  string id = 1;
+  string plan_name = 2;
+  Plan.PlanType plan_type = 3;
+  SubscriptionStatus status = 4;
+  uint64 started_at = 5;
+  uint64 ended_at = 6;
+  optional uint64 cancelled_at = 7;
+  optional string cancel_reason = 8;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message WorkerFeatureUsage {
+  string id = 1;
+  uint32 current_count = 2;
+  optional uint32 limit_count = 3;
+  uint64 last_used_at = 4;
+
+  Worker worker = 50;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message PlanFeature {
+  string id = 1;
+
+  Plan plan = 50;
+  Feature feature = 51;
+  int32 limit_count = 52;
+  string description = 53;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message Payment {
+  enum PaymentStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    COMPLETED = 2;
+    FAILED = 3;
+    REFUNDED = 4;
+  }
+
+  enum PaymentMethod {
+    METHOD_UNKNOWN = 0;
+    CARD = 1;
+    CASH = 2;
+  }
+
+  string id = 1;
+  int64 amount = 2;
+  string currency = 3;
+  PaymentStatus status = 4;
+  PaymentMethod payment_method = 5;
+  string payment_provider = 6;
+  string provider_payment_id = 7;
+  optional uint64 paid_at = 8;
+  optional uint64 refunded_at = 9;
+  int64 refund_amount = 10;
+  optional string refund_reason = 11;
+  optional string failure_reason = 12;
+  optional string failure_code = 13;
+  optional string metadata_json = 14;
+
+  Worker worker = 50;
+  repeated PaymentTransaction payment_transactions = 51;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}
+
+message PaymentTransaction {
+  enum TransactionType {
+    TYPE_UNKNOWN = 0;
+    PAYMENT = 1;
+    REFUND = 2;
+    PARTIAL_REFUND = 3;
+    CANCEL = 4;
+  }
+
+  string id = 1;
+  TransactionType transaction_type = 2;
+  string status = 3;
+  int64 amount = 4;
+  optional string transaction_id = 5;
+  optional string request_data = 6;
+  optional string response_data = 7;
+  optional string error_message = 8;
+  optional string receipt_url = 9;
+
+  Payment payment = 50;
+
+  uint64 created_at = 98;
+}
+
+message Staff {
+  string id = 1;
+  string username = 2;
+  string name = 3;
+  string email = 4;
+  optional string phone = 5;
+  bool is_active = 6;
+
+  uint64 created_at = 98;
+  uint64 updated_at = 99;
+}

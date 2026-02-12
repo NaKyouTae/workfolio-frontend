@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package com.spectrum.workfolio.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spectrum.workfolio.proto.education";
+option java_outer_classname = "EducationProto";
+
+message EducationListResponse {
+  repeated Education educations = 1;
+}
+
+message EducationCreateRequest {
+  string major = 2;
+  string name = 3;
+  string description = 4;
+  optional Education.EducationStatus status = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+
+  string resume_id = 99;
+}
+
+message EducationUpdateRequest {
+  string id = 1;
+  string major = 2;
+  string name = 3;
+  string description = 4;
+  optional Education.EducationStatus status = 5;
+  optional uint64 started_at = 6;
+  optional uint64 ended_at = 7;
+
+  bool is_visible = 30;
+  uint32 priority = 31;
+}
+
+message EducationResponse {
+  Education education = 1;
+}

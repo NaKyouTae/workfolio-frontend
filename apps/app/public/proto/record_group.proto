@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package com.spectrum.workfolio.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spectrum.workfolio.proto.record_group";
+option java_outer_classname = "RecordGroupProto";
+
+message CreateRecordGroupRequest {
+  string title = 1;
+  string color = 2;
+  RecordGroup.RecordGroupType type = 3;
+  uint64 priority = 100;
+}
+
+message RecordGroupListResponse {
+  repeated RecordGroup groups = 1;
+}
+
+message RecordGroupDetailResponse {
+  RecordGroup groups = 1;
+  repeated WorkerRecordGroup workers = 2;
+}
+
+message RecordGroupJoinRequest {
+  message JoinWorkerRequest {
+    string worker_id = 1;
+    WorkerRecordGroup.RecordGroupRole role = 2;
+  }
+
+  string id = 1;
+  string title = 2;
+  string color = 3;
+
+  RecordGroup.RecordGroupType type = 30;
+  RecordGroup.RecordGroupRole default_role = 31;
+
+  repeated JoinWorkerRequest new_workers = 50;
+  repeated JoinWorkerRequest exist_workers = 51;
+}
+
+message RecordGroupUpdateRequest {
+  string title = 1;
+  string color = 2;
+  uint64 priority = 3;
+}
+
+message RecordGroupResponse {
+  RecordGroup record_group = 1;
+}
+
+message RecordGroupPriorityUpdateRequest {
+  message PriorityItem {
+    string record_group_id = 1;
+    uint64 priority = 2;
+  }
+  
+  RecordGroup.RecordGroupType type = 1;
+  repeated PriorityItem priorities = 2;
+}
+
+message WorkerRecordGroupPriorityUpdateRequest {
+  message PriorityItem {
+    string worker_record_group_id = 1;
+    uint64 priority = 2;
+  }
+  
+  repeated PriorityItem priorities = 1;
+}
+
+message SharedRecordGroupPriorityUpdateRequest {
+  message PriorityItem {
+    string record_group_id = 1;
+    uint64 priority = 2;
+  }
+  
+  repeated PriorityItem priorities = 1;
+}

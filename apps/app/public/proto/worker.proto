@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package com.spectrum.workfolio.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spectrum.workfolio.proto.worker";
+option java_outer_classname = "WorkerProto";
+
+message WorkerUpdateRequest {
+  string id = 1;
+  string nick_name = 2;
+  optional string phone = 3;
+  optional string email = 4;
+  optional uint64 birth_date = 5;
+  optional Worker.Gender gender = 6;
+  Worker.WorkerStatus status = 7;
+}
+
+message WorkerGetResponse {
+  Worker worker = 1;
+}
+
+message WorkerListResponse {
+  repeated Worker workers = 1;
+}
+
+message WorkerUpdateNickNameResponse {
+  bool is_success = 1;
+}
+
+message WorkerCheckNickNameResponse {
+  bool is_available = 1;
+}

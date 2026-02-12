@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # proto 파일이 변경되지 않았으면 스킵 (빌드 시간 단축)
-PROTO_DIR="./public/proto"
-GENERATED_DIR="./src/generated"
+PROTO_DIR="./proto"
+GENERATED_DIR="./packages/shared/src/generated"
 PROTO_FILES=$(find "$PROTO_DIR" -name "*.proto" -type f)
 
 # generated 디렉토리가 없거나 proto 파일이 더 최신이면 컴파일

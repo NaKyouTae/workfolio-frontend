@@ -1,0 +1,34 @@
+i {display: flex; align-items: center; justify-content: center; background-repeat: no-repeat; background-position: center; background-size: contain;}
+
+/* icon : a b c d e f g h i j k l m n o p q r s t u v w x y z */
+.ic-arrow-left-14 {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-arrow-left-14.svg);}
+.ic-arrow-right-14 {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-arrow-right-14.svg);}
+.ic-arrow-up-14 {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-arrow-up-14.svg);}
+.ic-arrow-down-14 {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-arrow-down-14.svg);}
+
+.ic-add {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-add.svg);}
+.ic-rocket {width: 1.4rem; height: 1.4rem; background-image: url(../img/ico/ic-rocket.svg);}
+
+.ic-check {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-check.svg);}
+.ic-delete {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-delete-16.svg);}
+.ic-more {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-more.svg);}
+.ic-search {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-search.svg);}
+.ic-set {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-set.svg);}
+.ic-show {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-show.svg);}
+.ic-hide {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-hide.svg);}
+.ic-minus {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-minus.svg);}
+.ic-question {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-question.svg);}
+.ic-link {width: 1.6rem; height: 1.6rem; background-image: url(../img/ico/ic-link.svg);}
+
+.ic-star {width: 1.8rem; height: 1.8rem; background-image: url(../img/ico/ic-star.svg);}
+.ic-star-ov {width: 1.8rem; height: 1.8rem; background-image: url(../img/ico/ic-star-ov.svg);}
+.ic-star-half-ov {width: 1.8rem; height: 1.8rem; background-image: url(../img/ico/ic-star-half-ov.svg);}
+
+.ic-close {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-close-24.svg);}
+.ic-drag {width: 2.4rem; height: 2.4rem; background-image: url(../img/ico/ic-drag.svg);}
+
+.ic-pagination {width: 2rem; height: 2rem;}
+.ic-pagination.first {background-image: url(../img/ico/ic-pagination-first.svg);}
+.ic-pagination.prev {background-image: url(../img/ico/ic-pagination-prev.svg);}
+.ic-pagination.next {background-image: url(../img/ico/ic-pagination-next.svg);}
+.ic-pagination.last {background-image: url(../img/ico/ic-pagination-last.svg);}
