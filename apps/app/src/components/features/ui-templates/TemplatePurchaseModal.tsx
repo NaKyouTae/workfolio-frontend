@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { UITemplate, formatDuration } from '@workfolio/shared/types/uitemplate';
+import { useNotification } from '@workfolio/shared/hooks/useNotification';
 import styles from './TemplatePurchaseModal.module.css';
 
 interface TemplatePurchaseModalProps {
@@ -9,6 +10,7 @@ interface TemplatePurchaseModalProps {
     onClose: () => void;
     template: UITemplate | null;
     balance: number;
+    isOwned?: boolean;
     onPurchase: (uiTemplateId: string, planId?: string) => Promise<unknown>;
     onSuccess: () => void;
 }
@@ -18,6 +20,7 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
     onClose,
     template,
     balance,
+    isOwned = false,
     onPurchase,
     onSuccess,
 }) => {
@@ -26,6 +29,7 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
         return [...template.plans].sort((a, b) => a.displayOrder - b.displayOrder);
     }, [template?.plans]);
 
+    const { showNotification } = useNotification();
     const [selectedPlanId, setSelectedPlanId] = useState<string | null>(
         plans.length > 0 ? plans[0].id : null
     );
@@ -50,6 +54,9 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
             await onPurchase(template.id, selectedPlan?.id);
             onSuccess();
             onClose();
+        } catch (err) {
+            const message = err instanceof Error ? err.message : '템플릿 구매에 실패했습니다.';
+            showNotification(message, 'error');
         } finally {
             setLoading(false);
         }
@@ -71,6 +78,11 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
                     </button>
                 </div>
                 <div className={styles.content}>
+                    {isOwned && (
+                        <p className={styles.ownedNotice}>
+                            이미 보유한 템플릿입니다. 재구매 시 이용 기간이 연장됩니다.
+                        </p>
+                    )}
                     {plans.length > 0 ? (
                         <>
                             <p className={styles.planHint}>이용 기간을 선택하세요.</p>

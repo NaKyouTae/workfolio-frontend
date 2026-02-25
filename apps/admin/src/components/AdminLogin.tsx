@@ -57,6 +57,7 @@ export default function AdminLogin() {
         <div className={styles.container}>
             <div className={styles.loginBox}>
                 <div className={styles.logoSection}>
+                    <div className={styles.logoIcon}>W</div>
                     <h1>Workfolio Admin</h1>
                     <p>관리자 로그인</p>
                 </div>

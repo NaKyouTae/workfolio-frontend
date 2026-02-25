@@ -38,7 +38,7 @@ echo "  Done."
 # 4. Copy hooks excluding shared ones
 echo "[4/6] Copying hooks (excluding shared)..."
 mkdir -p "$DEST/src/hooks"
-EXCLUDE="usePlans.ts useFeatures.ts usePlanFeatures.ts useConfirm.tsx useNotification.tsx useModal.tsx useGuide.tsx"
+EXCLUDE="useConfirm.tsx useNotification.tsx useModal.tsx useGuide.tsx"
 cd "$ROOT/src/hooks"
 for file in *; do
     skip=false

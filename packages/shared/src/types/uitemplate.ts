@@ -14,11 +14,26 @@ export interface UiTemplatePlan {
     displayOrder: number;
 }
 
+export enum UITemplateImageType {
+    THUMBNAIL = 'THUMBNAIL',
+    DETAIL = 'DETAIL',
+}
+
+export interface UITemplateImage {
+    id: string;
+    imageType: UITemplateImageType | string;
+    imageUrl: string;
+    displayOrder: number;
+    createdAt: number;
+    updatedAt: number;
+}
+
 export interface UITemplate {
     id: string;
     name: string;
     description?: string;
     type: UITemplateType | string;
+    label?: string;
     price: number;
     durationDays: number;
     urlPath?: string;
@@ -29,6 +44,7 @@ export interface UITemplate {
     displayOrder: number;
     /** 이용 기간별 가격 (1/3/6/9/12개월). 없으면 template.price/durationDays 사용 */
     plans?: UiTemplatePlan[];
+    images?: UITemplateImage[];
     createdAt: number;
     updatedAt: number;
 }
@@ -100,19 +116,29 @@ export interface ActiveUITemplatesResponse {
     workerUiTemplates: WorkerUITemplate[];
 }
 
-// Helper functions
-export function getUITemplateTypeLabel(type: UITemplateType | string): string {
-    const typeValue = typeof type === 'string' ? type : UITemplateType[type];
-    switch (typeValue) {
-        case 'URL':
-            return 'URL 템플릿';
-        case 'PDF':
-            return 'PDF 템플릿';
-        default:
-            return '알 수 없음';
-    }
+// Admin API types
+export interface AdminUITemplateCreateRequest {
+    name: string;
+    description?: string;
+    type: string;
+    label?: string;
+    price: number;
+    durationDays: number;
+    urlPath?: string;
+    isActive: boolean;
+    isPopular: boolean;
+    displayOrder: number;
 }
 
+export interface AdminUITemplateUpdateRequest extends AdminUITemplateCreateRequest {
+    id: string;
+}
+
+export interface AdminUITemplateImageListResponse {
+    images: UITemplateImage[];
+}
+
+// Helper functions
 export function getUITemplateTypeValue(type: UITemplateType | string): string {
     if (typeof type === 'string') {
         return type;

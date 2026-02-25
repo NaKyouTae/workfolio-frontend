@@ -32,7 +32,7 @@ copyDir(ROOT + '/src/components/portal/features', DEST + '/src/components/featur
 console.log('Copied portal/features');
 
 // 4. Copy hooks excluding shared ones
-const excludedHooks = ['usePlans.ts', 'useFeatures.ts', 'usePlanFeatures.ts', 'useConfirm.tsx', 'useNotification.tsx', 'useModal.tsx', 'useGuide.tsx'];
+const excludedHooks = ['useConfirm.tsx', 'useNotification.tsx', 'useModal.tsx', 'useGuide.tsx'];
 copyDir(ROOT + '/src/hooks', DEST + '/src/hooks', excludedHooks);
 console.log('Copied hooks (excluding shared)');
 

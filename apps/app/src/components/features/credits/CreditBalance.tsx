@@ -11,7 +11,7 @@ interface CreditBalanceProps {
 }
 
 const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget, compact = false }) => {
-    const { balance, loading, fetchBalance } = useCredits();
+    const { balance, balanceLoading, fetchBalance } = useCredits();
 
     useEffect(() => {
         fetchBalance();
@@ -23,25 +23,29 @@ const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget, comp
 
     return (
         <div className={`${styles.balanceCard} ${compact ? styles.balanceCardCompact : ''}`}>
-            <div className={styles.balanceHeader}>
-                <h4>보유 크레딧</h4>
-            </div>
-            <div className={styles.balanceAmount}>
-                {loading ? (
-                    <span className={styles.loading}>로딩 중...</span>
-                ) : (
-                    <>
-                        <span className={styles.amount}>{formatNumber(balance)}</span>
-                        <span className={styles.unit}>크레딧</span>
-                    </>
-                )}
+            <div className={styles.balanceInfo}>
+                <div className={styles.balanceHeader}>
+                    <div className={styles.balanceLabel}>
+                        <h4>보유 크레딧</h4>
+                    </div>
+                </div>
+                <div className={styles.balanceAmount}>
+                    {balanceLoading ? (
+                        <span className={styles.loading}>불러오는 중...</span>
+                    ) : (
+                        <>
+                            <span className={styles.balanceAmountValue}>{formatNumber(balance)}</span>
+                            <span className={styles.unit}>크레딧</span>
+                        </>
+                    )}
+                </div>
             </div>
             {onOpenPaymentWidget && (
                 <button
                     className={styles.chargeButton}
                     onClick={onOpenPaymentWidget}
                 >
-                    크레딧 충전하기
+                    충전하기
                 </button>
             )}
         </div>

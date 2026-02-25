@@ -10,6 +10,12 @@ export enum CreditTxType {
     ADMIN_DEDUCT = 6,
 }
 
+export interface CreditHistoryWorker {
+    id: string;
+    nickName: string;
+    email: string;
+}
+
 export interface CreditHistory {
     id: string;
     txType: CreditTxType;
@@ -19,6 +25,7 @@ export interface CreditHistory {
     referenceType?: string;
     referenceId?: string;
     description?: string;
+    worker?: CreditHistoryWorker;
     createdAt: number;
 }
 

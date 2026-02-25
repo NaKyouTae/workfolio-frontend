@@ -4,10 +4,8 @@ import {
     UITemplate,
     UiTemplatePlan,
     WorkerUITemplate,
-    WorkerUITemplateListResponse,
     UITemplatePurchaseResponse,
     UITemplateOwnershipResponse,
-    ActiveUITemplatesResponse,
     UITemplateType,
 } from '@workfolio/shared/types/uitemplate';
 
@@ -18,6 +16,34 @@ function normalizePlan(raw: Record<string, unknown>): UiTemplatePlan {
         durationDays: Number(raw.duration_days ?? raw.durationDays ?? 0),
         price: Number(raw.price ?? 0),
         displayOrder: Number(raw.display_order ?? raw.displayOrder ?? 0),
+    };
+}
+
+function normalizeWorkerUITemplate(raw: Record<string, unknown>): WorkerUITemplate {
+    const rawUiTemplate = (raw.ui_template ?? raw.uiTemplate) as Record<string, unknown> | undefined;
+    const rawWorker = (raw.worker) as Record<string, unknown> | undefined;
+    return {
+        id: String(raw.id ?? ''),
+        purchasedAt: Number(raw.purchased_at ?? raw.purchasedAt ?? 0),
+        expiredAt: Number(raw.expired_at ?? raw.expiredAt ?? 0),
+        creditsUsed: Number(raw.credits_used ?? raw.creditsUsed ?? 0),
+        isActive: Boolean(raw.is_active ?? raw.isActive ?? true),
+        isExpired: Boolean(raw.is_expired ?? raw.isExpired ?? false),
+        isValid: Boolean(raw.is_valid ?? raw.isValid ?? false),
+        worker: rawWorker ? {
+            id: String(rawWorker.id ?? ''),
+            nickName: String(rawWorker.nick_name ?? rawWorker.nickName ?? ''),
+            phone: String(rawWorker.phone ?? ''),
+            email: String(rawWorker.email ?? ''),
+            birthDate: rawWorker.birth_date ?? rawWorker.birthDate ? Number(rawWorker.birth_date ?? rawWorker.birthDate) : undefined,
+            gender: rawWorker.gender != null ? Number(rawWorker.gender) : undefined,
+            status: Number(rawWorker.status ?? 0),
+            createdAt: Number(rawWorker.created_at ?? rawWorker.createdAt ?? 0),
+            updatedAt: Number(rawWorker.updated_at ?? rawWorker.updatedAt ?? 0),
+        } : { id: '', nickName: '', phone: '', email: '', status: 0, createdAt: 0, updatedAt: 0 },
+        uiTemplate: rawUiTemplate ? normalizeUITemplate(rawUiTemplate) : { id: '', name: '', type: UITemplateType.UNKNOWN, price: 0, durationDays: 0, isActive: false, isPopular: false, displayOrder: 0, createdAt: 0, updatedAt: 0 },
+        createdAt: Number(raw.created_at ?? raw.createdAt ?? 0),
+        updatedAt: Number(raw.updated_at ?? raw.updatedAt ?? 0),
     };
 }
 
@@ -57,6 +83,7 @@ interface UseUITemplatesReturn {
     fetchActiveUITemplates: (type?: UITemplateType | string) => Promise<void>;
     purchaseUITemplate: (uiTemplateId: string, planId?: string) => Promise<UITemplatePurchaseResponse | null>;
     checkOwnership: (uiTemplateId: string) => Promise<UITemplateOwnershipResponse | null>;
+    deleteMyUITemplate: (workerUITemplateId: string) => Promise<boolean>;
 }
 
 export const useUITemplates = (): UseUITemplatesReturn => {
@@ -117,11 +144,13 @@ export const useUITemplates = (): UseUITemplatesReturn => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data: WorkerUITemplateListResponse = await response.json();
-            setMyUITemplates(data.workerUiTemplates ?? []);
-            setTotalPages(data.totalPages ?? 0);
-            setCurrentPage(data.currentPage ?? 0);
-            setTotalElements(data.totalElements ?? 0);
+            const data = (await response.json()) as Record<string, unknown>;
+            const rawList = (data.worker_ui_templates ?? data.workerUiTemplates) as Record<string, unknown>[] | undefined;
+            const list = Array.isArray(rawList) ? rawList.map(normalizeWorkerUITemplate) : [];
+            setMyUITemplates(list);
+            setTotalPages(Number(data.total_pages ?? data.totalPages ?? 0));
+            setCurrentPage(Number(data.current_page ?? data.currentPage ?? 0));
+            setTotalElements(Number(data.total_elements ?? data.totalElements ?? 0));
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '보유 템플릿 조회 중 오류가 발생했습니다.';
             setError(errorMessage);
@@ -153,8 +182,9 @@ export const useUITemplates = (): UseUITemplatesReturn => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data: ActiveUITemplatesResponse = await response.json();
-            setActiveUITemplates(data.workerUiTemplates ?? []);
+            const data = (await response.json()) as Record<string, unknown>;
+            const rawList = (data.worker_ui_templates ?? data.workerUiTemplates) as Record<string, unknown>[] | undefined;
+            setActiveUITemplates(Array.isArray(rawList) ? rawList.map(normalizeWorkerUITemplate) : []);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '유효 템플릿 조회 중 오류가 발생했습니다.';
             setError(errorMessage);
@@ -203,6 +233,32 @@ export const useUITemplates = (): UseUITemplatesReturn => {
         }
     }, []);
 
+    // Delete my UI template
+    const deleteMyUITemplate = useCallback(async (workerUITemplateId: string): Promise<boolean> => {
+        try {
+            const response = await fetch(`/api/ui-templates/my/${workerUITemplateId}`, {
+                method: HttpMethod.DELETE,
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    setError('로그인이 필요합니다.');
+                    return false;
+                }
+                const errorData = await response.json();
+                setError(errorData.message || '템플릿 삭제에 실패했습니다.');
+                return false;
+            }
+
+            return true;
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : '템플릿 삭제 중 오류가 발생했습니다.';
+            setError(errorMessage);
+            console.error('Error deleting UI template:', err);
+            return false;
+        }
+    }, []);
+
     // Check UI template ownership
     const checkOwnership = useCallback(async (uiTemplateId: string): Promise<UITemplateOwnershipResponse | null> => {
         try {
@@ -244,5 +300,6 @@ export const useUITemplates = (): UseUITemplatesReturn => {
         fetchActiveUITemplates,
         purchaseUITemplate,
         checkOwnership,
+        deleteMyUITemplate,
     };
 };

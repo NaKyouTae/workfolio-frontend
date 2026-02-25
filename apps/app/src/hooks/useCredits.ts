@@ -14,8 +14,11 @@ interface UseCreditsReturn {
     totalPages: number;
     currentPage: number;
     totalElements: number;
+    balanceLoading: boolean;
+    historyLoading: boolean;
     loading: boolean;
     error: string | null;
+    historyError: string | null;
     fetchBalance: () => Promise<void>;
     fetchHistory: (page?: number, size?: number, txType?: CreditTxType | string) => Promise<void>;
     useCredits: (amount: number, description?: string, referenceType?: string, referenceId?: string) => Promise<CreditUseResponse | null>;
@@ -27,12 +30,14 @@ export const useCredits = (): UseCreditsReturn => {
     const [totalPages, setTotalPages] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [totalElements, setTotalElements] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [balanceLoading, setBalanceLoading] = useState<boolean>(false);
+    const [historyLoading, setHistoryLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [historyError, setHistoryError] = useState<string | null>(null);
 
     const fetchBalance = useCallback(async () => {
         try {
-            setLoading(true);
+            setBalanceLoading(true);
             setError(null);
 
             const response = await fetch('/api/credits', { method: HttpMethod.GET });
@@ -52,14 +57,14 @@ export const useCredits = (): UseCreditsReturn => {
             setError(errorMessage);
             console.error('Error fetching credit balance:', err);
         } finally {
-            setLoading(false);
+            setBalanceLoading(false);
         }
     }, []);
 
     const fetchHistory = useCallback(async (page: number = 0, size: number = 10, txType?: CreditTxType | string) => {
         try {
-            setLoading(true);
-            setError(null);
+            setHistoryLoading(true);
+            setHistoryError(null);
 
             let url = `/api/credits/history?page=${page}&size=${size}`;
             if (txType !== undefined && txType !== null) {
@@ -71,7 +76,7 @@ export const useCredits = (): UseCreditsReturn => {
 
             if (!response.ok) {
                 if (response.status === 401) {
-                    setError('로그인이 필요합니다.');
+                    setHistoryError('로그인이 필요합니다.');
                     return;
                 }
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -84,10 +89,10 @@ export const useCredits = (): UseCreditsReturn => {
             setTotalElements(data.totalElements ?? 0);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '크레딧 내역 조회 중 오류가 발생했습니다.';
-            setError(errorMessage);
+            setHistoryError(errorMessage);
             console.error('Error fetching credit history:', err);
         } finally {
-            setLoading(false);
+            setHistoryLoading(false);
         }
     }, []);
 
@@ -98,7 +103,7 @@ export const useCredits = (): UseCreditsReturn => {
         referenceId?: string
     ): Promise<CreditUseResponse | null> => {
         try {
-            setLoading(true);
+            setBalanceLoading(true);
             setError(null);
 
             const response = await fetch('/api/credits/use', {
@@ -135,7 +140,7 @@ export const useCredits = (): UseCreditsReturn => {
             console.error('Error using credits:', err);
             return null;
         } finally {
-            setLoading(false);
+            setBalanceLoading(false);
         }
     }, []);
 
@@ -145,8 +150,11 @@ export const useCredits = (): UseCreditsReturn => {
         totalPages,
         currentPage,
         totalElements,
-        loading,
+        balanceLoading,
+        historyLoading,
+        loading: balanceLoading || historyLoading,
         error,
+        historyError,
         fetchBalance,
         fetchHistory,
         useCredits,

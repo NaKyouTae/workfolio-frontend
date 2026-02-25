@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ResumeDetail, Resume_Gender } from '@workfolio/shared/generated/common';
 import CareerView from './view/CareerView';
 import ProjectView from './view/ProjectView';
@@ -14,6 +14,7 @@ import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
 import CareerContentViewSkeleton from '@workfolio/shared/ui/skeleton/CareerContentViewSkeleton';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
+import { UITemplate } from '@workfolio/shared/types/uitemplate';
 
 interface CareerContentViewProps {
   selectedResumeDetail: ResumeDetail | null;
@@ -42,7 +43,26 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   // 비공개 정보 보기 상태
   const [showHidden, setShowHidden] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [defaultUrlTemplate, setDefaultUrlTemplate] = useState<UITemplate | null>(null);
   const { showNotification } = useNotification();
+
+  const fetchDefaultTemplates = useCallback(async () => {
+    try {
+      const response = await fetch('/api/ui-templates/my/default');
+      if (response.ok) {
+        const data = await response.json();
+        setDefaultUrlTemplate(data.defaultUrlUiTemplate ?? data.default_url_ui_template ?? null);
+      }
+    } catch (err) {
+      console.error('Error fetching default templates:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      fetchDefaultTemplates();
+    }
+  }, [fetchDefaultTemplates]);
 
   if (isLoading) {
     return <CareerContentViewSkeleton />;
@@ -101,14 +121,14 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
     }
   };
 
-  // URL 복사 핸들러 (선택된 템플릿 urlPath 있으면 해당 템플릿 URL로 생성)
+  // URL 복사 핸들러 (기본 설정된 URL 템플릿의 urlPath로 공개 이력서 URL 생성)
   const handleCopyURL = async () => {
     if (!selectedResumeDetail?.publicId) {
       showNotification('공개 이력서 URL을 생성할 수 없습니다.', 'error');
       return;
     }
-    // TODO: 선택된 URL 템플릿이 있으면 buildPublicResumeUrl(publicId, activeTemplate?.urlPath)
-    const publicResumeUrl = buildPublicResumeUrl(selectedResumeDetail.publicId);
+    const urlPath = defaultUrlTemplate?.urlPath ?? undefined;
+    const publicResumeUrl = buildPublicResumeUrl(selectedResumeDetail.publicId, urlPath);
 
     try {
       await navigator.clipboard.writeText(publicResumeUrl);

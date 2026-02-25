@@ -1,65 +1,33 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Footer from '@/components/layouts/Footer';
+import { KakaoAdfitBanner } from '@workfolio/shared/ui/KakaoAdfitBanner';
 import UITemplateList from './UITemplateList';
-import CreditBalance from '@/components/features/credits/CreditBalance';
-import FloatingNavigation from '@workfolio/shared/ui/FloatingNavigation';
-import PaymentWidget from '@/components/features/payments/PaymentWidget';
-import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import styles from './UITemplatesPage.module.css';
 
-const STORE_FLOATING_NAV_ITEMS = [
-    { id: 'section-url', label: 'URL 템플릿' },
-    { id: 'section-pdf', label: 'PDF 템플릿' },
-];
+const NEXT_PUBLIC_KAKAO_ADFIT_STORE_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_STORE_KEY;
 
 const UITemplatesPage: React.FC = () => {
-    const [showPaymentWidget, setShowPaymentWidget] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
-
-    useEffect(() => {
-        setLoggedIn(isLoggedIn());
-    }, []);
-
     return (
-        <>
-            <main className={styles.mainLayout}>
-                <div className={styles.storeSection} data-scroll-container>
-                    <div className="contents">
-                        <div className="page-cont">
-                            <article>
-                                <UITemplateList />
-                            </article>
-                            <div className={styles.floatingColumn}>
-                                <FloatingNavigation navigationItems={STORE_FLOATING_NAV_ITEMS} />
-                                {loggedIn && (
-                                    <>
-                                        <div className={styles.storeCreditArea}>
-                                            <CreditBalance compact />
-                                        </div>
-                                        <button
-                                            type="button"
-                                            className={styles.storeChargeButton}
-                                            onClick={() => setShowPaymentWidget(true)}
-                                        >
-                                            크레딧 충전
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+        <main className={styles.mainLayout}>
+            <div className={styles.storeSection} data-scroll-container>
+                <div className="page-cont">
+                    <UITemplateList />
                 </div>
-                <div className={styles.footerWrapper}>
-                    <Footer />
-                </div>
-            </main>
-            <PaymentWidget
-                isOpen={showPaymentWidget}
-                onClose={() => setShowPaymentWidget(false)}
-            />
-        </>
+            </div>
+            <div className={styles.adWrapper}>
+                <KakaoAdfitBanner
+                    unit={NEXT_PUBLIC_KAKAO_ADFIT_STORE_KEY || ""}
+                    width={250}
+                    height={250}
+                    disabled={!NEXT_PUBLIC_KAKAO_ADFIT_STORE_KEY}
+                />
+            </div>
+            <div className={styles.footerWrapper}>
+                <Footer />
+            </div>
+        </main>
     );
 };
 

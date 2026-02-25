@@ -13,22 +13,22 @@
 }
 
 .table-view thead {
-  background-color: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .table-view thead th {
-  padding: 16px;
+  padding: 10px 14px;
   text-align: left;
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
   white-space: nowrap;
+  letter-spacing: 0.02em;
 }
 
 .table-view tbody tr {
-  border-bottom: 1px solid #e5e7eb;
-  transition: background-color 0.2s;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s;
 }
 
 .table-view tbody tr:last-child {
@@ -44,17 +44,18 @@
 }
 
 .table-view tbody td {
-  padding: 16px;
-  font-size: 14px;
+  padding: 10px 14px;
+  font-size: 13px;
   color: #1f2937;
+  vertical-align: middle;
 }
 
 .table-view-loading,
 .table-view-empty {
-  padding: 60px 20px;
+  padding: 48px 20px;
   text-align: center;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 13px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -62,14 +63,19 @@
 
 /* 확장 아이콘 */
 .expand-icon-cell {
+  width: 32px;
   text-align: center;
-  padding: 16px 8px !important;
+  padding: 10px 4px 10px 14px !important;
 }
 
 .expand-icon {
-  display: inline-block;
-  font-size: 10px;
-  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 8px;
+  color: #9ca3af;
   transition: transform 0.2s ease;
   cursor: pointer;
 }
@@ -80,34 +86,28 @@
 
 /* 확장된 행 */
 .expanded-row {
-  background-color: #f9fafb;
+  background-color: #fafafa;
 }
 
 .expanded-row td {
   padding: 0 !important;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .expanded-content {
-  padding: 20px;
-  background-color: #ffffff;
-  border-left: 3px solid #2563eb;
-  margin: 8px 16px;
-  border-radius: 6px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 16px 20px;
+  margin: 0;
 }
 
 /* 반응형 */
 @media (max-width: 768px) {
   .table-view thead th,
   .table-view tbody td {
-    padding: 12px 8px;
-    font-size: 13px;
+    padding: 8px 10px;
+    font-size: 12px;
   }
 
   .expanded-content {
-    padding: 16px;
-    margin: 8px;
+    padding: 12px;
+    margin: 6px;
   }
 }
-

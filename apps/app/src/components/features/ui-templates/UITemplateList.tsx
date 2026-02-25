@@ -1,15 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { useUITemplates } from '@/hooks/useUITemplates';
-import { UITemplate } from '@workfolio/shared/types/uitemplate';
+import { UITemplate, formatDuration } from '@workfolio/shared/types/uitemplate';
 import { useCredits } from '@/hooks/useCredits';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
-import UITemplateCard from './UITemplateCard';
 import TemplatePurchaseModal from './TemplatePurchaseModal';
 import { getPreviewPathFromUITemplate } from '@/components/features/public-resume/templates/resumeTemplateConfig';
+import FloatingNavigation from '@workfolio/shared/ui/FloatingNavigation';
+
+const MAIN_COLOR = '#FFBB26';
+const MAIN_COLOR_LIGHT = '#FFF8E6';
 
 interface UITemplateListProps {
     onPurchaseSuccess?: () => void;
@@ -22,7 +26,9 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [purchaseModalTemplate, setPurchaseModalTemplate] = useState<UITemplate | null>(null);
     const [ownedUITemplateIds, setOwnedUITemplateIds] = useState<Set<string>>(new Set());
-
+    const [activeSection, setActiveSection] = useState<'url' | 'pdf'>('url');
+    const urlSectionRef = useRef<HTMLDivElement>(null);
+    const pdfSectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchUITemplates();
@@ -34,6 +40,34 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             checkOwnedUITemplates();
         }
     }, [uiTemplates]);
+
+    // 스크롤 위치에 따라 activeSection 갱신
+    useEffect(() => {
+        const scrollContainer = urlSectionRef.current?.closest('[data-scroll-container]');
+        if (!scrollContainer) return;
+
+        const handleScroll = () => {
+            const pdfEl = pdfSectionRef.current;
+            if (!pdfEl) return;
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const pdfRect = pdfEl.getBoundingClientRect();
+            setActiveSection(pdfRect.top <= containerRect.top + containerRect.height / 2 ? 'pdf' : 'url');
+        };
+
+        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+        return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }, [uiTemplates]);
+
+    const scrollToSection = (section: 'url' | 'pdf') => {
+        if (section === 'url') {
+            const scrollContainer = urlSectionRef.current?.closest('[data-scroll-container]');
+            if (scrollContainer) {
+                scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } else {
+            pdfSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
 
     const checkOwnedUITemplates = async () => {
         if (!isLoggedIn() || uiTemplates.length === 0) return;
@@ -51,11 +85,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const handleUITemplateSelect = (uiTemplate: UITemplate) => {
         if (!isLoggedIn()) {
             setShowLoginModal(true);
-            return;
-        }
-
-        if (ownedUITemplateIds.has(uiTemplate.id)) {
-            showNotification('이미 보유한 템플릿입니다.', 'info');
             return;
         }
 
@@ -89,100 +118,282 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const urlUITemplates = uiTemplates.filter(t => t.type === 'URL');
     const pdfUITemplates = uiTemplates.filter(t => t.type === 'PDF');
 
-    const sectionHeaderStyle: React.CSSProperties = {
-        marginBottom: '16px',
-    };
+    const renderTemplateListItem = (uiTemplate: UITemplate) => {
+        const previewPath = getPreviewPathFromUITemplate(uiTemplate);
+        const lowestPlan = uiTemplate.plans?.slice().sort((a, b) => a.price - b.price)[0];
+        const displayPrice = lowestPlan ? lowestPlan.price : uiTemplate.price;
 
-    const cardGridStyle: React.CSSProperties = {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '16px',
+        return (
+            <div
+                key={uiTemplate.id}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    padding: '16px',
+                    borderRadius: '10px',
+                    border: '1px solid #e8e8e8',
+                    backgroundColor: '#fff',
+                    transition: 'all 0.15s ease',
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#d0d0d0';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#e8e8e8';
+                    e.currentTarget.style.boxShadow = 'none';
+                }}
+            >
+                {/* 썸네일 */}
+                <div style={{
+                    width: '80px',
+                    height: '100px',
+                    borderRadius: '6px',
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    position: 'relative',
+                    backgroundColor: '#f0f0f0',
+                }}>
+                    {uiTemplate.thumbnailUrl ? (
+                        <Image
+                            src={uiTemplate.thumbnailUrl}
+                            alt={uiTemplate.name}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                        />
+                    ) : (
+                        <div style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'linear-gradient(145deg, #f0f0f0, #f8f8f8)',
+                            padding: '8px',
+                        }}>
+                            <span style={{
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                color: '#888',
+                                textAlign: 'center',
+                                lineHeight: '1.3',
+                                wordBreak: 'keep-all',
+                            }}>
+                                {uiTemplate.name}
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                {/* 정보 */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <span style={{
+                            backgroundColor: MAIN_COLOR_LIGHT,
+                            color: '#B8860B',
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                        }}>
+                            {uiTemplate.label ?? uiTemplate.type}
+                        </span>
+                        {uiTemplate.isPopular && (
+                            <span style={{
+                                backgroundColor: MAIN_COLOR_LIGHT,
+                                color: MAIN_COLOR,
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                fontWeight: 700,
+                            }}>
+                                인기
+                            </span>
+                        )}
+                    </div>
+                    <p style={{
+                        fontSize: '15px',
+                        fontWeight: 600,
+                        color: '#222',
+                        margin: '0 0 4px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                    }}>
+                        {uiTemplate.name}
+                    </p>
+                    {uiTemplate.description && (
+                        <p style={{
+                            fontSize: '13px',
+                            color: '#888',
+                            margin: 0,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}>
+                            {uiTemplate.description}
+                        </p>
+                    )}
+                </div>
+
+                {/* 가격 + 액션 */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    flexShrink: 0,
+                }}>
+                    <div style={{ textAlign: 'right' }}>
+                        <p style={{
+                            fontSize: '15px',
+                            fontWeight: 700,
+                            color: '#333',
+                            margin: 0,
+                        }}>
+                            {displayPrice.toLocaleString()} 크레딧
+                        </p>
+                        {lowestPlan && uiTemplate.plans && uiTemplate.plans.length > 1 && (
+                            <p style={{ fontSize: '11px', color: '#999', margin: '2px 0 0' }}>
+                                {formatDuration(lowestPlan.durationDays)}~
+                            </p>
+                        )}
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                        {previewPath && (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleTemplatePreview(uiTemplate); }}
+                                style={{
+                                    padding: '8px 14px',
+                                    backgroundColor: '#f5f5f5',
+                                    color: '#333',
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: '6px',
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    whiteSpace: 'nowrap',
+                                    transition: 'all 0.15s ease',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#e8e8e8';
+                                    e.currentTarget.style.borderColor = '#ccc';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                                    e.currentTarget.style.borderColor = '#e0e0e0';
+                                }}
+                            >
+                                미리보기
+                            </button>
+                        )}
+                        <button
+                            onClick={(e) => { e.stopPropagation(); handleUITemplateSelect(uiTemplate); }}
+                            style={{
+                                padding: '8px 14px',
+                                backgroundColor: MAIN_COLOR,
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                whiteSpace: 'nowrap',
+                                transition: 'all 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#E5A820';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = MAIN_COLOR;
+                            }}
+                        >
+                            구매하기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     return (
-        <div className="ui-template-list" style={{ width: '100%' }}>
-            {loading && <p style={{ textAlign: 'center', padding: '40px 0' }}>로딩 중...</p>}
-            {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-
-            {!loading && uiTemplates.length === 0 && (
-                <p style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}>
-                    등록된 템플릿이 없습니다.
-                </p>
-            )}
-
-            {/* URL Templates Section - 항상 표시 (플로팅 네비 스크롤용 id) */}
-            <div id="section-url" style={{ marginBottom: '48px' }}>
-                <div style={sectionHeaderStyle}>
-                    <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{
-                            backgroundColor: '#e3f2fd',
-                            color: '#1976d2',
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: '600'
-                        }}>
-                            URL
-                        </span>
-                        URL 템플릿
-                    </h3>
-                    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-                        공개 이력서 URL 공유시 사용할 수 있는 템플릿입니다.
+        <>
+            <article>
+                {!loading && uiTemplates.length === 0 && (
+                    <p style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}>
+                        등록된 템플릿이 없습니다.
                     </p>
-                </div>
-                {urlUITemplates.length === 0 ? (
-                    <p style={{ color: '#999', fontSize: '14px', margin: 0 }}>등록된 URL 템플릿이 없습니다.</p>
-                ) : (
-                    <div style={cardGridStyle}>
-                        {urlUITemplates.map((uiTemplate) => (
-                            <UITemplateCard
-                                key={uiTemplate.id}
-                                uiTemplate={uiTemplate}
-                                onSelect={handleUITemplateSelect}
-                                onPreview={handleTemplatePreview}
-                                isOwned={ownedUITemplateIds.has(uiTemplate.id)}
-                            />
-                        ))}
-                    </div>
                 )}
-            </div>
 
-            {/* PDF Templates Section - 항상 표시 (플로팅 네비 스크롤용 id) */}
-            <div id="section-pdf">
-                <div style={sectionHeaderStyle}>
-                    <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{
-                            backgroundColor: '#fce4ec',
-                            color: '#c2185b',
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: '600'
-                        }}>
-                            PDF
+                {/* UI 템플릿 섹션 */}
+                <div ref={urlSectionRef} className="cont-box" id="url-templates">
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                        paddingBottom: '12px',
+                        borderBottom: '2px solid #e0e0e0',
+                    }}>
+                        <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>
+                            UI 템플릿
+                        </h3>
+                        <span style={{ fontSize: '13px', color: '#999', marginLeft: '4px' }}>
+                            URL 공유시 사용할 수 있는 템플릿
                         </span>
-                        PDF 템플릿
-                    </h3>
-                    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-                        이력서를 PDF로 다운로드할 때 사용할 수 있는 템플릿입니다.
-                    </p>
-                </div>
-                {pdfUITemplates.length === 0 ? (
-                    <p style={{ color: '#999', fontSize: '14px', margin: 0 }}>등록된 PDF 템플릿이 없습니다.</p>
-                ) : (
-                    <div style={cardGridStyle}>
-                        {pdfUITemplates.map((uiTemplate) => (
-                            <UITemplateCard
-                                key={uiTemplate.id}
-                                uiTemplate={uiTemplate}
-                                onSelect={handleUITemplateSelect}
-                                onPreview={handleTemplatePreview}
-                                isOwned={ownedUITemplateIds.has(uiTemplate.id)}
-                            />
-                        ))}
                     </div>
-                )}
-            </div>
+                    {urlUITemplates.length === 0 ? (
+                        <p style={{ color: '#999', fontSize: '14px', margin: 0, textAlign: 'center', padding: '24px 0' }}>등록된 UI 템플릿이 없습니다.</p>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {urlUITemplates.map(renderTemplateListItem)}
+                        </div>
+                    )}
+                </div>
+
+                {/* PDF 템플릿 섹션 */}
+                <div ref={pdfSectionRef} className="cont-box" id="pdf-templates">
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                        paddingBottom: '12px',
+                        borderBottom: '2px solid #e0e0e0',
+                    }}>
+                        <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>
+                            PDF 템플릿
+                        </h3>
+                        <span style={{ fontSize: '13px', color: '#999', marginLeft: '4px' }}>
+                            이력서를 PDF로 다운로드할 때 사용할 수 있는 템플릿
+                        </span>
+                    </div>
+                    {pdfUITemplates.length === 0 ? (
+                        <p style={{ color: '#999', fontSize: '14px', margin: 0, textAlign: 'center', padding: '24px 0' }}>등록된 PDF 템플릿이 없습니다.</p>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {pdfUITemplates.map(renderTemplateListItem)}
+                        </div>
+                    )}
+                </div>
+            </article>
+
+            <FloatingNavigation
+                navigationItems={[
+                    {
+                        id: 'url-templates',
+                        label: 'UI 템플릿',
+                        isActive: activeSection === 'url',
+                        onClick: () => scrollToSection('url'),
+                    },
+                    {
+                        id: 'pdf-templates',
+                        label: 'PDF 템플릿',
+                        isActive: activeSection === 'pdf',
+                        onClick: () => scrollToSection('pdf'),
+                    },
+                ]}
+            />
 
             <LoginModal
                 isOpen={showLoginModal}
@@ -193,10 +404,11 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                 onClose={() => setPurchaseModalTemplate(null)}
                 template={purchaseModalTemplate}
                 balance={balance}
+                isOwned={purchaseModalTemplate ? ownedUITemplateIds.has(purchaseModalTemplate.id) : false}
                 onPurchase={handlePurchaseModalPurchase}
                 onSuccess={handlePurchaseModalSuccess}
             />
-        </div>
+        </>
     );
 };
 

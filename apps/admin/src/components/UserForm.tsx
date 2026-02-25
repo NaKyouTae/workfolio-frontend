@@ -27,7 +27,7 @@ const UserForm: React.FC<UserFormProps> = ({
     return (
         <form onSubmit={onSubmit}>
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
                     닉네임 *
                 </label>
                 <input
@@ -35,19 +35,12 @@ const UserForm: React.FC<UserFormProps> = ({
                     value={formData.nickName}
                     onChange={(e) => onChange("nickName", e.target.value)}
                     required
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                    }}
                     placeholder="닉네임을 입력하세요"
                 />
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
                     이메일 *
                 </label>
                 <input
@@ -55,19 +48,12 @@ const UserForm: React.FC<UserFormProps> = ({
                     value={formData.email}
                     onChange={(e) => onChange("email", e.target.value)}
                     required
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                    }}
                     placeholder="이메일을 입력하세요"
                 />
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
                     전화번호 *
                 </label>
                 <input
@@ -75,37 +61,23 @@ const UserForm: React.FC<UserFormProps> = ({
                     value={formData.phone}
                     onChange={(e) => onChange("phone", e.target.value)}
                     required
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                    }}
                     placeholder="전화번호를 입력하세요"
                 />
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
                     생년월일
                 </label>
                 <input
                     type="date"
                     value={formData.birthDate}
                     onChange={(e) => onChange("birthDate", e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                    }}
                 />
             </div>
 
             <div style={{ marginBottom: "24px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
                     성별
                 </label>
                 <select
@@ -116,13 +88,6 @@ const UserForm: React.FC<UserFormProps> = ({
                             e.target.value ? (parseInt(e.target.value) as Worker_Gender) : undefined
                         )
                     }
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                    }}
                 >
                     <option value="">선택 안함</option>
                     <option value={Worker_Gender.MALE}>남성</option>
@@ -135,15 +100,11 @@ const UserForm: React.FC<UserFormProps> = ({
                     type="button"
                     onClick={onCancel}
                     disabled={isSubmitting}
+                    className="line gray"
                     style={{
-                        padding: "10px 24px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        background: "#fff",
-                        color: "#000",
+                        padding: "8px 16px",
                         cursor: isSubmitting ? "not-allowed" : "pointer",
-                        fontSize: "14px",
-                        fontWeight: "600",
+                        opacity: isSubmitting ? 0.5 : 1,
                     }}
                 >
                     취소
@@ -151,16 +112,11 @@ const UserForm: React.FC<UserFormProps> = ({
                 <button
                     type="submit"
                     disabled={isSubmitting}
+                    className="dark-gray"
                     style={{
-                        padding: "10px 24px",
-                        border: "none",
-                        borderRadius: "6px",
-                        background: "#2563eb",
-                        color: "#fff",
+                        padding: "8px 16px",
                         cursor: isSubmitting ? "not-allowed" : "pointer",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        opacity: isSubmitting ? 0.6 : 1,
+                        opacity: isSubmitting ? 0.5 : 1,
                     }}
                 >
                     {isSubmitting ? "처리 중..." : "저장"}

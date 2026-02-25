@@ -17,6 +17,14 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/records", request.url));
     }
 
+    if (request.nextUrl.pathname.startsWith("/mypage")) {
+        const accessToken = request.cookies.get("accessToken");
+        const refreshToken = request.cookies.get("refreshToken");
+        if (!accessToken && !refreshToken) {
+            return NextResponse.redirect(new URL("/records", request.url));
+        }
+    }
+
     return NextResponse.next();
 }
 

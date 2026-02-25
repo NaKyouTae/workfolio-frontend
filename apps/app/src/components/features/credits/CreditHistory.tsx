@@ -11,8 +11,42 @@ interface CreditHistoryProps {
     onOpenPaymentWidget?: () => void;
 }
 
+const TX_FILTERS = [
+    { value: 'ALL' as const, label: '전체' },
+    { value: 'CHARGE' as const, label: '충전' },
+    { value: 'BONUS' as const, label: '보너스' },
+    { value: 'USE' as const, label: '사용' },
+    { value: 'REFUND' as const, label: '환불' },
+] as const;
+
+function getTxIcon(txType: CreditTxType | string): string {
+    const type = typeof txType === 'string' ? txType : CreditTxType[txType];
+    switch (type) {
+        case 'CHARGE': return '↓';
+        case 'BONUS': return '★';
+        case 'USE': return '↑';
+        case 'REFUND': return '↩';
+        case 'ADMIN_ADD': return '+';
+        case 'ADMIN_DEDUCT': return '−';
+        default: return '•';
+    }
+}
+
+function getTxIconStyle(txType: CreditTxType | string): string {
+    const type = typeof txType === 'string' ? txType : CreditTxType[txType];
+    switch (type) {
+        case 'CHARGE': return styles.txIconCharge;
+        case 'BONUS': return styles.txIconBonus;
+        case 'USE': return styles.txIconUse;
+        case 'REFUND': return styles.txIconRefund;
+        case 'ADMIN_ADD':
+        case 'ADMIN_DEDUCT': return styles.txIconAdmin;
+        default: return styles.txIconAdmin;
+    }
+}
+
 const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) => {
-    const { history, totalPages, currentPage, loading, error, fetchHistory, fetchBalance } = useCredits();
+    const { history, totalPages, currentPage, historyLoading, historyError, fetchHistory, fetchBalance } = useCredits();
     const [selectedTxType, setSelectedTxType] = useState<CreditTxType | 'ALL'>('ALL');
     const pageSize = 10;
 
@@ -25,21 +59,16 @@ const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) =>
         fetchHistory(page - 1, pageSize, selectedTxType === 'ALL' ? undefined : selectedTxType);
     };
 
-    const handleTxTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value;
-        if (value === 'ALL') {
-            setSelectedTxType('ALL');
-        } else {
-            setSelectedTxType(value as unknown as CreditTxType);
-        }
+    const handleFilterChange = (value: CreditTxType | 'ALL') => {
+        setSelectedTxType(value);
     };
 
     const formatNumber = (num: number): string => {
         return num.toLocaleString('ko-KR');
     };
 
-    const formatDate = (timestamp: number): string => {
-        const date = new Date(timestamp);
+    const formatDate = (timestamp: number | string): string => {
+        const date = new Date(Number(timestamp));
         return date.toLocaleDateString('ko-KR', {
             year: 'numeric',
             month: '2-digit',
@@ -50,75 +79,83 @@ const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) =>
     };
 
     return (
-        <article>
+        <article className={styles.creditPage}>
+            {/* Top: Balance */}
             <CreditBalance onOpenPaymentWidget={onOpenPaymentWidget} />
 
-            <div className="cont-box">
-                <div className="cont-tit">
-                    <div>
-                        <h3>크레딧 내역</h3>
-                    </div>
+            {/* Bottom: History */}
+            <div className={styles.historySection}>
+                <div className={styles.historyHeader}>
+                    <h3 className={styles.historyTitle}>크레딧 내역</h3>
                     <div className={styles.filterContainer}>
-                        <select
-                            value={selectedTxType === 'ALL' ? 'ALL' : String(selectedTxType)}
-                            onChange={handleTxTypeChange}
-                            className={styles.filterSelect}
-                        >
-                            <option value="ALL">전체</option>
-                            <option value="CHARGE">충전</option>
-                            <option value="BONUS">보너스</option>
-                            <option value="USE">사용</option>
-                            <option value="REFUND">환불</option>
-                        </select>
+                        {TX_FILTERS.map((filter) => (
+                            <button
+                                key={filter.value}
+                                className={`${styles.filterTab} ${
+                                    selectedTxType === filter.value ? styles.filterTabActive : ''
+                                }`}
+                                onClick={() => handleFilterChange(filter.value === 'ALL' ? 'ALL' : filter.value as unknown as CreditTxType)}
+                            >
+                                {filter.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                {error && (
+                {historyError && (
                     <div className={styles.errorMessage}>
-                        {error}
+                        {historyError}
                     </div>
                 )}
 
-                {loading ? (
+                {historyLoading ? (
                     <div className={styles.loadingContainer}>
-                        <span>로딩 중...</span>
+                        <div className={styles.loadingSpinner} />
+                        <span>내역을 불러오는 중...</span>
                     </div>
                 ) : history.length === 0 ? (
                     <div className={styles.emptyMessage}>
+                        <div className={styles.emptyIcon}>📋</div>
                         크레딧 내역이 없습니다.
                     </div>
                 ) : (
                     <>
-                        <div className={styles.historyList}>
-                            <div className={styles.historyHeader}>
-                                <span className={styles.headerDate}>일시</span>
-                                <span className={styles.headerType}>유형</span>
-                                <span className={styles.headerAmount}>금액</span>
-                                <span className={styles.headerBalance}>잔액</span>
-                                <span className={styles.headerDescription}>설명</span>
+                        <div className={styles.historyScrollArea}>
+                            <div className={styles.historyList}>
+                                {history.map((item) => {
+                                    const isAddition = isCreditAddition(item.txType);
+                                    return (
+                                        <div key={item.id} className={styles.historyItem}>
+                                            <div className={`${styles.txIconWrap} ${getTxIconStyle(item.txType)}`}>
+                                                {getTxIcon(item.txType)}
+                                            </div>
+                                            <div className={styles.txInfo}>
+                                                <div className={styles.txTypeRow}>
+                                                    <span className={styles.txTypeBadge}>
+                                                        {getTxTypeLabel(item.txType)}
+                                                    </span>
+                                                </div>
+                                                {item.description && (
+                                                    <div className={styles.txDescription}>
+                                                        {item.description}
+                                                    </div>
+                                                )}
+                                                <div className={styles.txDate}>
+                                                    {formatDate(item.createdAt)}
+                                                </div>
+                                            </div>
+                                            <div className={styles.txAmountWrap}>
+                                                <div className={`${styles.txAmount} ${isAddition ? styles.positive : styles.negative}`}>
+                                                    {isAddition ? '+' : '-'}{formatNumber(Math.abs(item.amount))}
+                                                </div>
+                                                <div className={styles.txBalanceAfter}>
+                                                    잔액 {formatNumber(item.balanceAfter)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                            {history.map((item) => {
-                                const isAddition = isCreditAddition(item.txType);
-                                return (
-                                    <div key={item.id} className={styles.historyItem}>
-                                        <span className={styles.date}>
-                                            {formatDate(item.createdAt)}
-                                        </span>
-                                        <span className={styles.type}>
-                                            {getTxTypeLabel(item.txType)}
-                                        </span>
-                                        <span className={`${styles.amount} ${isAddition ? styles.positive : styles.negative}`}>
-                                            {isAddition ? '+' : '-'}{formatNumber(Math.abs(item.amount))}
-                                        </span>
-                                        <span className={styles.balance}>
-                                            {formatNumber(item.balanceAfter)}
-                                        </span>
-                                        <span className={styles.description}>
-                                            {item.description || '-'}
-                                        </span>
-                                    </div>
-                                );
-                            })}
                         </div>
 
                         {totalPages > 1 && (

@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         const res = await apiFetchHandler(url, HttpMethod.GET, undefined, accessToken);
         const data = await res.json();
 
-        return NextResponse.json(data);
+        return NextResponse.json(data, { status: res.status });
     } catch (error) {
         console.error('Error in GET /api/ui-templates/my:', error);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });

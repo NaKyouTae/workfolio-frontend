@@ -71,22 +71,23 @@ const NoticeCreateModal: React.FC<NoticeCreateModalProps> = ({
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0, 0, 0, 0.5)',
+      background: 'rgba(0, 0, 0, 0.7)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 1000,
     }}>
       <div style={{
-        background: 'white',
-        borderRadius: '12px',
-        padding: '32px',
+        background: '#1c1c1c',
+        border: '1px solid #2e2e2e',
+        borderRadius: '8px',
+        padding: '28px',
         width: '90%',
         maxWidth: '600px',
         maxHeight: '90vh',
         overflowY: 'auto',
       }}>
-        <h2 style={{ marginBottom: '24px', fontSize: '24px', fontWeight: '700' }}>
+        <h2 style={{ marginBottom: '24px', fontSize: '18px', fontWeight: 600, color: '#ededed' }}>
           새 공지사항 추가
         </h2>
 

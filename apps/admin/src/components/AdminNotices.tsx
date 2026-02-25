@@ -70,19 +70,9 @@ export default function AdminNotices() {
         {
             key: "isPinned",
             title: "고정",
-            width: "80px",
+            width: "60px",
             render: (notice) => (
-                <span
-                    style={{
-                        display: "inline-block",
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        backgroundColor: notice.isPinned ? "#fef3c7" : "#f3f4f6",
-                        color: notice.isPinned ? "#92400e" : "#6b7280",
-                    }}
-                >
+                <span className={`table-badge ${notice.isPinned ? "active" : "inactive"}`}>
                     {notice.isPinned ? "고정" : "-"}
                 </span>
             ),
@@ -90,50 +80,47 @@ export default function AdminNotices() {
         {
             key: "title",
             title: "제목",
-            render: (notice) => <div style={{ fontWeight: 500 }}>{notice.title}</div>,
+            render: (notice) => (
+                <span style={{ fontWeight: 500, color: "#ddd" }}>{notice.title}</span>
+            ),
         },
         {
             key: "createdAt",
             title: "작성일",
-            width: "120px",
-            render: (notice) => formatDate(notice.createdAt),
+            width: "100px",
+            render: (notice) => (
+                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(notice.createdAt)}</span>
+            ),
         },
         {
             key: "updatedAt",
             title: "수정일",
-            width: "120px",
-            render: (notice) => formatDate(notice.updatedAt),
+            width: "100px",
+            render: (notice) => (
+                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(notice.updatedAt)}</span>
+            ),
         },
         {
             key: "actions",
-            title: "작업",
-            width: "150px",
+            title: "",
+            width: "120px",
             render: (notice) => (
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                        gap: "8px",
-                    }}
-                >
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px" }}>
                     <button
-                        className="line gray"
+                        className="table-action-btn edit"
                         onClick={(e) => {
                             e.stopPropagation();
                             handleOpenUpdateModal(notice);
                         }}
-                        style={{ width: "60px", height: "30px" }}
                     >
                         편집
                     </button>
                     <button
-                        className="line red"
+                        className="table-action-btn delete"
                         onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(notice.id);
                         }}
-                        style={{ width: "60px", height: "30px" }}
                     >
                         삭제
                     </button>
@@ -144,37 +131,26 @@ export default function AdminNotices() {
 
     const renderExpandedRow = (notice: Notice) => {
         return (
-            <div style={{ padding: "16px" }}>
-                <div
-                    style={{
-                        marginBottom: "12px",
-                        paddingBottom: "12px",
-                        borderBottom: "1px solid #e5e7eb",
-                    }}
-                >
-                    <div
-                        style={{
-                            display: "flex",
-                            gap: "16px",
-                            fontSize: "13px",
-                            color: "#6b7280",
-                        }}
-                    >
-                        <span>작성일: {formatDate(notice.createdAt)}</span>
-                        <span>수정일: {formatDate(notice.updatedAt)}</span>
-                        <span>고정: {notice.isPinned ? "예" : "아니오"}</span>
+            <div>
+                <div className="expanded-detail-grid">
+                    <div className="detail-item">
+                        <span className="detail-label">작성일</span>
+                        <span className="detail-value">{formatDate(notice.createdAt)}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">수정일</span>
+                        <span className="detail-value">{formatDate(notice.updatedAt)}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">고정 여부</span>
+                        <span className="detail-value">{notice.isPinned ? "고정" : "미고정"}</span>
                     </div>
                 </div>
-                <div
-                    style={{
-                        fontSize: "14px",
-                        lineHeight: "1.6",
-                        color: "#374151",
-                        whiteSpace: "pre-line",
-                    }}
-                >
-                    {notice.content}
-                </div>
+                {notice.content && (
+                    <div className="expanded-content-block">
+                        {notice.content}
+                    </div>
+                )}
             </div>
         );
     };
@@ -196,7 +172,7 @@ export default function AdminNotices() {
                     </div>
 
                     {loading && <LoadingScreen />}
-                    {error && <div style={{ color: "red" }}>에러: {error}</div>}
+                    {error && <div style={{ color: "#f87171" }}>에러: {error}</div>}
 
                     <TableView
                         columns={columns}

@@ -24,7 +24,7 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
     return (
         <form onSubmit={onSubmit}>
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
                     제목 *
                 </label>
                 <input
@@ -32,19 +32,12 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
                     value={formData.title}
                     onChange={(e) => onChange("title", e.target.value)}
                     required
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                    }}
                     placeholder="공지사항 제목을 입력하세요"
                 />
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
                     내용 *
                 </label>
                 <textarea
@@ -52,15 +45,6 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
                     onChange={(e) => onChange("content", e.target.value)}
                     required
                     rows={10}
-                    style={{
-                        width: "100%",
-                        padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                        resize: "vertical",
-                        fontFamily: "inherit",
-                    }}
                     placeholder="공지사항 내용을 입력하세요"
                 />
             </div>
@@ -75,7 +59,7 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
                         onChange={(e) => onChange("isPinned", e.target.checked)}
                         style={{ width: "18px", height: "18px", cursor: "pointer" }}
                     />
-                    <span style={{ fontWeight: "600" }}>상단 고정</span>
+                    <span style={{ fontWeight: 500, color: "#ededed", fontSize: "13px" }}>상단 고정</span>
                 </label>
             </div>
 
@@ -84,15 +68,11 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
                     type="button"
                     onClick={onCancel}
                     disabled={isSubmitting}
+                    className="line gray"
                     style={{
-                        padding: "10px 24px",
-                        border: "1px solid #ddd",
-                        borderRadius: "6px",
-                        background: "#fff",
-                        color: "#000",
+                        padding: "8px 16px",
                         cursor: isSubmitting ? "not-allowed" : "pointer",
-                        fontSize: "14px",
-                        fontWeight: "600",
+                        opacity: isSubmitting ? 0.5 : 1,
                     }}
                 >
                     취소
@@ -100,16 +80,11 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
                 <button
                     type="submit"
                     disabled={isSubmitting}
+                    className="dark-gray"
                     style={{
-                        padding: "10px 24px",
-                        border: "none",
-                        borderRadius: "6px",
-                        background: "#2563eb",
-                        color: "#fff",
+                        padding: "8px 16px",
                         cursor: isSubmitting ? "not-allowed" : "pointer",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        opacity: isSubmitting ? 0.6 : 1,
+                        opacity: isSubmitting ? 0.5 : 1,
                     }}
                 >
                     {isSubmitting ? "처리 중..." : "저장"}

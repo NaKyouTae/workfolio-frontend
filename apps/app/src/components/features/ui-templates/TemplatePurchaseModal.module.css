@@ -166,12 +166,12 @@
 }
 
 .purchaseButton {
-    background: #374151;
-    color: #fff;
+    background: var(--yellow004);
+    color: var(--black);
 }
 
 .purchaseButton:hover:not(:disabled) {
-    background: #4b5563;
+    background: var(--yellow003);
 }
 
 .purchaseButton:disabled {
@@ -183,4 +183,14 @@
     font-size: 14px;
     color: #6b7280;
     margin: 0;
+}
+
+.ownedNotice {
+    font-size: 13px;
+    color: #b45309;
+    background-color: #fef3c7;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
 }

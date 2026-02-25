@@ -62,67 +62,73 @@ export default function AdminUsers() {
         {
             key: "id",
             title: "ID",
-            width: "120px",
+            width: "130px",
             render: (worker) => (
-                <div style={{ fontSize: "12px", color: "#6b7280" }}>{worker.id}</div>
+                <span style={{ fontSize: "11px", color: "#555", fontFamily: "monospace" }}>
+                    {worker.id.substring(0, 14)}
+                </span>
             ),
         },
         {
             key: "nickName",
             title: "닉네임",
-            width: "150px",
-            render: (worker) => <div style={{ fontWeight: 500 }}>{worker.nickName}</div>,
+            width: "120px",
+            render: (worker) => (
+                <span style={{ fontWeight: 500, color: "#ddd" }}>{worker.nickName}</span>
+            ),
         },
         {
             key: "email",
             title: "이메일",
             width: "200px",
-            render: (worker) => <div>{worker.email}</div>,
+            render: (worker) => (
+                <span style={{ color: "#999" }}>{worker.email}</span>
+            ),
         },
         {
             key: "phone",
             title: "전화번호",
-            width: "150px",
-            render: (worker) => <div>{worker.phone}</div>,
+            width: "130px",
+            render: (worker) => (
+                <span style={{ color: "#999", fontSize: "12px" }}>{worker.phone}</span>
+            ),
         },
         {
             key: "gender",
             title: "성별",
-            width: "80px",
-            render: (worker) => <div>{getGenderLabel(worker.gender)}</div>,
+            width: "60px",
+            render: (worker) => (
+                <span style={{ color: "#777" }}>{getGenderLabel(worker.gender)}</span>
+            ),
         },
         {
             key: "birthDate",
             title: "생년월일",
-            width: "120px",
-            render: (worker) => formatDate(worker.birthDate),
+            width: "100px",
+            render: (worker) => (
+                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(worker.birthDate)}</span>
+            ),
         },
         {
             key: "createdAt",
             title: "가입일",
-            width: "120px",
-            render: (worker) => formatDate(worker.createdAt),
+            width: "100px",
+            render: (worker) => (
+                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(worker.createdAt)}</span>
+            ),
         },
         {
             key: "actions",
-            title: "작업",
-            width: "100px",
+            title: "",
+            width: "70px",
             render: (worker) => (
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                        gap: "8px",
-                    }}
-                >
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
-                        className="line gray"
+                        className="table-action-btn edit"
                         onClick={(e) => {
                             e.stopPropagation();
                             handleOpenUpdateModal(worker);
                         }}
-                        style={{ width: "60px", height: "30px" }}
                     >
                         편집
                     </button>
@@ -133,31 +139,41 @@ export default function AdminUsers() {
 
     const renderExpandedRow = (worker: Worker) => {
         return (
-            <div style={{ padding: "16px" }}>
-                <div
-                    style={{
-                        marginBottom: "12px",
-                        paddingBottom: "12px",
-                        borderBottom: "1px solid #e5e7eb",
-                    }}
-                >
-                    <div
-                        style={{
-                            display: "flex",
-                            gap: "16px",
-                            fontSize: "13px",
-                            color: "#6b7280",
-                            flexWrap: "wrap",
-                        }}
-                    >
-                        <span>ID: {worker.id}</span>
-                        <span>닉네임: {worker.nickName}</span>
-                        <span>이메일: {worker.email}</span>
-                        <span>전화번호: {worker.phone}</span>
-                        <span>성별: {getGenderLabel(worker.gender)}</span>
-                        <span>생년월일: {formatDate(worker.birthDate)}</span>
-                        <span>가입일: {formatDate(worker.createdAt)}</span>
-                        <span>수정일: {formatDate(worker.updatedAt)}</span>
+            <div>
+                <div className="expanded-detail-grid">
+                    <div className="detail-item">
+                        <span className="detail-label">ID</span>
+                        <span className="detail-value mono">{worker.id}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">닉네임</span>
+                        <span className="detail-value highlight">{worker.nickName}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">이메일</span>
+                        <span className="detail-value">{worker.email}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">전화번호</span>
+                        <span className="detail-value">{worker.phone}</span>
+                    </div>
+                </div>
+                <div className="expanded-detail-grid expanded-section">
+                    <div className="detail-item">
+                        <span className="detail-label">성별</span>
+                        <span className="detail-value">{getGenderLabel(worker.gender)}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">생년월일</span>
+                        <span className="detail-value">{formatDate(worker.birthDate)}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">가입일</span>
+                        <span className="detail-value">{formatDate(worker.createdAt)}</span>
+                    </div>
+                    <div className="detail-item">
+                        <span className="detail-label">수정일</span>
+                        <span className="detail-value">{formatDate(worker.updatedAt)}</span>
                     </div>
                 </div>
             </div>
@@ -180,7 +196,7 @@ export default function AdminUsers() {
                     </div>
 
                     {loading && <LoadingScreen />}
-                    {error && <div style={{ color: "red" }}>에러: {error}</div>}
+                    {error && <div style={{ color: "#f87171" }}>에러: {error}</div>}
 
                     <TableView
                         columns={columns}

@@ -153,7 +153,7 @@ const Header = () => {
                             이직 관리
                         </Link>
                     </li>
-                    <li className={pathname.includes("/templates") ? "active" : ""}>
+                    <li className={pathname === "/templates" || pathname.startsWith("/templates/") ? "active" : ""}>
                         <Link
                             href="/templates"
                             prefetch={false}

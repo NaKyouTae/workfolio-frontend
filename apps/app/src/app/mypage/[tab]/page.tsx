@@ -12,7 +12,9 @@ import MyUITemplates from '@/components/features/ui-templates/MyUITemplates';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
 import { useRouter, useParams } from 'next/navigation';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
-import LoginModal from '@workfolio/shared/ui/LoginModal';
+import { KakaoAdfitBanner } from '@workfolio/shared/ui/KakaoAdfitBanner';
+
+const NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY;
 
 const VALID_TABS = ['profile', 'credits', 'payments', 'templates', 'withdraw'] as const;
 type Tab = typeof VALID_TABS[number];
@@ -24,7 +26,6 @@ const MypageTabPage: React.FC = () => {
     const { deleteAccount, isLoading } = useUser();
     const { showNotification } = useNotification();
     const [isDeleting, setIsDeleting] = useState(false);
-    const [showLoginModal, setShowLoginModal] = useState(false);
     const [showPaymentWidget, setShowPaymentWidget] = useState(false);
 
     const activeMenu = VALID_TABS.includes(tab as Tab) ? tab : 'profile';
@@ -37,9 +38,9 @@ const MypageTabPage: React.FC = () => {
 
     useEffect(() => {
         if (!isLoggedIn()) {
-            setShowLoginModal(true);
+            router.replace('/records');
         }
-    }, []);
+    }, [router]);
 
     const handleOpenTemplateStore = () => {
         router.push('/templates');
@@ -85,21 +86,24 @@ const MypageTabPage: React.FC = () => {
                     <div className="aside-cont">
                         <ul className="aside-menu">
                             <li className={`${activeMenu === 'profile' ? 'active' : ''}`} onClick={() => handleMenuClick('profile')}>프로필 관리</li>
-                            <li className={`${activeMenu === 'credits' ? 'active' : ''}`} onClick={() => handleMenuClick('credits')}>크레딧 내역</li>
                             <li className={`${activeMenu === 'payments' ? 'active' : ''}`} onClick={() => handleMenuClick('payments')}>결제 내역</li>
+                            <li className={`${activeMenu === 'credits' ? 'active' : ''}`} onClick={() => handleMenuClick('credits')}>크레딧 내역</li>
                             <li className={`${activeMenu === 'templates' ? 'active' : ''}`} onClick={() => handleMenuClick('templates')}>보유 템플릿</li>
                             <li className={`${activeMenu === 'withdraw' ? 'active' : ''}`} onClick={() => handleMenuClick('withdraw')}>회원 탈퇴</li>
                         </ul>
+                    </div>
+                    <div>
+                        <KakaoAdfitBanner
+                            unit={NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY || ""}
+                            width={160}
+                            height={600}
+                            disabled={!NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY}
+                        />
                     </div>
                 </aside>
                 {/* Right Content */}
                 <section>
                     <div className="contents">
-                        <div className="page-title">
-                            <div>
-                                <h2>마이페이지</h2>
-                            </div>
-                        </div>
                         <div className="page-cont">
                             {activeMenu === 'profile' && (
                                 <ProfileManagement />
@@ -133,7 +137,6 @@ const MypageTabPage: React.FC = () => {
                     <Footer/>
                 </section>
             </main>
-            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
             <PaymentWidget
                 isOpen={showPaymentWidget}
                 onClose={handleClosePaymentWidget}

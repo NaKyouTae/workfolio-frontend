@@ -1,0 +1,95 @@
+.wrapper {
+    min-height: 100vh;
+    background-color: #171717;
+}
+
+.header {
+    padding: 24px 32px;
+    border-bottom: 1px solid #2e2e2e;
+}
+
+.header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ededed;
+    margin: 0 0 4px;
+}
+
+.header p {
+    font-size: 13px;
+    color: #6b6b6b;
+    margin: 0;
+}
+
+.content {
+    padding: 32px;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.statCard {
+    background: #1c1c1c;
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.statValue {
+    font-size: 32px;
+    font-weight: 600;
+    color: #ededed;
+    margin-bottom: 4px;
+}
+
+.statLabel {
+    font-size: 13px;
+    color: #6b6b6b;
+}
+
+.quickLinks {
+    margin-top: 8px;
+}
+
+.sectionTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ededed;
+    margin: 0 0 16px;
+}
+
+.linkGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.linkCard {
+    background: #1c1c1c;
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    padding: 20px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.linkCard:hover {
+    border-color: #3e3e3e;
+    background: #222222;
+}
+
+.linkTitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ededed;
+    margin-bottom: 4px;
+}
+
+.linkDesc {
+    font-size: 12px;
+    color: #6b6b6b;
+}
