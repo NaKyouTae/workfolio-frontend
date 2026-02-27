@@ -152,7 +152,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .page-title h2 > span {font-size: 1.4rem; font-weight: 400; color: var(--gray005);}
 
 /* 레이아웃 - 본문 - 콘텐츠 */
-.page-cont {padding: 2.4rem 2rem; flex: 1; overflow-y: auto;}
+.page-cont {padding: 2.4rem 2rem 10px; flex: 1; overflow-y: auto;}
 .page-cont .cont-box + .cont-box {margin-top: 4rem;}
 
 .cont-tit {display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.6rem;}

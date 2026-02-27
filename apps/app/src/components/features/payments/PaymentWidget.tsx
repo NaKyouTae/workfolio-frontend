@@ -126,9 +126,10 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
             <div
                 className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ''}`}
                 onClick={handleClose}
+                aria-hidden="true"
             />
 
-            {/* Left Slide Panel */}
+            {/* Center Modal */}
             <div className={`${styles.panel} ${isOpen ? styles.panelOpen : ''}`}>
                 <div className={styles.header}>
                     <h3>크레딧 충전</h3>

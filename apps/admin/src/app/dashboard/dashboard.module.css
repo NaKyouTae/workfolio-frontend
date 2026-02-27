@@ -1,7 +1,7 @@
 .container {
   display: flex;
   min-height: 100vh;
-  background-color: #171717;
+  background-color: #F7F8F9;
 }
 
 .main {
@@ -14,25 +14,25 @@
 .pageHeader {
   margin-bottom: 32px;
   padding: 24px 32px;
-  border-bottom: 1px solid #2e2e2e;
+  border-bottom: 1px solid #EEF0F1;
 }
 
 .pageHeader h1 {
   font-size: 20px;
   font-weight: 600;
-  color: #ededed;
+  color: #121212;
   margin-bottom: 4px;
 }
 
 .pageHeader p {
   font-size: 13px;
-  color: #6b6b6b;
+  color: #121212;
 }
 
 .card {
-  background: #1c1c1c;
+  background: #FFFFFF;
   border-radius: 8px;
-  border: 1px solid #2e2e2e;
+  border: 1px solid #EEF0F1;
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -43,60 +43,66 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #2e2e2e;
+  border-bottom: 1px solid #EEF0F1;
 }
 
 .cardHeader h2 {
   font-size: 15px;
   font-weight: 600;
-  color: #ededed;
+  color: #121212;
 }
 
 .button {
-  padding: 8px 16px;
-  background: #3ecf8e;
-  color: #1c1c1c;
+  width: fit-content;
+  height: 40px;
+  padding: 0 16px;
+  background: #FFBB26;
+  color: #FFFFFF;
   border: none;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .button:hover {
-  background: #3bbf82;
+  background: #E5A820;
 }
 
 .buttonSecondary {
-  padding: 8px 16px;
+  width: fit-content;
+  height: 40px;
+  padding: 0 16px;
   background: transparent;
-  color: #ededed;
-  border: 1px solid #3e3e3e;
+  color: #121212;
+  border: 1px solid #DFE0E1;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .buttonSecondary:hover {
-  background: #2a2a2a;
-  border-color: #4e4e4e;
+  background: #F7F8F9;
+  border-color: #BBC0C5;
 }
 
 .buttonDanger {
-  padding: 8px 16px;
+  width: fit-content;
+  height: 40px;
+  padding: 0 16px;
   background: transparent;
   color: #f87171;
   border: 1px solid #f87171;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .buttonDanger:hover {
-  background: rgba(248, 113, 113, 0.1);
+  background: rgba(248, 113, 113, 0.06);
 }

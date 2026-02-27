@@ -1,5 +1,5 @@
-import AdminPagePlaceholder from "@/components/AdminPagePlaceholder";
+import AdminRecords from "@/components/AdminRecords";
 
 export default function RecordsPage() {
-    return <AdminPagePlaceholder title="기록 내역" description="사용자 기록 내역을 조회합니다." />;
+    return <AdminRecords />;
 }

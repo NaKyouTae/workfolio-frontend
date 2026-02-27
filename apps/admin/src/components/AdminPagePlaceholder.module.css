@@ -1,23 +1,28 @@
 .wrapper {
     min-height: 100vh;
-    background-color: #171717;
+    background-color: #F7F8F9;
 }
 
 .header {
-    padding: 24px 32px;
-    border-bottom: 1px solid #2e2e2e;
+    height: 49px;
+    padding: 0 20px;
+    border-bottom: 1px solid #EEF0F1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
 }
 
 .header h1 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    color: #ededed;
-    margin: 0 0 4px;
+    color: #121212;
+    margin: 0;
 }
 
 .header p {
-    font-size: 13px;
-    color: #6b6b6b;
+    font-size: 14px;
+    color: #808991;
     margin: 0;
 }
 
@@ -31,24 +36,24 @@
     align-items: center;
     justify-content: center;
     padding: 80px 0;
-    border: 1px dashed #2e2e2e;
+    border: 1px dashed #EEF0F1;
     border-radius: 8px;
-    background-color: #1c1c1c;
+    background-color: #FFFFFF;
 }
 
 .emptyIcon {
-    color: #3e3e3e;
+    color: #DFE0E1;
     margin-bottom: 16px;
 }
 
 .emptyText {
     font-size: 14px;
-    color: #6b6b6b;
+    color: #121212;
     margin: 0 0 4px;
 }
 
 .emptySubtext {
     font-size: 13px;
-    color: #4a4a4a;
+    color: #121212;
     margin: 0;
 }

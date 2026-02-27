@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import HttpMethod from '@workfolio/shared/enums/HttpMethod';
 import {
     UITemplate,
+    UITemplateImage,
     UiTemplatePlan,
     WorkerUITemplate,
     UITemplatePurchaseResponse,
@@ -41,7 +42,18 @@ function normalizeWorkerUITemplate(raw: Record<string, unknown>): WorkerUITempla
             createdAt: Number(rawWorker.created_at ?? rawWorker.createdAt ?? 0),
             updatedAt: Number(rawWorker.updated_at ?? rawWorker.updatedAt ?? 0),
         } : { id: '', nickName: '', phone: '', email: '', status: 0, createdAt: 0, updatedAt: 0 },
-        uiTemplate: rawUiTemplate ? normalizeUITemplate(rawUiTemplate) : { id: '', name: '', type: UITemplateType.UNKNOWN, price: 0, durationDays: 0, isActive: false, isPopular: false, displayOrder: 0, createdAt: 0, updatedAt: 0 },
+        uiTemplate: rawUiTemplate ? normalizeUITemplate(rawUiTemplate) : { id: '', name: '', type: UITemplateType.UNKNOWN, isActive: false, displayOrder: 0, createdAt: 0, updatedAt: 0 },
+        createdAt: Number(raw.created_at ?? raw.createdAt ?? 0),
+        updatedAt: Number(raw.updated_at ?? raw.updatedAt ?? 0),
+    };
+}
+
+function normalizeImage(raw: Record<string, unknown>): UITemplateImage {
+    return {
+        id: String(raw.id ?? ''),
+        imageType: String(raw.image_type ?? raw.imageType ?? ''),
+        imageUrl: String(raw.image_url ?? raw.imageUrl ?? ''),
+        displayOrder: Number(raw.display_order ?? raw.displayOrder ?? 0),
         createdAt: Number(raw.created_at ?? raw.createdAt ?? 0),
         updatedAt: Number(raw.updated_at ?? raw.updatedAt ?? 0),
     };
@@ -50,20 +62,21 @@ function normalizeWorkerUITemplate(raw: Record<string, unknown>): WorkerUITempla
 function normalizeUITemplate(raw: Record<string, unknown>): UITemplate {
     const rawPlans = raw.plans as Record<string, unknown>[] | undefined;
     const plans = Array.isArray(rawPlans) ? rawPlans.map(normalizePlan) : undefined;
+    const rawImages = raw.images as Record<string, unknown>[] | undefined;
+    const images = Array.isArray(rawImages) ? rawImages.map(normalizeImage) : undefined;
     return {
         id: String(raw.id ?? ''),
         name: String(raw.name ?? ''),
         description: raw.description != null ? String(raw.description) : undefined,
         type: (raw.type as UITemplate['type']) ?? UITemplateType.UNKNOWN,
-        price: Number(raw.price ?? 0),
-        durationDays: Number(raw.duration_days ?? raw.durationDays ?? 0),
+        label: raw.label != null ? String(raw.label) : undefined,
         urlPath: raw.url_path != null ? String(raw.url_path) : raw.urlPath != null ? String(raw.urlPath) : undefined,
         previewImageUrl: raw.preview_image_url != null ? String(raw.preview_image_url) : raw.previewImageUrl != null ? String(raw.previewImageUrl) : undefined,
         thumbnailUrl: raw.thumbnail_url != null ? String(raw.thumbnail_url) : raw.thumbnailUrl != null ? String(raw.thumbnailUrl) : undefined,
         isActive: Boolean(raw.is_active ?? raw.isActive ?? true),
-        isPopular: Boolean(raw.is_popular ?? raw.isPopular ?? false),
         displayOrder: Number(raw.display_order ?? raw.displayOrder ?? 0),
         plans: plans?.length ? plans : undefined,
+        images: images?.length ? images : undefined,
         createdAt: Number(raw.created_at ?? raw.createdAt ?? 0),
         updatedAt: Number(raw.updated_at ?? raw.updatedAt ?? 0),
     };

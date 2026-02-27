@@ -1,11 +1,19 @@
 /* ===== Page Layout ===== */
 .creditPage {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 2rem;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
 }
 
-/* ===== Balance Card (top, compact) ===== */
+.balanceSide {
+    width: 20%;
+    flex-shrink: 0;
+}
+
+/* ===== Balance Card ===== */
 .balanceCard {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     border-radius: 12px;
@@ -15,8 +23,13 @@
     position: relative;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    gap: 24px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.balanceSide .balanceCard {
+    position: sticky;
 }
 
 .balanceCard::before {
@@ -89,6 +102,7 @@
 .balanceAmount {
     display: flex;
     align-items: baseline;
+    flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 0;
     position: relative;
@@ -106,6 +120,7 @@
     font-size: 13px;
     font-weight: 400;
     opacity: 0.5;
+    white-space: nowrap;
 }
 
 .loading {
@@ -128,6 +143,8 @@
     letter-spacing: 0.02em;
     white-space: nowrap;
     flex-shrink: 0;
+    width: 100%;
+    text-align: center;
 }
 
 .chargeButton:hover {
@@ -137,7 +154,11 @@
 
 /* ===== History Section ===== */
 .historySection {
+    flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .historyHeader {
@@ -196,10 +217,11 @@
     color: var(--black) !important;
 }
 
-/* ===== Scrollable History List ===== */
+/* ===== History List Wrapper ===== */
 .historyScrollArea {
-    max-height: calc(100vh - 26rem);
+    flex: 1;
     overflow-y: auto;
+    min-height: 0;
     padding-right: 4px;
 }
 
@@ -385,15 +407,16 @@
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-    .balanceCard {
+    .creditPage {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
     }
 
-    .chargeButton {
+    .balanceSide {
         width: 100%;
-        text-align: center;
+    }
+
+    .balanceSide .balanceCard {
+        position: static;
     }
 
     .historyHeader {

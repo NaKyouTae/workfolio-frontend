@@ -2,11 +2,14 @@ import { useState, useCallback } from 'react';
 import {
   UITemplate,
   UITemplateImage,
+  UiTemplatePlan,
   UITemplateListResponse,
   UITemplateGetResponse,
   AdminUITemplateCreateRequest,
   AdminUITemplateUpdateRequest,
   AdminUITemplateImageListResponse,
+  AdminUiTemplatePlanCreateRequest,
+  AdminUiTemplatePlanUpdateRequest,
 } from '@workfolio/shared/types/uitemplate';
 import { SuccessResponse } from '@workfolio/shared/generated/common';
 
@@ -56,7 +59,7 @@ export const useAdminUITemplates = () => {
     }
   }, []);
 
-  const createUITemplate = useCallback(async (request: AdminUITemplateCreateRequest): Promise<boolean> => {
+  const createUITemplate = useCallback(async (request: AdminUITemplateCreateRequest): Promise<string | null> => {
     setLoading(true);
     setError(null);
     try {
@@ -71,13 +74,14 @@ export const useAdminUITemplates = () => {
         throw new Error(errorData.error || 'Failed to create ui template');
       }
 
+      const data = await response.json();
       await fetchUITemplates();
-      return true;
+      return data.uiTemplate?.id || null;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       console.error('Error creating ui template:', err);
-      return false;
+      return null;
     } finally {
       setLoading(false);
     }
@@ -199,6 +203,145 @@ export const useAdminUITemplates = () => {
     }
   }, []);
 
+  const createPlan = useCallback(async (
+    uiTemplateId: string,
+    request: AdminUiTemplatePlanCreateRequest
+  ): Promise<UiTemplatePlan | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/ui-templates/${uiTemplateId}/plans`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create plan');
+      }
+
+      const data = await response.json();
+      return data.plan || data || null;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
+      console.error('Error creating plan:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updatePlan = useCallback(async (
+    planId: string,
+    request: AdminUiTemplatePlanUpdateRequest
+  ): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/ui-templates/plans/${planId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update plan');
+      }
+
+      return true;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
+      console.error('Error updating plan:', err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const deletePlan = useCallback(async (planId: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/ui-templates/plans/${planId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete plan');
+      }
+
+      const data: SuccessResponse = await response.json();
+      return data.isSuccess || false;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
+      console.error('Error deleting plan:', err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const reorderPlans = useCallback(async (
+    uiTemplateId: string,
+    plans: { id: string; durationDays: number; price: number; displayOrder: number }[]
+  ): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/ui-templates/${uiTemplateId}/plans/reorder`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plans }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reorder plans');
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Error reordering plans:', err);
+      return false;
+    }
+  }, []);
+
+  const reorderTemplates = useCallback(async (
+    templates: UITemplate[]
+  ): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/ui-templates/reorder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templates: templates.map((t, i) => ({
+            id: t.id,
+            name: t.name,
+            description: t.description || '',
+            type: typeof t.type === 'number' ? (t.type === 1 ? 'URL' : t.type === 2 ? 'PDF' : 'URL') : t.type,
+            label: t.label || '',
+            urlPath: t.urlPath || '',
+            isActive: t.isActive,
+            displayOrder: i,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reorder templates');
+      }
+
+      await fetchUITemplates();
+      return true;
+    } catch (err) {
+      console.error('Error reordering templates:', err);
+      return false;
+    }
+  }, [fetchUITemplates]);
+
   return {
     uiTemplates,
     loading,
@@ -210,5 +353,10 @@ export const useAdminUITemplates = () => {
     deleteUITemplate,
     uploadImages,
     deleteImage,
+    createPlan,
+    updatePlan,
+    deletePlan,
+    reorderPlans,
+    reorderTemplates,
   };
 };

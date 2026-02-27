@@ -6,11 +6,11 @@
         "packages/*"
     ],
     "scripts": {
-        "dev": "turbo dev",
+        "dev": "pnpm run proto && turbo dev",
         "build": "pnpm run proto && turbo build",
         "lint": "turbo lint",
-        "dev:app": "turbo dev --filter=app",
-        "dev:admin": "turbo dev --filter=admin",
+        "dev:app": "pnpm run proto && turbo dev --filter=app",
+        "dev:admin": "pnpm run proto && turbo dev --filter=admin",
         "install-protoc": "bash scripts/install-protoc.sh",
         "proto": "bash scripts/compile-proto.sh"
     },

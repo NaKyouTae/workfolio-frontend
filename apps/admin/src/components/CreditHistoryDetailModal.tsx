@@ -1,6 +1,7 @@
 "use client";
 
 import { CreditHistory, getTxTypeLabel, isCreditAddition } from "@workfolio/shared/types/credit";
+import AdminModal from "./AdminModal";
 
 interface CreditHistoryDetailModalProps {
     isOpen: boolean;
@@ -9,7 +10,7 @@ interface CreditHistoryDetailModalProps {
 }
 
 export default function CreditHistoryDetailModal({ isOpen, creditHistory, onClose }: CreditHistoryDetailModalProps) {
-    if (!isOpen || !creditHistory) return null;
+    if (!creditHistory) return null;
 
     const formatDate = (timestamp: number | string) => {
         const numTimestamp = typeof timestamp === "string" ? parseInt(timestamp, 10) : timestamp;
@@ -33,7 +34,7 @@ export default function CreditHistoryDetailModal({ isOpen, creditHistory, onClos
             value: creditHistory.worker ? (
                 <div>
                     <span>{creditHistory.worker.nickName}</span>
-                    <span style={{ color: "#6b6b6b", marginLeft: "8px" }}>({creditHistory.worker.email})</span>
+                    <span style={{ color: "#121212", marginLeft: "8px" }}>({creditHistory.worker.email})</span>
                 </div>
             ) : (
                 "-"
@@ -49,8 +50,8 @@ export default function CreditHistoryDetailModal({ isOpen, creditHistory, onClos
                         borderRadius: "4px",
                         fontSize: "12px",
                         fontWeight: 600,
-                        backgroundColor: isAddition ? "rgba(62, 207, 142, 0.15)" : "rgba(248, 113, 113, 0.15)",
-                        color: isAddition ? "#3ecf8e" : "#f87171",
+                        backgroundColor: isAddition ? "rgba(52, 199, 89, 0.12)" : "rgba(248, 113, 113, 0.15)",
+                        color: isAddition ? "#34C759" : "#f87171",
                     }}
                 >
                     {getTxTypeLabel(creditHistory.txType)}
@@ -60,7 +61,7 @@ export default function CreditHistoryDetailModal({ isOpen, creditHistory, onClos
         {
             label: "금액",
             value: (
-                <span style={{ fontWeight: 600, color: isAddition ? "#3ecf8e" : "#f87171" }}>
+                <span style={{ fontWeight: 600, color: isAddition ? "#34C759" : "#f87171" }}>
                     {isAddition ? "+" : ""}{creditHistory.amount.toLocaleString()}
                 </span>
             ),
@@ -74,84 +75,37 @@ export default function CreditHistoryDetailModal({ isOpen, creditHistory, onClos
     ];
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 1000,
-            }}
-            onClick={onClose}
+        <AdminModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="크레딧 내역 상세"
+            maxWidth="550px"
+            maxHeight="90vh"
+            footer={
+                <button className="line gray" onClick={onClose} style={{ height: "36px", padding: "0 20px" }}>
+                    닫기
+                </button>
+            }
         >
-            <div
-                style={{
-                    backgroundColor: "#1c1c1c",
-                    borderRadius: "12px",
-                    border: "1px solid #2e2e2e",
-                    padding: "24px",
-                    width: "100%",
-                    maxWidth: "520px",
-                    maxHeight: "80vh",
-                    overflowY: "auto",
-                }}
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "20px",
-                    }}
-                >
-                    <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#ededed" }}>크레딧 내역 상세</h3>
-                    <button
-                        onClick={onClose}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {rows.map((row) => (
+                    <div
+                        key={row.label}
                         style={{
-                            background: "none",
-                            border: "none",
-                            color: "#6b6b6b",
-                            fontSize: "18px",
-                            cursor: "pointer",
-                            padding: "4px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "8px 0",
+                            borderBottom: "1px solid #EEF0F1",
                         }}
                     >
-                        ✕
-                    </button>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {rows.map((row) => (
-                        <div
-                            key={row.label}
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                padding: "8px 0",
-                                borderBottom: "1px solid #2e2e2e",
-                            }}
-                        >
-                            <span style={{ color: "#6b6b6b", fontSize: "13px", flexShrink: 0, marginRight: "16px" }}>
-                                {row.label}
-                            </span>
-                            <span style={{ color: "#ededed", fontSize: "13px", textAlign: "right" }}>{row.value}</span>
-                        </div>
-                    ))}
-                </div>
-
-                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
-                    <button className="line gray" onClick={onClose} style={{ height: "36px", padding: "0 20px" }}>
-                        닫기
-                    </button>
-                </div>
+                        <span style={{ color: "#121212", fontSize: "13px", flexShrink: 0, marginRight: "16px" }}>
+                            {row.label}
+                        </span>
+                        <span style={{ color: "#121212", fontSize: "13px", textAlign: "right" }}>{row.value}</span>
+                    </div>
+                ))}
             </div>
-        </div>
+        </AdminModal>
     );
 }

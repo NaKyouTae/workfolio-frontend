@@ -126,7 +126,7 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
 const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }) => {
   const createFileAttachment = (priority: number = 0): AttachmentWithMode => ({
     id: undefined,
-    type: undefined,
+    type: Attachment_AttachmentType.ETC,
     category: Attachment_AttachmentCategory.FILE,
     url: '',
     fileName: '',
@@ -138,7 +138,7 @@ const AttachmentEdit: React.FC<AttachmentEditProps> = ({ attachments, onUpdate }
 
   const createUrlAttachment = (priority: number = 0): AttachmentWithMode => ({
     id: undefined,
-    type: undefined,
+    type: Attachment_AttachmentType.ETC,
     category: Attachment_AttachmentCategory.URL,
     url: '',    
     fileName: '',

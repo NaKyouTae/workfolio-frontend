@@ -3,11 +3,12 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { useUITemplates } from '@/hooks/useUITemplates';
-import { WorkerUITemplate, UITemplate, getRemainingDays, formatDuration } from '@workfolio/shared/types/uitemplate';
+import { WorkerUITemplate, UITemplate, UITemplateImage, getRemainingDays, formatDuration } from '@workfolio/shared/types/uitemplate';
 import Pagination from '@workfolio/shared/ui/Pagination';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
 import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { getPreviewPathFromUITemplate } from '@/components/features/public-resume/templates/resumeTemplateConfig';
+import { TemplateImagePreviewModal } from './UITemplateList';
 import FloatingNavigation from '@workfolio/shared/ui/FloatingNavigation';
 
 const MAIN_COLOR = '#FFBB26';
@@ -24,6 +25,8 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
     const [defaultUrlTemplate, setDefaultUrlTemplate] = useState<UITemplate | null>(null);
     const [defaultPdfTemplate, setDefaultPdfTemplate] = useState<UITemplate | null>(null);
     const [activeSection, setActiveSection] = useState<'url' | 'pdf'>('url');
+    const [imagePreviewTemplate, setImagePreviewTemplate] = useState<UITemplate | null>(null);
+    const [imagePreviewIndex, setImagePreviewIndex] = useState(0);
     const urlSectionRef = useRef<HTMLDivElement>(null);
     const pdfSectionRef = useRef<HTMLDivElement>(null);
 
@@ -157,12 +160,44 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
         }
     };
 
+    const getTemplateImages = (uiTemplate: UITemplate): UITemplateImage[] => {
+        return (uiTemplate.images ?? []).slice().sort((a, b) => a.displayOrder - b.displayOrder);
+    };
+
+    const getFirstImageSrc = (uiTemplate: UITemplate): string | undefined => {
+        const allImages = getTemplateImages(uiTemplate);
+        const thumbnail = allImages.find(img => img.imageType === 'THUMBNAIL');
+        return thumbnail?.imageUrl || allImages[0]?.imageUrl || uiTemplate.thumbnailUrl;
+    };
+
+    const handleImagePreviewOpen = (uiTemplate: UITemplate) => {
+        const images = getTemplateImages(uiTemplate);
+        if (images.length > 0) {
+            setImagePreviewTemplate(uiTemplate);
+            setImagePreviewIndex(0);
+        }
+    };
+
+    const handleTemplatePreview = (uiTemplate: UITemplate) => {
+        const images = getTemplateImages(uiTemplate);
+        if (images.length > 0) {
+            setImagePreviewTemplate(uiTemplate);
+            setImagePreviewIndex(0);
+            return;
+        }
+        const path = getPreviewPathFromUITemplate(uiTemplate);
+        if (path) {
+            window.open(`/templates/preview/${path}`, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     const renderTemplateListItem = (workerUITemplate: WorkerUITemplate) => {
         const status = getStatusInfo(workerUITemplate);
         const isDefault = isDefaultTemplate(workerUITemplate.uiTemplate);
         const isExpiredOrInactive = !workerUITemplate.isValid;
         const uiTemplate = workerUITemplate.uiTemplate;
-        const previewPath = getPreviewPathFromUITemplate(uiTemplate);
+        const firstImageSrc = getFirstImageSrc(uiTemplate);
+        const hasImages = (uiTemplate.images?.length ?? 0) > 0;
 
         return (
             <div
@@ -188,18 +223,22 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
                 }}
             >
                 {/* 썸네일 */}
-                <div style={{
-                    width: '80px',
-                    height: '100px',
-                    borderRadius: '6px',
-                    overflow: 'hidden',
-                    flexShrink: 0,
-                    position: 'relative',
-                    backgroundColor: '#f0f0f0',
-                }}>
-                    {uiTemplate.thumbnailUrl ? (
+                <div
+                    onClick={hasImages ? () => handleImagePreviewOpen(uiTemplate) : undefined}
+                    style={{
+                        width: '80px',
+                        height: '100px',
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                        position: 'relative',
+                        backgroundColor: '#f0f0f0',
+                        cursor: hasImages ? 'pointer' : 'default',
+                    }}
+                >
+                    {firstImageSrc ? (
                         <Image
-                            src={uiTemplate.thumbnailUrl}
+                            src={firstImageSrc}
                             alt={uiTemplate.name}
                             fill
                             style={{ objectFit: 'cover' }}
@@ -225,6 +264,23 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
                                 {uiTemplate.name}
                             </span>
                         </div>
+                    )}
+                    {/* 이미지 개수 배지 */}
+                    {hasImages && (uiTemplate.images!.length > 1) && (
+                        <span style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            right: '4px',
+                            backgroundColor: 'rgba(0,0,0,0.6)',
+                            color: '#fff',
+                            fontSize: '10px',
+                            fontWeight: 600,
+                            padding: '1px 5px',
+                            borderRadius: '3px',
+                            lineHeight: '1.4',
+                        }}>
+                            +{uiTemplate.images!.length - 1}
+                        </span>
                     )}
                 </div>
 
@@ -306,11 +362,11 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
                     gap: '6px',
                     flexShrink: 0,
                 }}>
-                    {previewPath && (
+                    {(hasImages || getPreviewPathFromUITemplate(uiTemplate)) && (
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
-                                window.open(`/templates/preview/${previewPath}`, '_blank', 'noopener,noreferrer');
+                                handleTemplatePreview(uiTemplate);
                             }}
                             style={{
                                 padding: '8px 14px',
@@ -415,135 +471,134 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
     };
 
     return (
-        <div className="my-ui-templates" style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '1.6rem',
-            width: '100%',
-        }}>
+        <>
             {/* 메인 컨텐츠 */}
-            <div style={{ maxWidth: '800px', width: '100%' }}>
+            <article style={{ paddingBottom: '10px' }}>
 
-            {loading && <p style={{ textAlign: 'center', padding: '40px 0' }}>로딩 중...</p>}
-            {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-
-            {!loading && myUITemplates.length === 0 && (
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: '300px',
-                    color: '#999',
-                }}>
-                    <p style={{ fontSize: '16px', marginBottom: '16px' }}>보유한 템플릿이 없습니다.</p>
-                    {onOpenUITemplateStore && (
-                        <button
-                            className="sm"
-                            onClick={onOpenUITemplateStore}
-                        >
-                            템플릿 둘러보기
-                        </button>
-                    )}
+                <div className="cont-tit">
+                    <div>
+                        <h3>보유 템플릿</h3>
+                    </div>
                 </div>
-            )}
 
-            {!loading && myUITemplates.length > 0 && (
-                <>
-                    {/* UI 템플릿 섹션 */}
-                    <div ref={urlSectionRef} style={{ marginBottom: '40px' }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            marginBottom: '16px',
-                            paddingBottom: '12px',
-                            borderBottom: '2px solid #e0e0e0',
-                        }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>
-                                UI 템플릿
-                            </h3>
-                            <span style={{ fontSize: '13px', color: '#999', marginLeft: '4px' }}>
-                                URL 공유시 사용할 수 있는 템플릿
-                            </span>
-                        </div>
-                        {urlTemplates.length === 0 ? (
-                            <p style={{ color: '#999', fontSize: '14px', margin: 0, textAlign: 'center', padding: '24px 0' }}>보유한 UI 템플릿이 없습니다.</p>
-                        ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                {urlTemplates.map(renderTemplateListItem)}
-                            </div>
+                {loading && <p style={{ textAlign: 'center', padding: '40px 0' }}>로딩 중...</p>}
+                {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+
+                {!loading && myUITemplates.length === 0 && (
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '300px',
+                        color: '#999',
+                    }}>
+                        <p style={{ fontSize: '16px', marginBottom: '16px' }}>보유한 템플릿이 없습니다.</p>
+                        {onOpenUITemplateStore && (
+                            <button onClick={onOpenUITemplateStore} style={{ width: 'fit-content' }}>
+                                템플릿 둘러보기
+                            </button>
                         )}
                     </div>
+                )}
 
-                    {/* PDF 템플릿 섹션 */}
-                    <div ref={pdfSectionRef}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            marginBottom: '16px',
-                            paddingBottom: '12px',
-                            borderBottom: '2px solid #e0e0e0',
-                        }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>
-                                PDF 템플릿
-                            </h3>
-                            <span style={{ fontSize: '13px', color: '#999', marginLeft: '4px' }}>
-                                이력서를 PDF로 다운로드할 때 사용할 수 있는 템플릿
-                            </span>
+                {!loading && myUITemplates.length > 0 && (
+                    <>
+                        {/* UI 템플릿 섹션 */}
+                        <div ref={urlSectionRef} style={{ marginBottom: '40px' }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                marginBottom: '16px',
+                                paddingBottom: '12px',
+                                borderBottom: '2px solid #e0e0e0',
+                            }}>
+                                <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>
+                                    UI 템플릿
+                                </h3>
+                                <span style={{ fontSize: '13px', color: '#999', marginLeft: '4px' }}>
+                                    URL 공유시 사용할 수 있는 템플릿
+                                </span>
+                            </div>
+                            {urlTemplates.length === 0 ? (
+                                <p style={{ color: '#999', fontSize: '14px', margin: 0, textAlign: 'center', padding: '24px 0' }}>보유한 UI 템플릿이 없습니다.</p>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                    {urlTemplates.map(renderTemplateListItem)}
+                                </div>
+                            )}
                         </div>
-                        {pdfTemplates.length === 0 ? (
-                            <p style={{ color: '#999', fontSize: '14px', margin: 0, textAlign: 'center', padding: '24px 0' }}>보유한 PDF 템플릿이 없습니다.</p>
-                        ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                {pdfTemplates.map(renderTemplateListItem)}
+
+                        {/* PDF 템플릿 섹션 */}
+                        <div ref={pdfSectionRef}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                marginBottom: '16px',
+                                paddingBottom: '12px',
+                                borderBottom: '2px solid #e0e0e0',
+                            }}>
+                                <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>
+                                    PDF 템플릿
+                                </h3>
+                                <span style={{ fontSize: '13px', color: '#999', marginLeft: '4px' }}>
+                                    이력서를 PDF로 다운로드할 때 사용할 수 있는 템플릿
+                                </span>
+                            </div>
+                            {pdfTemplates.length === 0 ? (
+                                <p style={{ color: '#999', fontSize: '14px', margin: 0, textAlign: 'center', padding: '24px 0' }}>보유한 PDF 템플릿이 없습니다.</p>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                    {pdfTemplates.map(renderTemplateListItem)}
+                                </div>
+                            )}
+                        </div>
+
+                        {totalPages > 1 && (
+                            <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    itemsPerPage={10}
+                                    onPageChange={handlePageChange}
+                                />
                             </div>
                         )}
-                    </div>
+                    </>
+                )}
 
-                    {totalPages > 1 && (
-                        <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                itemsPerPage={10}
-                                onPageChange={handlePageChange}
-                            />
-                        </div>
-                    )}
-                </>
-            )}
-
-            </div>
+            </article>
 
             {/* 플로팅 카테고리 */}
             {!loading && myUITemplates.length > 0 && (
-                <div style={{
-                    position: 'sticky',
-                    top: '2rem',
-                    alignSelf: 'flex-start',
-                    flexShrink: 0,
-                }}>
-                    <FloatingNavigation
-                        navigationItems={[
-                            {
-                                id: 'url',
-                                label: 'UI 템플릿',
-                                isActive: activeSection === 'url',
-                                onClick: () => scrollToSection('url'),
-                            },
-                            {
-                                id: 'pdf',
-                                label: 'PDF 템플릿',
-                                isActive: activeSection === 'pdf',
-                                onClick: () => scrollToSection('pdf'),
-                            },
-                        ]}
-                    />
-                </div>
+                <FloatingNavigation
+                    navigationItems={[
+                        {
+                            id: 'url',
+                            label: 'UI 템플릿',
+                            isActive: activeSection === 'url',
+                            onClick: () => scrollToSection('url'),
+                        },
+                        {
+                            id: 'pdf',
+                            label: 'PDF 템플릿',
+                            isActive: activeSection === 'pdf',
+                            onClick: () => scrollToSection('pdf'),
+                        },
+                    ]}
+                />
             )}
-        </div>
+            {imagePreviewTemplate && (
+                <TemplateImagePreviewModal
+                    images={getTemplateImages(imagePreviewTemplate)}
+                    templateName={imagePreviewTemplate.name}
+                    initialIndex={imagePreviewIndex}
+                    onClose={() => setImagePreviewTemplate(null)}
+                />
+            )}
+        </>
     );
 };
 

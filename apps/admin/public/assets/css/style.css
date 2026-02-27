@@ -1,6 +1,8 @@
 /* to embed a font */
 @import url('./font.css');
 
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
 :root {
     --black: #121212;
     --white: #FDFDFE;
@@ -140,7 +142,7 @@ section {height: calc(100vh - 6.4rem); display: flex; flex-flow: column;}
 section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flow: column;}
 
 /* 레이아웃 - 본문 - 타이틀 */
-.page-title {height: 7.2rem; padding: 0 2rem; border-bottom: 1px solid var(--gray002); display: flex; align-items: center; justify-content: space-between; column-gap: 2.4rem; position: sticky; top: 0; background-color: var(--white); z-index: 10;}
+.page-title {height: 4.9rem; padding: 0 2rem; border-bottom: 1px solid var(--gray002); display: flex; align-items: center; justify-content: space-between; column-gap: 2.4rem; position: sticky; top: 0; background-color: var(--white); z-index: 10;}
 .page-title > div {display: flex; align-items: center; column-gap: 1.2rem; flex: 1;}
 .page-title > div > div {display: flex; align-items: center; column-gap: .8rem;}
 .page-title > div > div:nth-child(1):nth-last-child(1) {flex: 1;}
@@ -152,7 +154,7 @@ section .contents {flex: 1; height: calc(100% - 2.4rem); display: flex; flex-flo
 .page-title h2 > span {font-size: 1.4rem; font-weight: 400; color: var(--gray005);}
 
 /* 레이아웃 - 본문 - 콘텐츠 */
-.page-cont {padding: 2.4rem 2rem; height: 100%; max-height: calc(100vh - 16.1rem); overflow-y: auto;}
+.page-cont {padding: 2.4rem 2rem; height: 100%; max-height: calc(100vh - 13.8rem); overflow-y: auto;}
 .page-cont .cont-box + .cont-box {margin-top: 4rem;}
 
 .cont-tit {display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.6rem;}

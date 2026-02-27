@@ -34,15 +34,11 @@ export interface UITemplate {
     description?: string;
     type: UITemplateType | string;
     label?: string;
-    price: number;
-    durationDays: number;
     urlPath?: string;
     previewImageUrl?: string;
     thumbnailUrl?: string;
     isActive: boolean;
-    isPopular: boolean;
     displayOrder: number;
-    /** 이용 기간별 가격 (1/3/6/9/12개월). 없으면 template.price/durationDays 사용 */
     plans?: UiTemplatePlan[];
     images?: UITemplateImage[];
     createdAt: number;
@@ -116,17 +112,28 @@ export interface ActiveUITemplatesResponse {
     workerUiTemplates: WorkerUITemplate[];
 }
 
+// Admin Plan CRUD request types
+export interface AdminUiTemplatePlanCreateRequest {
+    durationDays: number;
+    price: number;
+    displayOrder: number;
+}
+
+export interface AdminUiTemplatePlanUpdateRequest {
+    id: string;
+    durationDays: number;
+    price: number;
+    displayOrder: number;
+}
+
 // Admin API types
 export interface AdminUITemplateCreateRequest {
     name: string;
     description?: string;
     type: string;
     label?: string;
-    price: number;
-    durationDays: number;
     urlPath?: string;
     isActive: boolean;
-    isPopular: boolean;
     displayOrder: number;
 }
 

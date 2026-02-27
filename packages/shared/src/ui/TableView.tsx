@@ -19,14 +19,14 @@ interface TableViewProps<T> {
   isLoading?: boolean;
 }
 
-function TableView<T>({ 
-  columns, 
-  data, 
-  onRowClick, 
+function TableView<T>({
+  columns,
+  data,
+  onRowClick,
   expandedRowRender,
   getRowKey,
   emptyMessage = '데이터가 없습니다.',
-  isLoading = false 
+  isLoading = false
 }: TableViewProps<T>) {
   const [expandedRowKeys, setExpandedRowKeys] = useState<Set<string>>(new Set());
 
@@ -51,7 +51,7 @@ function TableView<T>({
     return expandedRowKeys.has(key);
   };
 
-  if (isLoading) {
+  if (isLoading && data.length === 0) {
     return (
       <div className="table-view-container">
         <LoadingScreen />
@@ -59,7 +59,7 @@ function TableView<T>({
     );
   }
 
-  if (data.length === 0) {
+  if (!isLoading && data.length === 0) {
     return (
       <div className="table-view-container">
         <div className="table-view-empty">{emptyMessage}</div>
@@ -69,6 +69,13 @@ function TableView<T>({
 
   return (
     <div className="table-view-container">
+      {isLoading && (
+        <div className="table-view-refresh-overlay">
+          <svg className="table-view-refresh-spinner" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="40 60" />
+          </svg>
+        </div>
+      )}
       <table className="table-view">
         <thead>
           <tr>
@@ -76,8 +83,8 @@ function TableView<T>({
               <th style={{ width: '40px' }}></th>
             )}
             {columns.map((column) => (
-              <th 
-                key={column.key} 
+              <th
+                key={column.key}
                 style={{ width: column.width }}
               >
                 {column.title}
@@ -90,7 +97,7 @@ function TableView<T>({
             const expanded = isRowExpanded(item, index);
             return (
               <React.Fragment key={getRowKey ? getRowKey(item, index) : index}>
-                <tr 
+                <tr
                   onClick={() => handleRowClick(item, index)}
                   className={expandedRowRender || onRowClick ? 'clickable' : ''}
                 >
@@ -102,7 +109,7 @@ function TableView<T>({
                     </td>
                   )}
                   {columns.map((column) => (
-                    <td key={column.key}>
+                    <td key={column.key} data-title={column.title}>
                       {column.render(item, index)}
                     </td>
                   ))}
@@ -126,4 +133,3 @@ function TableView<T>({
 }
 
 export default TableView;
-

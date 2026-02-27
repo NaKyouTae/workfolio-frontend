@@ -44,7 +44,7 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
     }, [isOpen, template?.id, plans.length]);
 
     const selectedPlan = selectedPlanId ? plans.find((p) => p.id === selectedPlanId) : null;
-    const finalPrice = selectedPlan ? selectedPlan.price : template?.price ?? 0;
+    const finalPrice = selectedPlan?.price ?? 0;
     const canPurchase = finalPrice > 0 && balance >= finalPrice;
 
     const handlePurchase = async () => {
@@ -112,7 +112,7 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
                         </>
                     ) : (
                         <p className={styles.noPlanHint}>
-                            {template ? `${template.name} · ${(template.price).toLocaleString()} 크레딧 · ${formatDuration(template.durationDays)}` : ''}
+                            {template ? template.name : ''}
                         </p>
                     )}
                     <div className={styles.finalRow}>

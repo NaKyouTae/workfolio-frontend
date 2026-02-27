@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { NoticeUpdateRequest } from '@workfolio/shared/generated/notice';
 import { Notice } from '@workfolio/shared/generated/common';
 import NoticeForm from './NoticeForm';
+import AdminModal from './AdminModal';
 
 interface NoticeUpdateModalProps {
   isOpen: boolean;
@@ -36,10 +37,7 @@ const NoticeUpdateModal: React.FC<NoticeUpdateModalProps> = ({
   }, [notice]);
 
   const handleChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,11 +54,9 @@ const NoticeUpdateModal: React.FC<NoticeUpdateModalProps> = ({
     };
 
     const success = await onSubmit(request);
-
     if (success) {
       onClose();
     }
-
     setIsSubmitting(false);
   };
 
@@ -75,44 +71,55 @@ const NoticeUpdateModal: React.FC<NoticeUpdateModalProps> = ({
     onClose();
   };
 
-  if (!isOpen || !notice) return null;
+  if (!notice) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0, 0, 0, 0.7)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000,
-    }}>
-      <div style={{
-        background: '#1c1c1c',
-        border: '1px solid #2e2e2e',
-        borderRadius: '8px',
-        padding: '28px',
-        width: '90%',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-      }}>
-        <h2 style={{ marginBottom: '24px', fontSize: '18px', fontWeight: 600, color: '#ededed' }}>
-          공지사항 수정
-        </h2>
-
-        <NoticeForm
-          formData={formData}
-          onChange={handleChange}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isSubmitting={isSubmitting}
-        />
-      </div>
-    </div>
+    <AdminModal
+      isOpen={isOpen}
+      onClose={handleCancel}
+      title="공지사항 수정"
+      maxWidth="550px"
+      maxHeight="90vh"
+      footer={
+        <>
+          <button
+            type="button"
+            onClick={handleCancel}
+            disabled={isSubmitting}
+            className="line gray"
+            style={{
+              padding: '8px 16px',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isSubmitting ? 0.5 : 1,
+            }}
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="dark-gray"
+            style={{
+              padding: '8px 16px',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isSubmitting ? 0.5 : 1,
+            }}
+          >
+            {isSubmitting ? '처리 중...' : '저장'}
+          </button>
+        </>
+      }
+    >
+      <NoticeForm
+        formData={formData}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        isSubmitting={isSubmitting}
+        hideButtons
+      />
+    </AdminModal>
   );
 };
 

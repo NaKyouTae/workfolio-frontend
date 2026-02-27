@@ -225,3 +225,74 @@
   color: #333;
 }
 
+/* 템플릿 미보유 모달 */
+.noTemplateOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.noTemplateModal {
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.noTemplateContent {
+  padding: 32px 24px 24px;
+  text-align: center;
+}
+
+.noTemplateContent p {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0;
+  word-break: keep-all;
+}
+
+.noTemplateFooter {
+  padding: 16px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.noTemplateFooter button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.noTemplateCancelButton {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.noTemplateCancelButton:hover {
+  background: #e5e7eb;
+}
+
+.noTemplateConfirmButton {
+  background: var(--yellow004);
+  color: var(--black);
+}
+
+.noTemplateConfirmButton:hover {
+  background: var(--yellow003);
+}
+

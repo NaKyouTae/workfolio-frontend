@@ -15,6 +15,7 @@ interface UserFormProps {
     onSubmit: (e: React.FormEvent) => void;
     onCancel: () => void;
     isSubmitting?: boolean;
+    hideButtons?: boolean;
 }
 
 const UserForm: React.FC<UserFormProps> = ({
@@ -23,12 +24,13 @@ const UserForm: React.FC<UserFormProps> = ({
     onSubmit,
     onCancel,
     isSubmitting = false,
+    hideButtons = false,
 }) => {
     return (
         <form onSubmit={onSubmit}>
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
-                    닉네임 *
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#121212" }}>
+                    닉네임 <span style={{ color: "#f87171" }}>*</span>
                 </label>
                 <input
                     type="text"
@@ -40,8 +42,8 @@ const UserForm: React.FC<UserFormProps> = ({
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
-                    이메일 *
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#121212" }}>
+                    이메일 <span style={{ color: "#f87171" }}>*</span>
                 </label>
                 <input
                     type="email"
@@ -53,8 +55,8 @@ const UserForm: React.FC<UserFormProps> = ({
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
-                    전화번호 *
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#121212" }}>
+                    전화번호 <span style={{ color: "#f87171" }}>*</span>
                 </label>
                 <input
                     type="tel"
@@ -66,7 +68,7 @@ const UserForm: React.FC<UserFormProps> = ({
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#121212" }}>
                     생년월일
                 </label>
                 <input
@@ -77,7 +79,7 @@ const UserForm: React.FC<UserFormProps> = ({
             </div>
 
             <div style={{ marginBottom: "24px" }}>
-                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#a0a0a0" }}>
+                <label style={{ display: "block", marginBottom: "6px", fontWeight: 500, fontSize: "13px", color: "#121212" }}>
                     성별
                 </label>
                 <select
@@ -95,33 +97,35 @@ const UserForm: React.FC<UserFormProps> = ({
                 </select>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    disabled={isSubmitting}
-                    className="line gray"
-                    style={{
-                        padding: "8px 16px",
-                        cursor: isSubmitting ? "not-allowed" : "pointer",
-                        opacity: isSubmitting ? 0.5 : 1,
-                    }}
-                >
-                    취소
-                </button>
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="dark-gray"
-                    style={{
-                        padding: "8px 16px",
-                        cursor: isSubmitting ? "not-allowed" : "pointer",
-                        opacity: isSubmitting ? 0.5 : 1,
-                    }}
-                >
-                    {isSubmitting ? "처리 중..." : "저장"}
-                </button>
-            </div>
+            {!hideButtons && (
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        disabled={isSubmitting}
+                        className="line gray"
+                        style={{
+                            padding: "8px 16px",
+                            cursor: isSubmitting ? "not-allowed" : "pointer",
+                            opacity: isSubmitting ? 0.5 : 1,
+                        }}
+                    >
+                        취소
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="dark-gray"
+                        style={{
+                            padding: "8px 16px",
+                            cursor: isSubmitting ? "not-allowed" : "pointer",
+                            opacity: isSubmitting ? 0.5 : 1,
+                        }}
+                    >
+                        {isSubmitting ? "처리 중..." : "저장"}
+                    </button>
+                </div>
+            )}
         </form>
     );
 };

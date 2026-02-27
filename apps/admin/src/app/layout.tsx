@@ -5,6 +5,7 @@ import "../../public/assets/css/ico.css";
 import "../../public/assets/css/common.css";
 import "../../public/assets/css/style.css";
 import "../styles/admin-dark-theme.css";
+import "../styles/admin-mobile-first.css";
 import ConfirmDialogProvider from "@workfolio/shared/ui/ConfirmDialogProvider";
 import NotificationProvider from "@workfolio/shared/ui/NotificationProvider";
 

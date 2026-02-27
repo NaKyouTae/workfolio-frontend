@@ -16,6 +16,7 @@ export interface Worker {
   email: string;
   birthDate?: number | undefined;
   gender?: Worker_Gender | undefined;
+  credit: number;
   status: Worker_WorkerStatus;
   createdAt: number;
   updatedAt: number;

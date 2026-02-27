@@ -1,5 +1,5 @@
-import AdminPagePlaceholder from "@/components/AdminPagePlaceholder";
+import AdminCareers from "@/components/AdminCareers";
 
 export default function CareersPage() {
-    return <AdminPagePlaceholder title="이력 내역" description="사용자 이력 내역을 조회합니다." />;
+    return <AdminCareers />;
 }

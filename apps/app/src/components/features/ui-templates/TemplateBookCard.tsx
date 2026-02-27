@@ -121,17 +121,17 @@ const TemplateBookCard: React.FC<TemplateBookCardProps> = ({
                     </span>
                 )}
 
-                {/* 우측 상단 배지 */}
-                <div style={{
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    alignItems: 'flex-end',
-                }}>
-                    {uiTemplate.isPopular && (
+                {/* 우측 상단 라벨 */}
+                {uiTemplate.label && (
+                    <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                        alignItems: 'flex-end',
+                    }}>
                         <span style={{
                             backgroundColor: '#ff6b35',
                             color: '#fff',
@@ -141,10 +141,10 @@ const TemplateBookCard: React.FC<TemplateBookCardProps> = ({
                             fontWeight: 700,
                             lineHeight: '1.4',
                         }}>
-                            인기
+                            {uiTemplate.label}
                         </span>
-                    )}
-                </div>
+                    </div>
+                )}
 
                 {/* 호버 오버레이 */}
                 {isHovered && hoverOverlay && (

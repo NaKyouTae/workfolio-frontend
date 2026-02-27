@@ -72,6 +72,19 @@ const TurnoverIcon = () => (
     </svg>
 );
 
+const AttachmentIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.44 11.05l-8.49 8.49a5 5 0 1 1-7.07-7.07l8.49-8.49a3.5 3.5 0 1 1 4.95 4.95L10.83 17.4a2 2 0 1 1-2.83-2.83l7.78-7.78" />
+    </svg>
+);
+
+const OwnedTemplateIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+);
+
 const NoticeIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -108,6 +121,7 @@ const menuSections: MenuSection[] = [
         items: [
             { name: "사용자", path: "/dashboard/users", icon: <UserIcon /> },
             { name: "UI 템플릿", path: "/dashboard/templates", icon: <TemplateIcon /> },
+            { name: "보유 템플릿", path: "/dashboard/owned-templates", icon: <OwnedTemplateIcon /> },
             { name: "공지사항", path: "/dashboard/notices", icon: <NoticeIcon /> },
         ],
     },
@@ -124,11 +138,17 @@ const menuSections: MenuSection[] = [
             { name: "기록 내역", path: "/dashboard/records", icon: <RecordIcon /> },
             { name: "이력 내역", path: "/dashboard/careers", icon: <CareerIcon /> },
             { name: "이직 내역", path: "/dashboard/turnovers", icon: <TurnoverIcon /> },
+            { name: "첨부파일 관리", path: "/dashboard/attachments", icon: <AttachmentIcon /> },
         ],
     },
 ];
 
-export default function AdminSidebar() {
+interface AdminSidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
+
+export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -152,10 +172,22 @@ export default function AdminSidebar() {
     };
 
     return (
-        <aside className={styles.sidebar}>
+        <>
+            <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
             <div className={styles.logo}>
                 <div className={styles.logoIcon}>W</div>
                 <span className={styles.logoText}>Workfolio</span>
+                <button
+                    type="button"
+                    className={styles.closeButton}
+                    onClick={onClose}
+                    aria-label="메뉴 닫기"
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                </button>
             </div>
 
             <nav className={styles.nav}>
@@ -173,6 +205,7 @@ export default function AdminSidebar() {
                                         onClick={(e) => {
                                             e.preventDefault();
                                             router.push(item.path);
+                                            onClose?.();
                                         }}
                                     >
                                         <span className={styles.icon}>{item.icon}</span>
@@ -192,5 +225,7 @@ export default function AdminSidebar() {
                 </button>
             </div>
         </aside>
+        {isOpen && <button type="button" className={styles.backdrop} onClick={onClose} aria-label="메뉴 닫기" />}
+        </>
     );
 }

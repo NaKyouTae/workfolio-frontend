@@ -6,8 +6,9 @@ import { Worker, Worker_Gender } from "@workfolio/shared/generated/common";
 import { WorkerUpdateRequest } from "@workfolio/shared/generated/worker";
 import TableView, { TableColumn } from "@workfolio/shared/ui/TableView";
 
-import LoadingScreen from "@workfolio/shared/ui/LoadingScreen";
+
 import UserUpdateModal from "./UserUpdateModal";
+import { formatPhone } from "@/utils/format";
 
 export default function AdminUsers() {
     const { workers, loading, error, fetchWorkers, updateWorker } = useAdminUsers();
@@ -64,7 +65,7 @@ export default function AdminUsers() {
             title: "ID",
             width: "130px",
             render: (worker) => (
-                <span style={{ fontSize: "11px", color: "#555", fontFamily: "monospace" }}>
+                <span style={{ fontSize: "11px", color: "#121212", fontFamily: "monospace" }}>
                     {worker.id.substring(0, 14)}
                 </span>
             ),
@@ -74,7 +75,7 @@ export default function AdminUsers() {
             title: "닉네임",
             width: "120px",
             render: (worker) => (
-                <span style={{ fontWeight: 500, color: "#ddd" }}>{worker.nickName}</span>
+                <span style={{ fontWeight: 500, color: "#121212" }}>{worker.nickName}</span>
             ),
         },
         {
@@ -82,7 +83,7 @@ export default function AdminUsers() {
             title: "이메일",
             width: "200px",
             render: (worker) => (
-                <span style={{ color: "#999" }}>{worker.email}</span>
+                <span style={{ color: "#121212" }}>{worker.email}</span>
             ),
         },
         {
@@ -90,7 +91,7 @@ export default function AdminUsers() {
             title: "전화번호",
             width: "130px",
             render: (worker) => (
-                <span style={{ color: "#999", fontSize: "12px" }}>{worker.phone}</span>
+                <span style={{ color: "#121212", fontSize: "12px" }}>{formatPhone(worker.phone)}</span>
             ),
         },
         {
@@ -98,7 +99,7 @@ export default function AdminUsers() {
             title: "성별",
             width: "60px",
             render: (worker) => (
-                <span style={{ color: "#777" }}>{getGenderLabel(worker.gender)}</span>
+                <span style={{ color: "#121212" }}>{getGenderLabel(worker.gender)}</span>
             ),
         },
         {
@@ -106,7 +107,7 @@ export default function AdminUsers() {
             title: "생년월일",
             width: "100px",
             render: (worker) => (
-                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(worker.birthDate)}</span>
+                <span style={{ color: "#121212", fontSize: "12px" }}>{formatDate(worker.birthDate)}</span>
             ),
         },
         {
@@ -114,7 +115,7 @@ export default function AdminUsers() {
             title: "가입일",
             width: "100px",
             render: (worker) => (
-                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(worker.createdAt)}</span>
+                <span style={{ color: "#121212", fontSize: "12px" }}>{formatDate(worker.createdAt)}</span>
             ),
         },
         {
@@ -155,7 +156,7 @@ export default function AdminUsers() {
                     </div>
                     <div className="detail-item">
                         <span className="detail-label">전화번호</span>
-                        <span className="detail-value">{worker.phone}</span>
+                        <span className="detail-value">{formatPhone(worker.phone)}</span>
                     </div>
                 </div>
                 <div className="expanded-detail-grid expanded-section">
@@ -187,6 +188,16 @@ export default function AdminUsers() {
                     <h2>사용자 관리</h2>
                     <p>사용자를 생성하고 관리합니다.</p>
                 </div>
+                <button
+                    onClick={() => fetchWorkers()}
+                    disabled={loading}
+                    title="새로고침"
+                    style={{ width: "36px", height: "36px", padding: 0, border: "1px solid var(--gray003)", borderRadius: "8px", backgroundColor: "transparent", cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+                >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ animation: loading ? "spin 1s linear infinite" : "none" }}>
+                        <path d="M13.65 2.35A7.96 7.96 0 0 0 8 0C3.58 0 0 3.58 0 8s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 8 14 6 6 0 1 1 8 2c1.66 0 3.14.69 4.22 1.78L9 7h7V0l-2.35 2.35z" fill="var(--gray005)" />
+                    </svg>
+                </button>
             </div>
 
             <div className="page-cont">
@@ -195,7 +206,6 @@ export default function AdminUsers() {
                         <h3>전체 사용자 ({workers.length}명)</h3>
                     </div>
 
-                    {loading && <LoadingScreen />}
                     {error && <div style={{ color: "#f87171" }}>에러: {error}</div>}
 
                     <TableView

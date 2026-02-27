@@ -5,6 +5,7 @@ import { WorkerUpdateRequest } from "@workfolio/shared/generated/worker";
 import { Worker, Worker_Gender } from "@workfolio/shared/generated/common";
 import UserForm from "./UserForm";
 import DateUtil from "@workfolio/shared/utils/DateUtil";
+import AdminModal from "./AdminModal";
 
 interface UserUpdateModalProps {
     isOpen: boolean;
@@ -38,10 +39,7 @@ const UserUpdateModal: React.FC<UserUpdateModalProps> = ({ isOpen, worker, onClo
     }, [worker]);
 
     const handleChange = (field: string, value: string | Worker_Gender | undefined) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
+        setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -63,60 +61,61 @@ const UserUpdateModal: React.FC<UserUpdateModalProps> = ({ isOpen, worker, onClo
         };
 
         const success = await onSubmit(request);
-
         if (success) {
             onClose();
         }
-
         setIsSubmitting(false);
     };
 
-    const handleCancel = () => {
-        onClose();
-    };
-
-    if (!isOpen || !worker) return null;
+    if (!worker) return null;
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: "rgba(0, 0, 0, 0.7)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 1000,
-            }}
+        <AdminModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="사용자 수정"
+            maxWidth="550px"
+            maxHeight="90vh"
+            footer={
+                <>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={isSubmitting}
+                        className="line gray"
+                        style={{
+                            padding: "8px 16px",
+                            cursor: isSubmitting ? "not-allowed" : "pointer",
+                            opacity: isSubmitting ? 0.5 : 1,
+                        }}
+                    >
+                        취소
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="dark-gray"
+                        style={{
+                            padding: "8px 16px",
+                            cursor: isSubmitting ? "not-allowed" : "pointer",
+                            opacity: isSubmitting ? 0.5 : 1,
+                        }}
+                    >
+                        {isSubmitting ? "처리 중..." : "저장"}
+                    </button>
+                </>
+            }
         >
-            <div
-                style={{
-                    background: "#1c1c1c",
-                    border: "1px solid #2e2e2e",
-                    borderRadius: "8px",
-                    padding: "28px",
-                    width: "90%",
-                    maxWidth: "600px",
-                    maxHeight: "90vh",
-                    overflowY: "auto",
-                }}
-            >
-                <h2 style={{ marginBottom: "24px", fontSize: "18px", fontWeight: 600, color: "#ededed" }}>
-                    사용자 수정
-                </h2>
-
-                <UserForm
-                    formData={formData}
-                    onChange={handleChange}
-                    onSubmit={handleSubmit}
-                    onCancel={handleCancel}
-                    isSubmitting={isSubmitting}
-                />
-            </div>
-        </div>
+            <UserForm
+                formData={formData}
+                onChange={handleChange}
+                onSubmit={handleSubmit}
+                onCancel={onClose}
+                isSubmitting={isSubmitting}
+                hideButtons
+            />
+        </AdminModal>
     );
 };
 

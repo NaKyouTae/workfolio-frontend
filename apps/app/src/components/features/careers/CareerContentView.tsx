@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { ResumeDetail, Resume_Gender } from '@workfolio/shared/generated/common';
 import CareerView from './view/CareerView';
 import ProjectView from './view/ProjectView';
@@ -15,6 +16,7 @@ import LoginModal from '@workfolio/shared/ui/LoginModal';
 import CareerContentViewSkeleton from '@workfolio/shared/ui/skeleton/CareerContentViewSkeleton';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
 import { UITemplate } from '@workfolio/shared/types/uitemplate';
+import styles from './CareerContentView.module.css';
 
 interface CareerContentViewProps {
   selectedResumeDetail: ResumeDetail | null;
@@ -43,8 +45,10 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   // 비공개 정보 보기 상태
   const [showHidden, setShowHidden] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showNoTemplateModal, setShowNoTemplateModal] = useState(false);
   const [defaultUrlTemplate, setDefaultUrlTemplate] = useState<UITemplate | null>(null);
   const { showNotification } = useNotification();
+  const router = useRouter();
 
   const fetchDefaultTemplates = useCallback(async () => {
     try {
@@ -55,6 +59,20 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
       }
     } catch (err) {
       console.error('Error fetching default templates:', err);
+    }
+  }, []);
+
+  const checkActiveTemplates = useCallback(async (type: 'URL' | 'PDF'): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/ui-templates/my/active?type=${type}`);
+      if (response.ok) {
+        const data = await response.json();
+        const list = data.worker_ui_templates ?? data.workerUiTemplates ?? [];
+        return Array.isArray(list) && list.length > 0;
+      }
+      return false;
+    } catch {
+      return false;
     }
   }, []);
 
@@ -111,9 +129,14 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   };
 
   // PDF 내보내기 핸들러
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     if (!isLoggedIn()) {
       setShowLoginModal(true);
+      return;
+    }
+    const hasTemplates = await checkActiveTemplates('PDF');
+    if (!hasTemplates) {
+      setShowNoTemplateModal(true);
       return;
     }
     if (exportPDF) {
@@ -125,6 +148,15 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   const handleCopyURL = async () => {
     if (!selectedResumeDetail?.publicId) {
       showNotification('공개 이력서 URL을 생성할 수 없습니다.', 'error');
+      return;
+    }
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    const hasTemplates = await checkActiveTemplates('URL');
+    if (!hasTemplates) {
+      setShowNoTemplateModal(true);
       return;
     }
     const urlPath = defaultUrlTemplate?.urlPath ?? undefined;
@@ -345,6 +377,36 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
 
         {/* 스크롤 가능한 컨텐츠 */}
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+
+        {/* 템플릿 미보유 모달 */}
+        {showNoTemplateModal && (
+          <div className={styles.noTemplateOverlay} onClick={() => setShowNoTemplateModal(false)}>
+            <div className={styles.noTemplateModal} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.noTemplateContent}>
+                <p>보유한 템플릿이 없습니다.<br />무료 템플릿을 구매하러 가시겠습니까?</p>
+              </div>
+              <div className={styles.noTemplateFooter}>
+                <button
+                  type="button"
+                  className={styles.noTemplateCancelButton}
+                  onClick={() => setShowNoTemplateModal(false)}
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  className={styles.noTemplateConfirmButton}
+                  onClick={() => {
+                    setShowNoTemplateModal(false);
+                    router.push('/templates');
+                  }}
+                >
+                  템플릿 보기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };

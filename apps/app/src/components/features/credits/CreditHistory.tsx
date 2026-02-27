@@ -79,14 +79,13 @@ const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) =>
     };
 
     return (
-        <article className={styles.creditPage}>
-            {/* Top: Balance */}
-            <CreditBalance onOpenPaymentWidget={onOpenPaymentWidget} />
-
-            {/* Bottom: History */}
+        <div className={styles.creditPage}>
+            {/* Left: History */}
             <div className={styles.historySection}>
-                <div className={styles.historyHeader}>
-                    <h3 className={styles.historyTitle}>크레딧 내역</h3>
+                <div className="cont-tit">
+                    <div>
+                        <h3>크레딧 내역</h3>
+                    </div>
                     <div className={styles.filterContainer}>
                         {TX_FILTERS.map((filter) => (
                             <button
@@ -169,7 +168,12 @@ const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) =>
                     </>
                 )}
             </div>
-        </article>
+
+            {/* Right: Balance */}
+            <div className={styles.balanceSide}>
+                <CreditBalance onOpenPaymentWidget={onOpenPaymentWidget} />
+            </div>
+        </div>
     );
 };
 

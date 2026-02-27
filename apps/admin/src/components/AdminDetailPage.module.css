@@ -1,0 +1,879 @@
+.wrapper {
+    min-height: 100%;
+    padding: 0 32px 80px;
+    background-color: #fff;
+}
+
+/* ── Header ── */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 49px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #EEF0F1;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+}
+
+.titleGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.titleGroup h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.titleGroup p {
+    margin: 0;
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+.backButton {
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 13px;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.backButton:hover {
+    color: #374151;
+}
+
+/* ── Basic Info (Input Style) ── */
+.basicInfoSection {
+    margin-bottom: 36px;
+}
+
+.basicInfoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.basicInfoFull {
+    grid-column: 1 / -1;
+}
+
+.inputField {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.inputLabel {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    margin: 0;
+}
+
+.inputValue {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #111827;
+    background: #fff;
+    border: 1px solid #DFE0E1;
+    border-radius: 8px;
+    outline: none;
+    cursor: default;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.inputValueTextarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #111827;
+    background: #fff;
+    border: 1px solid #DFE0E1;
+    border-radius: 8px;
+    outline: none;
+    cursor: default;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.6;
+    min-height: 80px;
+}
+
+/* ── Sections ── */
+.sectionsWrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    padding-top: 0;
+}
+
+.section + .section::before {
+    content: '';
+    width: 100%;
+    height: 1px;
+    border-top: 1px dashed #DFE0E1;
+    display: block;
+    padding-top: 40px;
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.sectionTitle h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.sectionTitle p {
+    font-size: 14px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* ── Item List ── */
+.itemList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.item {
+    width: 100%;
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid #DFE0E1;
+    border-radius: 10px;
+    background: #fff;
+}
+
+/* ── Item Info ── */
+.itemInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.itemInfoTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.itemInfoTopLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.itemName {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.itemSub {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.itemInfoTopRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.itemInfoTopRight li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.itemInfoTopRight .fontBlack {
+    font-weight: 500;
+    color: #111827;
+}
+
+.itemInfoTopRight li + li::before {
+    content: '';
+    width: 1px;
+    height: 10px;
+    background-color: #d1d5db;
+}
+
+.itemMetaRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.itemMetaRow li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.itemMetaRow li + li::before {
+    content: '';
+    width: 1px;
+    height: 10px;
+    background-color: #d1d5db;
+}
+
+/* ── Item Description ── */
+.itemDesc {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.itemDescText {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+}
+
+/* ── Sub items (salary, language test) ── */
+.subList {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #F7F8F9;
+    border-radius: 10px;
+    list-style: none;
+    margin: 0;
+}
+
+.subItem {
+    display: flex;
+    gap: 10px;
+}
+
+.subItem > p {
+    width: 160px;
+    font-size: 12px;
+    color: #374151;
+    margin: 0;
+}
+
+.subItemContent {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.subItemContent > p {
+    font-size: 12px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+}
+
+.subItemContent > span {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ── Badge ── */
+.badge {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* ── Attachment ── */
+.attachmentList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.attachmentItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid #DFE0E1;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.attachmentItem:hover {
+    background: #EEF0F1;
+}
+
+.attachmentIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    background: #f3f4f6;
+}
+
+.attachmentInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.attachmentName {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.attachmentType {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 2px 0 0;
+}
+
+/* ── Empty ── */
+.emptyText {
+    font-size: 14px;
+    color: #d1d5db;
+    text-align: center;
+    padding: 24px 0;
+}
+
+/* ── Tab Navigation ── */
+.tabNav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 24px;
+}
+
+.tabButton {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #9ca3af;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.tabButton:hover {
+    color: #374151;
+    background: rgba(255, 187, 38, 0.06);
+}
+
+.tabButtonActive {
+    color: #FFBB26;
+    border-bottom-color: #FFBB26;
+    font-weight: 600;
+}
+
+/* ── Info Grid (basic detail) ── */
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.infoItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-radius: 10px;
+}
+
+.infoLabel {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.infoValue {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+}
+
+/* ── View Box (key-value pairs) ── */
+.viewBox {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.viewBox li {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 16px;
+    gap: 16px;
+}
+
+.viewBox li + li {
+    border-top: 1px solid #f3f4f6;
+}
+
+.viewBox li > p {
+    width: 100px;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.viewBox li > span {
+    font-size: 14px;
+    color: #111827;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+}
+
+/* ── Q&A List ── */
+.qaList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.qaItem {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.qaQuestion {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 8px;
+}
+
+.qaAnswer {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+}
+
+/* ── Check List ── */
+.checkList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.checkItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+}
+
+.checkItem + .checkItem {
+    border-top: 1px solid #f3f4f6;
+}
+
+.checkBox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 11px;
+    color: #fff;
+}
+
+.checkBoxChecked {
+    background: #111827;
+    border-color: #111827;
+}
+
+.checkContent {
+    font-size: 14px;
+    color: #111827;
+    margin: 0;
+}
+
+.checkContentChecked {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+/* ── Memo List ── */
+.memoList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.memoItem {
+    padding: 14px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+}
+
+/* ── Job Application Table ── */
+.appTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.appTable th {
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.appTable td {
+    padding: 12px;
+    color: #111827;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: top;
+}
+
+.appTable td p {
+    margin: 0;
+}
+
+.appTableWrap {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.stageList {
+    list-style: none;
+    margin: 0;
+    padding: 12px 16px;
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stageItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #374151;
+}
+
+.stageBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.stageDate {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.stageMemo {
+    font-size: 12px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.toggleButton {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.toggleButton:hover {
+    background: #f3f4f6;
+}
+
+.linkIcon {
+    display: inline-flex;
+    align-items: center;
+    color: #6b7280;
+    margin-left: 6px;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.linkIcon:hover {
+    color: #374151;
+}
+
+/* ── Final Choice / Negotiation ── */
+.choiceCard {
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.choiceName {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.choicePosition {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.choiceReason {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    margin: 0;
+}
+
+.negotiationGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.negotiationItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.negotiationLabel {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.negotiationValue {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+}
+
+/* ── Satisfaction ── */
+.scoreRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.scoreNumber {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.stars {
+    display: flex;
+    gap: 4px;
+}
+
+.starFilled {
+    color: #f59e0b;
+    font-size: 18px;
+}
+
+.starEmpty {
+    color: #e5e7eb;
+    font-size: 18px;
+}
+
+.reviewSummary {
+    margin-top: 10px;
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* ── Legacy grid support (TurnOverDetail etc) ── */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.cardFull {
+    grid-column: 1 / -1;
+}
+
+.label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.value {
+    font-size: 15px;
+    color: #111827;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.list {
+    margin: 0;
+    padding-left: 16px;
+    color: #111827;
+    font-size: 14px;
+}
+
+.list li + li {
+    margin-top: 6px;
+}
+
+@media (max-width: 900px) {
+    .wrapper {
+        padding: 0 16px 80px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .basicInfoGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .infoGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .negotiationGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .itemInfoTop {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .appTableWrap {
+        overflow-x: auto;
+    }
+
+    .appTable {
+        min-width: 700px;
+    }
+}

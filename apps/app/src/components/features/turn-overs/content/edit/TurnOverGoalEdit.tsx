@@ -31,6 +31,8 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialStartedAt = useMemo(() => turnOverRequest?.startedAt || undefined, [turnOverRequest?.id]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialEndedAt = useMemo(() => turnOverRequest?.endedAt || undefined, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialReason = useMemo(() => turnOverRequest?.turnOverGoal?.reason || '', [turnOverRequest?.id]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialGoal = useMemo(() => turnOverRequest?.turnOverGoal?.goal || '', [turnOverRequest?.id]);
@@ -46,6 +48,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
   const initialAttachments = useMemo(() => turnOverRequest?.turnOverGoal?.attachments || [], [turnOverRequest?.id]);
   
   const [startedAt, setStartedAt] = useState<number | undefined>(initialStartedAt);
+  const [endedAt, setEndedAt] = useState<number | undefined>(initialEndedAt);
   const [reason, setReason] = useState(initialReason);
   const [goal, setGoal] = useState(initialGoal);
   const [selfIntroductions, setSelfIntroductions] = useState<TurnOverUpsertRequest_TurnOverGoalRequest_SelfIntroductionRequest[]>(initialSelfIntroductions);
@@ -74,6 +77,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
       turnOverRequestIdRef.current = turnOverRequest?.id;
       if (turnOverRequest) {
         setStartedAt(turnOverRequest.startedAt || undefined);
+        setEndedAt(turnOverRequest.endedAt || undefined);
         if (turnOverRequest.turnOverGoal) {
           setReason(turnOverRequest.turnOverGoal.reason || '');
           setGoal(turnOverRequest.turnOverGoal.goal || '');
@@ -180,6 +184,7 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
       onSave({
         ...turnOverRequest,
         startedAt: startedAt,
+        endedAt: endedAt,
         turnOverGoal: {
           id: turnOverRequest?.turnOverGoal?.id || undefined,
           reason: reason,
@@ -225,8 +230,8 @@ const TurnOverGoalEdit = forwardRef<TurnOverEditRef, TurnOverGoalEditProps>(({ t
                 <li>
                     <p>목표 종료일</p>
                     <DatePicker
-                      value={DateUtil.formatTimestamp(startedAt || 0)}
-                      onChange={(date) => setStartedAt(DateTime.fromISO(date).toMillis())}
+                      value={DateUtil.formatTimestamp(endedAt || 0)}
+                      onChange={(date) => setEndedAt(DateTime.fromISO(date).toMillis())}
                       required={false}
                     />
                 </li>

@@ -17,25 +17,28 @@
     visibility: visible;
 }
 
-/* Left Slide Panel */
+/* Center Modal */
 .panel {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 400px;
-    max-width: 100%;
-    height: 100vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 480px;
+    max-width: calc(100% - 32px);
+    max-height: calc(100vh - 64px);
     background: #ffffff;
     z-index: 1000;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-out;
+    opacity: 0;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
 }
 
 .panelOpen {
-    transform: translateX(0);
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 /* Header */
@@ -86,6 +89,7 @@
     padding: 24px;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 .description {
@@ -374,7 +378,8 @@
 /* Responsive */
 @media (max-width: 480px) {
     .panel {
-        width: 100%;
+        width: calc(100% - 32px);
+        max-height: calc(100vh - 32px);
     }
 
     .content {

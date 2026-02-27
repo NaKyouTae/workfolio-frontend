@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NoticeCreateRequest } from '@workfolio/shared/generated/notice';
 import NoticeForm from './NoticeForm';
+import AdminModal from './AdminModal';
 
 interface NoticeCreateModalProps {
   isOpen: boolean;
@@ -22,11 +23,14 @@ const NoticeCreateModal: React.FC<NoticeCreateModalProps> = ({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setFormData({ title: '', content: '', isPinned: false });
+    }
+  }, [isOpen]);
+
   const handleChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,66 +44,65 @@ const NoticeCreateModal: React.FC<NoticeCreateModalProps> = ({
     };
 
     const success = await onSubmit(request);
-
     if (success) {
-      setFormData({
-        title: '',
-        content: '',
-        isPinned: false,
-      });
+      setFormData({ title: '', content: '', isPinned: false });
       onClose();
     }
-
     setIsSubmitting(false);
   };
 
   const handleCancel = () => {
-    setFormData({
-      title: '',
-      content: '',
-      isPinned: false,
-    });
+    setFormData({ title: '', content: '', isPinned: false });
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0, 0, 0, 0.7)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000,
-    }}>
-      <div style={{
-        background: '#1c1c1c',
-        border: '1px solid #2e2e2e',
-        borderRadius: '8px',
-        padding: '28px',
-        width: '90%',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-      }}>
-        <h2 style={{ marginBottom: '24px', fontSize: '18px', fontWeight: 600, color: '#ededed' }}>
-          새 공지사항 추가
-        </h2>
-
-        <NoticeForm
-          formData={formData}
-          onChange={handleChange}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isSubmitting={isSubmitting}
-        />
-      </div>
-    </div>
+    <AdminModal
+      isOpen={isOpen}
+      onClose={handleCancel}
+      title="새 공지사항 추가"
+      maxWidth="550px"
+      maxHeight="90vh"
+      footer={
+        <>
+          <button
+            type="button"
+            onClick={handleCancel}
+            disabled={isSubmitting}
+            className="line gray"
+            style={{
+              padding: '8px 16px',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isSubmitting ? 0.5 : 1,
+            }}
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="dark-gray"
+            style={{
+              padding: '8px 16px',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isSubmitting ? 0.5 : 1,
+            }}
+          >
+            {isSubmitting ? '처리 중...' : '저장'}
+          </button>
+        </>
+      }
+    >
+      <NoticeForm
+        formData={formData}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        isSubmitting={isSubmitting}
+        hideButtons
+      />
+    </AdminModal>
   );
 };
 

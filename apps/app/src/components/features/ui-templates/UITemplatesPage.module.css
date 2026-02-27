@@ -16,7 +16,7 @@
     min-height: 0;
     width: 100%;
     box-sizing: border-box;
-    padding: 0 2rem;
+    padding: 0 200px;
     min-width: 0;
     overflow-y: auto;
     margin: 0 auto;
@@ -39,8 +39,22 @@
     z-index: 10;
 }
 
+/* 광고 배너: 우측 고정 (스토어 메뉴 옆) */
+.adSideWrapper {
+    position: fixed;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
 @media (max-width: 1200px) {
-    .adWrapper {
+    .storeSection {
+        padding: 0 2rem;
+    }
+
+    .adWrapper,
+    .adSideWrapper {
         display: none;
     }
 }

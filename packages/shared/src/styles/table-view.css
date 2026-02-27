@@ -61,6 +61,29 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* 리프레시 오버레이 */
+.table-view-refresh-overlay {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.table-view-refresh-spinner {
+  margin-top: 48px;
+  color: #9ca3af;
+  animation: table-view-spin 0.8s linear infinite;
+}
+
+@keyframes table-view-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* 확장 아이콘 */
 .expand-icon-cell {
   width: 32px;

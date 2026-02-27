@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useUITemplates } from '@/hooks/useUITemplates';
-import { UITemplate, formatDuration } from '@workfolio/shared/types/uitemplate';
+import { UITemplate, UITemplateImage, formatDuration } from '@workfolio/shared/types/uitemplate';
 import { useCredits } from '@/hooks/useCredits';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
@@ -27,6 +27,8 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const [purchaseModalTemplate, setPurchaseModalTemplate] = useState<UITemplate | null>(null);
     const [ownedUITemplateIds, setOwnedUITemplateIds] = useState<Set<string>>(new Set());
     const [activeSection, setActiveSection] = useState<'url' | 'pdf'>('url');
+    const [imagePreviewTemplate, setImagePreviewTemplate] = useState<UITemplate | null>(null);
+    const [imagePreviewIndex, setImagePreviewIndex] = useState(0);
     const urlSectionRef = useRef<HTMLDivElement>(null);
     const pdfSectionRef = useRef<HTMLDivElement>(null);
 
@@ -109,6 +111,12 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     };
 
     const handleTemplatePreview = (uiTemplate: UITemplate) => {
+        const images = getTemplateImages(uiTemplate);
+        if (images.length > 0) {
+            setImagePreviewTemplate(uiTemplate);
+            setImagePreviewIndex(0);
+            return;
+        }
         const path = getPreviewPathFromUITemplate(uiTemplate);
         if (path) {
             window.open(`/templates/preview/${path}`, '_blank', 'noopener,noreferrer');
@@ -118,10 +126,28 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const urlUITemplates = uiTemplates.filter(t => t.type === 'URL');
     const pdfUITemplates = uiTemplates.filter(t => t.type === 'PDF');
 
+    const getTemplateImages = (uiTemplate: UITemplate): UITemplateImage[] => {
+        return (uiTemplate.images ?? []).slice().sort((a, b) => a.displayOrder - b.displayOrder);
+    };
+
+    const getFirstImageSrc = (uiTemplate: UITemplate): string | undefined => {
+        const allImages = getTemplateImages(uiTemplate);
+        const thumbnail = allImages.find(img => img.imageType === 'THUMBNAIL');
+        return thumbnail?.imageUrl || allImages[0]?.imageUrl || uiTemplate.thumbnailUrl;
+    };
+
+    const handleImagePreviewOpen = (uiTemplate: UITemplate) => {
+        const images = getTemplateImages(uiTemplate);
+        if (images.length > 0) {
+            setImagePreviewTemplate(uiTemplate);
+            setImagePreviewIndex(0);
+        }
+    };
+
     const renderTemplateListItem = (uiTemplate: UITemplate) => {
-        const previewPath = getPreviewPathFromUITemplate(uiTemplate);
         const lowestPlan = uiTemplate.plans?.slice().sort((a, b) => a.price - b.price)[0];
-        const displayPrice = lowestPlan ? lowestPlan.price : uiTemplate.price;
+        const firstImageSrc = getFirstImageSrc(uiTemplate);
+        const hasImages = (uiTemplate.images?.length ?? 0) > 0;
 
         return (
             <div
@@ -146,18 +172,22 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                 }}
             >
                 {/* 썸네일 */}
-                <div style={{
-                    width: '80px',
-                    height: '100px',
-                    borderRadius: '6px',
-                    overflow: 'hidden',
-                    flexShrink: 0,
-                    position: 'relative',
-                    backgroundColor: '#f0f0f0',
-                }}>
-                    {uiTemplate.thumbnailUrl ? (
+                <div
+                    onClick={hasImages ? () => handleImagePreviewOpen(uiTemplate) : undefined}
+                    style={{
+                        width: '80px',
+                        height: '100px',
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                        position: 'relative',
+                        backgroundColor: '#f0f0f0',
+                        cursor: hasImages ? 'pointer' : 'default',
+                    }}
+                >
+                    {firstImageSrc ? (
                         <Image
-                            src={uiTemplate.thumbnailUrl}
+                            src={firstImageSrc}
                             alt={uiTemplate.name}
                             fill
                             style={{ objectFit: 'cover' }}
@@ -184,31 +214,38 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                             </span>
                         </div>
                     )}
+                    {/* 이미지 개수 배지 */}
+                    {hasImages && (uiTemplate.images!.length > 1) && (
+                        <span style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            right: '4px',
+                            backgroundColor: 'rgba(0,0,0,0.6)',
+                            color: '#fff',
+                            fontSize: '10px',
+                            fontWeight: 600,
+                            padding: '1px 5px',
+                            borderRadius: '3px',
+                            lineHeight: '1.4',
+                        }}>
+                            +{uiTemplate.images!.length - 1}
+                        </span>
+                    )}
                 </div>
 
                 {/* 정보 */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        <span style={{
-                            backgroundColor: MAIN_COLOR_LIGHT,
-                            color: '#B8860B',
-                            padding: '2px 6px',
-                            borderRadius: '4px',
-                            fontSize: '11px',
-                            fontWeight: 600,
-                        }}>
-                            {uiTemplate.label ?? uiTemplate.type}
-                        </span>
-                        {uiTemplate.isPopular && (
+                        {uiTemplate.label && (
                             <span style={{
                                 backgroundColor: MAIN_COLOR_LIGHT,
-                                color: MAIN_COLOR,
+                                color: '#B8860B',
                                 padding: '2px 6px',
                                 borderRadius: '4px',
                                 fontSize: '11px',
-                                fontWeight: 700,
+                                fontWeight: 600,
                             }}>
-                                인기
+                                {uiTemplate.label}
                             </span>
                         )}
                     </div>
@@ -237,30 +274,32 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                     )}
                 </div>
 
-                {/* 가격 + 액션 */}
+                {/* 액션 */}
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
                     flexShrink: 0,
                 }}>
-                    <div style={{ textAlign: 'right' }}>
-                        <p style={{
-                            fontSize: '15px',
-                            fontWeight: 700,
-                            color: '#333',
-                            margin: 0,
-                        }}>
-                            {displayPrice.toLocaleString()} 크레딧
-                        </p>
-                        {lowestPlan && uiTemplate.plans && uiTemplate.plans.length > 1 && (
-                            <p style={{ fontSize: '11px', color: '#999', margin: '2px 0 0' }}>
-                                {formatDuration(lowestPlan.durationDays)}~
+                    {lowestPlan && (
+                        <div style={{ textAlign: 'right' }}>
+                            <p style={{
+                                fontSize: '15px',
+                                fontWeight: 700,
+                                color: '#333',
+                                margin: 0,
+                            }}>
+                                {lowestPlan.price.toLocaleString()} 크레딧
                             </p>
-                        )}
-                    </div>
+                            {uiTemplate.plans && uiTemplate.plans.length > 1 && (
+                                <p style={{ fontSize: '11px', color: '#999', margin: '2px 0 0' }}>
+                                    {formatDuration(lowestPlan.durationDays)}~
+                                </p>
+                            )}
+                        </div>
+                    )}
                     <div style={{ display: 'flex', gap: '6px' }}>
-                        {previewPath && (
+                        {hasImages && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); handleTemplatePreview(uiTemplate); }}
                                 style={{
@@ -319,12 +358,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     return (
         <>
             <article>
-                {!loading && uiTemplates.length === 0 && (
-                    <p style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}>
-                        등록된 템플릿이 없습니다.
-                    </p>
-                )}
-
                 {/* UI 템플릿 섹션 */}
                 <div ref={urlSectionRef} className="cont-box" id="url-templates">
                     <div style={{
@@ -408,8 +441,189 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                 onPurchase={handlePurchaseModalPurchase}
                 onSuccess={handlePurchaseModalSuccess}
             />
+            {imagePreviewTemplate && (
+                <TemplateImagePreviewModal
+                    images={getTemplateImages(imagePreviewTemplate)}
+                    templateName={imagePreviewTemplate.name}
+                    initialIndex={imagePreviewIndex}
+                    onClose={() => setImagePreviewTemplate(null)}
+                />
+            )}
         </>
     );
 };
+
+/* 이미지 미리보기 모달 */
+export function TemplateImagePreviewModal({
+    images,
+    templateName,
+    initialIndex,
+    onClose,
+}: {
+    images: UITemplateImage[];
+    templateName: string;
+    initialIndex: number;
+    onClose: () => void;
+}) {
+    const [currentIndex, setCurrentIndex] = useState(initialIndex);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+            if (e.key === 'ArrowLeft') setCurrentIndex(prev => Math.max(0, prev - 1));
+            if (e.key === 'ArrowRight') setCurrentIndex(prev => Math.min(images.length - 1, prev + 1));
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [images.length, onClose]);
+
+    const current = images[currentIndex];
+    if (!current) return null;
+
+    return (
+        <div
+            onClick={onClose}
+            style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 9999,
+                backgroundColor: 'rgba(0,0,0,0.85)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+            }}
+        >
+            {/* 닫기 버튼 - 우측 상단 고정 */}
+            <button
+                onClick={onClose}
+                style={{
+                    position: 'absolute',
+                    top: '16px',
+                    right: '16px',
+                    zIndex: 1,
+                    background: 'rgba(255,255,255,0.15)',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: '20px',
+                    width: '36px',
+                    height: '36px',
+                    lineHeight: '36px',
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: 0,
+                    textAlign: 'center',
+                }}
+            >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4L4 12M4 4L12 12" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+            </button>
+
+            {/* 상단 헤더 영역 */}
+            <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                    flexShrink: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '20px 56px 12px',
+                }}
+            >
+                <p style={{ color: '#fff', fontSize: '14px', fontWeight: 600, margin: 0 }}>
+                    {templateName}
+                </p>
+                {images.length > 1 && (
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        {images.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentIndex(idx)}
+                                style={{
+                                    width: idx === currentIndex ? '10px' : '8px',
+                                    height: idx === currentIndex ? '10px' : '8px',
+                                    borderRadius: '50%',
+                                    border: 'none',
+                                    padding: 0,
+                                    backgroundColor: idx === currentIndex ? '#fff' : 'rgba(255,255,255,0.4)',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease',
+                                }}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* 메인 이미지 고정 영역 */}
+            <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                    flex: 1,
+                    width: '90vw',
+                    maxWidth: '800px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                }}
+            >
+                <img
+                    src={current.imageUrl}
+                    alt={`${templateName} ${currentIndex + 1}`}
+                    style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        objectFit: 'contain',
+                        borderRadius: '8px',
+                    }}
+                />
+            </div>
+
+            {/* 하단 썸네일 목록 */}
+            {images.length > 1 && (
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                        display: 'flex',
+                        gap: '8px',
+                        padding: '16px 0 24px',
+                        overflowX: 'auto',
+                        maxWidth: '90vw',
+                        flexShrink: 0,
+                    }}
+                >
+                    {images.map((img, idx) => (
+                        <div
+                            key={img.id}
+                            onClick={() => setCurrentIndex(idx)}
+                            style={{
+                                width: '60px',
+                                height: '60px',
+                                borderRadius: '4px',
+                                overflow: 'hidden',
+                                flexShrink: 0,
+                                cursor: 'pointer',
+                                border: idx === currentIndex ? '2px solid #fff' : '2px solid transparent',
+                                opacity: idx === currentIndex ? 1 : 0.5,
+                                transition: 'opacity 0.15s ease',
+                            }}
+                        >
+                            <img
+                                src={img.imageUrl}
+                                alt={`${templateName} ${idx + 1}`}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default UITemplateList;

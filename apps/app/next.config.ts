@@ -7,6 +7,16 @@ const nextConfig: NextConfig = {
 
     transpilePackages: ["@workfolio/shared"],
 
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "jxbmvvqjilxblzrojkek.supabase.co",
+                pathname: "/storage/v1/object/public/**",
+            },
+        ],
+    },
+
     // HTTPS 강제 및 보안 헤더
     async headers() {
         return [

@@ -1,16 +1,85 @@
 .container {
     display: flex;
     min-height: 100vh;
-    background-color: #171717;
+    background-color: #F7F8F9;
 }
 
 .section {
     margin-left: 240px;
     flex: 1;
+    height: 100vh;
     min-height: 100vh;
-    background-color: #171717;
+    background-color: #F7F8F9;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobileTopBar {
+    display: none;
+}
+
+.mobileMenuButton {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #DFE0E1;
+    border-radius: 6px;
+    background: #FFFFFF;
+    color: #121212;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 .contents {
     padding: 0;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.section :global(.contents) {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.section :global(.page-cont) {
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+    .section {
+        margin-left: 0;
+        min-height: 100vh;
+        height: auto;
+    }
+
+    .mobileTopBar {
+        position: sticky;
+        top: 0;
+        z-index: 80;
+        height: 56px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background-color: #F7F8F9;
+        border-bottom: 1px solid #EEF0F1;
+    }
+
+    .mobileTopBar h1 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #121212;
+    }
+
+    .contents {
+        min-height: calc(100vh - 56px);
+    }
 }

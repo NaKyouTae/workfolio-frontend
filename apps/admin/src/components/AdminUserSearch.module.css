@@ -1,0 +1,255 @@
+.centerWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchBox {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+}
+
+.searchInput {
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #EEF0F1;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+    box-sizing: border-box;
+    background: #fff;
+}
+
+.searchInput:focus {
+    border-color: #121212;
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #EEF0F1;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+}
+
+.dropdownItem {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    font-size: 13px;
+}
+
+.dropdownItem:hover {
+    background: #F7F8F9;
+}
+
+.dropdownItem + .dropdownItem {
+    border-top: 1px solid #F2F3F5;
+}
+
+.itemNickName {
+    font-weight: 600;
+    color: #121212;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.itemStatus {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.statusActive {
+    background: rgba(52, 199, 89, 0.12);
+    color: #34C759;
+}
+
+.statusInactive {
+    background: rgba(248, 113, 113, 0.15);
+    color: #f87171;
+}
+
+.itemPhone {
+    color: #666;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.itemEmail {
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdownMessage {
+    padding: 20px 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #999;
+}
+
+.selectedUser {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border: 1px solid #EEF0F1;
+    border-radius: 8px;
+    background: #F7F8F9;
+}
+
+.selectedUserInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.selectedUserName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #121212;
+    white-space: nowrap;
+}
+
+.selectedUserStatus {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.selectedUserDivider {
+    width: 1px;
+    height: 14px;
+    background: #D1D5DB;
+    flex-shrink: 0;
+}
+
+.selectedUserDetail {
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+}
+
+.changeButton {
+    font-size: 12px;
+    color: #666;
+    background: #fff;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 5px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 16px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.changeButton:hover {
+    background: #F3F4F6;
+    border-color: #9CA3AF;
+}
+
+.selectedUserCompact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex: none;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.changeButtonCompact {
+    width: fit-content !important;
+    font-size: 12px !important;
+    color: #666 !important;
+    background: #fff !important;
+    border: 1px solid #D1D5DB !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 6px;
+    height: auto !important;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.changeButtonCompact:hover {
+    background: #F3F4F6 !important;
+    border-color: #9CA3AF !important;
+}
+
+@media (max-width: 1024px) {
+    .centerWrapper {
+        min-height: auto;
+    }
+
+    .selectedUser {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .selectedUserInfo {
+        width: 100%;
+        flex-wrap: wrap;
+        row-gap: 6px;
+    }
+
+    .changeButton {
+        margin-left: 0;
+    }
+
+    .selectedUserCompact {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        row-gap: 6px;
+    }
+
+    .selectedUserDetail {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dropdownItem {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 6px 10px;
+        align-items: center;
+    }
+
+    .itemPhone,
+    .itemEmail {
+        min-width: 0;
+    }
+
+    .itemEmail {
+        grid-column: 1 / -1;
+    }
+}

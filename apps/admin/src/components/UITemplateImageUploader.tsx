@@ -60,7 +60,7 @@ const UITemplateImageUploader: React.FC<UITemplateImageUploaderProps> = ({
             {/* 업로드 영역 */}
             <div
                 style={{
-                    border: "1px dashed #3e3e3e",
+                    border: "1px dashed #DFE0E1",
                     borderRadius: "8px",
                     padding: "20px",
                     marginBottom: "20px",
@@ -83,13 +83,13 @@ const UITemplateImageUploader: React.FC<UITemplateImageUploaderProps> = ({
                         accept="image/*"
                         onChange={handleFileSelect}
                         disabled={disabled}
-                        style={{ flex: 1, color: "#a0a0a0", fontSize: "13px" }}
+                        style={{ flex: 1, color: "#121212", fontSize: "13px" }}
                     />
                 </div>
 
                 {selectedFiles.length > 0 && (
                     <div style={{ marginBottom: "12px" }}>
-                        <div style={{ fontSize: "12px", color: "#a0a0a0", marginBottom: "8px" }}>
+                        <div style={{ fontSize: "12px", color: "#121212", marginBottom: "8px" }}>
                             선택된 파일: {selectedFiles.length}개
                         </div>
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -101,7 +101,7 @@ const UITemplateImageUploader: React.FC<UITemplateImageUploaderProps> = ({
                                         height: "80px",
                                         borderRadius: "4px",
                                         overflow: "hidden",
-                                        border: "1px solid #2e2e2e",
+                                        border: "1px solid #EEF0F1",
                                     }}
                                 >
                                     <img
@@ -134,7 +134,7 @@ const UITemplateImageUploader: React.FC<UITemplateImageUploaderProps> = ({
             {/* 썸네일 이미지 목록 */}
             {thumbnails.length > 0 && (
                 <div style={{ marginBottom: "16px" }}>
-                    <h4 style={{ fontSize: "13px", color: "#a0a0a0", marginBottom: "8px" }}>
+                    <h4 style={{ fontSize: "13px", color: "#121212", marginBottom: "8px" }}>
                         썸네일 ({thumbnails.length})
                     </h4>
                     <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
@@ -153,7 +153,7 @@ const UITemplateImageUploader: React.FC<UITemplateImageUploaderProps> = ({
             {/* 상세 이미지 목록 */}
             {details.length > 0 && (
                 <div>
-                    <h4 style={{ fontSize: "13px", color: "#a0a0a0", marginBottom: "8px" }}>
+                    <h4 style={{ fontSize: "13px", color: "#121212", marginBottom: "8px" }}>
                         상세 이미지 ({details.length})
                     </h4>
                     <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
@@ -170,7 +170,7 @@ const UITemplateImageUploader: React.FC<UITemplateImageUploaderProps> = ({
             )}
 
             {images.length === 0 && (
-                <div style={{ color: "#6b6b6b", fontSize: "13px", textAlign: "center", padding: "20px" }}>
+                <div style={{ color: "#121212", fontSize: "13px", textAlign: "center", padding: "20px" }}>
                     등록된 이미지가 없습니다.
                 </div>
             )}
@@ -192,10 +192,10 @@ function ImageCard({
             style={{
                 position: "relative",
                 width: "120px",
-                border: "1px solid #2e2e2e",
+                border: "1px solid #EEF0F1",
                 borderRadius: "6px",
                 overflow: "hidden",
-                background: "#171717",
+                background: "#F7F8F9",
             }}
         >
             <img
@@ -211,7 +211,7 @@ function ImageCard({
                     alignItems: "center",
                 }}
             >
-                <span style={{ fontSize: "11px", color: "#6b6b6b" }}>#{image.displayOrder}</span>
+                <span style={{ fontSize: "11px", color: "#121212" }}>#{image.displayOrder}</span>
                 <button
                     type="button"
                     onClick={() => onDelete(image.id)}

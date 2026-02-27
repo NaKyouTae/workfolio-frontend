@@ -7,7 +7,7 @@ import TableView, { TableColumn } from "@workfolio/shared/ui/TableView";
 import NoticeCreateModal from "./NoticeCreateModal";
 import NoticeUpdateModal from "./NoticeUpdateModal";
 import { NoticeCreateRequest, NoticeUpdateRequest } from "@workfolio/shared/generated/notice";
-import LoadingScreen from "@workfolio/shared/ui/LoadingScreen";
+
 
 export default function AdminNotices() {
     const { notices, loading, error, fetchNotices, createNotice, updateNotice, deleteNotice } =
@@ -81,7 +81,7 @@ export default function AdminNotices() {
             key: "title",
             title: "제목",
             render: (notice) => (
-                <span style={{ fontWeight: 500, color: "#ddd" }}>{notice.title}</span>
+                <span style={{ fontWeight: 500, color: "#121212" }}>{notice.title}</span>
             ),
         },
         {
@@ -89,7 +89,7 @@ export default function AdminNotices() {
             title: "작성일",
             width: "100px",
             render: (notice) => (
-                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(notice.createdAt)}</span>
+                <span style={{ color: "#121212", fontSize: "12px" }}>{formatDate(notice.createdAt)}</span>
             ),
         },
         {
@@ -97,7 +97,7 @@ export default function AdminNotices() {
             title: "수정일",
             width: "100px",
             render: (notice) => (
-                <span style={{ color: "#777", fontSize: "12px" }}>{formatDate(notice.updatedAt)}</span>
+                <span style={{ color: "#121212", fontSize: "12px" }}>{formatDate(notice.updatedAt)}</span>
             ),
         },
         {
@@ -162,6 +162,16 @@ export default function AdminNotices() {
                     <h2>공지사항 관리</h2>
                     <p>공지사항을 생성하고 관리합니다.</p>
                 </div>
+                <button
+                    onClick={() => fetchNotices()}
+                    disabled={loading}
+                    title="새로고침"
+                    style={{ width: "36px", height: "36px", padding: 0, border: "1px solid var(--gray003)", borderRadius: "8px", backgroundColor: "transparent", cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+                >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ animation: loading ? "spin 1s linear infinite" : "none" }}>
+                        <path d="M13.65 2.35A7.96 7.96 0 0 0 8 0C3.58 0 0 3.58 0 8s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 8 14 6 6 0 1 1 8 2c1.66 0 3.14.69 4.22 1.78L9 7h7V0l-2.35 2.35z" fill="var(--gray005)" />
+                    </svg>
+                </button>
             </div>
 
             <div className="page-cont">
@@ -171,7 +181,6 @@ export default function AdminNotices() {
                         <button onClick={handleOpenCreateModal}>+ 새 공지사항 추가</button>
                     </div>
 
-                    {loading && <LoadingScreen />}
                     {error && <div style={{ color: "#f87171" }}>에러: {error}</div>}
 
                     <TableView
