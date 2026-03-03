@@ -1016,7 +1016,6 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = React.memo(({
             <RecordUpdateModal
                 isOpen={isUpdateModalOpen}
                 onClose={handleCloseUpdateModal}
-                onDelete={handleDeleteRecord}
                 record={selectedRecord}
                 allRecordGroups={allRecordGroups}
             />

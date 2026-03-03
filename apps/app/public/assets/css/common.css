@@ -313,7 +313,7 @@ table {width: 100%; border-spacing: 0; border-collapse: collapse;}
 
 /* modal */
 .modal {width: 100vw; height: 100vh; z-index: 1000; position: fixed; top: 0; left: 0; display: flex; align-items: center; justify-content: center;}
-.modal::before {content: ''; display: block; width: 100%; height: 100%; background-color: rgba(81,92,102); opacity: .4; position: absolute; top: 0; left: 0; z-index: 1;}
+.modal::before {content: ''; display: block; width: 100%; height: 100%; background-color: rgba(81,92,102); opacity: .4; position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none;}
 .modal .modal-wrap {position: relative; width: 40rem; display: flex; flex-flow: column; border-radius: 1.2rem; z-index: 2; background-color: var(--white);}
 .modal .modal-wrap.sm {width: 32rem;}
 
@@ -324,7 +324,7 @@ table {width: 100%; border-spacing: 0; border-collapse: collapse;}
 .modal .modal-wrap .modal-tit > h2 {font-size: 1.6rem; font-weight: 600;}
 .modal .modal-wrap .modal-tit > button {width: fit-content; height: fit-content; padding: 0; background-color: transparent;}
 
-.modal .modal-wrap .modal-cont {padding: 1.6rem; display: flex; flex-flow: column; row-gap: 1.2rem; max-height: 60vh; overflow-y: auto;}
+.modal .modal-wrap .modal-cont {padding: 1.6rem; display: flex; flex-flow: column; row-gap: 1.2rem; max-height: calc(100vh - 14rem); overflow-y: auto;}
 .modal .modal-wrap .modal-cont .modal-notice {display: flex; flex-flow: column; row-gap: 1.2rem; align-items: center;}
 .modal .modal-wrap .modal-cont .modal-notice > img {width: 4rem; height: 4rem;}
 .modal .modal-wrap .modal-cont .modal-notice > div {display: flex; flex-flow: column; row-gap: .6rem; align-items: center;}

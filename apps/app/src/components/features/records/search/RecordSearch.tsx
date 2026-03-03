@@ -218,7 +218,6 @@ const RecordSearch: React.FC<RecordSearchProps> = ({
         <RecordUpdateModal
             isOpen={isUpdateModalOpen}
             onClose={handleCloseUpdateModal}
-            onDelete={handleDeleteRecord}
             record={selectedRecord}
             allRecordGroups={allRecordGroups}
         />

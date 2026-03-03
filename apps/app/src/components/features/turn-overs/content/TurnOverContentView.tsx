@@ -108,10 +108,10 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
                     />
                 )}
                 {activeTab === 'retrospective' && (
-                    <TurnOverRetrospectiveView 
-                    ref={retrospectiveViewRef} 
+                    <TurnOverRetrospectiveView
+                    ref={retrospectiveViewRef}
                     turnOverRetrospective={selectedTurnOver?.turnOverRetrospective || null}
-                    endedAt={selectedTurnOver?.endedAt}
+                    endedAt={selectedTurnOver?.turnOverRetrospective?.endedAt}
                     />
                 )}
             </article>

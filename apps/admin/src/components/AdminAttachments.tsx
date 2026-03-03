@@ -228,15 +228,6 @@ export default function AdminAttachments() {
                 </option>
               ))}
             </select>
-            <svg
-              width="10"
-              height="6"
-              viewBox="0 0 10 6"
-              fill="none"
-              className="page-size-select-chevron"
-            >
-              <path d="M1 1L5 5L9 1" stroke="var(--gray005)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
           </div>
           <button
             onClick={() => fetchAttachments(currentPage, pageSize)}

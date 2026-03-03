@@ -31,6 +31,8 @@ function normalizeWorkerUITemplate(raw: Record<string, unknown>): WorkerUITempla
         isActive: Boolean(raw.is_active ?? raw.isActive ?? true),
         isExpired: Boolean(raw.is_expired ?? raw.isExpired ?? false),
         isValid: Boolean(raw.is_valid ?? raw.isValid ?? false),
+        isDefault: Boolean(raw.is_default ?? raw.isDefault ?? false),
+        templateType: String(raw.template_type ?? raw.templateType ?? ''),
         worker: rawWorker ? {
             id: String(rawWorker.id ?? ''),
             nickName: String(rawWorker.nick_name ?? rawWorker.nickName ?? ''),
@@ -141,29 +143,58 @@ export const useUITemplates = (): UseUITemplatesReturn => {
     }, []);
 
     // Fetch my UI templates (authenticated API)
+    // 보유 템플릿과 공개 템플릿을 병렬로 가져와서 이미지 정보를 병합
     const fetchMyUITemplates = useCallback(async (page: number = 0, size: number = 20) => {
         try {
             setLoading(true);
             setError(null);
 
-            const url = `/api/ui-templates/my?page=${page}&size=${size}`;
-            const response = await fetch(url, { method: HttpMethod.GET });
+            const [myRes, allRes] = await Promise.all([
+                fetch(`/api/ui-templates/my?page=${page}&size=${size}`, { method: HttpMethod.GET }),
+                fetch('/api/anonymous/ui-templates', { method: HttpMethod.GET }),
+            ]);
 
-            if (!response.ok) {
-                if (response.status === 401) {
+            if (!myRes.ok) {
+                if (myRes.status === 401) {
                     setError('로그인이 필요합니다.');
                     return;
                 }
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${myRes.status}`);
             }
 
-            const data = (await response.json()) as Record<string, unknown>;
-            const rawList = (data.worker_ui_templates ?? data.workerUiTemplates) as Record<string, unknown>[] | undefined;
+            const myData = (await myRes.json()) as Record<string, unknown>;
+            const rawList = (myData.worker_ui_templates ?? myData.workerUiTemplates) as Record<string, unknown>[] | undefined;
             const list = Array.isArray(rawList) ? rawList.map(normalizeWorkerUITemplate) : [];
+
+            // 공개 템플릿에서 이미지 정보를 가져와 보유 템플릿에 병합
+            if (allRes.ok) {
+                const allData = (await allRes.json()) as Record<string, unknown>;
+                const rawAll = (allData.ui_templates ?? allData.uiTemplates) as Record<string, unknown>[] | undefined;
+                if (Array.isArray(rawAll)) {
+                    const allTemplates = rawAll.map(normalizeUITemplate);
+                    const templateMap = new Map<string, UITemplate>();
+                    allTemplates.forEach(t => templateMap.set(t.id, t));
+
+                    list.forEach(wt => {
+                        const publicTemplate = templateMap.get(wt.uiTemplate.id);
+                        if (!publicTemplate) return;
+                        if (!wt.uiTemplate.images || wt.uiTemplate.images.length === 0) {
+                            wt.uiTemplate.images = publicTemplate.images;
+                        }
+                        if (!wt.uiTemplate.thumbnailUrl) {
+                            wt.uiTemplate.thumbnailUrl = publicTemplate.thumbnailUrl;
+                        }
+                        if (!wt.uiTemplate.previewImageUrl) {
+                            wt.uiTemplate.previewImageUrl = publicTemplate.previewImageUrl;
+                        }
+                    });
+                }
+            }
+
             setMyUITemplates(list);
-            setTotalPages(Number(data.total_pages ?? data.totalPages ?? 0));
-            setCurrentPage(Number(data.current_page ?? data.currentPage ?? 0));
-            setTotalElements(Number(data.total_elements ?? data.totalElements ?? 0));
+            setTotalPages(Number(myData.total_pages ?? myData.totalPages ?? 0));
+            setCurrentPage(Number(myData.current_page ?? myData.currentPage ?? 0));
+            setTotalElements(Number(myData.total_elements ?? myData.totalElements ?? 0));
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '보유 템플릿 조회 중 오류가 발생했습니다.';
             setError(errorMessage);

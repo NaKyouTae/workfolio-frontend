@@ -1,12 +1,12 @@
 import { getCookie } from "@workfolio/shared/utils/cookie"
 import { apiFetchHandler } from "@workfolio/shared/utils/ApiFetchHandler"
 import HttpMethod from "@workfolio/shared/enums/HttpMethod"
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // GET /api/ui-templates/my/default - Get default UI templates
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const accessToken = await getCookie('accessToken');
         const refreshToken = await getCookie('refreshToken');

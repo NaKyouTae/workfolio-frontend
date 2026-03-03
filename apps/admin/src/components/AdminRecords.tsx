@@ -97,9 +97,9 @@ export default function AdminRecords() {
                 )}
             </div>
 
-            <div className="page-cont">
+            <div className="page-cont" style={{ display: "flex", flexDirection: "column", flex: !selectedWorker ? 1 : undefined }}>
                 {!selectedWorker && (
-                    <div className="cont-box" style={{ marginBottom: "16px" }}>
+                    <div style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <AdminUserSearch
                             selectedWorker={selectedWorker}
                             onSelectWorker={selectWorker}
@@ -127,15 +127,6 @@ export default function AdminRecords() {
                                             </option>
                                         ))}
                                     </select>
-                                    <svg
-                                        width="10"
-                                        height="6"
-                                        viewBox="0 0 10 6"
-                                        fill="none"
-                                        className="page-size-select-chevron"
-                                    >
-                                        <path d="M1 1L5 5L9 1" stroke="var(--gray005)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
                                 </div>
                                 <button
                                     onClick={() => selectedWorker && fetchRecords(selectedWorker.id, currentPage, pageSize)}

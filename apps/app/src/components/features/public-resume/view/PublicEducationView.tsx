@@ -1,7 +1,7 @@
 import React from 'react';
-import { Education, Education_EducationStatus } from '@workfolio/shared/generated/common';
+import { Education } from '@workfolio/shared/generated/common';
 import { DateUtil } from '@workfolio/shared/utils/DateUtil';
-import { normalizeEnumValue } from '@workfolio/shared/utils/commonUtils';
+import { getEducationStatusLabel } from '../shared/formatters';
 import styles from './PublicView.module.css';
 
 interface PublicEducationViewProps {
@@ -10,26 +10,6 @@ interface PublicEducationViewProps {
 
 const PublicEducationView: React.FC<PublicEducationViewProps> = ({ educations }) => {
   const visibleEducations = educations.filter((e) => e.isVisible === true);
-
-  const getStatusLabel = (status?: Education_EducationStatus) => {
-    const normalizedStatus = normalizeEnumValue(status, Education_EducationStatus);
-    switch (normalizedStatus) {
-      case Education_EducationStatus.GRADUATED:
-        return '졸업';
-      case Education_EducationStatus.GRADUATING:
-        return '졸업예정';
-      case Education_EducationStatus.ENROLLED:
-        return '재학';
-      case Education_EducationStatus.DROPPED_OUT:
-        return '중퇴';
-      case Education_EducationStatus.COMPLETED:
-        return '수료';
-      case Education_EducationStatus.ON_LEAVE:
-        return '휴학';
-      default:
-        return '';
-    }
-  };
 
   return (
     <div className={styles.viewContainer}>
@@ -53,7 +33,7 @@ const PublicEducationView: React.FC<PublicEducationViewProps> = ({ educations })
                   </span>
                 )}
                 {education.status && (
-                  <span className={styles.itemTag}>{getStatusLabel(education.status)}</span>
+                  <span className={styles.itemTag}>{getEducationStatusLabel(education.status)}</span>
                 )}
               </div>
             </div>

@@ -77,11 +77,19 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                             </button>
                         </li>
                         <li>
-                            <button 
+                            <button
                                 onClick={() => onTypeChange('list')}
                                 className={`${recordType === 'list' ? 'active' : ''}`}
                             >
                                 목록
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => onTypeChange('group')}
+                                className={`${recordType === 'group' ? 'active' : ''}`}
+                            >
+                                그룹
                             </button>
                         </li>
                     </ul>

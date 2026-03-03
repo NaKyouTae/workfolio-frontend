@@ -31,6 +31,7 @@ export interface RecordUpdateRequest {
   endedAt: number;
   attachments: RecordUpdateRequest_Attachment[];
   id: string;
+  recordGroupId: string;
 }
 
 export interface RecordUpdateRequest_Attachment {

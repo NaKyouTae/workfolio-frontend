@@ -20,6 +20,7 @@ import CalendarHeader from "./calendar/CalendarHeader";
 import ListCalendar from "./calendar/list/ListCalendar";
 import MonthlyCalendar from "./calendar/monthly/MonthlyCalendar";
 import WeeklyCalendar from "./calendar/weekly/WeeklyCalendar";
+import GroupCalendar from "./calendar/group/GroupCalendar";
 import RecordSearch from "./search/RecordSearch";
 import WeeklyCalendarSkeleton from "@workfolio/shared/ui/skeleton/WeeklyCalendarSkeleton";
 import MonthlyCalendarSkeleton from "@workfolio/shared/ui/skeleton/MonthlyCalendarSkeleton";
@@ -98,10 +99,11 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         const { allRecordGroups } = recordGroupsData;
 
         // records hook 사용 - recordType에 따라 적절한 파라미터 전달
+        const isMonthlyBased = recordType === "monthly" || recordType === "list" || recordType === "group";
         const { records, refreshRecords, searchRecordsByKeyword, isLoading } = useRecords(
-            recordType,
-            recordType === "monthly" || recordType === "list" ? date.getMonth() + 1 : undefined,
-            recordType === "monthly" || recordType === "list" ? date.getFullYear() : undefined,
+            recordType === "group" ? "list" : recordType,
+            isMonthlyBased ? date.getMonth() + 1 : undefined,
+            isMonthlyBased ? date.getFullYear() : undefined,
             recordType === "weekly" ? date : undefined
         );
 
@@ -124,7 +126,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
 
                 // 월간, 목록 캘린더의 경우 월만 변경하고 일자는 오늘 날짜로 설정
                 let dateToUse = dayjs(pendingURLUpdate.date);
-                if (pendingURLUpdate.view === "monthly" || pendingURLUpdate.view === "list") {
+                if (pendingURLUpdate.view === "monthly" || pendingURLUpdate.view === "list" || pendingURLUpdate.view === "group") {
                     const today = dayjs();
                     dateToUse = dayjs(pendingURLUpdate.date)
                         .year(today.year())
@@ -335,6 +337,8 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                                 <MonthlyCalendarSkeleton />
                             ) : recordType === "weekly" ? (
                                 <WeeklyCalendarSkeleton />
+                            ) : recordType === "group" ? (
+                                <ListCalendarSkeleton />
                             ) : (
                                 <ListCalendarSkeleton />
                             )
@@ -351,6 +355,14 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                                 key={`weekly-${date.getTime()}`}
                                 initialDate={date}
                                 records={filteredRecords}
+                                allRecordGroups={allRecordGroups}
+                            />
+                        ) : recordType === "group" ? (
+                            <GroupCalendar
+                                key={`group-${date.getTime()}`}
+                                initialDate={date}
+                                records={filteredRecords}
+                                recordGroups={checkedRecordGroups}
                                 allRecordGroups={allRecordGroups}
                             />
                         ) : (

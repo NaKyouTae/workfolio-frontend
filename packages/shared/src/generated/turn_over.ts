@@ -121,6 +121,7 @@ export interface TurnOverUpsertRequest_TurnOverRetrospectiveRequest {
   score: number;
   reviewSummary: string;
   joinedAt?: number | undefined;
+  endedAt?: number | undefined;
   workType: string;
   employmentType?: TurnOverRetrospective_EmploymentType | undefined;
   memos: TurnOverUpsertRequest_MemoRequest[];
@@ -1773,6 +1774,7 @@ function createBaseTurnOverUpsertRequest_TurnOverRetrospectiveRequest(): TurnOve
     score: 0,
     reviewSummary: "",
     joinedAt: undefined,
+    endedAt: undefined,
     workType: "",
     employmentType: undefined,
     memos: [],
@@ -1831,6 +1833,9 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
     }
     for (const v of message.attachments) {
       AttachmentRequest.encode(v!, writer.uint32(122).fork()).join();
+    }
+    if (message.endedAt !== undefined) {
+      writer.uint32(128).uint64(message.endedAt);
     }
     return writer;
   },
@@ -1962,6 +1967,14 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
           message.attachments.push(AttachmentRequest.decode(reader, reader.uint32()));
           continue;
         }
+        case 16: {
+          if (tag !== 128) {
+            break;
+          }
+
+          message.endedAt = longToNumber(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2012,6 +2025,11 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
       attachments: globalThis.Array.isArray(object?.attachments)
         ? object.attachments.map((e: any) => AttachmentRequest.fromJSON(e))
         : [],
+      endedAt: isSet(object.endedAt)
+        ? globalThis.Number(object.endedAt)
+        : isSet(object.ended_at)
+        ? globalThis.Number(object.ended_at)
+        : undefined,
     };
   },
 
@@ -2062,6 +2080,9 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
     if (message.attachments?.length) {
       obj.attachments = message.attachments.map((e) => AttachmentRequest.toJSON(e));
     }
+    if (message.endedAt !== undefined) {
+      obj.endedAt = Math.round(message.endedAt);
+    }
     return obj;
   },
 
@@ -2085,6 +2106,7 @@ export const TurnOverUpsertRequest_TurnOverRetrospectiveRequest: MessageFns<
     message.score = object.score ?? 0;
     message.reviewSummary = object.reviewSummary ?? "";
     message.joinedAt = object.joinedAt ?? undefined;
+    message.endedAt = object.endedAt ?? undefined;
     message.workType = object.workType ?? "";
     message.employmentType = object.employmentType ?? undefined;
     message.memos = object.memos?.map((e) => TurnOverUpsertRequest_MemoRequest.fromPartial(e)) || [];

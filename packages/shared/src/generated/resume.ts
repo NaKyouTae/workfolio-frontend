@@ -65,6 +65,8 @@ export interface ResumeUpdateRequest {
   projects: ResumeUpdateRequest_ProjectRequest[];
   educations: ResumeUpdateRequest_EducationRequest[];
   activities: ResumeUpdateRequest_ActivityRequest[];
+  profileImageUrl?: string | undefined;
+  profileImageData?: Uint8Array | undefined;
   languages: ResumeUpdateRequest_LanguageSkillRequest[];
   attachments: AttachmentRequest[];
 }

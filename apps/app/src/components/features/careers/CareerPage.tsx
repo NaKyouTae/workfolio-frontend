@@ -30,6 +30,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
     copyURL,
     calculateTotalCareer,
     changeDefault,
+    togglePublic,
   } = useResumeDetails();
 
   // 선택된 이력서
@@ -240,6 +241,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
         exportPDF={exportPDF}
         copyURL={copyURL}
         changeDefault={changeDefault}
+        togglePublic={togglePublic}
         calculateTotalCareer={calculateTotalCareer}
       />
     </main>

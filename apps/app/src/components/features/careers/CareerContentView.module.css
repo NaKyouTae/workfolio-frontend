@@ -296,3 +296,37 @@
   background: var(--yellow003);
 }
 
+/* 공개/비공개 상태 배지 */
+.publicStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.public {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.public:hover {
+  background-color: #c8e6c9;
+}
+
+.private {
+  background-color: #f5f5f5;
+  color: #757575;
+  border: 1px solid #e0e0e0;
+}
+
+.private:hover {
+  background-color: #eeeeee;
+}
+

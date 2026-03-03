@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Resume_Gender } from '@workfolio/shared/generated/common';
 import Input from '@workfolio/shared/ui/Input';
 import DatePicker from '@workfolio/shared/ui/DatePicker';
 import { normalizeEnumValue } from '@workfolio/shared/utils/commonUtils';
 import Dropdown from '@workfolio/shared/ui/Dropdown';
 import { DateTime } from 'luxon';
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 interface BasicInfoEditProps {
   name: string;
@@ -14,6 +16,7 @@ interface BasicInfoEditProps {
   email: string;
   position: string;
   description: string;
+  profileImagePreview: string | null;
   onNameChange: (name: string) => void;
   onBirthDateChange: (birthDate: number | undefined) => void;
   onGenderChange: (gender: Resume_Gender | undefined) => void;
@@ -21,6 +24,7 @@ interface BasicInfoEditProps {
   onPhoneChange: (phone: string) => void;
   onEmailChange: (email: string) => void;
   onDescriptionChange: (description: string) => void;
+  onProfileImageChange: (file: File | null) => void;
 }
 
 /**
@@ -64,6 +68,7 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   phone,
   email,
   description,
+  profileImagePreview,
   onNameChange,
   onPositionChange,
   onDescriptionChange,
@@ -71,7 +76,32 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
   onBirthDateChange,
   onPhoneChange,
   onEmailChange,
+  onProfileImageChange,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        alert('파일 크기는 10MB 이하만 가능합니다.');
+        e.target.value = '';
+        return;
+      }
+      onProfileImageChange(file);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveImage = () => {
+    onProfileImageChange(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <>
         <div className="cont-tit">
@@ -80,6 +110,73 @@ const BasicInfoEdit: React.FC<BasicInfoEditProps> = ({
             </div>
         </div>
         <ul className="edit-list type1">
+            <li className="full">
+                <p>인물 사진</p>
+                <div style={{ position: 'relative', display: 'inline-block', flex: 'none' }}>
+                    <div
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                            width: '100px',
+                            height: '130px',
+                            border: profileImagePreview ? '1px solid #e5e7eb' : '1px dashed #ccc',
+                            borderRadius: '4px',
+                            overflow: 'hidden',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#f9f9f9',
+                            flexShrink: 0,
+                        }}
+                    >
+                        {profileImagePreview ? (
+                            <img
+                                src={profileImagePreview}
+                                alt="인물 사진"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                        ) : (
+                            <span style={{ fontSize: '12px', color: '#999', textAlign: 'center', lineHeight: '1.4' }}>
+                                사진 선택<br />(최대 10MB)
+                            </span>
+                        )}
+                    </div>
+                    {profileImagePreview && (
+                        <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleRemoveImage(); }}
+                            style={{
+                                position: 'absolute',
+                                top: '-8px',
+                                right: '-8px',
+                                width: '22px',
+                                height: '22px',
+                                borderRadius: '50%',
+                                border: '1.5px solid #fff',
+                                backgroundColor: '#999',
+                                color: '#fff',
+                                fontSize: '12px',
+                                lineHeight: '1',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                padding: 0,
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                            }}
+                        >
+                            ✕
+                        </button>
+                    )}
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                        style={{ display: 'none' }}
+                    />
+                </div>
+            </li>
             <li>
                 <p>이름</p>
                 <Input 

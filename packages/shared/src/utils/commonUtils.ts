@@ -20,7 +20,7 @@ export const parseCalendarViewType = (
     
     const lowerValue = value.toLowerCase();
     
-    if (lowerValue === 'weekly' || lowerValue === 'monthly' || lowerValue === 'list') {
+    if (lowerValue === 'weekly' || lowerValue === 'monthly' || lowerValue === 'list' || lowerValue === 'group') {
         return lowerValue as CalendarViewType;
     }
     

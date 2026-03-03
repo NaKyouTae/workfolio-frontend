@@ -43,9 +43,23 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
         }
     }, [isOpen, template?.id, plans.length]);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown);
+        }
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, onClose]);
+
     const selectedPlan = selectedPlanId ? plans.find((p) => p.id === selectedPlanId) : null;
     const finalPrice = selectedPlan?.price ?? 0;
-    const canPurchase = finalPrice > 0 && balance >= finalPrice;
+    const canPurchase = finalPrice >= 0 && balance >= finalPrice;
 
     const handlePurchase = async () => {
         if (!template || loading || !canPurchase) return;

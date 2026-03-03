@@ -161,17 +161,9 @@
     color: #374151;
 }
 
-.cancelButton:hover {
-    background: #e5e7eb;
-}
-
 .purchaseButton {
     background: var(--yellow004);
     color: var(--black);
-}
-
-.purchaseButton:hover:not(:disabled) {
-    background: var(--yellow003);
 }
 
 .purchaseButton:disabled {

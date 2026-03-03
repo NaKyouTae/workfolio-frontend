@@ -13,7 +13,7 @@ const DEFAULT_PAGE_SIZE = 20;
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
 export default function AdminOwnedTemplates() {
-    const { ownedTemplates, totalElements, totalPages, currentPage, loading, error, fetchOwnedTemplates } = useAdminOwnedTemplates();
+    const { ownedTemplates, totalElements, totalPages, currentPage, defaultUrlTemplateId, defaultPdfTemplateId, loading, error, fetchOwnedTemplates } = useAdminOwnedTemplates();
     const { selectedWorker, selectWorker, clearWorker } = useSelectedWorker();
     const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
@@ -45,9 +45,17 @@ export default function AdminOwnedTemplates() {
         }
     };
 
+    const getDefaultLabel = (item: WorkerUITemplate): string | null => {
+        const templateId = item.uiTemplate?.id;
+        if (!templateId) return null;
+        if (templateId === defaultUrlTemplateId) return "URL 기본";
+        if (templateId === defaultPdfTemplateId) return "PDF 기본";
+        return null;
+    };
+
     const getStatusLabel = (item: WorkerUITemplate) => {
-        if (!item.isActive) {
-            return { label: "비활성", color: "#9ca3af" };
+        if (item.status === 'DELETED') {
+            return { label: "삭제됨", color: "#9ca3af" };
         }
         if (item.isExpired || isUITemplateExpired(item.expiredAt)) {
             return { label: "만료", color: "#f87171" };
@@ -95,6 +103,29 @@ export default function AdminOwnedTemplates() {
                     {getTypeLabel(item.uiTemplate?.type)}
                 </span>
             ),
+        },
+        {
+            key: "default",
+            title: "기본 설정",
+            width: "100px",
+            render: (item) => {
+                const label = getDefaultLabel(item);
+                if (!label) return <span style={{ color: "#9ca3af", fontSize: "12px" }}>-</span>;
+                const isUrl = label === "URL 기본";
+                return (
+                    <span style={{
+                        display: "inline-block",
+                        padding: "2px 8px",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        backgroundColor: isUrl ? "#dbeafe" : "#fce7f3",
+                        color: isUrl ? "#1d4ed8" : "#db2777",
+                    }}>
+                        {label}
+                    </span>
+                );
+            },
         },
         {
             key: "purchasedAt",
@@ -164,9 +195,9 @@ export default function AdminOwnedTemplates() {
                 )}
             </div>
 
-            <div className="page-cont">
+            <div className="page-cont" style={{ display: "flex", flexDirection: "column", flex: !selectedWorker ? 1 : undefined }}>
                 {!selectedWorker && (
-                    <div className="cont-box" style={{ marginBottom: "16px" }}>
+                    <div style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <AdminUserSearch
                             selectedWorker={selectedWorker}
                             onSelectWorker={selectWorker}
@@ -194,15 +225,6 @@ export default function AdminOwnedTemplates() {
                                             </option>
                                         ))}
                                     </select>
-                                    <svg
-                                        width="10"
-                                        height="6"
-                                        viewBox="0 0 10 6"
-                                        fill="none"
-                                        className="page-size-select-chevron"
-                                    >
-                                        <path d="M1 1L5 5L9 1" stroke="var(--gray005)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
                                 </div>
                                 <button
                                     onClick={() => selectedWorker && fetchOwnedTemplates(selectedWorker.id, currentPage, pageSize)}

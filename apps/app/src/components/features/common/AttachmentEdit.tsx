@@ -10,6 +10,10 @@ import CardActions from '@workfolio/shared/ui/CardActions';
 import EmptyState from '@workfolio/shared/ui/EmptyState';
 import '@workfolio/shared/styles/component-edit.css';
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx', '.xlsx', '.pptx', '.hwp', '.txt', '.png', '.jpg', '.jpeg', '.gif', '.webp'];
+const ALLOWED_ACCEPT = ALLOWED_EXTENSIONS.join(',');
+
 // 모드 정보를 포함한 확장된 Attachment 타입
 type AttachmentWithMode = AttachmentRequest & {
   _file?: File; // 선택된 파일 객체 (UI 표시용)
@@ -50,6 +54,17 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        alert('파일 크기는 10MB 이하만 가능합니다.');
+        e.target.value = '';
+        return;
+      }
+      const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+      if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        alert(`허용되지 않는 파일 형식입니다.\n허용: ${ALLOWED_EXTENSIONS.join(', ')}`);
+        e.target.value = '';
+        return;
+      }
       await handleFileUpload(index, file);
     }
   };
@@ -81,16 +96,19 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
                         <input
                             ref={fileInputRef}
                             type="file"
+                            accept={ALLOWED_ACCEPT}
                             onChange={onFileChange}
                         />
-                        <Input 
-                            type="text"
-                            label="파일 이름"
-                            placeholder="파일을 선택해 주세요."
-                            readOnly
-                            value={attachment.fileName || ''}
-                            onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
-                        />
+                        <div onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer', flex: 1 }}>
+                            <Input
+                                type="text"
+                                label="파일 이름"
+                                placeholder="파일을 선택해 주세요. (최대 10MB)"
+                                readOnly
+                                value={attachment.fileName || ''}
+                                onChange={(e) => handleAttachmentChange(index, 'fileName', e.target.value)}
+                            />
+                        </div>
                         <button type="button" onClick={() => fileInputRef.current?.click()}>파일 찾기</button>
                     </label>
                 </li>

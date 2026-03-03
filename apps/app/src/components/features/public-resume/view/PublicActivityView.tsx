@@ -1,7 +1,7 @@
 import React from 'react';
-import { Activity, Activity_ActivityType } from '@workfolio/shared/generated/common';
+import { Activity } from '@workfolio/shared/generated/common';
 import { DateUtil } from '@workfolio/shared/utils/DateUtil';
-import { normalizeEnumValue } from '@workfolio/shared/utils/commonUtils';
+import { getActivityTypeLabel } from '../shared/formatters';
 import styles from './PublicView.module.css';
 
 interface PublicActivityViewProps {
@@ -10,26 +10,6 @@ interface PublicActivityViewProps {
 
 const PublicActivityView: React.FC<PublicActivityViewProps> = ({ activities }) => {
   const visibleActivities = activities.filter((a) => a.isVisible === true);
-
-  const getActivityTypeLabel = (type?: Activity_ActivityType) => {
-    const normalizedType = normalizeEnumValue(type, Activity_ActivityType);
-    switch (normalizedType) {
-      case Activity_ActivityType.EXTERNAL:
-        return '대외활동';
-      case Activity_ActivityType.EDUCATION:
-        return '교육';
-      case Activity_ActivityType.CERTIFICATION:
-        return '자격증';
-      case Activity_ActivityType.AWARD:
-        return '수상';
-      case Activity_ActivityType.COMPETITION:
-        return '공모전';
-      case Activity_ActivityType.ETC:
-        return '기타';
-      default:
-        return '';
-    }
-  };
 
   return (
     <div className={styles.viewContainer}>

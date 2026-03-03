@@ -557,7 +557,7 @@ export default function AdminTurnOverDetail({ id }: { id: string }) {
                 <ChallengeSection challenge={detail.turnOverChallenge} />
             )}
             {activeTab === "retrospective" && (
-                <RetrospectiveSection retro={detail.turnOverRetrospective} endedAt={detail.endedAt} />
+                <RetrospectiveSection retro={detail.turnOverRetrospective} endedAt={detail.turnOverRetrospective?.endedAt} />
             )}
         </div>
     );

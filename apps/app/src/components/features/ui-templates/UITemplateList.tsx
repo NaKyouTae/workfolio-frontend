@@ -20,7 +20,7 @@ interface UITemplateListProps {
 }
 
 const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) => {
-    const { uiTemplates, fetchUITemplates, purchaseUITemplate, checkOwnership, loading, error } = useUITemplates();
+    const { uiTemplates, fetchUITemplates, purchaseUITemplate, checkOwnership, error } = useUITemplates();
     const { balance, fetchBalance } = useCredits();
     const { showNotification } = useNotification();
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -312,15 +312,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                                     fontWeight: 600,
                                     cursor: 'pointer',
                                     whiteSpace: 'nowrap',
-                                    transition: 'all 0.15s ease',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#e8e8e8';
-                                    e.currentTarget.style.borderColor = '#ccc';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#f5f5f5';
-                                    e.currentTarget.style.borderColor = '#e0e0e0';
                                 }}
                             >
                                 미리보기
@@ -338,13 +329,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 whiteSpace: 'nowrap',
-                                transition: 'all 0.15s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#E5A820';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = MAIN_COLOR;
                             }}
                         >
                             구매하기

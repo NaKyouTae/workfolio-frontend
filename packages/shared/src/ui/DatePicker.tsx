@@ -32,9 +32,9 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange = undefined, la
     
     useEffect(() => {
         if (!formattedValue) {
-            setDateInputValue('---- -- --');
+            setDateInputValue('');
         } else {
-            setDateInputValue(dateTime.toFormat('yyyy. MM. dd.'));
+            setDateInputValue(dateTime.toFormat('yyyy-MM-dd'));
         }
     }, [formattedValue, dateTime]);
     
@@ -75,18 +75,19 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange = undefined, la
         const inputValue = e.target.value;
         setDateInputValue(inputValue);
         
-        // 빈 값이거나 "---- -- --"이고 required가 false인 경우 빈 문자열로 설정
-        if ((!inputValue.trim() || inputValue === '---- -- --') && !required) {
+        // 빈 값이고 required가 false인 경우 빈 문자열로 설정
+        if (!inputValue.trim() && !required) {
             onChange?.('');
             return;
         }
         
         // 날짜 형식 검증 및 변환
-        const parsedDate = DateTime.fromFormat(inputValue, 'yyyy. MM. dd.');
+        const parsedDate = DateTime.fromFormat(inputValue, 'yyyy-MM-dd');
         if (parsedDate.isValid) {
             const newDate = parsedDate.toISO();
             if (newDate) {
                 onChange?.(newDate);
+                setIsCalendarOpen(true);
             }
         }
     };
@@ -118,7 +119,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange = undefined, la
                         value={dateInputValue}
                         onChange={handleDateInputChange}
                         onClick={() => !readOnly && setIsCalendarOpen(true)}
-                        placeholder="YYYY. MM. DD."
+                        placeholder="YYYY-MM-DD"
                         readOnly={readOnly}
                         className={`date-input ${readOnly ? 'read-only' : ''}`}
                     />

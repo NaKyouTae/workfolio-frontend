@@ -71,7 +71,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({
                                         key={resumeDetail.id}
                                         onClick={() => onResumeSelect(resumeDetail)}
                                     >
-                                        {resumeDetail.isDefault && <span>[대표]</span>}
+                                        {resumeDetail.isDefault && <img src="/assets/img/ico/ic-resume-check-ov.svg" alt="대표" width={14} height={14} />}
                                         <p>{resumeDetail.title}</p>
                                     </li>
                                 );

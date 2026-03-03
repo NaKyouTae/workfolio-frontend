@@ -9,19 +9,20 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@workfolio/shared": "workspace:*",
-        "next": "15.1.9",
-        "react": "^19.0.1",
-        "react-dom": "^19.0.1",
-        "zustand": "^5.0.3",
-        "dayjs": "^1.11.13",
-        "gsap": "^3.13.0",
-        "swiper": "^12.0.3",
-        "react-color-palette": "^7.3.0",
         "@dnd-kit/core": "^6.3.1",
         "@dnd-kit/sortable": "^10.0.0",
         "@dnd-kit/utilities": "^3.2.2",
-        "google-protobuf": "^3.21.4"
+        "@react-pdf/renderer": "^4.3.2",
+        "@workfolio/shared": "workspace:*",
+        "dayjs": "^1.11.13",
+        "google-protobuf": "^3.21.4",
+        "gsap": "^3.13.0",
+        "next": "15.1.9",
+        "react": "^19.0.1",
+        "react-color-palette": "^7.3.0",
+        "react-dom": "^19.0.1",
+        "swiper": "^12.0.3",
+        "zustand": "^5.0.3"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3",

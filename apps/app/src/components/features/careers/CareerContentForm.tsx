@@ -33,7 +33,8 @@ interface CareerContentFormProps {
   email: string;
   position: string;
   description: string;
-  
+  profileImagePreview: string | null;
+
   // 각 섹션 데이터
   careers: ResumeUpdateRequest_CareerRequest[];
   projects: ResumeUpdateRequest_ProjectRequest[];
@@ -41,7 +42,7 @@ interface CareerContentFormProps {
   activities: ResumeUpdateRequest_ActivityRequest[];
   languages: ResumeUpdateRequest_LanguageSkillRequest[];
   attachments: AttachmentRequest[];
-  
+
   // 핸들러
   onTitleChange: (title: string) => void;
   onIsDefaultChange: (isDefault: boolean) => void;
@@ -52,13 +53,14 @@ interface CareerContentFormProps {
   onEmailChange: (email: string) => void;
   onPositionChange: (position: string) => void;
   onDescriptionChange: (description: string) => void;
+  onProfileImageChange: (file: File | null) => void;
   onCareersChange: (careers: ResumeUpdateRequest_CareerRequest[]) => void;
   onProjectsChange: (projects: ResumeUpdateRequest_ProjectRequest[]) => void;
   onEducationsChange: (educations: ResumeUpdateRequest_EducationRequest[]) => void;
   onActivitiesChange: (activities: ResumeUpdateRequest_ActivityRequest[]) => void;
   onLanguagesChange: (languages: ResumeUpdateRequest_LanguageSkillRequest[]) => void;
   onAttachmentsChange: (attachments: AttachmentRequest[]) => void;
-  
+
   // 저장/취소 핸들러
   onSave: () => void;
   onCancel?: () => void;
@@ -79,6 +81,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
   educations,
   activities,
   languages,
+  profileImagePreview,
   attachments,
   onTitleChange,
   onIsDefaultChange,
@@ -89,6 +92,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
   onEmailChange,
   onPositionChange,
   onDescriptionChange,
+  onProfileImageChange,
   onCareersChange,
   onProjectsChange,
   onEducationsChange,
@@ -134,6 +138,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
                             email={email}
                             position={position}
                             description={description}
+                            profileImagePreview={profileImagePreview}
                             onNameChange={onNameChange}
                             onBirthDateChange={onBirthDateChange}
                             onGenderChange={onGenderChange}
@@ -141,6 +146,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
                             onEmailChange={onEmailChange}
                             onPositionChange={onPositionChange}
                             onDescriptionChange={onDescriptionChange}
+                            onProfileImageChange={onProfileImageChange}
                         />
                     </div>
 

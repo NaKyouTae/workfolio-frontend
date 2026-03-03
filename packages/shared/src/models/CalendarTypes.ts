@@ -2,7 +2,7 @@ import { DateModel } from "./DateModel"
 import { Record } from '../generated/common'
 
 // Calendar view type definition
-export type CalendarViewType = 'weekly' | 'monthly' | 'list';
+export type CalendarViewType = 'weekly' | 'monthly' | 'list' | 'group';
 
 export interface CalendarEvent {
     record: Record

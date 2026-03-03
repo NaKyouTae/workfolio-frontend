@@ -210,29 +210,28 @@ button {
 }
 
 .page-size-select {
-  width: 74px;
-  height: 32px;
-  padding: 0 24px 0 10px;
-  border: 1px solid var(--gray003);
-  border-radius: 6px;
+  box-sizing: border-box;
+  width: auto;
+  min-width: 70px;
+  height: 36px !important;
+  padding: 0 28px 0 10px !important;
+  border: 1px solid var(--gray003) !important;
+  border-radius: 8px !important;
   background-color: #fff;
   color: #121212;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  line-height: 32px;
+  line-height: 34px;
   cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23787878' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 10px 6px !important;
 }
 
-.page-size-select-chevron {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
 
 .expanded-detail-grid {
   grid-template-columns: 1fr;

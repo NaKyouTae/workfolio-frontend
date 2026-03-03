@@ -3,6 +3,8 @@
 import React, { useRef, useState } from "react";
 import { UITemplateImage } from "@workfolio/shared/types/uitemplate";
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 interface UITemplateImageUploaderProps {
     images: UITemplateImage[];
     onUpload: (files: File[], imageType: string) => Promise<void>;
@@ -24,7 +26,14 @@ const UITemplateImageUploader: React.FC<UITemplateImageUploaderProps> = ({
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setSelectedFiles(Array.from(e.target.files));
+            const files = Array.from(e.target.files);
+            const oversizedFiles = files.filter(f => f.size > MAX_FILE_SIZE);
+            if (oversizedFiles.length > 0) {
+                alert(`파일 크기는 10MB 이하만 가능합니다. (초과: ${oversizedFiles.map(f => f.name).join(', ')})`);
+                e.target.value = '';
+                return;
+            }
+            setSelectedFiles(files);
         }
     };
 

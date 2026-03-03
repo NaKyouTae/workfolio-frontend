@@ -9,6 +9,8 @@ import {
 import UITemplateForm, { UITemplateFormData } from "./UITemplateForm";
 import AdminModal from "./AdminModal";
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 interface UITemplateDetailModalProps {
     isOpen: boolean;
     template: UITemplate | null;
@@ -98,6 +100,12 @@ const UITemplateDetailModal: React.FC<UITemplateDetailModalProps> = ({
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0 || !template) return;
         const files = Array.from(e.target.files);
+        const oversizedFiles = files.filter(f => f.size > MAX_FILE_SIZE);
+        if (oversizedFiles.length > 0) {
+            alert(`파일 크기는 10MB 이하만 가능합니다. (초과: ${oversizedFiles.map(f => f.name).join(', ')})`);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            return;
+        }
         setUploading(true);
         try {
             const newImages = await onUploadImages(template.id, files, "DETAIL");

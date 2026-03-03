@@ -609,7 +609,6 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
             <RecordUpdateModal
                 isOpen={isUpdateModalOpen}
                 onClose={handleCloseUpdateModal}
-                onDelete={handleDeleteRecord}
                 record={selectedRecord}
                 allRecordGroups={allRecordGroups}
             />

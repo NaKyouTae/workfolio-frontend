@@ -2,19 +2,13 @@
 
 import { useParams } from 'next/navigation';
 import PublicResumePage from '@/components/features/public-resume/PublicResumePage';
-import {
-  isValidResumeTemplateSlug,
-  DEFAULT_RESUME_TEMPLATE_SLUG,
-} from '@/components/features/public-resume/templates/resumeTemplateSlugs';
+import { getResumeTemplateSlugFromUrlPath } from '@/components/features/public-resume/templates/resumeTemplateConfig';
 
+/** /resumes/:publicId/:templateSlug → 해당 템플릿으로 렌더 */
 export default function PublicResumeTemplatePageRoute() {
   const params = useParams();
   const publicId = params.publicId as string;
-  const templateSlug = params.templateSlug as string | undefined;
+  const templateSlug = getResumeTemplateSlugFromUrlPath(params.templateSlug as string);
 
-  const slug = isValidResumeTemplateSlug(templateSlug)
-    ? templateSlug
-    : DEFAULT_RESUME_TEMPLATE_SLUG;
-
-  return <PublicResumePage publicId={publicId} templateSlug={slug} />;
+  return <PublicResumePage publicId={publicId} templateSlug={templateSlug} />;
 }

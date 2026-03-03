@@ -62,9 +62,11 @@ export interface WorkerUITemplate {
     purchasedAt: number;
     expiredAt: number;
     creditsUsed: number;
-    isActive: boolean;
+    status: string;
     isExpired: boolean;
     isValid: boolean;
+    isDefault: boolean;
+    templateType: string;
     worker: Worker;
     uiTemplate: UITemplate;
     createdAt: number;

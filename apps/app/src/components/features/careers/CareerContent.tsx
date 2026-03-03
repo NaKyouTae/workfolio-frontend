@@ -32,6 +32,7 @@ interface CareerContentProps {
   exportPDF?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   copyURL?: (publicId?: string, onSuccess?: () => void) => Promise<void>;
   changeDefault: (resumeId?: string) => Promise<void>;
+  togglePublic?: (resumeId?: string, isPublic?: boolean) => Promise<boolean>;
   calculateTotalCareer?: (resume: ResumeDetail) => string;
 }
 
@@ -54,6 +55,7 @@ const CareerContent: React.FC<CareerContentProps> = ({
   exportPDF,
   copyURL,
   changeDefault,
+  togglePublic,
   calculateTotalCareer,
 }) => {
   const { confirm } = useConfirm();
@@ -119,16 +121,8 @@ const CareerContent: React.FC<CareerContentProps> = ({
     }
   };
 
-  const handleCancel = async () => {
-    const result = await confirm({
-      title: '이력서 편집을 취소하시겠어요?',
-      icon: '/assets/img/ico/ic-warning.svg',
-      description: '지금까지 입력한 내용이 저장되지 않아요.\n지금 나가면 처음부터 다시 작성해야 할 수 있어요.',
-      confirmText: '취소하기',
-      cancelText: '돌아가기',
-    });
-
-    if (result && onCancelEdit) {
+  const handleCancel = () => {
+    if (onCancelEdit) {
       onCancelEdit();
     }
   };
@@ -200,6 +194,7 @@ const CareerContent: React.FC<CareerContentProps> = ({
               exportPDF={exportPDF}
               copyURL={copyURL}
               changeDefault={changeDefault}
+              togglePublic={togglePublic}
           />
         )}
         {currentViewMode === 'edit' && isNewResume && (

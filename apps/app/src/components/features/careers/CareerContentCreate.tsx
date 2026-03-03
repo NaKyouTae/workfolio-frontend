@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { 
   Attachment_AttachmentCategory,
   Resume_Gender, 
@@ -137,8 +137,31 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
     },
   ]);
 
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
+  const profileImageFileRef = useRef<File | null>(null);
+
   const { updateResume } = useResumeDetails();
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
+    let binary = '';
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  };
+
+  const handleProfileImageChange = useCallback((file: File | null) => {
+    if (file) {
+      profileImageFileRef.current = file;
+      const objectUrl = URL.createObjectURL(file);
+      setProfileImagePreview(objectUrl);
+    } else {
+      profileImageFileRef.current = null;
+      setProfileImagePreview(null);
+    }
+  }, []);
 
   const handleSaveAll = useCallback(async () => {
     if (!isLoggedIn()) {
@@ -146,6 +169,19 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
       return;
     }
     
+    let profileImageData: Uint8Array | undefined;
+    if (profileImageFileRef.current) {
+      const file = profileImageFileRef.current;
+      const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as ArrayBuffer);
+        reader.onerror = () => reject(new Error('파일 읽기 실패'));
+        reader.readAsArrayBuffer(file);
+      });
+      const base64String = uint8ArrayToBase64(new Uint8Array(arrayBuffer));
+      profileImageData = base64String as unknown as Uint8Array;
+    }
+
     const updateRequest: ResumeUpdateRequest = {
       id: '',
       title: title || '제목없는 이력서',
@@ -158,6 +194,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
       description,
       isPublic: false,
       isDefault,
+      profileImageData,
       careers,
       projects,
       educations,
@@ -185,6 +222,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
         email={email}
         position={position}
         description={description}
+        profileImagePreview={profileImagePreview}
         careers={careers}
         projects={projects}
         educations={educations}
@@ -200,6 +238,7 @@ const CareerContentCreate: React.FC<CareerContentCreateProps> = ({
         onEmailChange={setEmail}
         onPositionChange={setPosition}
         onDescriptionChange={setDescription}
+        onProfileImageChange={handleProfileImageChange}
         onCareersChange={setCareers}
         onProjectsChange={setProjects}
         onEducationsChange={setEducations}

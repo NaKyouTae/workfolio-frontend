@@ -105,8 +105,8 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
     };
 
     const getStatusInfo = (workerUITemplate: WorkerUITemplate) => {
-        if (!workerUITemplate.isActive) {
-            return { label: '비활성', color: '#9e9e9e' };
+        if (workerUITemplate.status === 'DELETED') {
+            return { label: '삭제됨', color: '#9e9e9e' };
         }
         if (workerUITemplate.isExpired) {
             return { label: '만료됨', color: '#f44336' };
@@ -378,15 +378,6 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 whiteSpace: 'nowrap',
-                                transition: 'all 0.15s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#e8e8e8';
-                                e.currentTarget.style.borderColor = '#ccc';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = '#f5f5f5';
-                                e.currentTarget.style.borderColor = '#e0e0e0';
                             }}
                         >
                             미리보기
@@ -425,13 +416,6 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 whiteSpace: 'nowrap',
-                                transition: 'all 0.15s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#E5A820';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = MAIN_COLOR;
                             }}
                         >
                             기본 설정
@@ -452,15 +436,6 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) 
                             fontWeight: 600,
                             cursor: 'pointer',
                             whiteSpace: 'nowrap',
-                            transition: 'all 0.15s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#f44336';
-                            e.currentTarget.style.color = '#fff';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#fff';
-                            e.currentTarget.style.color = '#f44336';
                         }}
                     >
                         삭제

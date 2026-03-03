@@ -121,7 +121,6 @@ const menuSections: MenuSection[] = [
         items: [
             { name: "사용자", path: "/dashboard/users", icon: <UserIcon /> },
             { name: "UI 템플릿", path: "/dashboard/templates", icon: <TemplateIcon /> },
-            { name: "보유 템플릿", path: "/dashboard/owned-templates", icon: <OwnedTemplateIcon /> },
             { name: "공지사항", path: "/dashboard/notices", icon: <NoticeIcon /> },
         ],
     },
@@ -130,6 +129,7 @@ const menuSections: MenuSection[] = [
         items: [
             { name: "결제 내역", path: "/dashboard/payments", icon: <PaymentIcon /> },
             { name: "크레딧 내역", path: "/dashboard/credits", icon: <CreditIcon /> },
+            { name: "보유 템플릿", path: "/dashboard/owned-templates", icon: <OwnedTemplateIcon /> },
         ],
     },
     {

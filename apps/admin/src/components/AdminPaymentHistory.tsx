@@ -156,9 +156,9 @@ export default function AdminPaymentHistory() {
                 )}
             </div>
 
-            <div className="page-cont">
+            <div className="page-cont" style={{ display: "flex", flexDirection: "column", flex: !selectedWorker ? 1 : undefined }}>
                 {!selectedWorker && (
-                    <div className="cont-box" style={{ marginBottom: "16px" }}>
+                    <div style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <AdminUserSearch
                             selectedWorker={selectedWorker}
                             onSelectWorker={selectWorker}

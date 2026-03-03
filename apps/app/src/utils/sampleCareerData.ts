@@ -34,6 +34,7 @@ export const createSampleWorker = (): Worker => {
         birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
         gender: Worker_Gender.MALE,
         nickName: "홍길동",
+        credit: 0,
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
         updatedAt: now,
     };
@@ -571,6 +572,7 @@ export const createSampleResume2 = () => {
         birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
         gender: Worker_Gender.MALE,
         createdAt: now - 300 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -697,6 +699,7 @@ export const createSampleResume3 = () => {
         nickName: "이지은",
         status: Worker_WorkerStatus.ACTIVE,
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -805,6 +808,7 @@ export const createSampleResume4 = () => {
         gender: Worker_Gender.FEMALE,
         nickName: "박서연",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -952,6 +956,7 @@ export const createSampleResume5 = () => {
         gender: Worker_Gender.MALE,
         nickName: "최준호",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -1090,6 +1095,7 @@ export const createSampleResume6 = () => {
         gender: Worker_Gender.FEMALE,
         nickName: "정수빈",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -1185,6 +1191,7 @@ export const createSampleResume7 = () => {
         gender: Worker_Gender.MALE,
         nickName: "강동우",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -1280,6 +1287,7 @@ export const createSampleResume8 = () => {
         gender: Worker_Gender.FEMALE,
         nickName: "윤서아",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -1375,6 +1383,7 @@ export const createSampleResume9 = () => {
         gender: Worker_Gender.MALE,
         nickName: "조현우",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -1470,6 +1479,7 @@ export const createSampleResume10 = () => {
         gender: Worker_Gender.FEMALE,
         nickName: "송민지",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 
@@ -1565,6 +1575,7 @@ export const createSampleResume11 = () => {
         gender: Worker_Gender.MALE,
         nickName: "한지훈",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
         updatedAt: now,
     };
 

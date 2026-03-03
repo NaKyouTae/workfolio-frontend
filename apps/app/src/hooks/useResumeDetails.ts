@@ -3,7 +3,7 @@ import { ResumeDetail } from '@workfolio/shared/generated/common';
 import HttpMethod from '@workfolio/shared/enums/HttpMethod';
 import DateUtil from '@workfolio/shared/utils/DateUtil';
 import dayjs from 'dayjs';
-import { useConfirmStore } from '@workfolio/shared/hooks/useConfirm';
+import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { useNotificationStore } from '@workfolio/shared/hooks/useNotification';
 import { 
   createAllSampleResumes
@@ -49,12 +49,13 @@ export const useResumeDetails = () => {
   const [isLoading, setIsLoading] = useState(!isInitialized);
   const [error, setError] = useState<string | null>(null);
   const { showNotification } = useNotificationStore();
-  const { confirm } = useConfirmStore();
+  const { confirm } = useConfirm();
 
-  // 이력서 목록 조회
-  const fetchResumeDetails = useCallback(async () => {
+  // 이력서 목록 조회 (silent: true 시 isLoading 변경 없이 백그라운드 갱신)
+  const fetchResumeDetails = useCallback(async (options?: { silent?: boolean }) => {
+    const silent = options?.silent ?? false;
     try {
-      setIsLoading(true);
+      if (!silent) setIsLoading(true);
       setError(null);
       
       // 로그인 상태 확인
@@ -62,9 +63,9 @@ export const useResumeDetails = () => {
         const sampleData = createSampleResumeDetails();
         const dataToUse = cachedResumeDetails.length > 0 ? cachedResumeDetails : sampleData;
         setResumeDetails(dataToUse);
-        cachedResumeDetails = dataToUse; // 캐시 업데이트
+        cachedResumeDetails = dataToUse;
         isInitialized = true;
-        setIsLoading(false);
+        if (!silent) setIsLoading(false);
         return;
       }
       
@@ -92,7 +93,7 @@ export const useResumeDetails = () => {
       cachedResumeDetails = []; // 캐시 업데이트
       isInitialized = true;
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   }, []);
 
@@ -412,6 +413,41 @@ export const useResumeDetails = () => {
     }
   }, [refreshResumeDetails, showNotification]);
 
+  // 이력서 공개/비공개 토글 (로컬 상태 즉시 반영, 리프레시 없음)
+  const togglePublic = useCallback(async (resumeId?: string, isPublic?: boolean): Promise<boolean> => {
+    if (!resumeId) {
+      showNotification('이력서 ID가 없습니다.', 'error');
+      return false;
+    }
+
+    try {
+      const response = await fetch(`/api/resumes/${resumeId}/public`, {
+        method: HttpMethod.PATCH,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isPublic }),
+      });
+
+      if (response.ok) {
+        // 로컬 상태 즉시 반영 (스켈레톤 깜빡임 방지)
+        const updated = resumeDetails.map((r) =>
+          r.id === resumeId ? { ...r, isPublic: !!isPublic } : r
+        );
+        setResumeDetails(updated);
+        cachedResumeDetails = updated;
+        // 서버 데이터도 백그라운드로 동기화
+        fetchResumeDetails({ silent: true });
+        return true;
+      } else {
+        showNotification('공개 상태 변경에 실패했습니다.', 'error');
+        return false;
+      }
+    } catch (error) {
+      console.error('이력서 공개 상태 변경 실패:', error);
+      showNotification('공개 상태 변경 중 오류가 발생했습니다.', 'error');
+      return false;
+    }
+  }, [resumeDetails, fetchResumeDetails, showNotification]);
+
   return {
     resumeDetails,
     isLoading,
@@ -425,6 +461,7 @@ export const useResumeDetails = () => {
     calculateTotalCareer,
     updateResume,
     changeDefault,
+    togglePublic,
   };
 };
 

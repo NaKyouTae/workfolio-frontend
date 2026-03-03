@@ -175,6 +175,7 @@ export interface Resume {
   description: string;
   publicStartDate?: number | undefined;
   publicEndDate?: number | undefined;
+  profileImageUrl?: string | undefined;
   worker?: Worker | undefined;
   createdAt: number;
   updatedAt: number;
@@ -234,6 +235,7 @@ export interface ResumeDetail {
   description: string;
   publicStartDate?: number | undefined;
   publicEndDate?: number | undefined;
+  profileImageUrl?: string | undefined;
   worker?: Worker | undefined;
   careers: Career[];
   educations: Education[];
@@ -1226,6 +1228,7 @@ export interface TurnOverRetrospective {
   score: number;
   reviewSummary: string;
   joinedAt?: number | undefined;
+  endedAt?: number | undefined;
   workType: string;
   employmentType?: TurnOverRetrospective_EmploymentType | undefined;
   createdAt: number;
@@ -1295,6 +1298,7 @@ export interface TurnOverRetrospectiveDetail {
   score: number;
   reviewSummary: string;
   joinedAt?: number | undefined;
+  endedAt?: number | undefined;
   workType: string;
   employmentType?: TurnOverRetrospectiveDetail_EmploymentType | undefined;
   memos: Memo[];
@@ -1786,6 +1790,7 @@ function createBaseWorker(): Worker {
     email: "",
     birthDate: undefined,
     gender: undefined,
+    credit: 0,
     status: 0,
     createdAt: 0,
     updatedAt: 0,
@@ -1928,6 +1933,7 @@ export const Worker: MessageFns<Worker> = {
         ? globalThis.Number(object.birth_date)
         : undefined,
       gender: isSet(object.gender) ? worker_GenderFromJSON(object.gender) : undefined,
+      credit: isSet(object.credit) ? globalThis.Number(object.credit) : 0,
       status: isSet(object.status) ? worker_WorkerStatusFromJSON(object.status) : 0,
       createdAt: isSet(object.createdAt)
         ? globalThis.Number(object.createdAt)

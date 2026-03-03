@@ -34,18 +34,18 @@ export const useConfirmStore = create<ConfirmState>((set, get) => ({
 
   handleConfirm: () => {
     const { resolve } = get();
+    set({ isOpen: false, options: null, resolve: null });
     if (resolve) {
       resolve(true);
     }
-    set({ isOpen: false, options: null, resolve: null });
   },
 
   handleCancel: () => {
     const { resolve } = get();
+    set({ isOpen: false, options: null, resolve: null });
     if (resolve) {
       resolve(false);
     }
-    set({ isOpen: false, options: null, resolve: null });
   },
 }));
 

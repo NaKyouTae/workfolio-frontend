@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { 
   Resume_Gender, 
   ResumeDetail,
@@ -8,6 +8,7 @@ import {
   LanguageSkill_Language,
   LanguageSkill_LanguageLevel,
   Attachment_AttachmentType,
+  Attachment_AttachmentCategory,
 } from '@workfolio/shared/generated/common';
 import { 
   ResumeUpdateRequest, 
@@ -56,6 +57,9 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
   const [activities, setActivities] = useState<ResumeUpdateRequest_ActivityRequest[]>([]);
   const [languages, setLanguages] = useState<ResumeUpdateRequest_LanguageSkillRequest[]>([]);
   const [attachments, setAttachments] = useState<AttachmentRequest[]>([]);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(selectedResumeDetail?.profileImageUrl || null);
+  const profileImageFileRef = useRef<File | null>(null);
+  const profileImageRemovedRef = useRef(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const { updateResume } = useResumeDetails();
@@ -82,7 +86,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         return normalized === 0 ? undefined : normalized;
       };
 
-      setEducations((selectedResumeDetail.educations || []).map(education => ({
+      const mappedEducations = (selectedResumeDetail.educations || []).map(education => ({
         id: education.id,
         major: education.major || '',
         name: education.name || '',
@@ -92,9 +96,13 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         endedAt: normalizeTimestampOrUndefined(education.endedAt),
         isVisible: education.isVisible ?? false,
         priority: education.priority || 0
-      })));
+      }));
+      setEducations(mappedEducations.length > 0 ? mappedEducations : [{
+        major: '', name: '', description: '', status: undefined,
+        startedAt: undefined, endedAt: undefined, isVisible: true, priority: 0,
+      }]);
 
-      setCareers((selectedResumeDetail.careers || []).map(career => ({
+      const mappedCareers = (selectedResumeDetail.careers || []).map(career => ({
         career: {
           id: career.id,
           name: career.name || '',
@@ -111,17 +119,28 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
           isVisible: career.isVisible ?? false,
           priority: career.priority || 0
         },
-        salaries: (career.salaries || []).map(salary => ({
-          id: salary.id,
-          amount: salary.amount || 0,
-          memo: salary.memo || '',
-          negotiationDate: normalizeTimestampOrUndefined(salary.negotiationDate),
-          isVisible: salary.isVisible ?? false,
-          priority: salary.priority || 0
-        }))
-      })));
+        salaries: (career.salaries && career.salaries.length > 0)
+          ? career.salaries.map(salary => ({
+            id: salary.id,
+            amount: salary.amount || 0,
+            memo: salary.memo || '',
+            negotiationDate: normalizeTimestampOrUndefined(salary.negotiationDate),
+            isVisible: salary.isVisible ?? false,
+            priority: salary.priority || 0
+          }))
+          : [{ amount: 0, memo: '', negotiationDate: undefined, isVisible: true, priority: 0 }]
+      }));
+      setCareers(mappedCareers.length > 0 ? mappedCareers : [{
+        career: {
+          name: '', position: '', department: '', jobTitle: '', rank: '',
+          salary: 0, priority: 0, description: '', isVisible: true,
+        },
+        salaries: [{
+          amount: 0, memo: '', negotiationDate: undefined, isVisible: true, priority: 0,
+        }],
+      }]);
       
-      setProjects((selectedResumeDetail.projects || []).map(project => {
+      const mappedProjects = (selectedResumeDetail.projects || []).map(project => {
         const normalized: ResumeUpdateRequest_ProjectRequest = {
           title: project.title || '',
           role: project.role || '',
@@ -130,28 +149,32 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
           isVisible: project.isVisible ?? false,
           priority: project.priority || 0
         };
-        
+
         // id가 있으면 포함
         if (project.id) {
           normalized.id = project.id;
         }
-        
+
         // startedAt이 있으면 포함
         const startedAt = normalizeTimestampOrUndefined(project.startedAt);
         if (startedAt !== undefined) {
           normalized.startedAt = startedAt;
         }
-        
+
         // endedAt이 있으면 포함
         const endedAt = normalizeTimestampOrUndefined(project.endedAt);
         if (endedAt !== undefined) {
           normalized.endedAt = endedAt;
         }
-        
+
         return normalized;
-      }));
+      });
+      setProjects(mappedProjects.length > 0 ? mappedProjects : [{
+        title: '', affiliation: '', role: '', description: '',
+        startedAt: undefined, endedAt: undefined, isVisible: true, priority: 0,
+      }]);
       
-      setActivities((selectedResumeDetail.activities || []).map(activity => ({
+      const mappedActivities = (selectedResumeDetail.activities || []).map(activity => ({
         id: activity.id,
         type: normalizeEnumValue(activity.type, Activity_ActivityType),
         name: activity.name || '',
@@ -162,9 +185,13 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         description: activity.description || '',
         isVisible: activity.isVisible ?? false,
         priority: activity.priority || 0
-      })));
+      }));
+      setActivities(mappedActivities.length > 0 ? mappedActivities : [{
+        type: undefined, name: '', organization: '', certificateNumber: '',
+        startedAt: undefined, endedAt: undefined, description: '', isVisible: true, priority: 0,
+      }]);
       
-      setLanguages((selectedResumeDetail.languageSkills || []).map(languageSkill => ({
+      const mappedLanguages = (selectedResumeDetail.languageSkills || []).map(languageSkill => ({
         id: languageSkill.id,
         language: normalizeEnumValue(languageSkill.language, LanguageSkill_Language),
         level: normalizeEnumValue(languageSkill.level, LanguageSkill_LanguageLevel),
@@ -178,9 +205,13 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
           priority: test.priority || 0
         })),
         priority: languageSkill.priority || 0
-      })));
+      }));
+      setLanguages(mappedLanguages.length > 0 ? mappedLanguages : [{
+        language: undefined, level: undefined, isVisible: true, priority: 0,
+        languageTests: [{ name: '', score: '', acquiredAt: undefined, isVisible: true, priority: 0 }],
+      }]);
 
-      setAttachments((selectedResumeDetail.attachments || []).map(attachment => ({
+      const mappedAttachments = (selectedResumeDetail.attachments || []).map(attachment => ({
         id: attachment.id || '',
         type: normalizeEnumValue(attachment.type, Attachment_AttachmentType),
         category: attachment.category,
@@ -189,9 +220,39 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         fileUrl: attachment.fileUrl || '',
         isVisible: attachment.isVisible ?? false,
         priority: attachment.priority || 0,
-      })));
+      }));
+      setAttachments(mappedAttachments.length > 0 ? mappedAttachments : [{
+        type: undefined, category: Attachment_AttachmentCategory.FILE,
+        url: '', fileName: '', fileUrl: '', fileData: undefined, isVisible: true, priority: 0,
+      }]);
+
+      setProfileImagePreview(selectedResumeDetail.profileImageUrl || null);
+      profileImageFileRef.current = null;
+      profileImageRemovedRef.current = false;
     }
   }, [selectedResumeDetail]);
+
+  const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
+    let binary = '';
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  };
+
+  const handleProfileImageChange = useCallback((file: File | null) => {
+    if (file) {
+      profileImageFileRef.current = file;
+      profileImageRemovedRef.current = false;
+      const objectUrl = URL.createObjectURL(file);
+      setProfileImagePreview(objectUrl);
+    } else {
+      profileImageFileRef.current = null;
+      profileImageRemovedRef.current = true;
+      setProfileImagePreview(null);
+    }
+  }, []);
 
   const handleSaveAll = useCallback(async () => {
     if (!isLoggedIn()) {
@@ -200,6 +261,19 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
     }
     
     try {
+      let profileImageData: Uint8Array | undefined;
+      if (profileImageFileRef.current) {
+        const file = profileImageFileRef.current;
+        const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as ArrayBuffer);
+          reader.onerror = () => reject(new Error('파일 읽기 실패'));
+          reader.readAsArrayBuffer(file);
+        });
+        const base64String = uint8ArrayToBase64(new Uint8Array(arrayBuffer));
+        profileImageData = base64String as unknown as Uint8Array;
+      }
+
       const updateRequest: ResumeUpdateRequest = {
         id: selectedResumeDetail?.id || '',
         title: title || '제목 없음',
@@ -212,6 +286,8 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         description,
         isPublic: selectedResumeDetail?.isPublic || false,
         isDefault,
+        profileImageUrl: profileImageRemovedRef.current ? '' : (selectedResumeDetail?.profileImageUrl || ''),
+        profileImageData,
         careers,
         projects,
         educations,
@@ -246,6 +322,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         email={email}
         position={position}
         description={description}
+        profileImagePreview={profileImagePreview}
         careers={careers}
         projects={projects}
         educations={educations}
@@ -261,6 +338,7 @@ const CareerContentEdit: React.FC<CareerContentEditProps> = ({
         onEmailChange={setEmail}
         onPositionChange={setPosition}
         onDescriptionChange={setDescription}
+        onProfileImageChange={handleProfileImageChange}
         onCareersChange={setCareers}
         onProjectsChange={setProjects}
         onEducationsChange={setEducations}

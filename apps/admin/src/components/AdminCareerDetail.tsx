@@ -490,6 +490,42 @@ export default function AdminCareerDetail({ id }: { id: string }) {
 
             {/* 기본 정보 - 인풋 스타일 */}
             <div className={styles.basicInfoSection}>
+                <div style={{ marginBottom: '20px' }}>
+                    <label className={styles.inputLabel} style={{ marginBottom: '8px', display: 'block' }}>인물 사진</label>
+                    {detail.profileImageUrl ? (
+                        <img
+                            src={detail.profileImageUrl}
+                            alt="인물 사진"
+                            style={{
+                                width: '100px',
+                                height: '130px',
+                                objectFit: 'cover',
+                                borderRadius: '4px',
+                                border: '1px solid #e5e7eb',
+                            }}
+                        />
+                    ) : (
+                        <div
+                            style={{
+                                width: '100px',
+                                height: '130px',
+                                backgroundColor: '#f3f4f6',
+                                borderRadius: '4px',
+                                border: '1px solid #e5e7eb',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'column',
+                                gap: '4px',
+                            }}
+                        >
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#ccc"/>
+                            </svg>
+                            <span style={{ fontSize: '11px', color: '#aaa' }}>미등록</span>
+                        </div>
+                    )}
+                </div>
                 <div className={styles.basicInfoGrid}>
                     <div className={styles.inputField}>
                         <label className={styles.inputLabel}>이름</label>

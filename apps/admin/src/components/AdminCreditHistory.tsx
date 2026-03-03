@@ -164,7 +164,7 @@ export default function AdminCreditHistory() {
 
     return (
         <div className="contents">
-            <div className="page-title">
+            <div className="page-title" style={{ width: "100%" }}>
                 <div>
                     <h2>크레딧 내역</h2>
                     <p>사용자를 선택하여 크레딧 내역을 조회합니다.</p>
@@ -179,9 +179,9 @@ export default function AdminCreditHistory() {
                 )}
             </div>
 
-            <div className="page-cont" style={{ display: "flex", flexDirection: "column" }}>
+            <div className="page-cont" style={{ display: "flex", flexDirection: "column", flex: !selectedWorker ? 1 : undefined }}>
                 {!selectedWorker && (
-                    <div className="cont-box" style={{ marginBottom: "16px" }}>
+                    <div style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <AdminUserSearch
                             selectedWorker={selectedWorker}
                             onSelectWorker={handleSelectWorker}

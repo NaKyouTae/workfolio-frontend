@@ -15,7 +15,10 @@ import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
 import CareerContentViewSkeleton from '@workfolio/shared/ui/skeleton/CareerContentViewSkeleton';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
-import { UITemplate } from '@workfolio/shared/types/uitemplate';
+import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
+import { UITemplate, WorkerUITemplate } from '@workfolio/shared/types/uitemplate';
+import TemplateSelectModal from '@/components/features/ui-templates/TemplateSelectModal';
+import { downloadResumePdf } from '@/components/features/public-resume/pdf/generateResumePdf';
 import styles from './CareerContentView.module.css';
 
 interface CareerContentViewProps {
@@ -27,6 +30,7 @@ interface CareerContentViewProps {
   exportPDF?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   copyURL?: (resumeId?: string) => void;
   changeDefault?: (resumeId?: string) => Promise<void>;
+  togglePublic?: (resumeId?: string, isPublic?: boolean) => Promise<boolean>;
 }
 
 /**
@@ -39,15 +43,20 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
   onEdit,
   duplicateResume,
   deleteResume,
-  exportPDF,
   changeDefault,
+  togglePublic,
 }) => {
   // 비공개 정보 보기 상태
   const [showHidden, setShowHidden] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showNoTemplateModal, setShowNoTemplateModal] = useState(false);
+  const [showTemplateSelectModal, setShowTemplateSelectModal] = useState(false);
+  const [templateSelectType, setTemplateSelectType] = useState<'URL' | 'PDF'>('PDF');
   const [defaultUrlTemplate, setDefaultUrlTemplate] = useState<UITemplate | null>(null);
+  const [defaultPdfTemplate, setDefaultPdfTemplate] = useState<UITemplate | null>(null);
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const { showNotification } = useNotification();
+  const { confirm } = useConfirm();
   const router = useRouter();
 
   const fetchDefaultTemplates = useCallback(async () => {
@@ -56,6 +65,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
       if (response.ok) {
         const data = await response.json();
         setDefaultUrlTemplate(data.defaultUrlUiTemplate ?? data.default_url_ui_template ?? null);
+        setDefaultPdfTemplate(data.defaultPdfUiTemplate ?? data.default_pdf_ui_template ?? null);
       }
     } catch (err) {
       console.error('Error fetching default templates:', err);
@@ -75,6 +85,21 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
       return false;
     }
   }, []);
+
+  const setDefaultTemplate = useCallback(async (uiTemplateId: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/ui-templates/my/default/${uiTemplateId}`, {
+        method: 'PUT',
+      });
+      if (response.ok) {
+        await fetchDefaultTemplates();
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, [fetchDefaultTemplates]);
 
   useEffect(() => {
     if (isLoggedIn()) {
@@ -128,6 +153,21 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
     }
   };
 
+  // PDF 실제 다운로드 실행
+  const executePdfDownload = async () => {
+    if (!selectedResumeDetail) return;
+    setIsPdfGenerating(true);
+    try {
+      await downloadResumePdf(selectedResumeDetail);
+      showNotification('PDF 저장 완료', 'success');
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      showNotification('PDF 내보내기에 실패했습니다.', 'error');
+    } finally {
+      setIsPdfGenerating(false);
+    }
+  };
+
   // PDF 내보내기 핸들러
   const handleExportPDF = async () => {
     if (!isLoggedIn()) {
@@ -139,8 +179,56 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
       setShowNoTemplateModal(true);
       return;
     }
-    if (exportPDF) {
-      exportPDF(selectedResumeDetail?.id);
+    // 기본 PDF 템플릿이 없으면 선택 모달
+    if (!defaultPdfTemplate) {
+      setTemplateSelectType('PDF');
+      setShowTemplateSelectModal(true);
+      return;
+    }
+    // 기본 템플릿이 있으면 바로 다운로드
+    await executePdfDownload();
+  };
+
+  // 공개/비공개 토글 핸들러 (헤더 배지 클릭)
+  const handleTogglePublic = async () => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (!selectedResumeDetail?.id || !togglePublic) return;
+
+    const currentlyPublic = selectedResumeDetail.isPublic;
+
+    if (currentlyPublic) {
+      const result = await confirm({
+        title: '이력서를 비공개하시겠어요?',
+        description: '비공개로 전환하면 공유된 URL로\n이력서를 볼 수 없게 돼요.',
+        confirmText: '비공개하기',
+        cancelText: '돌아가기',
+      });
+      if (!result) return;
+    }
+
+    const success = await togglePublic(selectedResumeDetail.id, !currentlyPublic);
+    if (success) {
+      showNotification(
+        currentlyPublic ? '이력서가 비공개로 전환되었습니다.' : '이력서가 공개로 전환되었습니다.',
+        'success'
+      );
+    }
+  };
+
+  // URL 복사 실행
+  const executeCopyURL = async (urlTemplate?: UITemplate | null) => {
+    if (!selectedResumeDetail?.publicId) return;
+    const urlPath = (urlTemplate ?? defaultUrlTemplate)?.urlPath ?? undefined;
+    const publicResumeUrl = buildPublicResumeUrl(selectedResumeDetail.publicId, urlPath);
+
+    try {
+      await navigator.clipboard.writeText(publicResumeUrl);
+      showNotification('공개 이력서 URL이 복사되었습니다.', 'success');
+    } catch {
+      showNotification('URL 복사에 실패했습니다.', 'error');
     }
   };
 
@@ -154,19 +242,52 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
       setShowLoginModal(true);
       return;
     }
+
+    // isPublic이 false인 경우 공개 전환 확인
+    if (!selectedResumeDetail.isPublic && togglePublic) {
+      const result = await confirm({
+        title: '이력서를 공개하시겠어요?',
+        description: 'URL을 공유하려면 이력서를 공개 상태로\n전환해야 해요.',
+        confirmText: '공개하기',
+        cancelText: '돌아가기',
+      });
+      if (!result) return;
+
+      const success = await togglePublic(selectedResumeDetail.id, true);
+      if (!success) return;
+    }
+
     const hasTemplates = await checkActiveTemplates('URL');
     if (!hasTemplates) {
       setShowNoTemplateModal(true);
       return;
     }
-    const urlPath = defaultUrlTemplate?.urlPath ?? undefined;
-    const publicResumeUrl = buildPublicResumeUrl(selectedResumeDetail.publicId, urlPath);
 
-    try {
-      await navigator.clipboard.writeText(publicResumeUrl);
-      showNotification('공개 이력서 URL이 복사되었습니다.', 'success');
-    } catch {
-      showNotification('URL 복사에 실패했습니다.', 'error');
+    // 기본 URL 템플릿이 없으면 선택 모달
+    if (!defaultUrlTemplate) {
+      setTemplateSelectType('URL');
+      setShowTemplateSelectModal(true);
+      return;
+    }
+
+    await executeCopyURL();
+  };
+
+  // 템플릿 선택 모달에서 선택 시 콜백
+  const handleTemplateSelected = async (wt: WorkerUITemplate) => {
+    setShowTemplateSelectModal(false);
+    const success = await setDefaultTemplate(wt.uiTemplate.id);
+    if (!success) {
+      showNotification('기본 템플릿 설정에 실패했습니다.', 'error');
+      return;
+    }
+
+    if (templateSelectType === 'PDF') {
+      setDefaultPdfTemplate(wt.uiTemplate);
+      await executePdfDownload();
+    } else {
+      setDefaultUrlTemplate(wt.uiTemplate);
+      await executeCopyURL(wt.uiTemplate);
     }
   };
 
@@ -255,6 +376,13 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                             <h2>{selectedResumeDetail?.title}</h2>
                         )
                     }
+                    <span
+                        className={`${styles.publicStatusBadge} ${selectedResumeDetail?.isPublic ? styles.public : styles.private}`}
+                        onClick={handleTogglePublic}
+                        title={selectedResumeDetail?.isPublic ? '클릭하여 비공개로 전환' : '클릭하여 공개로 전환'}
+                    >
+                        {selectedResumeDetail?.isPublic ? '공개' : '비공개'}
+                    </span>
                 </div>
                 {selectedResumeDetail?.updatedAt && (
                   <p>
@@ -273,6 +401,20 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                 {/* 기본 정보 섹션 */}
                 <div id="basic-info" className="cont-box resume-intro">
                     <div>
+                        {selectedResumeDetail?.profileImageUrl && (
+                            <div style={{ marginBottom: '16px' }}>
+                                <img
+                                    src={selectedResumeDetail.profileImageUrl}
+                                    alt="인물 사진"
+                                    style={{
+                                        width: '100px',
+                                        height: '130px',
+                                        objectFit: 'cover',
+                                        borderRadius: '4px',
+                                    }}
+                                />
+                            </div>
+                        )}
                         <div>
                             {
                             selectedResumeDetail?.name && (
@@ -283,7 +425,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                             selectedResumeDetail?.position && (
                                 <p>{selectedResumeDetail?.position}</p>
                             )
-                            }    
+                            }
                         </div>
                         <ul>
                             {
@@ -362,7 +504,7 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
                         className: 'line gray',
                     },
                     {
-                        label: 'PDF 내보내기',
+                        label: isPdfGenerating ? 'PDF 생성 중...' : 'PDF 내보내기',
                         onClick: handleExportPDF,
                         className: 'dark-gray',
                     },
@@ -407,6 +549,14 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
             </div>
           </div>
         )}
+
+        {/* 템플릿 선택 모달 (기본 템플릿 미설정 시) */}
+        <TemplateSelectModal
+          isOpen={showTemplateSelectModal}
+          type={templateSelectType}
+          onSelect={handleTemplateSelected}
+          onClose={() => setShowTemplateSelectModal(false)}
+        />
     </div>
   );
 };

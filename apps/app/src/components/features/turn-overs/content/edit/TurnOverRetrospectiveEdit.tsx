@@ -32,7 +32,9 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
   
   // 초기값을 turnOverRequest에서 바로 계산하여 깜빡임 방지
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const initialEndedAt = useMemo(() => turnOverRequest?.endedAt || undefined, [turnOverRequest?.id]);
+  const initialStartedAt = useMemo(() => turnOverRequest?.startedAt || undefined, [turnOverRequest?.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialEndedAt = useMemo(() => turnOverRequest?.turnOverRetrospective?.endedAt || undefined, [turnOverRequest?.id]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialCompanyName = useMemo(() => turnOverRequest?.turnOverRetrospective?.name || '', [turnOverRequest?.id]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,6 +64,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialAttachments = useMemo(() => turnOverRequest?.turnOverRetrospective?.attachments || [], [turnOverRequest?.id]);
   
+  const [startedAt, setStartedAt] = useState<number | undefined>(initialStartedAt);
   const [endedAt, setEndedAt] = useState<number | undefined>(initialEndedAt);
   const [companyName, setCompanyName] = useState(initialCompanyName);
   const [position, setPosition] = useState(initialPosition);
@@ -188,8 +191,9 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     if (turnOverRequest?.id !== turnOverRequestIdRef.current) {
       turnOverRequestIdRef.current = turnOverRequest?.id;
       if (turnOverRequest) {
-        setEndedAt(turnOverRequest.endedAt || undefined);
+        setStartedAt(turnOverRequest.startedAt || undefined);
         if (turnOverRequest.turnOverRetrospective) {
+          setEndedAt(turnOverRequest.turnOverRetrospective.endedAt || undefined);
           setCompanyName(turnOverRequest.turnOverRetrospective.name || '');
           setPosition(turnOverRequest.turnOverRetrospective.position || '');
           setReason(turnOverRequest.turnOverRetrospective.reason || '');
@@ -217,7 +221,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
     if (onSave && turnOverRequest) {
       onSave({
         ...turnOverRequest,
-        endedAt: endedAt,
+        startedAt: startedAt,
         turnOverRetrospective: {
           id: turnOverRequest?.turnOverRetrospective?.id || undefined,
           name: companyName,
@@ -225,6 +229,7 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
           reason: reason,
           salary: salary,
           joinedAt: joinDate,
+          endedAt: endedAt,
           employmentType: employmentType,
           department: department,
           jobTitle: jobTitle,
@@ -258,8 +263,8 @@ const TurnOverRetrospectiveEdit = forwardRef<TurnOverEditRef, TurnOverRetrospect
                 <li>
                     <p>이직 시작일</p>
                     <DatePicker
-                      value={DateUtil.formatTimestamp(endedAt || 0)}
-                      onChange={(date) => setEndedAt(DateTime.fromISO(date).toMillis())}
+                      value={DateUtil.formatTimestamp(startedAt || 0)}
+                      onChange={(date) => setStartedAt(DateTime.fromISO(date).toMillis())}
                       required={false}
                       readOnly
                     />

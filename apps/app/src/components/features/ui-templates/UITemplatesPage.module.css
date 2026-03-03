@@ -31,11 +31,12 @@
     overflow-y: visible;
 }
 
-/* 광고 배너: 좌측 하단 고정 */
+/* 광고 배너: 좌측 고정 (수직 중앙) */
 .adWrapper {
     position: fixed;
-    bottom: 60px;
+    top: 50%;
     left: 16px;
+    transform: translateY(-50%);
     z-index: 10;
 }
 

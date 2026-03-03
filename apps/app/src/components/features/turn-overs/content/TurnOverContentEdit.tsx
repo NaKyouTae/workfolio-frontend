@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import { TurnOverDetail, TurnOverRetrospective_EmploymentType } from '@workfolio/shared/generated/common';
+import { TurnOverDetail, TurnOverRetrospective_EmploymentType, Attachment_AttachmentCategory, JobApplication_JobApplicationStatus, ApplicationStage_ApplicationStageStatus } from '@workfolio/shared/generated/common';
 import { TurnOverUpsertRequest, TurnOverUpsertRequest_TurnOverChallengeRequest, TurnOverUpsertRequest_TurnOverGoalRequest, TurnOverUpsertRequest_TurnOverRetrospectiveRequest } from '@workfolio/shared/generated/turn_over';
 import TurnOverContentForm from './TurnOverContentForm';
 
@@ -24,17 +24,46 @@ const createTurnOverRequestFromDetail = (selectedTurnOver: TurnOverDetail | null
       id: selectedTurnOver.turnOverGoal?.id || undefined,
       reason: selectedTurnOver.turnOverGoal?.reason || '',
       goal: selectedTurnOver.turnOverGoal?.goal || '',
-      selfIntroductions: selectedTurnOver.turnOverGoal?.selfIntroductions || [],
-      interviewQuestions: selectedTurnOver.turnOverGoal?.interviewQuestions || [],
-      checkList: selectedTurnOver.turnOverGoal?.checkList || [],
-      memos: selectedTurnOver.turnOverGoal?.memos || [],
-      attachments: selectedTurnOver.turnOverGoal?.attachments || [],
+      selfIntroductions: selectedTurnOver.turnOverGoal?.selfIntroductions?.length
+        ? selectedTurnOver.turnOverGoal.selfIntroductions
+        : [{ question: '', content: '', isVisible: true, priority: 0 }],
+      interviewQuestions: selectedTurnOver.turnOverGoal?.interviewQuestions?.length
+        ? selectedTurnOver.turnOverGoal.interviewQuestions
+        : [{ question: '', answer: '', isVisible: true, priority: 0 }],
+      checkList: selectedTurnOver.turnOverGoal?.checkList?.length
+        ? selectedTurnOver.turnOverGoal.checkList
+        : [{ checked: false, content: '', isVisible: true, priority: 0 }],
+      memos: selectedTurnOver.turnOverGoal?.memos?.length
+        ? selectedTurnOver.turnOverGoal.memos
+        : [{ content: '', isVisible: true, priority: 0 }],
+      attachments: selectedTurnOver.turnOverGoal?.attachments?.length
+        ? selectedTurnOver.turnOverGoal.attachments
+        : [{ type: undefined, category: Attachment_AttachmentCategory.FILE, url: '', fileName: '', fileUrl: '', fileData: undefined, isVisible: true, priority: 0 }],
     } as TurnOverUpsertRequest_TurnOverGoalRequest,
     turnOverChallenge: {
       id: selectedTurnOver.turnOverChallenge?.id || undefined,
-      memos: selectedTurnOver.turnOverChallenge?.memos || [],
-      attachments: selectedTurnOver.turnOverChallenge?.attachments || [],
-      jobApplications: selectedTurnOver.turnOverChallenge?.jobApplications || [],
+      memos: selectedTurnOver.turnOverChallenge?.memos?.length
+        ? selectedTurnOver.turnOverChallenge.memos
+        : [{ content: '', isVisible: true, priority: 0 }],
+      attachments: selectedTurnOver.turnOverChallenge?.attachments?.length
+        ? selectedTurnOver.turnOverChallenge.attachments
+        : [{ type: undefined, category: Attachment_AttachmentCategory.FILE, url: '', fileName: '', fileUrl: '', fileData: undefined, isVisible: true, priority: 0 }],
+      jobApplications: selectedTurnOver.turnOverChallenge?.jobApplications?.length
+        ? selectedTurnOver.turnOverChallenge.jobApplications.map(app => ({
+          ...app,
+          applicationStages: (app.applicationStages && app.applicationStages.length > 0)
+            ? app.applicationStages
+            : [{ name: '', status: ApplicationStage_ApplicationStageStatus.PENDING, date: undefined, memo: '', isVisible: true, priority: 0 }],
+        }))
+        : [{
+          name: '', position: '', jobPostingTitle: '', jobPostingUrl: '',
+          startedAt: undefined, endedAt: undefined, applicationSource: '', memo: '',
+          status: JobApplication_JobApplicationStatus.PENDING, isVisible: true, priority: 0,
+          applicationStages: [{
+            name: '', status: ApplicationStage_ApplicationStageStatus.PENDING,
+            date: undefined, memo: '', isVisible: true, priority: 0,
+          }],
+        }],
     } as TurnOverUpsertRequest_TurnOverChallengeRequest,
     turnOverRetrospective: {
       id: selectedTurnOver.turnOverRetrospective?.id || undefined,
@@ -46,10 +75,15 @@ const createTurnOverRequestFromDetail = (selectedTurnOver: TurnOverDetail | null
       reason: selectedTurnOver.turnOverRetrospective?.reason || '',
       score: selectedTurnOver.turnOverRetrospective?.score || 0,
       joinedAt: selectedTurnOver.turnOverRetrospective?.joinedAt || 0,
+      endedAt: selectedTurnOver.turnOverRetrospective?.endedAt || undefined,
       reviewSummary: selectedTurnOver.turnOverRetrospective?.reviewSummary || '',
       department: selectedTurnOver.turnOverRetrospective?.department || '',
-      memos: selectedTurnOver.turnOverRetrospective?.memos || [],
-      attachments: selectedTurnOver.turnOverRetrospective?.attachments || [],
+      memos: selectedTurnOver.turnOverRetrospective?.memos?.length
+        ? selectedTurnOver.turnOverRetrospective.memos
+        : [{ content: '', isVisible: true, priority: 0 }],
+      attachments: selectedTurnOver.turnOverRetrospective?.attachments?.length
+        ? selectedTurnOver.turnOverRetrospective.attachments
+        : [{ type: undefined, category: Attachment_AttachmentCategory.FILE, url: '', fileName: '', fileUrl: '', fileData: undefined, isVisible: true, priority: 0 }],
       workType: selectedTurnOver.turnOverRetrospective?.workType || '',
       employmentType: selectedTurnOver.turnOverRetrospective?.employmentType || TurnOverRetrospective_EmploymentType.EMPLOYMENT_TYPE_UNKNOWN,
     } as TurnOverUpsertRequest_TurnOverRetrospectiveRequest,

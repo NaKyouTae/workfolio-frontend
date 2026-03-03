@@ -45,6 +45,24 @@ export default function AdminCareers() {
 
     const columns: TableColumn<Resume>[] = [
         {
+            key: "profileImage",
+            title: "사진",
+            width: "60px",
+            render: (r) => r.profileImageUrl ? (
+                <img
+                    src={r.profileImageUrl}
+                    alt=""
+                    style={{ width: '36px', height: '46px', objectFit: 'cover', borderRadius: '3px' }}
+                />
+            ) : (
+                <div style={{ width: '36px', height: '46px', backgroundColor: '#f3f4f6', borderRadius: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#ccc"/>
+                    </svg>
+                </div>
+            ),
+        },
+        {
             key: "title",
             title: "이력서 제목",
             width: "220px",
@@ -111,9 +129,9 @@ export default function AdminCareers() {
                 )}
             </div>
 
-            <div className="page-cont">
+            <div className="page-cont" style={{ display: "flex", flexDirection: "column", flex: !selectedWorker ? 1 : undefined }}>
                 {!selectedWorker && (
-                    <div className="cont-box" style={{ marginBottom: "16px" }}>
+                    <div style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <AdminUserSearch
                             selectedWorker={selectedWorker}
                             onSelectWorker={selectWorker}
@@ -141,15 +159,6 @@ export default function AdminCareers() {
                                             </option>
                                         ))}
                                     </select>
-                                    <svg
-                                        width="10"
-                                        height="6"
-                                        viewBox="0 0 10 6"
-                                        fill="none"
-                                        className="page-size-select-chevron"
-                                    >
-                                        <path d="M1 1L5 5L9 1" stroke="var(--gray005)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
                                 </div>
                                 <button
                                     onClick={() => selectedWorker && fetchCareers(selectedWorker.id, currentPage, pageSize)}
