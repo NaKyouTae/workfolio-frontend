@@ -8,6 +8,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 // POST /api/staffs/login - 관리자 로그인
 export async function POST(request: NextRequest) {
     try {
+        console.log("[staffs/login] NODE_ENV:", process.env.NODE_ENV);
+        console.log("[staffs/login] API_BASE_URL:", API_BASE_URL);
+
         const body: StaffLoginRequest = await request.json();
 
         const response = await apiFetchHandler<StaffLoginResponse>(
@@ -57,6 +60,7 @@ export async function POST(request: NextRequest) {
             cookieOptions.domain = "localhost";
         }
 
+        console.log("[staffs/login] cookieOptions:", JSON.stringify(cookieOptions));
         res.cookies.set("admin_access_token", data.accessToken, cookieOptions);
 
         // admin refreshToken 쿠키 설정

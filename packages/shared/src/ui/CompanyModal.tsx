@@ -104,7 +104,7 @@ const CompanyModal: React.FC<CompanyModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div
                         className="modal-cont company-modal-cont"
-                        style={{ maxHeight: "calc(85vh - 5.6rem - 7.6rem)", overflowY: "auto" }}
+                        style={{ maxHeight: "calc(85vh - 5.6rem)", overflowY: "auto" }}
                     >
                         {/* 회사소개 */}
                         <div className="company-modal-section">
@@ -170,9 +170,6 @@ const CompanyModal: React.FC<CompanyModalProps> = ({ isOpen, onClose }) => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="modal-btn">
-                        <button onClick={onClose}>닫기</button>
                     </div>
                 </div>
             </div>
