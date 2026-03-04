@@ -11,8 +11,6 @@ interface UITemplateCreateModalProps {
     onSubmit: (request: AdminUITemplateCreateRequest, pendingFiles?: File[]) => Promise<boolean>;
 }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-
 interface PendingImage {
     file: File;
     previewUrl: string;

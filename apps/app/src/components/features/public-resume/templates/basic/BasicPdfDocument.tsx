@@ -454,6 +454,7 @@ const BasicPdfDocument: React.FC<BasicPdfDocumentProps> = ({ resumeDetail }) => 
           {/* Profile section */}
           <View style={s.profileSection}>
             {data.profile.profileImageUrl && (
+              // eslint-disable-next-line jsx-a11y/alt-text
               <Image src={data.profile.profileImageUrl} style={s.profileImage} />
             )}
             {data.profile.name && <Text style={s.profileName}>{data.profile.name}</Text>}

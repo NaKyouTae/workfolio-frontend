@@ -63,6 +63,7 @@ export interface WorkerUITemplate {
     expiredAt: number;
     creditsUsed: number;
     status: string;
+    isActive: boolean;
     isExpired: boolean;
     isValid: boolean;
     isDefault: boolean;

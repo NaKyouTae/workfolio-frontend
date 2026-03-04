@@ -10,7 +10,7 @@ interface CreditBalanceProps {
     compact?: boolean;
 }
 
-const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget, compact = false }) => {
+const CreditBalance: React.FC<CreditBalanceProps> = ({ compact = false }) => {
     const { balance, balanceLoading, fetchBalance } = useCredits();
 
     useEffect(() => {

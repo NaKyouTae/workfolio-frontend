@@ -28,6 +28,7 @@ function normalizeWorkerUITemplate(raw: Record<string, unknown>): WorkerUITempla
         purchasedAt: Number(raw.purchased_at ?? raw.purchasedAt ?? 0),
         expiredAt: Number(raw.expired_at ?? raw.expiredAt ?? 0),
         creditsUsed: Number(raw.credits_used ?? raw.creditsUsed ?? 0),
+        status: String(raw.status ?? 'ACTIVE'),
         isActive: Boolean(raw.is_active ?? raw.isActive ?? true),
         isExpired: Boolean(raw.is_expired ?? raw.isExpired ?? false),
         isValid: Boolean(raw.is_valid ?? raw.isValid ?? false),

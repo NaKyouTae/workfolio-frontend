@@ -19,6 +19,9 @@ const KakaoAdFit: React.FC<KakaoAdFitProps> = ({
     useEffect(() => {
         if (!unit || initialized.current) return;
 
+        const container = containerRef.current;
+        if (!container) return;
+
         const ins = document.createElement("ins");
         ins.className = "kakao_ad_area";
         ins.style.display = "none";
@@ -26,20 +29,18 @@ const KakaoAdFit: React.FC<KakaoAdFitProps> = ({
         ins.setAttribute("data-ad-width", String(width));
         ins.setAttribute("data-ad-height", String(height));
 
-        containerRef.current?.appendChild(ins);
+        container.appendChild(ins);
 
         const script = document.createElement("script");
         script.type = "text/javascript";
         script.src = "//t1.daumcdn.net/kas/static/ba.min.js";
         script.async = true;
 
-        containerRef.current?.appendChild(script);
+        container.appendChild(script);
         initialized.current = true;
 
         return () => {
-            if (containerRef.current) {
-                containerRef.current.innerHTML = "";
-            }
+            container.innerHTML = "";
             initialized.current = false;
         };
     }, [unit, width, height]);

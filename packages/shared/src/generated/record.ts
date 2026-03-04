@@ -294,7 +294,7 @@ export const RecordCreateRequest_Attachment: MessageFns<RecordCreateRequest_Atta
 };
 
 function createBaseRecordUpdateRequest(): RecordUpdateRequest {
-  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], id: "" };
+  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], id: "", recordGroupId: "" };
 }
 
 export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
@@ -402,6 +402,11 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
         ? object.attachments.map((e: any) => RecordUpdateRequest_Attachment.fromJSON(e))
         : [],
       id: isSet(object.id) ? globalThis.String(object.id) : "",
+      recordGroupId: isSet(object.recordGroupId)
+        ? globalThis.String(object.recordGroupId)
+        : isSet(object.record_group_id)
+        ? globalThis.String(object.record_group_id)
+        : "",
     };
   },
 
@@ -439,6 +444,7 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     message.endedAt = object.endedAt ?? 0;
     message.attachments = object.attachments?.map((e) => RecordUpdateRequest_Attachment.fromPartial(e)) || [];
     message.id = object.id ?? "";
+    message.recordGroupId = object.recordGroupId ?? "";
     return message;
   },
 };

@@ -18,7 +18,7 @@ interface MyUITemplatesProps {
     onOpenUITemplateStore?: () => void;
 }
 
-const MyUITemplates: React.FC<MyUITemplatesProps> = ({ onOpenUITemplateStore }) => {
+const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
     const { myUITemplates, fetchMyUITemplates, deleteMyUITemplate, totalPages, currentPage, loading, error } = useUITemplates();
     const { showNotification } = useNotification();
     const { confirm } = useConfirm();

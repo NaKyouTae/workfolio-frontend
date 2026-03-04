@@ -41,6 +41,7 @@ const TemplatePurchaseModal: React.FC<TemplatePurchaseModalProps> = ({
         } else if (isOpen && plans.length === 0) {
             setSelectedPlanId(null);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, template?.id, plans.length]);
 
     useEffect(() => {

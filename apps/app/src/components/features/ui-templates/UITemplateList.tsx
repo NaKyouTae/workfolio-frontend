@@ -41,6 +41,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             fetchBalance();
             checkOwnedUITemplates();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [uiTemplates]);
 
     // 스크롤 위치에 따라 activeSection 갱신
