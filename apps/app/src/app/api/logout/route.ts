@@ -19,6 +19,7 @@ export async function GET() {
         const res = NextResponse.json({ success: true });
         res.cookies.delete('accessToken');
         res.cookies.delete('refreshToken');
+        res.cookies.delete('logged_in');
         res.cookies.delete('admin_access_token');
         res.cookies.delete('admin_refresh_token');
 
@@ -29,6 +30,7 @@ export async function GET() {
         const res = NextResponse.json({ success: true });
         res.cookies.delete('accessToken');
         res.cookies.delete('refreshToken');
+        res.cookies.delete('logged_in');
         res.cookies.delete('admin_access_token');
         res.cookies.delete('admin_refresh_token');
         return res;

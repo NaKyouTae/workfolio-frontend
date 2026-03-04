@@ -31,6 +31,15 @@ export function middleware(request: NextRequest) {
             maxAge: 60 * 60 * 24 * 7, // 7일
         });
 
+        // 클라이언트에서 로그인 상태를 확인할 수 있는 non-httpOnly 쿠키
+        response.cookies.set("logged_in", "true", {
+            httpOnly: false,
+            secure: isProduction,
+            sameSite: "lax",
+            path: "/",
+            maxAge: 60 * 60 * 24 * 7, // 7일
+        });
+
         return response;
     }
 

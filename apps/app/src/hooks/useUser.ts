@@ -76,7 +76,8 @@ export const useUser = () => {
             clearUser();
             document.cookie = 'accessToken=; max-age=0; path=/';
             document.cookie = 'refreshToken=; max-age=0; path=/';
-            
+            document.cookie = 'logged_in=; max-age=0; path=/';
+
             // 로그인 페이지로 리다이렉트
             window.location.href = '/login';
             
@@ -96,6 +97,7 @@ export const useUser = () => {
         // 쿠키에서 토큰 제거
         document.cookie = 'accessToken=; max-age=0; path=/';
         document.cookie = 'refreshToken=; max-age=0; path=/';
+        document.cookie = 'logged_in=; max-age=0; path=/';
     }, [clearUser]);
     
     // 유저 정보 새로고침

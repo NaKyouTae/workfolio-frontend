@@ -6,11 +6,11 @@
  */
 export function isLoggedIn(): boolean {
     if (typeof window === 'undefined') return false;
-    
+
     const cookies = document.cookie.split('; ');
-    const accessToken = cookies.find(row => row.startsWith('accessToken='))?.split('=')[1];
-    const refreshToken = cookies.find(row => row.startsWith('refreshToken='))?.split('=')[1];
-    
-    return !!(accessToken || refreshToken);
+    // httpOnly 토큰은 JS에서 읽을 수 없으므로 logged_in 쿠키로 확인
+    const loggedIn = cookies.find(row => row.startsWith('logged_in='))?.split('=')[1];
+
+    return loggedIn === 'true';
 }
 
