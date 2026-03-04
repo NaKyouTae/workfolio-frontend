@@ -66,7 +66,7 @@ export default function MypageLayout({ children }: { children: React.ReactNode }
                             unit={NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY || ""}
                             width={160}
                             height={600}
-                            disabled={!NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY}
+                            disabled={true}
                         />
                     </div>
                 </aside>

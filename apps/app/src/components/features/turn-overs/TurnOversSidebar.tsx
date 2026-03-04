@@ -82,7 +82,7 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
                     unit={NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY || ""}
                     width={250}
                     height={250}
-                    disabled={false}
+                    disabled={true}
                 />
             </div>
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />

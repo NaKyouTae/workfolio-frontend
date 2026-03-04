@@ -22,7 +22,7 @@ const UITemplatesPage: React.FC = () => {
                     unit={NEXT_PUBLIC_KAKAO_ADFIT_STORE_LEFT_KEY || ""}
                     width={160}
                     height={600}
-                    disabled={!NEXT_PUBLIC_KAKAO_ADFIT_STORE_LEFT_KEY}
+                    disabled={true}
                 />
             </div>
             <div className={styles.adSideWrapper}>
@@ -30,7 +30,7 @@ const UITemplatesPage: React.FC = () => {
                     unit={NEXT_PUBLIC_KAKAO_ADFIT_STORE_RIGHT_KEY || ""}
                     width={160}
                     height={600}
-                    disabled={!NEXT_PUBLIC_KAKAO_ADFIT_STORE_RIGHT_KEY}
+                    disabled={true}
                 />
             </div>
             <div className={styles.footerWrapper}>

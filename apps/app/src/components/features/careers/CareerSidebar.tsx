@@ -85,7 +85,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({
                     unit={NEXT_PUBLIC_KAKAO_ADFIT_CAREERS_KEY || ""}
                     width={250}
                     height={250}
-                    disabled={false}
+                    disabled={true}
                 />
             </div>
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
