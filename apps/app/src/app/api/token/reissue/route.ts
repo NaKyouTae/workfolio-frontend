@@ -37,24 +37,30 @@ export async function GET() {
             // 재발급 성공 시 쿠키에 저장
             const res = NextResponse.json(data);
 
-            res.cookies.set('accessToken', data.accessToken, {
+            const accessCookieOptions: Record<string, unknown> = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 path: '/',
-                domain: 'localhost',
                 maxAge: 60 * 60 * 24 * 7, // 1시간
-            });
+            };
+            if (process.env.NODE_ENV === 'development') {
+                accessCookieOptions.domain = 'localhost';
+            }
+            res.cookies.set('accessToken', data.accessToken, accessCookieOptions);
 
             if (data.refreshToken) {
-                res.cookies.set('refreshToken', data.refreshToken, {
+                const refreshCookieOptions: Record<string, unknown> = {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'lax',
                     path: '/',
-                    domain: 'localhost',
                     maxAge: 60 * 60 * 24 * 7, // 7일
-                });
+                };
+                if (process.env.NODE_ENV === 'development') {
+                    refreshCookieOptions.domain = 'localhost';
+                }
+                res.cookies.set('refreshToken', data.refreshToken, refreshCookieOptions);
             }
 
             return res;

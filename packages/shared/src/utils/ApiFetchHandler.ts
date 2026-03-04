@@ -35,25 +35,31 @@ async function refreshTokenSafely(accessToken: string | undefined, refreshToken:
                 // 쿠키에 저장
                 const cookieStore = await cookies();
                 if (reissueData.accessToken) {
-                    cookieStore.set('accessToken', reissueData.accessToken, {
+                    const accessCookieOptions: Record<string, unknown> = {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === 'production',
                         sameSite: 'lax',
                         path: '/',
-                        domain: 'localhost',
                         maxAge: 60 * 60 * 3, // 3시간
-                    });
+                    };
+                    if (process.env.NODE_ENV === 'development') {
+                        accessCookieOptions.domain = 'localhost';
+                    }
+                    cookieStore.set('accessToken', reissueData.accessToken, accessCookieOptions);
                 }
-                
+
                 if (reissueData.refreshToken) {
-                    cookieStore.set('refreshToken', reissueData.refreshToken, {
+                    const refreshCookieOptions: Record<string, unknown> = {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === 'production',
                         sameSite: 'lax',
                         path: '/',
-                        domain: 'localhost',
                         maxAge: 60 * 60 * 24 * 7, // 7일
-                    });
+                    };
+                    if (process.env.NODE_ENV === 'development') {
+                        refreshCookieOptions.domain = 'localhost';
+                    }
+                    cookieStore.set('refreshToken', reissueData.refreshToken, refreshCookieOptions);
                 }
 
                 return {
