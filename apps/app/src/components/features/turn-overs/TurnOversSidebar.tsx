@@ -3,9 +3,9 @@ import { TurnOver, TurnOverDetail } from "@workfolio/shared/generated/common";
 import { isLoggedIn } from "@workfolio/shared/utils/authUtils";
 import LoginModal from "@workfolio/shared/ui/LoginModal";
 import SidebarListSkeleton from "@workfolio/shared/ui/skeleton/SidebarListSkeleton";
-import { KakaoAdfitBanner } from "@workfolio/shared/ui/KakaoAdfitBanner";
+import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
 
-const NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY;
+const NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT = process.env.NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT;
 
 interface TurnOversSidebarProps {
     turnOvers: TurnOver[];
@@ -78,11 +78,10 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
                 </div>
             </div>
             <div>
-                <KakaoAdfitBanner
-                    unit={NEXT_PUBLIC_KAKAO_ADFIT_TURNOVERS_KEY || ""}
+                <GoogleAdBanner
+                    slot={NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT || ""}
                     width={250}
                     height={250}
-                    disabled={true}
                 />
             </div>
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />

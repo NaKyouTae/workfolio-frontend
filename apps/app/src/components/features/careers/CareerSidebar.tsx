@@ -3,9 +3,9 @@ import { ResumeDetail } from "@workfolio/shared/generated/common";
 import { isLoggedIn } from "@workfolio/shared/utils/authUtils";
 import LoginModal from "@workfolio/shared/ui/LoginModal";
 import SidebarListSkeleton from "@workfolio/shared/ui/skeleton/SidebarListSkeleton";
-import { KakaoAdfitBanner } from "@workfolio/shared/ui/KakaoAdfitBanner";
+import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
 
-const NEXT_PUBLIC_KAKAO_ADFIT_CAREERS_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_CAREERS_KEY;
+const NEXT_PUBLIC_ADSENSE_CAREERS_SLOT = process.env.NEXT_PUBLIC_ADSENSE_CAREERS_SLOT;
 
 interface CareerSidebarProps {
     resumeDetails: ResumeDetail[];
@@ -81,11 +81,10 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({
                 </div>
             </div>
             <div>
-                <KakaoAdfitBanner
-                    unit={NEXT_PUBLIC_KAKAO_ADFIT_CAREERS_KEY || ""}
+                <GoogleAdBanner
+                    slot={NEXT_PUBLIC_ADSENSE_CAREERS_SLOT || ""}
                     width={250}
                     height={250}
-                    disabled={true}
                 />
             </div>
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />

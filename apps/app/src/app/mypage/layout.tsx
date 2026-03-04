@@ -6,9 +6,9 @@ import Footer from "@/components/layouts/Footer";
 import PaymentWidget from '@/components/features/payments/PaymentWidget';
 import { useRouter, usePathname } from 'next/navigation';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
-import { KakaoAdfitBanner } from '@workfolio/shared/ui/KakaoAdfitBanner';
+import GoogleAdBanner from '@/components/ads/GoogleAdBanner';
 
-const NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY;
+const NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT = process.env.NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT;
 
 const MENUS = [
     { key: 'profile', label: '프로필 관리' },
@@ -62,11 +62,10 @@ export default function MypageLayout({ children }: { children: React.ReactNode }
                         </ul>
                     </div>
                     <div>
-                        <KakaoAdfitBanner
-                            unit={NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY || ""}
+                        <GoogleAdBanner
+                            slot={NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT || ""}
                             width={160}
                             height={600}
-                            disabled={true}
                         />
                     </div>
                 </aside>

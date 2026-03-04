@@ -2,9 +2,9 @@
 
 import React from "react";
 import { MenuType } from "@workfolio/shared/models/MenuType";
-import { KakaoAdfitBanner } from "@workfolio/shared/ui/KakaoAdfitBanner";
+import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
 
-const NEXT_PUBLIC_KAKAO_ADFIT_SERVICE_GUIDES_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_SERVICE_GUIDES_KEY;
+const NEXT_PUBLIC_ADSENSE_SERVICE_GUIDES_SLOT = process.env.NEXT_PUBLIC_ADSENSE_SERVICE_GUIDES_SLOT;
 
 interface ServiceGuidesSidebarProps {
     selectedMenu: MenuType;
@@ -46,11 +46,10 @@ const ServiceGuidesSidebar: React.FC<ServiceGuidesSidebarProps> = ({
                 </ul>
             </div>
             <div>
-                <KakaoAdfitBanner
-                    unit={NEXT_PUBLIC_KAKAO_ADFIT_SERVICE_GUIDES_KEY || ""}
+                <GoogleAdBanner
+                    slot={NEXT_PUBLIC_ADSENSE_SERVICE_GUIDES_SLOT || ""}
                     width={250}
                     height={250}
-                    disabled={true}
                 />
             </div>
         </aside>

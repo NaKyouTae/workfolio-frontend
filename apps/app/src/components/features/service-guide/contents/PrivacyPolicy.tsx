@@ -127,7 +127,11 @@ const PrivacyPolicy: React.FC = () => {
                         - 크롬(Chrome) : 모바일 브라우저 설정 &gt; 개인정보 보호 및 보안 &gt; 인터넷 사용기록 삭제<br/>
                         - 사파리(Safari) : 모바일 기기 설정 &gt; 사파리(Safari) &gt; 고급 &gt; 모든 쿠키 차단<br/>
                         - 삼성 인터넷 : 모바일 브라우저 설정 &gt; 인터넷 사용 기록 &gt; 인터넷 사용 기록 삭제<br/><br/>
-                        ④ 회사는 서비스 이용과정에서 사용자가 방문한 각 서비스와 웹 사이트들에 대한 방문 및 이용형태, 인기 검색어, 보안접속 여부 등을 파악하여 이용자에게 최적화된 정보 제공을 위해 수집・이용하고 있습니다.</p>
+                        ④ 회사는 서비스 이용과정에서 사용자가 방문한 각 서비스와 웹 사이트들에 대한 방문 및 이용형태, 인기 검색어, 보안접속 여부 등을 파악하여 이용자에게 최적화된 정보 제공을 위해 수집・이용하고 있습니다.<br/><br/>
+                        ⑤ 회사는 Google AdSense를 통해 광고를 게재하고 있으며, 이 과정에서 Google 및 제3자 광고 네트워크가 쿠키(DoubleClick 쿠키 포함)를 사용하여 이용자의 이전 방문 기록을 기반으로 맞춤 광고를 제공할 수 있습니다.<br/>
+                        - Google의 광고 쿠키 사용에 대한 자세한 내용은 Google 광고 개인정보 보호 FAQ(https://policies.google.com/technologies/ads)에서 확인하실 수 있습니다.<br/>
+                        - 이용자는 Google 광고 설정(https://adssettings.google.com)에서 맞춤 광고를 비활성화할 수 있습니다.<br/>
+                        - 또한 www.aboutads.info에서 제3자 광고 네트워크의 쿠키 사용을 거부할 수 있습니다.</p>
                     </div>
                 </div>
                 <div className="cont-box" id="privacy-8">

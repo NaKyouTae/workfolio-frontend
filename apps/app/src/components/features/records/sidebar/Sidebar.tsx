@@ -7,9 +7,9 @@ import SidebarButton from "./SidebarButton";
 import SidebarConfig from "./SidebarConfig";
 import { useRecordGroupStore } from "@workfolio/shared/store/recordGroupStore";
 import { useShallow } from "zustand/react/shallow";
-import { KakaoAdfitBanner } from "@workfolio/shared/ui/KakaoAdfitBanner";
+import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
 
-const NEXT_PUBLIC_KAKAO_ADFIT_RECORDS_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_RECORDS_KEY;
+const NEXT_PUBLIC_ADSENSE_RECORDS_SLOT = process.env.NEXT_PUBLIC_ADSENSE_RECORDS_SLOT;
 
 interface SidebarProps {
     onConfigToggle: () => void;
@@ -56,11 +56,10 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
                 />
             </div>
             <div>
-                <KakaoAdfitBanner
-                    unit={NEXT_PUBLIC_KAKAO_ADFIT_RECORDS_KEY || ""}
+                <GoogleAdBanner
+                    slot={NEXT_PUBLIC_ADSENSE_RECORDS_SLOT || ""}
                     width={250}
                     height={250}
-                    disabled={true}
                 />
             </div>
         </aside>
