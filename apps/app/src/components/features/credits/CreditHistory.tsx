@@ -5,6 +5,7 @@ import { useCredits } from '@/hooks/useCredits';
 import { CreditTxType, getTxTypeLabel, isCreditAddition } from '@workfolio/shared/types/credit';
 import Pagination from '@workfolio/shared/ui/Pagination';
 import CreditBalance from './CreditBalance';
+import EmptyState from '@workfolio/shared/ui/EmptyState';
 import styles from './CreditHistory.module.css';
 
 interface CreditHistoryProps {
@@ -113,10 +114,7 @@ const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) =>
                         <span>내역을 불러오는 중...</span>
                     </div>
                 ) : history.length === 0 ? (
-                    <div className={styles.emptyMessage}>
-                        <div className={styles.emptyIcon}>📋</div>
-                        크레딧 내역이 없습니다.
-                    </div>
+                    <EmptyState text="크레딧 내역이 없습니다." noBorder centerVertically />
                 ) : (
                     <>
                         <div className={styles.historyScrollArea}>

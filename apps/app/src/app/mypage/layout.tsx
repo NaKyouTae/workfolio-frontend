@@ -12,7 +12,7 @@ const NEXT_PUBLIC_KAKAO_ADFIT_MYPAGE_KEY = process.env.NEXT_PUBLIC_KAKAO_ADFIT_M
 
 const MENUS = [
     { key: 'profile', label: '프로필 관리' },
-    { key: 'payments', label: '결제 내역' },
+    // { key: 'payments', label: '결제 내역' }, // TODO: 사용자 수 늘어나면 추가
     { key: 'credits', label: '크레딧 내역' },
     { key: 'templates', label: '보유 템플릿' },
     { key: 'withdraw', label: '회원 탈퇴' },

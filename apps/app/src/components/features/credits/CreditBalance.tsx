@@ -40,6 +40,7 @@ const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget, comp
                     )}
                 </div>
             </div>
+            {/* TODO: 사용자 수 늘어나면 충전하기 버튼 추가
             {onOpenPaymentWidget && (
                 <button
                     className={styles.chargeButton}
@@ -48,6 +49,7 @@ const CreditBalance: React.FC<CreditBalanceProps> = ({ onOpenPaymentWidget, comp
                     충전하기
                 </button>
             )}
+            */}
         </div>
     );
 };

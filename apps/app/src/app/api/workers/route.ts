@@ -34,9 +34,9 @@ export async function GET() {
 // PUT /api/workers - 사용자 수정
 export async function PUT(request: NextRequest) {
     try {
-        const adminAccessToken = await getCookie("admin_access_token");
+        const accessToken = await getCookie("accessToken");
 
-        if (!adminAccessToken) {
+        if (!accessToken) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
             `${API_BASE_URL}/api/workers`,
             HttpMethod.PUT,
             body,
-            adminAccessToken
+            accessToken
         );
 
         const data = await response.json();

@@ -234,12 +234,12 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
 
   // URL 복사 핸들러 (기본 설정된 URL 템플릿의 urlPath로 공개 이력서 URL 생성)
   const handleCopyURL = async () => {
-    if (!selectedResumeDetail?.publicId) {
-      showNotification('공개 이력서 URL을 생성할 수 없습니다.', 'error');
-      return;
-    }
     if (!isLoggedIn()) {
       setShowLoginModal(true);
+      return;
+    }
+    if (!selectedResumeDetail?.publicId) {
+      showNotification('공개 이력서 URL을 생성할 수 없습니다.', 'error');
       return;
     }
 

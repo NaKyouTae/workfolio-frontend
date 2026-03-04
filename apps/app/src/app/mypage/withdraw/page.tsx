@@ -3,15 +3,25 @@
 import React, { useState } from 'react';
 import { useUser } from '@/hooks/useUser';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
+import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 
 export default function WithdrawPage() {
     const { deleteAccount, isLoading } = useUser();
     const { showNotification } = useNotification();
+    const { confirm } = useConfirm();
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleWithdraw = async () => {
-        if (!confirm('정말로 회원 탈퇴를 하시겠습니까? 탈퇴 후에는 모든 데이터가 삭제되며 복구할 수 없습니다.')) {
+        const confirmed = await confirm({
+            title: '정말로 회원 탈퇴를 하시겠습니까?',
+            icon: '/assets/img/ico/ic-warning.svg',
+            description: '탈퇴 후에는 모든 데이터가 삭제되며 복구할 수 없습니다.',
+            confirmText: '탈퇴하기',
+            cancelText: '취소',
+        });
+
+        if (!confirmed) {
             return;
         }
 

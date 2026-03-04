@@ -7,7 +7,7 @@ export default function TemplatesPage() {
     const router = useRouter();
 
     return (
-        <div className="page-cont">
+        <div className="page-cont" style={{ display: 'flex', flexDirection: 'column' }}>
             <MyUITemplates onOpenUITemplateStore={() => router.push('/templates')} />
         </div>
     );

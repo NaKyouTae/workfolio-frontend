@@ -5,6 +5,7 @@ import { usePayments, getPaymentStatusLabel, getPaymentMethodLabel } from '@/hoo
 import { Payment_PaymentStatus } from '@workfolio/shared/generated/common';
 import Pagination from '@workfolio/shared/ui/Pagination';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
+import EmptyState from '@workfolio/shared/ui/EmptyState';
 import styles from './PaymentHistory.module.css';
 
 interface PaymentHistoryProps {
@@ -104,9 +105,12 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ onOpenPaymentWidget }) 
         }
     };
 
+    const isEmpty = !loading && payments.length === 0;
+    const flexFill: React.CSSProperties = isEmpty ? { flex: 1, display: 'flex', flexDirection: 'column' } : {};
+
     return (
-        <article>
-            <div className="cont-box">
+        <div style={flexFill}>
+            <div className="cont-box" style={flexFill}>
                 <div className="cont-tit">
                     <div>
                         <h3>결제 내역</h3>
@@ -132,9 +136,7 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ onOpenPaymentWidget }) 
                         <span>로딩 중...</span>
                     </div>
                 ) : payments.length === 0 ? (
-                    <div className={styles.emptyMessage}>
-                        결제 내역이 없습니다.
-                    </div>
+                    <EmptyState text="결제 내역이 없습니다." noBorder centerVertically />
                 ) : (
                     <>
                         <div className={styles.paymentList}>
@@ -242,7 +244,7 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ onOpenPaymentWidget }) 
                     </div>
                 </div>
             )}
-        </article>
+        </div>
     );
 };
 
