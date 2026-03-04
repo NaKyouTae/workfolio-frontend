@@ -9,6 +9,31 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(httpsUrl, 301);
     }
 
+    // OAuth 콜백: 백엔드에서 리다이렉트된 토큰 쿼리 파라미터를 쿠키로 저장
+    const accessToken = request.nextUrl.searchParams.get("access_token");
+    const refreshToken = request.nextUrl.searchParams.get("refresh_token");
+    if (accessToken && refreshToken) {
+        const response = NextResponse.redirect(new URL("/records", request.url));
+        const isProduction = process.env.NODE_ENV === "production";
+
+        response.cookies.set("accessToken", accessToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: "lax",
+            path: "/",
+            maxAge: 60 * 60 * 2, // 2시간
+        });
+        response.cookies.set("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: "lax",
+            path: "/",
+            maxAge: 60 * 60 * 24 * 7, // 7일
+        });
+
+        return response;
+    }
+
     if (request.nextUrl.pathname === "/") {
         return NextResponse.redirect(new URL("/records", request.url));
     }
@@ -18,9 +43,9 @@ export function middleware(request: NextRequest) {
     }
 
     if (request.nextUrl.pathname.startsWith("/mypage")) {
-        const accessToken = request.cookies.get("accessToken");
-        const refreshToken = request.cookies.get("refreshToken");
-        if (!accessToken && !refreshToken) {
+        const existingAccessToken = request.cookies.get("accessToken");
+        const existingRefreshToken = request.cookies.get("refreshToken");
+        if (!existingAccessToken && !existingRefreshToken) {
             return NextResponse.redirect(new URL("/records", request.url));
         }
     }

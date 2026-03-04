@@ -69,7 +69,7 @@ const RecordsPage = React.memo(() => {
                 {isConfigMode ? (
                     <RecordConfig onClose={handleConfigClose} recordGroupsData={recordGroupsData} />
                 ) : (
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<></>}>
                         <RecordContents
                             ref={recordContentsRef}
                             recordGroupsData={recordGroupsData}
