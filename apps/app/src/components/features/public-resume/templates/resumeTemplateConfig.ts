@@ -124,7 +124,7 @@ export function getPreviewPathFromUITemplate(
   }
   if (uiTemplate.type === 'PDF' || uiTemplate.type === 2) {
     const path = uiTemplate.urlPath?.trim();
-    return path && path in PDF_URL_PATH_TO_SLUG ? path : null;
+    return path || null;
   }
   return null;
 }

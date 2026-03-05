@@ -27,7 +27,6 @@ const UITemplateDetailModal: React.FC<UITemplateDetailModalProps> = ({
     onClose,
     onSubmit,
     onUploadImages,
-    onDeleteImage,
     onRefresh,
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +42,6 @@ const UITemplateDetailModal: React.FC<UITemplateDetailModalProps> = ({
     const [images, setImages] = useState<UITemplateImage[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [deletingId, setDeletingId] = useState<string | null>(null);
 
     useEffect(() => {
         if (template) {
@@ -125,16 +123,7 @@ const UITemplateDetailModal: React.FC<UITemplateDetailModalProps> = ({
 
     const handleDeleteImage = async (imageId: string) => {
         if (!template) return;
-        if (!confirm("이미지를 삭제하시겠습니까?")) return;
-        setDeletingId(imageId);
-        try {
-            const success = await onDeleteImage(imageId);
-            if (success) {
-                setImages((prev) => prev.filter((img) => img.id !== imageId));
-            }
-        } finally {
-            setDeletingId(null);
-        }
+        setImages((prev) => prev.filter((img) => img.id !== imageId));
     };
 
     if (!template) return null;
@@ -263,26 +252,29 @@ const UITemplateDetailModal: React.FC<UITemplateDetailModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={() => handleDeleteImage(img.id)}
-                                    disabled={deletingId === img.id}
                                     style={{
                                         position: "absolute",
                                         top: "4px",
                                         right: "4px",
                                         width: "20px",
                                         height: "20px",
+                                        minWidth: "20px",
+                                        minHeight: "20px",
+                                        maxWidth: "20px",
+                                        maxHeight: "20px",
+                                        boxSizing: "border-box",
                                         borderRadius: "50%",
                                         background: "rgba(0, 0, 0, 0.6)",
                                         border: "none",
                                         color: "#fff",
                                         fontSize: "12px",
-                                        lineHeight: "20px",
+                                        lineHeight: 1,
                                         textAlign: "center",
-                                        cursor: deletingId === img.id ? "not-allowed" : "pointer",
+                                        cursor: "pointer",
                                         padding: 0,
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "center",
-                                        opacity: deletingId === img.id ? 0.5 : 1,
                                     }}
                                 >
                                     ✕
