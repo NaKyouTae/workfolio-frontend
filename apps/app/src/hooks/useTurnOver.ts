@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react'
 import { TurnOverDetail } from '@workfolio/shared/generated/common'
 import { TurnOverDetailResponse, TurnOverDetailListResponse, TurnOverUpsertRequest } from '@workfolio/shared/generated/turn_over'
 import { createAllSampleTurnOvers } from '@/utils/sampleTurnOverData'
+import { isLoggedIn } from '@workfolio/shared/utils/authUtils'
 
 // 모듈 레벨 캐시: 페이지 리마운트 시에도 데이터 유지
 let cachedTurnOvers: TurnOverDetail[] = [];
@@ -69,13 +70,7 @@ export function useTurnOver() {
     const fetchTurnOvers = useCallback(async (): Promise<TurnOverDetail[]> => {
         notifyLoadingChange(true)
         try {
-            // 토큰 확인 (useUser 대신 직접 확인하여 불필요한 의존성 제거)
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
+            if (!isLoggedIn()) {
                 // 로그인하지 않은 경우 샘플 데이터 사용
                 const sampleTurnOvers = createAllSampleTurnOvers()
                 const dataToUse = cachedTurnOvers.length > 0 ? cachedTurnOvers : sampleTurnOvers
@@ -126,12 +121,7 @@ export function useTurnOver() {
 
     const getTurnOverDetail = useCallback(async (id: string): Promise<TurnOverDetail | null> => {
         try {
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
+            if (!isLoggedIn()) {
                 // 로그인하지 않은 경우 샘플 데이터에서 찾기
                 const sampleTurnOvers = createAllSampleTurnOvers()
                 return sampleTurnOvers.find(to => to.id === id) || null
@@ -163,12 +153,7 @@ export function useTurnOver() {
     // 이직 활동 생성/수정
     const upsertTurnOver = useCallback(async (request: TurnOverUpsertRequest): Promise<string | null> => {
         try {
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
+            if (!isLoggedIn()) {
                 return null
             }
 
@@ -360,12 +345,7 @@ export function useTurnOver() {
     // 이직 활동 복제
     const duplicateTurnOver = useCallback(async (id: string): Promise<boolean> => {
         try {
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
+            if (!isLoggedIn()) {
                 return false
             }
 
@@ -393,12 +373,7 @@ export function useTurnOver() {
     // 이직 활동 삭제
     const deleteTurnOver = useCallback(async (id: string): Promise<boolean> => {
         try {
-            const accessToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('accessToken='))
-                ?.split('=')[1];
-            
-            if (!accessToken) {
+            if (!isLoggedIn()) {
                 return false
             }
 

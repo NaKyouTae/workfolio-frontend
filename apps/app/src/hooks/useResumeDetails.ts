@@ -5,18 +5,11 @@ import DateUtil from '@workfolio/shared/utils/DateUtil';
 import dayjs from 'dayjs';
 import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { useNotificationStore } from '@workfolio/shared/hooks/useNotification';
-import { 
+import {
   createAllSampleResumes
 } from '@/utils/sampleCareerData';
 import { ResumeUpdateRequest } from '@workfolio/shared/generated/resume';
-
-/**
- * 로그인 상태 확인 함수
- */
-const checkIsLoggedIn = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  return document.cookie.includes('accessToken=') && document.cookie.includes('refreshToken=');
-};
+import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 
 /**
  * 샘플 ResumeDetail 데이터 생성
@@ -59,7 +52,7 @@ export const useResumeDetails = () => {
       setError(null);
       
       // 로그인 상태 확인
-      if (!checkIsLoggedIn()) {
+      if (!isLoggedIn()) {
         const sampleData = createSampleResumeDetails();
         const dataToUse = cachedResumeDetails.length > 0 ? cachedResumeDetails : sampleData;
         setResumeDetails(dataToUse);
