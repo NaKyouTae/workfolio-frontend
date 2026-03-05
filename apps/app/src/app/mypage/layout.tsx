@@ -61,13 +61,15 @@ export default function MypageLayout({ children }: { children: React.ReactNode }
                             ))}
                         </ul>
                     </div>
-                    <div>
-                        <GoogleAdBanner
-                            slot={NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT || ""}
-                            width={160}
-                            height={600}
-                        />
-                    </div>
+                    {isLoggedIn() && (
+                        <div>
+                            <GoogleAdBanner
+                                slot={NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT || ""}
+                                width={160}
+                                height={600}
+                            />
+                        </div>
+                    )}
                 </aside>
                 <section>
                     <div className="contents">

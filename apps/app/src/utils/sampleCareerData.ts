@@ -1942,6 +1942,7 @@ export const createSampleResumeDetailForPreview = (): ResumeDetail => {
         publicId: "preview",
         publicStartDate: now - 365 * 24 * 60 * 60 * 1000,
         publicEndDate: now + 365 * 24 * 60 * 60 * 1000,
+        profileImageUrl: "placeholder",
         worker: resume.worker,
         careers,
         educations,

@@ -8,6 +8,7 @@ import SidebarConfig from "./SidebarConfig";
 import { useRecordGroupStore } from "@workfolio/shared/store/recordGroupStore";
 import { useShallow } from "zustand/react/shallow";
 import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
+import { isLoggedIn } from "@workfolio/shared/utils/authUtils";
 
 const NEXT_PUBLIC_ADSENSE_RECORDS_SLOT = process.env.NEXT_PUBLIC_ADSENSE_RECORDS_SLOT;
 
@@ -55,13 +56,15 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
                     onRefresh={refreshRecordGroups}
                 />
             </div>
-            <div>
-                <GoogleAdBanner
-                    slot={NEXT_PUBLIC_ADSENSE_RECORDS_SLOT || ""}
-                    width={250}
-                    height={250}
-                />
-            </div>
+            {isLoggedIn() && (
+                <div>
+                    <GoogleAdBanner
+                        slot={NEXT_PUBLIC_ADSENSE_RECORDS_SLOT || ""}
+                        width={250}
+                        height={250}
+                    />
+                </div>
+            )}
         </aside>
     );
 });

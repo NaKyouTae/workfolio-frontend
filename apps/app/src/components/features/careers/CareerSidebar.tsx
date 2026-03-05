@@ -80,13 +80,15 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({
                     </ul>
                 </div>
             </div>
-            <div>
-                <GoogleAdBanner
-                    slot={NEXT_PUBLIC_ADSENSE_CAREERS_SLOT || ""}
-                    width={250}
-                    height={250}
-                />
-            </div>
+            {isLoggedIn() && (
+                <div>
+                    <GoogleAdBanner
+                        slot={NEXT_PUBLIC_ADSENSE_CAREERS_SLOT || ""}
+                        width={250}
+                        height={250}
+                    />
+                </div>
+            )}
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </aside>
     );

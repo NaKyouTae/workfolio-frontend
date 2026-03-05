@@ -53,13 +53,6 @@ export default function AdminDashboardLayout({
     checkAdminAuth();
   }, [router]);
 
-  // 인증 확인 중에는 아무것도 렌더링하지 않음
-  if (isChecking) {
-    return (
-      <LoadingScreen minHeight="100vh" />
-    );
-  }
-
   return (
     <SelectedWorkerProvider>
       <div className={styles.container}>
@@ -84,7 +77,7 @@ export default function AdminDashboardLayout({
             <h1>관리자</h1>
           </div>
           <div className={styles.contents}>
-            {children}
+            {isChecking ? <LoadingScreen /> : children}
           </div>
         </section>
       </div>

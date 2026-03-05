@@ -21,6 +21,15 @@ interface UITemplateFormProps {
     hideButtons?: boolean;
 }
 
+const URL_PATH_OPTIONS: Record<string, { value: string; label: string }[]> = {
+    URL: [
+        { value: "basic", label: "basic (기본)" },
+    ],
+    PDF: [
+        { value: "pdf-basic", label: "pdf-basic (기본)" },
+    ],
+};
+
 const labelStyle: React.CSSProperties = {
     display: "block",
     marginBottom: "6px",
@@ -87,12 +96,18 @@ const UITemplateForm: React.FC<UITemplateFormProps> = ({
 
             <div style={fieldStyle}>
                 <label style={labelStyle}>URL 경로</label>
-                <input
-                    type="text"
+                <select
                     value={formData.urlPath}
                     onChange={(e) => onChange("urlPath", e.target.value)}
-                    placeholder="예: /templates/modern"
-                />
+                    style={{ width: "100%" }}
+                >
+                    <option value="">선택하세요</option>
+                    {(URL_PATH_OPTIONS[formData.type] ?? []).map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             <div style={fieldStyle}>

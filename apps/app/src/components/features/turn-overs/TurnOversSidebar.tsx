@@ -77,13 +77,15 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
                     </ul>
                 </div>
             </div>
-            <div>
-                <GoogleAdBanner
-                    slot={NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT || ""}
-                    width={250}
-                    height={250}
-                />
-            </div>
+            {isLoggedIn() && (
+                <div>
+                    <GoogleAdBanner
+                        slot={NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT || ""}
+                        width={250}
+                        height={250}
+                    />
+                </div>
+            )}
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </aside>
     );

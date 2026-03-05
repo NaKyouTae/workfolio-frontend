@@ -111,19 +111,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
         }
     };
 
-    const handleTemplatePreview = (uiTemplate: UITemplate) => {
-        const images = getTemplateImages(uiTemplate);
-        if (images.length > 0) {
-            setImagePreviewTemplate(uiTemplate);
-            setImagePreviewIndex(0);
-            return;
-        }
-        const path = getPreviewPathFromUITemplate(uiTemplate);
-        if (path) {
-            window.open(`/templates/preview/${path}`, '_blank', 'noopener,noreferrer');
-        }
-    };
-
     const urlUITemplates = uiTemplates.filter(t => t.type === 'URL');
     const pdfUITemplates = uiTemplates.filter(t => t.type === 'PDF');
 
@@ -149,6 +136,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
         const lowestPlan = uiTemplate.plans?.slice().sort((a, b) => a.price - b.price)[0];
         const firstImageSrc = getFirstImageSrc(uiTemplate);
         const hasImages = (uiTemplate.images?.length ?? 0) > 0;
+        const previewPath = getPreviewPathFromUITemplate(uiTemplate);
 
         return (
             <div
@@ -300,9 +288,9 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                         </div>
                     )}
                     <div style={{ display: 'flex', gap: '6px' }}>
-                        {hasImages && (
+                        {previewPath && (
                             <button
-                                onClick={(e) => { e.stopPropagation(); handleTemplatePreview(uiTemplate); }}
+                                onClick={(e) => { e.stopPropagation(); window.open(`/templates/preview/${previewPath}`, '_blank', 'noopener,noreferrer'); }}
                                 style={{
                                     padding: '8px 14px',
                                     backgroundColor: '#f5f5f5',
