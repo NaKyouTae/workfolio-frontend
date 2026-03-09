@@ -62,16 +62,16 @@ const PublicResumePage: React.FC<PublicResumePageProps> = ({
     fetchResume();
   }, [publicId, sampleData]);
 
-  if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loadingWrapper}>
-          <div className={styles.loadingSpinner}></div>
-          <p>이력서를 불러오는 중...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className={styles.container}>
+  //       <div className={styles.loadingWrapper}>
+  //         <div className={styles.loadingSpinner}></div>
+  //         <p>이력서를 불러오는 중...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (error || !resumeDetail) {
     return (

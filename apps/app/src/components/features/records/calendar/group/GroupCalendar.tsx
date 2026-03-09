@@ -271,8 +271,8 @@ const GroupCalendar: React.FC<GroupCalendarProps> = React.memo(({
     return (
         <>
             {groupedSections.length === 0 ? (
-                <div style={{ padding: '2rem', textAlign: 'center', color: '#999' }}>
-                    이번 달에 기록이 없습니다.
+                <div className="record-feed-empty">
+                    <p>기록이 없습니다.</p>
                 </div>
             ) : (
                 groupedSections.map((section) => {

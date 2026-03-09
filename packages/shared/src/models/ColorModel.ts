@@ -17,7 +17,13 @@ export const recordGroupColors: ColorOption[] = [
     { value: RecordGroupColor.BLUE, label: '파랑', hex: '#007AFF' },
     { value: RecordGroupColor.INDIGO, label: '남색', hex: '#5856D6' },
     { value: RecordGroupColor.PURPLE, label: '보라', hex: '#AF52DE' },
-    { value: RecordGroupColor.PINK, label: '분홍', hex: '#FF2D55' },
     { value: RecordGroupColor.BROWN, label: '갈색', hex: '#A2845E' }
 ];
 
+export function resolveRecordGroupColor(color?: string | null): string {
+    if (!color) return RecordGroupColor.RED;
+    const found = recordGroupColors.find(
+        (c) => c.hex.toLowerCase() === color.toLowerCase() || c.value === color.toUpperCase() || c.label === color,
+    );
+    return found ? found.hex : RecordGroupColor.RED;
+}

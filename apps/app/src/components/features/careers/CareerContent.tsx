@@ -158,15 +158,15 @@ const CareerContent: React.FC<CareerContentProps> = ({
   };
 
   // 로딩 중이고 view 모드일 때 스켈레톤 UI 표시
-  if (isLoading && currentViewMode === 'view') {
-    return (
-      <section>
-        <CareerContentViewSkeleton />
-        <Footer/>
-        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
-      </section>
-    );
-  }
+  // if (isLoading && currentViewMode === 'view') {
+  //   return (
+  //     <section>
+  //       <CareerContentViewSkeleton />
+  //       <Footer/>
+  //       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+  //     </section>
+  //   );
+  // }
 
   return (
     <section>

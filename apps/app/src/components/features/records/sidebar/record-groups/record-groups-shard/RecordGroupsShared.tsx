@@ -107,9 +107,10 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = React.memo(({
                                 onCancel={handleCancelCreate}
                             />
                         )}
-                        {isLoading && recordGroups.length === 0 ? (
+                        {/* isLoading && recordGroups.length === 0 ? (
                             <RecordGroupsSkeleton count={3} />
-                        ) : (
+                        ) : */ }
+                        {(
                             <RecordGroups 
                                 recordGroups={recordGroups} 
                                 onRefresh={onRefresh}

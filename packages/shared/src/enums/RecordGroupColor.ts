@@ -9,6 +9,5 @@ export enum RecordGroupColor {
     BLUE = '#007AFF',
     INDIGO = '#5856D6',
     PURPLE = '#AF52DE',
-    PINK = '#FF2D55',
     BROWN = '#A2845E'
 } 

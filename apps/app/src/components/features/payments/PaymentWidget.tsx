@@ -149,11 +149,11 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
                                 충전할 크레딧 상품을 선택해주세요.
                             </p>
 
-                            {plansLoading ? (
+                            {/* plansLoading ? (
                                 <div className={styles.loadingContainer}>
                                     <span>상품 정보를 불러오는 중...</span>
                                 </div>
-                            ) : plans.length === 0 ? (
+                            ) : */ plans.length === 0 ? (
                                 <div className={styles.emptyMessage}>
                                     현재 이용 가능한 상품이 없습니다.
                                 </div>

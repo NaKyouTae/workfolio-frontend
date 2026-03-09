@@ -1,6 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { RecordGroup } from '@workfolio/shared/generated/common';
-import RecordGroupColorModal from './RecordGroupColorModal';
+import RecordGroupFormModal from './RecordGroupFormModal';
+import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
 
@@ -8,118 +10,131 @@ interface RecordGroupItemProps {
     group: RecordGroup;
     isChecked: boolean;
     onToggle: (id: string) => void;
-    onUpdate?: (id: string, title: string) => void;
-    onUpdateColor?: (id: string, color: string) => void;
+    onUpdate?: (id: string, title: string, color: string) => void;
     onDelete?: (id: string) => void;
 }
 
-const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onUpdateColor, onDelete }: RecordGroupItemProps) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editTitle, setEditTitle] = useState(group.title);
-    const [showColorModal, setShowColorModal] = useState(false);
-    const [isComposing, setIsComposing] = useState(false);
+const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onDelete }: RecordGroupItemProps) => {
+    const [showMenu, setShowMenu] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const modalRef = useRef<HTMLDivElement>(null);
+    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+    const menuRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const { confirm } = useConfirm();
+
+    const handleOpenMenu = useCallback(() => {
+        if (buttonRef.current) {
+            const rect = buttonRef.current.getBoundingClientRect();
+            setMenuPosition({
+                top: rect.top,
+                left: rect.right + 8,
+            });
+        }
+        setShowMenu(true);
+    }, []);
 
     // 외부 클릭 감지
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-                setShowColorModal(false);
+            if (
+                menuRef.current && !menuRef.current.contains(event.target as Node) &&
+                buttonRef.current && !buttonRef.current.contains(event.target as Node)
+            ) {
+                setShowMenu(false);
             }
         };
 
-        if (showColorModal) {
+        if (showMenu) {
             document.addEventListener('mousedown', handleClickOutside);
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showColorModal]);
+    }, [showMenu]);
 
-    const handleSave = () => {
-        if (editTitle.trim() && onUpdate) {
-            onUpdate(group.id, editTitle.trim());
+    const handleEdit = () => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            setShowMenu(false);
+            return;
         }
-        setIsEditing(false);
+        setShowMenu(false);
+        setShowEditModal(true);
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        // 한글 조합 중에는 Enter 키 이벤트 무시
-        if (e.key === 'Enter' && !isComposing) {
-            handleSave();
+    const handleEditSubmit = (title: string, color: string) => {
+        if (onUpdate) {
+            onUpdate(group.id, title, color);
         }
+        setShowEditModal(false);
     };
 
-    const handleCompositionStart = () => {
-        setIsComposing(true);
-    };
-
-    const handleCompositionEnd = () => {
-        setIsComposing(false);
-    };
-
-    const handleColorSelect = (color: string) => {
-        if (onUpdateColor) {
-            onUpdateColor(group.id, color);
+    const handleDelete = async () => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            setShowMenu(false);
+            return;
         }
-        setShowColorModal(false);
+        setShowMenu(false);
+
+        const confirmed = await confirm({
+            title: '기록장 삭제',
+            icon: '/assets/img/ico/ic-delete.svg',
+            description: '기록장을 삭제하면 기록장에 있는 모든 기록이 삭제돼요.',
+            confirmText: '삭제',
+            cancelText: '취소',
+        });
+
+        if (confirmed && onDelete) {
+            onDelete(group.id);
+        }
     };
 
     return (
         <li>
             <div className="info">
-                <input 
-                    checked={isChecked} 
-                    type="checkbox" 
-                    id={`group${group.id}`} 
-                    onChange={() => !isEditing && onToggle(group.id)}
+                <input
+                    checked={isChecked}
+                    type="checkbox"
+                    id={`group${group.id}`}
+                    onChange={() => onToggle(group.id)}
                 />
-                <label 
+                <label
                     htmlFor={`group${group.id}`}
-                    style={{"--group-color": `${group.color}` } as React.CSSProperties} 
+                    style={{"--group-color": `${group.color}` } as React.CSSProperties}
                 >
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            onKeyDown={handleKeyPress}
-                            onCompositionStart={handleCompositionStart}
-                            onCompositionEnd={handleCompositionEnd}
-                            onBlur={handleSave}
-                            autoFocus
-                        />
-                    ) : (
-                        <p>{group.isDefault ? '[기본] ' : ''}{group.title}</p>
-                    )}
+                    <p>{group.isDefault ? '[기본] ' : ''}{group.title}</p>
                 </label>
             </div>
             <div className="more">
-                <button className="trans active" onClick={() => setShowColorModal(true)}><i className="ic-more" /></button>
-                {showColorModal && (
-                    <div className="record-edit-modal-wrap" ref={modalRef}>
-                        {!group.isDefault && (
-                            <button onClick={() => onDelete?.(group.id)}>기록장 삭제</button>
-                        )}
-                        <button onClick={() => {
-                            if (!isLoggedIn()) {
-                                setShowLoginModal(true);
-                                setShowColorModal(false);
-                                return;
-                            }
-                            setIsEditing(true);
-                            setShowColorModal(false);
-                        }}>기록장 이름 변경</button>
-                        <RecordGroupColorModal
-                            isOpen={showColorModal}
-                            currentColor={group.color}
-                            onColorSelect={handleColorSelect}
-                        />
-                    </div>
-                )}
+                <button ref={buttonRef} className="trans active" onClick={handleOpenMenu}><i className="ic-more" /></button>
             </div>
+            {showMenu && createPortal(
+                <div
+                    className="record-edit-modal-wrap"
+                    ref={menuRef}
+                    style={{
+                        position: 'fixed',
+                        top: menuPosition.top,
+                        left: menuPosition.left,
+                        zIndex: 1000,
+                    }}
+                >
+                    <button onClick={handleEdit}>기록장 수정</button>
+                    <button onClick={handleDelete} disabled={group.isDefault}>기록장 삭제</button>
+                </div>,
+                document.body
+            )}
+            <RecordGroupFormModal
+                isOpen={showEditModal}
+                mode="edit"
+                initialTitle={group.title}
+                initialColor={group.color}
+                onSubmit={handleEditSubmit}
+                onClose={() => setShowEditModal(false)}
+            />
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </li>
     );

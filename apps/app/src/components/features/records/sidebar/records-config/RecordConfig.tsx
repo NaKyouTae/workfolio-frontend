@@ -1,75 +1,32 @@
 import React, { useState } from 'react';
 import '@workfolio/shared/styles/records-config.css';
 import RecordManagement from './RecordManagement';
-import { RecordGroup, RecordGroup_RecordGroupType, SystemConfig_SystemConfigType } from '@workfolio/shared/generated/common';
-import { RecordGroupDetailResponse } from '@workfolio/shared/generated/record_group';
+import { SystemConfig_SystemConfigType } from '@workfolio/shared/generated/common';
 import { SystemConfigUpdateRequest } from '@workfolio/shared/generated/system_config';
-import FloatingNavigation from '@workfolio/shared/ui/FloatingNavigation';
 import HttpMethod from '@workfolio/shared/enums/HttpMethod';
 import { useSystemConfigStore } from '@workfolio/shared/store/systemConfigStore';
-import RecordSharedGroupManagement from './RecordSharedGroupManagement';
-import RecordPrivateGroupManagement from './RecordPrivateGroupManagement';
-import { compareEnumValue } from '@workfolio/shared/utils/commonUtils';
-import { useUserStore } from '@workfolio/shared/store/userStore';
-import RecordGroupDetailEditManagement from './detail/RecordGroupDetailEditManagement';
-import RecordGroupDetailCreateManagement from './detail/RecordGroupDetailCreateManagement';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
 
 interface RecordConfigProps {
     onClose: () => void;
-    recordGroupsData: {
-        ownedRecordGroups: RecordGroup[];
-        sharedRecordGroups: RecordGroup[];
-        allRecordGroups: RecordGroup[];
-        isLoading: boolean;
-        refreshRecordGroups: () => void;
-        fetchRecordGroupDetails: (recordGroupId: string) => Promise<RecordGroupDetailResponse | null>;
-    };
 }
 
-const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
-    const [selectedGroupForDetail, setSelectedGroupForDetail] = useState<RecordGroup | null | 'create-private' | 'create-shared'>(null);
+const RecordConfig: React.FC<RecordConfigProps> = ({ onClose }) => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const { getSystemConfig } = useSystemConfigStore();
-    const { user } = useUserStore();
     const { showNotification } = useNotification();
-
-    const handleGroupSettingsClick = (group: RecordGroup) => {
-        setSelectedGroupForDetail(group);
-    };
-
-    const handleCreatePrivateGroup = () => {
-        if (!isLoggedIn()) {
-            setShowLoginModal(true);
-            return;
-        }
-        setSelectedGroupForDetail('create-private');
-    };
-
-    const handleCreateSharedGroup = () => {
-        if (!isLoggedIn()) {
-            setShowLoginModal(true);
-            return;
-        }
-        setSelectedGroupForDetail('create-shared');
-    };
-
-    const handleBackToList = () => {
-        setSelectedGroupForDetail(null);
-    };
 
     const handleSave = async () => {
         if (!isLoggedIn()) {
             setShowLoginModal(true);
             return;
         }
-        
+
         try {
-            // DEFAULT_RECORD_TYPE 설정 가져오기
             const systemConfig = getSystemConfig(SystemConfig_SystemConfigType.DEFAULT_RECORD_TYPE);
-            
+
             if (!systemConfig) {
                 showNotification('설정을 불러오는 중입니다. 잠시 후 다시 시도해주세요.', 'error');
                 return;
@@ -91,9 +48,9 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
 
             if (response.ok) {
                 showNotification('설정이 저장되었습니다.', 'success');
+                onClose();
             } else {
-                const errorMessage = `Failed to update system config: ${response.status}`;
-                console.error(errorMessage);
+                console.error(`Failed to update system config: ${response.status}`);
                 showNotification('설정 저장에 실패했습니다.', 'error');
             }
         } catch (error) {
@@ -103,52 +60,13 @@ const RecordConfig: React.FC<RecordConfigProps> = ({ recordGroupsData }) => {
     };
 
     return (
-        <div className="contents">
-            <div className="page-title">
-                <div>
-                    <h2>기록 설정</h2>
-                </div>
+        <div className="record-config-content">
+            <article>
+                <RecordManagement />
+            </article>
+            <div className="modal-btn">
+                <button onClick={handleSave}>저장하기</button>
             </div>
-            {selectedGroupForDetail ? (
-                selectedGroupForDetail === 'create-private' || selectedGroupForDetail === 'create-shared' ? (
-                    <RecordGroupDetailCreateManagement 
-                        recordGroupsData={recordGroupsData}
-                        isPrivate={selectedGroupForDetail === 'create-private'}
-                        createType={selectedGroupForDetail === 'create-private' ? RecordGroup_RecordGroupType.PRIVATE : RecordGroup_RecordGroupType.SHARED}
-                        onBack={handleBackToList}
-                    />
-                ) : (
-                    <RecordGroupDetailEditManagement 
-                        recordGroupsData={recordGroupsData}
-                        initialRecordGroup={selectedGroupForDetail}
-                        isPrivate={compareEnumValue(selectedGroupForDetail.type, RecordGroup_RecordGroupType.PRIVATE, RecordGroup_RecordGroupType)}
-                        isAdmin={selectedGroupForDetail.worker?.id === user?.id}
-                        onBack={handleBackToList}
-                    />
-                )
-            ) : (
-                <div className="page-cont">
-                    <article>
-                        <RecordManagement />
-                        <RecordPrivateGroupManagement
-                            onGroupSettingsClick={handleGroupSettingsClick}
-                            onCreateGroup={handleCreatePrivateGroup}
-                        />
-                        <RecordSharedGroupManagement
-                            userId={user?.id || ''}
-                            onGroupSettingsClick={handleGroupSettingsClick}
-                            onCreateGroup={handleCreateSharedGroup}
-                        />
-                    </article>
-                    <FloatingNavigation
-                        navigationItems={[
-                            { id: 'record-management', label: '기록 설정' },
-                            { id: 'record-group-management', label: '기록장 설정' },
-                        ]}
-                        onSave={handleSave}
-                    />
-                </div>
-            )}
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </div>
     );

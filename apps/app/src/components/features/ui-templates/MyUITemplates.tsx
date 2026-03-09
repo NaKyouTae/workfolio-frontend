@@ -468,7 +468,7 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
                         </div>
                     </div>
 
-                    {loading && <p style={{ textAlign: 'center', padding: '40px 0' }}>로딩 중...</p>}
+                    {/* loading && <p style={{ textAlign: 'center', padding: '40px 0' }}>로딩 중...</p> */}
                     {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
 
                     {!loading && myUITemplates.length > 0 && (

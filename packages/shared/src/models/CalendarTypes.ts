@@ -2,7 +2,19 @@ import { DateModel } from "./DateModel"
 import { Record } from '../generated/common'
 
 // Calendar view type definition
-export type CalendarViewType = 'weekly' | 'monthly' | 'list' | 'group';
+export type CalendarViewType = 'weekly' | 'monthly' | 'list' | 'record';
+
+export interface CalendarViewOption {
+    value: CalendarViewType;
+    label: string;
+}
+
+export const CALENDAR_VIEW_OPTIONS: CalendarViewOption[] = [
+    { value: 'weekly', label: '주간' },
+    { value: 'monthly', label: '월간' },
+    // { value: 'list', label: '목록' },
+    { value: 'record', label: '기록' },
+];
 
 export interface CalendarEvent {
     record: Record

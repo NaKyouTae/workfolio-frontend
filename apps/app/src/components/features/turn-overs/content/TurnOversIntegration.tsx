@@ -153,9 +153,10 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                         <h3>내 이직 현황</h3>
                     </div>
                 </div>
-                {isLoading ? (
+                {/* isLoading ? (
                     <StatsSummarySkeleton count={3} />
-                ) : (
+                ) : */ }
+                {(
                     <ul className="stats-summary">
                         <li key="avgDuration">
                             <p>평균 이직 기간</p>
@@ -193,9 +194,9 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                         />
                     </div>
                 </div>
-                {isLoading ? (
+                {/* isLoading ? (
                     <SummaryListSkeleton count={3} />
-                ) : sortedTurnOvers.length === 0 ? (
+                ) : */ sortedTurnOvers.length === 0 ? (
                     <EmptyState text="등록된 이직 활동이 없습니다." />
                 ) : (
                     <ul className="summary-list">

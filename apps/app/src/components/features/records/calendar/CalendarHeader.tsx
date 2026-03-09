@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CalendarNavigation from './CalendarNavigation';
-import { CalendarViewType } from '@workfolio/shared/models/CalendarTypes';
+import { CalendarViewType, CALENDAR_VIEW_OPTIONS } from '@workfolio/shared/models/CalendarTypes';
 import { ListRecordResponse } from '@workfolio/shared/generated/record';
 
 interface CalendarHeaderProps {
@@ -60,38 +60,16 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             <div className="calendar-type">
                 {!searchResults && (
                     <ul className="tab-style1">
-                        <li>
-                            <button 
-                                onClick={() => onTypeChange('weekly')}
-                                className={`${recordType === 'weekly' ? 'active' : ''}`}
-                            >
-                                주간
-                            </button>
-                        </li>
-                        <li>
-                            <button 
-                                onClick={() => onTypeChange('monthly')}
-                                className={`${recordType === 'monthly' ? 'active' : ''}`}
-                            >
-                                월간
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                onClick={() => onTypeChange('list')}
-                                className={`${recordType === 'list' ? 'active' : ''}`}
-                            >
-                                목록
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                onClick={() => onTypeChange('group')}
-                                className={`${recordType === 'group' ? 'active' : ''}`}
-                            >
-                                그룹
-                            </button>
-                        </li>
+                        {CALENDAR_VIEW_OPTIONS.map((option) => (
+                            <li key={option.value}>
+                                <button
+                                    onClick={() => onTypeChange(option.value)}
+                                    className={`${recordType === option.value ? 'active' : ''}`}
+                                >
+                                    {option.label}
+                                </button>
+                            </li>
+                        ))}
                     </ul>
                 )}
                 {onSearchChange && (

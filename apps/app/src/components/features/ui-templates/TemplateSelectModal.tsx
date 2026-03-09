@@ -111,9 +111,9 @@ const TemplateSelectModal: React.FC<TemplateSelectModalProps> = ({
         </div>
 
         <div className={styles.body}>
-          {loading ? (
+          {/* loading ? (
             <div className={styles.loading}>불러오는 중...</div>
-          ) : templates.length === 0 ? (
+          ) : */ templates.length === 0 ? (
             <div className={styles.empty}>사용 가능한 템플릿이 없습니다.</div>
           ) : (
             <ul className={styles.list}>

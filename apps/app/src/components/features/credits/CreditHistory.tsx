@@ -108,12 +108,12 @@ const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) =>
                     </div>
                 )}
 
-                {historyLoading ? (
+                {/* historyLoading ? (
                     <div className={styles.loadingContainer}>
                         <div className={styles.loadingSpinner} />
                         <span>내역을 불러오는 중...</span>
                     </div>
-                ) : history.length === 0 ? (
+                ) : */ history.length === 0 ? (
                     <EmptyState text="크레딧 내역이 없습니다." noBorder centerVertically />
                 ) : (
                     <>

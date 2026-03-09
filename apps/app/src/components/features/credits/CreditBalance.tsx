@@ -30,9 +30,10 @@ const CreditBalance: React.FC<CreditBalanceProps> = ({ compact = false }) => {
                     </div>
                 </div>
                 <div className={styles.balanceAmount}>
-                    {balanceLoading ? (
+                    {/* balanceLoading ? (
                         <span className={styles.loading}>불러오는 중...</span>
-                    ) : (
+                    ) : */ }
+                    {(
                         <>
                             <span className={styles.balanceAmountValue}>{formatNumber(balance)}</span>
                             <span className={styles.unit}>크레딧</span>

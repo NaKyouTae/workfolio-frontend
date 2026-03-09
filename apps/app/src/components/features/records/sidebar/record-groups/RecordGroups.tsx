@@ -3,7 +3,6 @@ import HttpMethod from '@workfolio/shared/enums/HttpMethod';
 import { RecordGroup } from '@workfolio/shared/generated/common';
 import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore';
 import { RecordGroupUpdateRequest } from '@workfolio/shared/generated/record_group';
-import { RecordGroupColor } from '@workfolio/shared/enums/RecordGroupColor';
 import RecordGroupItem from './RecordGroupItem';
 import { useShallow } from 'zustand/react/shallow';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
@@ -14,8 +13,8 @@ interface RecordGroupsProps {
     onRefresh: () => void;
 }
 
-const RecordGroups = React.memo(({ 
-    recordGroups, 
+const RecordGroups = React.memo(({
+    recordGroups,
     onRefresh,
 }: RecordGroupsProps) => {
     // Zustand 한 번에 구독
@@ -28,14 +27,13 @@ const RecordGroups = React.memo(({
     );
     const [showLoginModal, setShowLoginModal] = useState(false);
 
-    const updateRecordGroup = useCallback(async (id: string, title: string) => {
+    const updateRecordGroup = useCallback(async (id: string, title: string, color: string) => {
         if (!isLoggedIn()) {
             setShowLoginModal(true);
             return;
         }
-        
-        try {
 
+        try {
             // 기존 그룹 정보 찾기
             const existingGroup = recordGroups.find(group => group.id === id);
             if (!existingGroup) {
@@ -45,7 +43,7 @@ const RecordGroups = React.memo(({
             // UpdateRecordGroupRequest 생성
             const updateRequest = RecordGroupUpdateRequest.create({
                 title: title,
-                color: existingGroup.color || RecordGroupColor.RED,
+                color: color,
                 priority: existingGroup.priority || 1
             });
 
@@ -57,7 +55,7 @@ const RecordGroups = React.memo(({
                 body: JSON.stringify({
                     title: updateRequest.title,
                     color: updateRequest.color,
-                    priority: updateRequest.priority.toString()
+                    priority: updateRequest.priority.toString(),
                 })
             });
 
@@ -76,57 +74,6 @@ const RecordGroups = React.memo(({
             }
         } catch (error) {
             console.error('Error updating group:', error);
-        }
-    }, [recordGroups, onRefresh, triggerRecordRefresh]);
-
-    const updateRecordGroupColor = useCallback(async (id: string, color: string) => {
-        if (!isLoggedIn()) {
-            setShowLoginModal(true);
-            return;
-        }
-        
-        try {
-
-            // 기존 그룹 정보 찾기
-            const existingGroup = recordGroups.find(group => group.id === id);
-            if (!existingGroup) {
-                return;
-            }
-
-            // UpdateRecordGroupRequest 생성
-            const updateRequest = RecordGroupUpdateRequest.create({
-                title: existingGroup.title,
-                color: color,
-                priority: existingGroup.priority || 1
-            });
-
-            const response = await fetch(`/api/record-groups/${id}`, {
-                method: HttpMethod.PUT,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: updateRequest.title,
-                    color: updateRequest.color,
-                    priority: updateRequest.priority.toString()
-                })
-            });
-
-            if (response.status === 401) {
-                window.location.href = '/login';
-                return;
-            }
-
-            if (response.ok) {
-                // 서버 업데이트 성공 시 전체 데이터 새로고침
-                onRefresh();
-                // record 재조회 트리거 (color 변경 시 record에도 반영)
-                triggerRecordRefresh();
-            } else {
-                console.error('Failed to update group color');
-            }
-        } catch (error) {
-            console.error('Error updating group color:', error);
         }
     }, [recordGroups, onRefresh, triggerRecordRefresh]);
 
@@ -167,9 +114,8 @@ const RecordGroups = React.memo(({
                     isChecked={checkedGroups.has(group.id)}
                     onToggle={toggleGroup}
                     onUpdate={updateRecordGroup}
-                    onUpdateColor={updateRecordGroupColor}
                     onDelete={deleteRecordGroup}
-                />
+/>
             ))}
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </>

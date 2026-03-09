@@ -66,9 +66,9 @@ const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTur
     return () => clearInterval(interval);
   }, [updateNavigationItems]);
 
-  if (isLoading) {
-    return <TurnOverContentViewSkeleton />;
-  }
+  // if (isLoading) {
+  //   return <TurnOverContentViewSkeleton />;
+  // }
 
   if (!selectedTurnOver) {
     return <div>이직 현황을 선택해주세요.</div>;

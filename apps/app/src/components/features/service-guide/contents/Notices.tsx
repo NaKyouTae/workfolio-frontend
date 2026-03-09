@@ -34,13 +34,13 @@ const Notices: React.FC<NoticesProps> = ({ onNoticeClick }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <LoadingScreen />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className={styles.container}>
+  //       <LoadingScreen />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>

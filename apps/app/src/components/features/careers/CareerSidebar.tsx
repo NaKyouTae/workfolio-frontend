@@ -60,9 +60,10 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({
                 <div className="aside-group">
                     <p className="aside-group-title">내 이력서</p>
                     <ul className="aside-group-list">
-                        {isLoading ? (
+                        {/* isLoading ? (
                             <SidebarListSkeleton count={3} />
-                        ) : (
+                        ) : */ }
+                        {(
                             sortedResumes.map((resumeDetail) => {
                                 const isSelected = selectedResumeDetail?.id === resumeDetail.id;
                                 return (

@@ -57,9 +57,10 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
                 <div className="aside-group">
                     <p className="aside-group-title">내 이직 활동</p>
                     <ul className="aside-group-list">
-                        {isLoading ? (
+                        {/* isLoading ? (
                             <SidebarListSkeleton count={3} />
-                        ) : (
+                        ) : */ }
+                        {(
                             turnOvers.map((turnOver) => {
                                 return (
                                     <li

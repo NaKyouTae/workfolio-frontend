@@ -20,7 +20,7 @@ import CalendarHeader from "./calendar/CalendarHeader";
 import ListCalendar from "./calendar/list/ListCalendar";
 import MonthlyCalendar from "./calendar/monthly/MonthlyCalendar";
 import WeeklyCalendar from "./calendar/weekly/WeeklyCalendar";
-import GroupCalendar from "./calendar/group/GroupCalendar";
+import RecordFeed from "./calendar/record/RecordFeed";
 import RecordSearch from "./search/RecordSearch";
 import WeeklyCalendarSkeleton from "@workfolio/shared/ui/skeleton/WeeklyCalendarSkeleton";
 import MonthlyCalendarSkeleton from "@workfolio/shared/ui/skeleton/MonthlyCalendarSkeleton";
@@ -57,14 +57,14 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         const urlDate = urlDateString ? dayjs(urlDateString).toDate() : dayjs().toDate();
         // urlView가 있으면 사용, 없으면 systemConfig 사용, 그것도 없으면 'monthly'
         const initialRecordType: CalendarViewType =
-            urlView || parseCalendarViewType(systemConfig?.value, "monthly");
+            urlView || parseCalendarViewType(systemConfig?.value, "record");
         const [recordType, setRecordType] = useState<CalendarViewType>(initialRecordType);
 
         // systemConfig가 로드되면 recordType 동기화 및 초기 URL 설정 (URL에 view가 없을 때만)
         useEffect(() => {
             // URL에 view가 없고 systemConfig가 로드되었을 때만 업데이트
             if (!urlView && systemConfig?.value) {
-                const configRecordType = parseCalendarViewType(systemConfig.value, "monthly");
+                const configRecordType = parseCalendarViewType(systemConfig.value, "record");
 
                 // recordType 업데이트
                 if (configRecordType !== recordType) {
@@ -99,9 +99,9 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         const { allRecordGroups } = recordGroupsData;
 
         // records hook 사용 - recordType에 따라 적절한 파라미터 전달
-        const isMonthlyBased = recordType === "monthly" || recordType === "list" || recordType === "group";
+        const isMonthlyBased = recordType === "monthly" || recordType === "list" || recordType === "record";
         const { records, refreshRecords, searchRecordsByKeyword, isLoading } = useRecords(
-            recordType === "group" ? "list" : recordType,
+            recordType === "record" ? "list" : recordType,
             isMonthlyBased ? date.getMonth() + 1 : undefined,
             isMonthlyBased ? date.getFullYear() : undefined,
             recordType === "weekly" ? date : undefined
@@ -126,7 +126,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
 
                 // 월간, 목록 캘린더의 경우 월만 변경하고 일자는 오늘 날짜로 설정
                 let dateToUse = dayjs(pendingURLUpdate.date);
-                if (pendingURLUpdate.view === "monthly" || pendingURLUpdate.view === "list" || pendingURLUpdate.view === "group") {
+                if (pendingURLUpdate.view === "monthly" || pendingURLUpdate.view === "list" || pendingURLUpdate.view === "record") {
                     const today = dayjs();
                     dateToUse = dayjs(pendingURLUpdate.date)
                         .year(today.year())
@@ -292,7 +292,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                 let viewToUse: CalendarViewType = recordType;
                 if (!urlView) {
                     if (systemConfig?.value) {
-                        viewToUse = parseCalendarViewType(systemConfig.value, "monthly");
+                        viewToUse = parseCalendarViewType(systemConfig.value, "record");
                     }
                 } else {
                     viewToUse = urlView as CalendarViewType;
@@ -331,19 +331,17 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                     />
                 ) : (
                     <div className="calendar-wrap">
-                        {isLoading ? (
+                        {/* isLoading ? (
                             // 로딩 중일 때 스켈레톤 UI 표시
                             recordType === "monthly" ? (
                                 <MonthlyCalendarSkeleton />
                             ) : recordType === "weekly" ? (
                                 <WeeklyCalendarSkeleton />
-                            ) : recordType === "group" ? (
-                                <ListCalendarSkeleton />
                             ) : (
                                 <ListCalendarSkeleton />
                             )
-                        ) : // 데이터 로드 완료 후 실제 캘린더 표시
-                        recordType === "monthly" ? (
+                        ) : // 데이터 로드 완료 후 실제 캘린더 표시 */}
+                        {recordType === "monthly" ? (
                             <MonthlyCalendar
                                 key={`monthly-${date.getTime()}`}
                                 initialDate={date}
@@ -357,12 +355,11 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                                 records={filteredRecords}
                                 allRecordGroups={allRecordGroups}
                             />
-                        ) : recordType === "group" ? (
-                            <GroupCalendar
-                                key={`group-${date.getTime()}`}
+                        ) : recordType === "record" ? (
+                            <RecordFeed
+                                key={`record-${date.getTime()}`}
                                 initialDate={date}
                                 records={filteredRecords}
-                                recordGroups={checkedRecordGroups}
                                 allRecordGroups={allRecordGroups}
                             />
                         ) : (

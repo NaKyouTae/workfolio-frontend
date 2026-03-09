@@ -3,7 +3,7 @@ import RecordGroupsOwnedHeader from './RecordGroupsOwnedHeader';
 import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@workfolio/shared/generated/record_group';
 import HttpMethod from '@workfolio/shared/enums/HttpMethod';
-import NewRecordGroupItem from '../NewRecordGroupItem';
+import RecordGroupFormModal from '../RecordGroupFormModal';
 import { RecordGroup_RecordGroupType, RecordGroup } from '@workfolio/shared/generated/common';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
@@ -94,32 +94,28 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
     return (
         <>
             <div className="record-group">
-                <RecordGroupsOwnedHeader 
+                <RecordGroupsOwnedHeader
                     isGroupsExpanded={isGroupsExpanded}
                     onToggleGroups={handleToggleGroups}
                     onCreateGroup={handleCreateGroupRequest}
+                    groupCount={recordGroups.length}
                 />
                 {isGroupsExpanded && (
                     <ul className="record-group-list">
-                        {isCreatingGroup && (
-                            <NewRecordGroupItem
-                                placeholder="신규 기록장 이름"
-                                onSave={createRecordGroup}
-                                onCancel={handleCancelCreate}
-                            />
-                        )}
-                        {isLoading && recordGroups.length === 0 ? (
-                            <RecordGroupsSkeleton count={3} />
-                        ) : (
-                            <RecordGroups 
-                                key="owned-record-groups"
-                                recordGroups={recordGroups} 
-                                onRefresh={onRefresh}
-                            />
-                        )}
+                        <RecordGroups
+                            key="owned-record-groups"
+                            recordGroups={recordGroups}
+                            onRefresh={onRefresh}
+                        />
                     </ul>
                 )}
             </div>
+            <RecordGroupFormModal
+                isOpen={isCreatingGroup}
+                mode="create"
+                onSubmit={createRecordGroup}
+                onClose={handleCancelCreate}
+            />
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </>
     );

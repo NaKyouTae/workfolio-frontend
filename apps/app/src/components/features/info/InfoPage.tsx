@@ -1,13 +1,28 @@
 "use client";
 
 import React from "react";
-import Header from "@/components/layouts/Header";
+import Image from "next/image";
+import Link from "next/link";
 import InfoContent from "./InfoContent";
 
 const InfoPage: React.FC = () => {
     return (
         <>
-            <Header />
+            <header className="info-header">
+                <h1>
+                    <Link href="/info">
+                        <Image
+                            src="/assets/img/logo/img-logo01.svg"
+                            alt="workfolio"
+                            width={174}
+                            height={50}
+                        />
+                    </Link>
+                </h1>
+                <Link href="/records" className="info-header-cta">
+                    내 기록 쌓으러 가기
+                </Link>
+            </header>
             <InfoContent />
         </>
     );

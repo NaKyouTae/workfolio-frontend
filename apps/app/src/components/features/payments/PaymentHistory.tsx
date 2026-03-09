@@ -131,11 +131,11 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ onOpenPaymentWidget }) 
                     </div>
                 )}
 
-                {loading ? (
+                {/* loading ? (
                     <div className={styles.loadingContainer}>
                         <span>로딩 중...</span>
                     </div>
-                ) : payments.length === 0 ? (
+                ) : */ payments.length === 0 ? (
                     <EmptyState text="결제 내역이 없습니다." noBorder centerVertically />
                 ) : (
                     <>

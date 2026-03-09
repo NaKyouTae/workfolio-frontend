@@ -135,9 +135,9 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
                             />
                         </div>
                     </div>
-                    {isLoading ? (
+                    {/* isLoading ? (
                         <SummaryListSkeleton count={3} />
-                    ) : sortedResumes.length === 0 ? (
+                    ) : */ sortedResumes.length === 0 ? (
                         <EmptyState text="등록된 이력서가 없습니다." />
                     ) : (
                         <ul className="summary-list">

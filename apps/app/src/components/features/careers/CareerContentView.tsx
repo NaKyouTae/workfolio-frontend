@@ -107,9 +107,9 @@ const CareerContentView: React.FC<CareerContentViewProps> = ({
     }
   }, [fetchDefaultTemplates]);
 
-  if (isLoading) {
-    return <CareerContentViewSkeleton />;
-  }
+  // if (isLoading) {
+  //   return <CareerContentViewSkeleton />;
+  // }
 
   // 편집 핸들러
   const handleEdit = () => {

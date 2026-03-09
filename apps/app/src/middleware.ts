@@ -44,7 +44,7 @@ export function middleware(request: NextRequest) {
     }
 
     if (request.nextUrl.pathname === "/") {
-        return NextResponse.redirect(new URL("/records", request.url));
+        return NextResponse.redirect(new URL("/info", request.url));
     }
 
     if (request.nextUrl.pathname === "/login") {
