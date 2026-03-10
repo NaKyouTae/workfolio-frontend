@@ -430,7 +430,7 @@ table.list.search tbody td .empty {font-weight: 500; color: var(--gray005);}
 
 /* 기록 유형 분포 */
 .template-stats {display: flex; flex-flow: column; flex: 1; justify-content: space-between;}
-.template-stats > li {display: flex; align-items: center; gap: 1.6rem;}
+.template-stats > li {display: flex; align-items: center; gap: 1.6rem; min-height: 3.2rem;}
 .template-stats-label {font-size: 1.4rem; font-weight: 500; width: 9rem; flex-shrink: 0;}
 .template-stats-bar {flex: 1; height: 1rem; background-color: var(--gray002); border-radius: .5rem; overflow: hidden;}
 .template-stats-fill {height: 100%; background-color: var(--yellow004); border-radius: .5rem; transition: width .3s ease;}

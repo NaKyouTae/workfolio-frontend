@@ -186,36 +186,10 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
             });
         });
 
-        // 상황별 추천 액션 결정
-        const dayOfWeek = now.isoWeekday();
-        const hour = now.hour();
-        let action: { template: RecordTemplateType; label: string; reason: string } | null = null;
-
-        const hasWeeklyReview = filteredRecords.some((r) => {
-            const ts = parseTs(r.startedAt || r.createdAt);
-            return ts >= startOfWeek && ts <= endOfWeek && detectTemplateType(r.description || "") === "weekly_review";
-        });
-        const todayStart = now.startOf("day").valueOf();
-        const todayEnd = now.endOf("day").valueOf();
-        const hasDailyLog = filteredRecords.some((r) => {
-            const ts = parseTs(r.startedAt || r.createdAt);
-            return ts >= todayStart && ts <= todayEnd && detectTemplateType(r.description || "") === "daily_log";
-        });
-
-        if (dayOfWeek >= 5 && !hasWeeklyReview) {
-            action = { template: "weekly_review", label: "주간 회고 작성", reason: "이번 주를 돌아볼 시간이에요" };
-        } else if (hour >= 17 && !hasDailyLog) {
-            action = { template: "daily_log", label: "오늘 업무 기록", reason: "오늘 하루를 정리해 보세요" };
-        } else if (hour < 10 && !hasDailyLog) {
-            action = { template: "daily_log", label: "오늘 업무 계획", reason: "오늘 할 일을 정리해 보세요" };
-        }
-
         return {
             totalRecords: filteredRecords.length,
             recentRecords: sorted.slice(0, RECENT_RECORDS_LIMIT),
             templateStats: stats,
-            suggestedAction: action,
-            // 새 항목들
             thisMonthCount: thisMonthRecords.length,
             thisWeekCount: thisWeekRecords.length,
             monthDiff,
@@ -226,7 +200,7 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
     }, [filteredRecordGroups, allRecords]);
 
     const {
-        totalRecords, recentRecords, templateStats, suggestedAction,
+        totalRecords, recentRecords, templateStats,
         thisMonthCount, thisWeekCount, monthDiff,
         heatmapData, heatmapMax,
         groupStats,
@@ -275,22 +249,6 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
             </div>
             <div className="page-cont">
                 {isDemo === true && <DemoBanner />}
-
-                {/* 추천 액션 */}
-                        {suggestedAction && (
-                            <div
-                                className="cont-box suggested-action"
-                                onClick={() => setQuickTemplateType(suggestedAction.template)}
-                            >
-                                <div className="suggested-action-content">
-                                    <div>
-                                        <p className="suggested-action-reason">{suggestedAction.reason}</p>
-                                        <p className="suggested-action-label">{suggestedAction.label}</p>
-                                    </div>
-                                    <i className="ic-arrow-right" />
-                                </div>
-                            </div>
-                        )}
 
                         {/* 빠른 기록 */}
                         <div className="cont-box">

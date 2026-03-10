@@ -104,9 +104,12 @@ const CareerIntegration: React.FC<CareerIntegrationProps> = ({
 
   // 추천 액션 (버튼용)
   const suggestedActions = useMemo(() => {
-    if (resumeDetails.length === 0) return [];
-
     const actions: { label: string; description: string; action: 'create' | 'edit'; resumeId?: string }[] = [];
+
+    if (resumeDetails.length === 0) {
+      actions.push({ label: '이직 이력서 추가', description: '이직 활동을 기록해 보세요', action: 'create' });
+      return actions;
+    }
 
     const hasDefault = resumeDetails.some(r => r.isDefault);
     if (!hasDefault && resumeDetails.length > 0) {
