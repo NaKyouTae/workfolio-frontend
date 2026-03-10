@@ -6,7 +6,7 @@ const MonthlyCalendarSkeleton: React.FC = () => {
 
     return (
         <>
-            <style jsx>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 @keyframes skeleton-pulse {
                     0%,
                     100% {
@@ -20,7 +20,7 @@ const MonthlyCalendarSkeleton: React.FC = () => {
                     animation: skeleton-pulse 1.5s ease-in-out infinite;
                     background-color: #e0e0e0;
                 }
-            `}</style>
+            `}} />
             {/* 요일 헤더 */}
             <table className="week">
                 <thead>

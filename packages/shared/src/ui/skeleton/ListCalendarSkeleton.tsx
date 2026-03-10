@@ -7,7 +7,7 @@ interface ListCalendarSkeletonProps {
 const ListCalendarSkeleton: React.FC<ListCalendarSkeletonProps> = ({ itemCount = 30 }) => {
     return (
         <>
-            <style jsx>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 @keyframes skeleton-pulse {
                     0%,
                     100% {
@@ -21,12 +21,12 @@ const ListCalendarSkeleton: React.FC<ListCalendarSkeletonProps> = ({ itemCount =
                     animation: skeleton-pulse 1.5s ease-in-out infinite;
                     background-color: #e0e0e0;
                 }
-                :global(table.list thead) {
+                table.list thead {
                     z-index: 10;
                     position: sticky;
                     top: 0;
                 }
-            `}</style>
+            `}} />
             <table className="list">
                 <colgroup>
                     <col style={{ width: "8rem" }} />

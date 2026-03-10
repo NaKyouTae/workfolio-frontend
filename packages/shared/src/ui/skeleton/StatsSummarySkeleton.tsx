@@ -11,7 +11,7 @@ interface StatsSummarySkeletonProps {
 const StatsSummarySkeleton: React.FC<StatsSummarySkeletonProps> = ({ count = 3 }) => {
   return (
     <>
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes skeleton-loading {
           0% {
             background-position: 200% 0;
@@ -26,7 +26,7 @@ const StatsSummarySkeleton: React.FC<StatsSummarySkeletonProps> = ({ count = 3 }
           animation: skeleton-loading 1.5s ease-in-out infinite;
           border-radius: 4px;
         }
-      `}</style>
+      `}} />
       <ul className="stats-summary">
         {Array.from({ length: count }).map((_, index) => (
           <li key={`skeleton-${index}`}>

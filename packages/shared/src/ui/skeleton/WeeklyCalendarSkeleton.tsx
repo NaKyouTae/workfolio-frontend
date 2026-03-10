@@ -3,7 +3,7 @@ import React from "react";
 const WeeklyCalendarSkeleton: React.FC = () => {
     return (
         <>
-            <style jsx>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 @keyframes skeleton-pulse {
                     0%,
                     100% {
@@ -17,7 +17,7 @@ const WeeklyCalendarSkeleton: React.FC = () => {
                     animation: skeleton-pulse 1.5s ease-in-out infinite;
                     background-color: #e0e0e0;
                 }
-            `}</style>
+            ` }} />
             <div className="weekly">
                 {/* 요일 헤더 테이블 */}
                 <table className="week">

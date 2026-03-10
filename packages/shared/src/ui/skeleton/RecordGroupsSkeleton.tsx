@@ -7,7 +7,7 @@ interface RecordGroupsSkeletonProps {
 const RecordGroupsSkeleton: React.FC<RecordGroupsSkeletonProps> = ({ count = 3 }) => {
     return (
         <>
-            <style jsx>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 @keyframes skeleton-pulse {
                     0%, 100% {
                         opacity: 1;
@@ -19,7 +19,7 @@ const RecordGroupsSkeleton: React.FC<RecordGroupsSkeletonProps> = ({ count = 3 }
                 .skeleton-item {
                     animation: skeleton-pulse 1.5s ease-in-out infinite;
                 }
-            `}</style>
+            `}} />
             {Array.from({ length: count }).map((_, index) => (
                 <li key={`skeleton-${index}`}>
                     <div className="info">
