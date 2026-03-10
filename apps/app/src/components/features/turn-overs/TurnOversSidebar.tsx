@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { TurnOver, TurnOverDetail } from "@workfolio/shared/generated/common";
 import { isLoggedIn } from "@workfolio/shared/utils/authUtils";
 import LoginModal from "@workfolio/shared/ui/LoginModal";
-import SidebarListSkeleton from "@workfolio/shared/ui/skeleton/SidebarListSkeleton";
 import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
 
 const NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT = process.env.NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT;
@@ -23,7 +22,6 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
     onGoHome,
     onTurnOverSelect,
     onTurnOverCreated,
-    isLoading = false,
 }) => {
     const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -55,7 +53,7 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
                     내 이직 관리
                 </div>
                 <div className="aside-group">
-                    <p className="aside-group-title">내 이직 활동</p>
+                    <p className="aside-group-title">내 이직 활동 <span style={{ color: 'var(--gray005)', fontWeight: 400, marginLeft: '0.4rem' }}>{turnOvers.length}</span></p>
                     <ul className="aside-group-list">
                         {/* isLoading ? (
                             <SidebarListSkeleton count={3} />

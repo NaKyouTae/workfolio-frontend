@@ -7,8 +7,6 @@ import CareerContentCreate from './CareerContentCreate';
 import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
-import CareerContentViewSkeleton from '@workfolio/shared/ui/skeleton/CareerContentViewSkeleton';
-
 import Footer from "@/components/layouts/Footer"
 
 type ViewMode = 'home' | 'view' | 'edit';
@@ -27,6 +25,7 @@ interface CareerContentProps {
   onEnterEdit?: (fromMode: ViewMode) => void;
   onCancelEdit?: () => void;
   onSaveComplete?: (mode: ViewMode) => void;
+  onResumeCreated?: () => void;
   duplicateResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   deleteResume?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
   exportPDF?: (resumeId?: string, onSuccess?: () => void) => Promise<void>;
@@ -50,6 +49,7 @@ const CareerContent: React.FC<CareerContentProps> = ({
   onEnterEdit,
   onCancelEdit,
   onSaveComplete,
+  onResumeCreated,
   duplicateResume,
   deleteResume,
   exportPDF,
@@ -171,17 +171,15 @@ const CareerContent: React.FC<CareerContentProps> = ({
   return (
     <section>
         {currentViewMode === 'home' && (
-          <CareerIntegration 
+          <CareerIntegration
             resumeDetails={resumeDetails}
-            onView={handleResumeSelect} 
-            onEdit={handleResumeEdit} 
+            onView={handleResumeSelect}
+            onEdit={handleResumeEdit}
+            onCreate={onResumeCreated}
             duplicateResume={(resumeId) => handleDuplicate(resumeId || '')}
             deleteResume={(resumeId) => handleDelete(resumeId || '')}
-            // exportPDF={exportPDF}
-            // copyURL={copyURL}
             calculateTotalCareer={(resume) => calculateTotalCareer?.(resume) || '경력 없음'}
             changeDefault={(resumeId) => changeDefault?.(resumeId || '')}
-            isLoading={isLoading && viewMode === 'home'}
           />
         )}
         {currentViewMode === 'view' && selectedResumeDetail && (
@@ -227,6 +225,7 @@ const CareerContent: React.FC<CareerContentProps> = ({
           />
         )}
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+        <Footer />
     </section>
   );
 };

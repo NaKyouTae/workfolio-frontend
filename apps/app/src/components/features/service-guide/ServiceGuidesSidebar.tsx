@@ -37,12 +37,18 @@ const ServiceGuidesSidebar: React.FC<ServiceGuidesSidebarProps> = ({
                     >
                         개인정보 처리방침
                     </li>
-                    {/* <li
+                    <li
+                        className={`${selectedMenu === "guides" ? "active" : ""}`}
+                        onClick={() => onMenuClick("guides")}
+                    >
+                        활용 가이드
+                    </li>
+                    <li
                         className={`${selectedMenu === "company" ? "active" : ""}`}
                         onClick={() => onMenuClick("company")}
                     >
                         회사소개
-                    </li> */}
+                    </li>
                 </ul>
             </div>
             <div>

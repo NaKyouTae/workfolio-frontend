@@ -55,7 +55,7 @@ const TemplateSelectModal: React.FC<TemplateSelectModalProps> = ({
   onClose,
 }) => {
   const [templates, setTemplates] = useState<WorkerUITemplate[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const fetchTemplates = useCallback(async () => {

@@ -91,7 +91,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 <div className="modal-cont">
                     <div className="login-wrap">
                         <Image src="/assets/img/logo/img-logo01.svg" alt="workfolio" width={1} height={1} />
-                        <p>일과 이력을 한곳에 모아두는 나만의 기록장, 워크폴리오.<br/>쉽게 가입하고 간편하게 로그인하세요.</p>
+                        <p>업무 기록을 쌓으면 이력서가 자동으로 만들어집니다.<br/>주간 회고·프로젝트 기록으로 이력서를 관리해 보세요.</p>
                         {error && (
                             <div style={{
                                 color: '#dc3545',

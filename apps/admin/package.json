@@ -3,18 +3,18 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "dev": "next dev --turbopack -p 8001",
         "build": "next build",
-        "start": "next start -p 8001",
-        "lint": "next lint"
+        "dev": "next dev --turbopack -p 8001",
+        "lint": "next lint",
+        "start": "next start -p 8001"
     },
     "dependencies": {
         "@workfolio/shared": "workspace:*",
+        "dayjs": "^1.11.13",
+        "google-protobuf": "^3.21.4",
         "next": "15.1.9",
         "react": "^19.0.1",
-        "react-dom": "^19.0.1",
-        "google-protobuf": "^3.21.4",
-        "dayjs": "^1.11.13"
+        "react-dom": "^19.0.1"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3",

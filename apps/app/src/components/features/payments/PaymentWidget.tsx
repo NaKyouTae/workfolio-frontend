@@ -19,7 +19,7 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
     onClose,
     onPaymentSuccess,
 }) => {
-    const { plans, loading: plansLoading, fetchPlans } = useCreditPlans();
+    const { plans, fetchPlans } = useCreditPlans();
     const { createPayment, confirmPayment, loading: paymentLoading } = usePayments();
     const { showNotification } = useNotification();
     const [selectedPlan, setSelectedPlan] = useState<CreditPlan | null>(null);

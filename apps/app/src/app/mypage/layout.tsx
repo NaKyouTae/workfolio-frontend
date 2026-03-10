@@ -11,10 +11,10 @@ import GoogleAdBanner from '@/components/ads/GoogleAdBanner';
 const NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT = process.env.NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT;
 
 const MENUS = [
-    { key: 'profile', label: '프로필 관리' },
     // { key: 'payments', label: '결제 내역' }, // TODO: 사용자 수 늘어나면 추가
     { key: 'credits', label: '크레딧 내역' },
     { key: 'templates', label: '보유 템플릿' },
+    { key: 'profile', label: '프로필 관리' },
     { key: 'withdraw', label: '회원 탈퇴' },
 ] as const;
 
@@ -30,10 +30,12 @@ export default function MypageLayout({ children }: { children: React.ReactNode }
     const router = useRouter();
     const pathname = usePathname();
     const [showPaymentWidget, setShowPaymentWidget] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
-    const activeMenu = pathname.split('/').pop() || 'profile';
+    const activeMenu = pathname.split('/').pop() || 'credits';
 
     useEffect(() => {
+        setMounted(true);
         if (!isLoggedIn()) {
             router.replace('/records');
         }
@@ -61,7 +63,7 @@ export default function MypageLayout({ children }: { children: React.ReactNode }
                             ))}
                         </ul>
                     </div>
-                    {isLoggedIn() && (
+                    {mounted && isLoggedIn() && (
                         <div>
                             <GoogleAdBanner
                                 slot={NEXT_PUBLIC_ADSENSE_MYPAGE_SLOT || ""}

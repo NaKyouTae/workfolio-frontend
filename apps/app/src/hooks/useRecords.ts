@@ -85,20 +85,23 @@ export const useRecords = (
     // ============================================
     // 샘플 레코드 데이터를 한 번만 생성하고 캐시에서 재사용
     const getSampleRecords = useCallback((): Record[] => {
+        // 체크된 그룹이 없으면 빈 배열 반환 (로그인한 경우와 동일하게 처리)
+        if (checkedGroupIds.length === 0) {
+            return [];
+        }
+
         // 캐시된 샘플 레코드가 없으면 생성
         if (sampleRecords.length === 0) {
             const sampleRecordGroups = createSampleRecordGroups();
             const newSampleRecords = createSampleRecords(sampleRecordGroups) as unknown as Record[];
             setSampleRecords(newSampleRecords);
-            return newSampleRecords;
+            // 생성 후에도 체크된 그룹으로 필터링
+            return newSampleRecords.filter((record: Record) =>
+                checkedGroupIds.includes(record.recordGroup?.id || "")
+            );
         }
 
-        // 캐시된 샘플 레코드 사용 (재생성하지 않음)
-        // 체크된 그룹에 해당하는 샘플 레코드만 필터링
-        if (checkedGroupIds.length === 0) {
-            return sampleRecords;
-        }
-
+        // 캐시된 샘플 레코드 사용 - 체크된 그룹에 해당하는 샘플 레코드만 필터링
         return sampleRecords.filter((record: Record) =>
             checkedGroupIds.includes(record.recordGroup?.id || "")
         );
@@ -115,16 +118,8 @@ export const useRecords = (
             // TODO: 샘플 데이터 관련 코드 - 추후 제거 예정
             // 로그인하지 않은 경우에만 샘플 데이터 사용
             // ============================================
-            const sampleRecords = getSampleRecords();
-
-            // 체크된 그룹이 없으면 샘플 데이터만 표시
-            if (checkedGroupIds.length === 0) {
-                setRecords(sampleRecords);
-                setIsLoading(false);
-                return;
-            }
-
-            setRecords(sampleRecords);
+            const filteredSampleRecords = getSampleRecords();
+            setRecords(filteredSampleRecords);
             setIsLoading(false);
             return;
             // ============================================

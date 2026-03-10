@@ -7,12 +7,14 @@ import { RecordCreateRequest } from '@workfolio/shared/generated/record'
 import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore'
 import dayjs from 'dayjs'
 import RecordForm, { RecordAttachment } from './RecordForm'
+import { RecordTemplateType, getTemplate, buildDescriptionFromFields } from '../templates/recordTemplates'
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     selectedDate?: string | null;
     allRecordGroups: RecordGroup[];
+    templateType?: RecordTemplateType;
 }
 
 const RecordCreateModal: React.FC<ModalProps> = ({
@@ -20,7 +22,10 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     onClose,
     selectedDate,
     allRecordGroups,
+    templateType = 'free',
 }) => {
+    const template = getTemplate(templateType);
+
     const [recordGroupId, setRecordGroupId] = useState<string | undefined>(undefined);
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -28,6 +33,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [attachments, setAttachments] = useState<RecordAttachment[]>([]);
+    const [templateFields, setTemplateFields] = useState<Record<string, string>>({});
 
     const { triggerRecordRefresh } = useRecordGroupStore();
 
@@ -74,41 +80,59 @@ const RecordCreateModal: React.FC<ModalProps> = ({
 
     useEffect(() => {
         if (isOpen) {
-            setTitle('');
+            setTitle(template.defaultTitle);
             setDescription('');
+            setTemplateFields({});
 
             if (selectedDate) {
                 const selectedDateTime = dayjs(selectedDate);
                 setStartedAt(selectedDateTime.toISOString());
                 setEndedAt(selectedDateTime.add(30, 'minute').toISOString());
             } else {
-                const now = dayjs();
-                const currentHour = now.hour();
-                const startHour = currentHour >= 23 ? 22 : currentHour;
-                const endHour = startHour + 1;
+                if (template.isAllDay) {
+                    const today = dayjs().startOf('day');
+                    if (templateType === 'weekly_review') {
+                        const monday = today.day(1);
+                        const friday = today.day(5).endOf('day');
+                        setStartedAt(monday.toISOString());
+                        setEndedAt(friday.toISOString());
+                    } else {
+                        setStartedAt(today.toISOString());
+                        setEndedAt(today.endOf('day').toISOString());
+                    }
+                } else {
+                    const now = dayjs();
+                    const currentHour = now.hour();
+                    const startHour = currentHour >= 23 ? 22 : currentHour;
+                    const endHour = startHour + 1;
 
-                const startTime = now.hour(startHour).minute(0).second(0);
-                const endTime = now.hour(endHour).minute(0).second(0);
+                    const startTime = now.hour(startHour).minute(0).second(0);
+                    const endTime = now.hour(endHour).minute(0).second(0);
 
-                setStartedAt(startTime.toISOString());
-                setEndedAt(endTime.toISOString());
+                    setStartedAt(startTime.toISOString());
+                    setEndedAt(endTime.toISOString());
+                }
             }
 
             setRecordGroupId(dropdownOptions[0]?.value as string || undefined);
-            setIsAllDay(false);
+            setIsAllDay(template.isAllDay);
             setAttachments([]);
         }
-    }, [isOpen, selectedDate, dropdownOptions]);
+    }, [isOpen, selectedDate, dropdownOptions, templateType, template]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const finalDescription = templateType !== 'free'
+            ? buildDescriptionFromFields(template, templateFields)
+            : description;
 
         const createRecordRequest = RecordCreateRequest.create({
             startedAt: DateUtil.parseToTimestamp(startedAt),
             endedAt: DateUtil.parseToTimestamp(endedAt),
             recordGroupId: recordGroupId || undefined,
             title: title || undefined,
-            description: description || undefined,
+            description: finalDescription || undefined,
             attachments: attachments.map(a => ({
                 fileName: a.fileName,
                 fileData: a.fileData as unknown as Uint8Array,
@@ -138,7 +162,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
         <div className="modal" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
             <div className="modal-wrap">
                 <div className="modal-tit">
-                    <h2>기록 추가</h2>
+                    <h2>{template.type === 'free' ? '기록 추가' : `${template.label} 추가`}</h2>
                     <button onClick={onClose}><i className="ic-close" /></button>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -161,6 +185,9 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                         setIsAllDay={setIsAllDay}
                         attachments={attachments}
                         onAttachmentsChange={setAttachments}
+                        templateType={templateType}
+                        templateFields={templateFields}
+                        onTemplateFieldsChange={setTemplateFields}
                     />
                     <div className="modal-btn">
                         <button type="button" onClick={onClose}>취소</button>

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useUITemplates } from '@/hooks/useUITemplates';
-import { UITemplate, UITemplateImage, formatDuration } from '@workfolio/shared/types/uitemplate';
+import { UITemplate, UITemplateImage } from '@workfolio/shared/types/uitemplate';
 import { useCredits } from '@/hooks/useCredits';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
@@ -28,7 +28,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     const [ownedUITemplateIds, setOwnedUITemplateIds] = useState<Set<string>>(new Set());
     const [activeSection, setActiveSection] = useState<'url' | 'pdf'>('url');
     const [imagePreviewTemplate, setImagePreviewTemplate] = useState<UITemplate | null>(null);
-    const [imagePreviewIndex, setImagePreviewIndex] = useState(0);
     const urlSectionRef = useRef<HTMLDivElement>(null);
     const pdfSectionRef = useRef<HTMLDivElement>(null);
 
@@ -118,29 +117,41 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
         return (uiTemplate.images ?? []).slice().sort((a, b) => a.displayOrder - b.displayOrder);
     };
 
-    const getFirstImageSrc = (uiTemplate: UITemplate): string | undefined => {
+    const getThumbnailSrc = (uiTemplate: UITemplate): string | undefined => {
         const allImages = getTemplateImages(uiTemplate);
         const thumbnail = allImages.find(img => img.imageType === 'THUMBNAIL');
         return thumbnail?.imageUrl || allImages[0]?.imageUrl || uiTemplate.thumbnailUrl;
+    };
+
+    const getDetailImages = (uiTemplate: UITemplate): UITemplateImage[] => {
+        const allImages = getTemplateImages(uiTemplate);
+        const details = allImages.filter(img => img.imageType === 'DETAIL');
+        return details.length > 0 ? details : allImages;
     };
 
     const handleImagePreviewOpen = (uiTemplate: UITemplate) => {
         const images = getTemplateImages(uiTemplate);
         if (images.length > 0) {
             setImagePreviewTemplate(uiTemplate);
-            setImagePreviewIndex(0);
         }
     };
 
     const renderTemplateListItem = (uiTemplate: UITemplate) => {
         const lowestPlan = uiTemplate.plans?.slice().sort((a, b) => a.price - b.price)[0];
-        const firstImageSrc = getFirstImageSrc(uiTemplate);
+        const firstImageSrc = getThumbnailSrc(uiTemplate);
         const hasImages = (uiTemplate.images?.length ?? 0) > 0;
         const previewPath = getPreviewPathFromUITemplate(uiTemplate);
 
         return (
             <div
                 key={uiTemplate.id}
+                onClick={() => {
+                    if (previewPath) {
+                        window.open(`/templates/preview/${previewPath}`, '_blank', 'noopener,noreferrer');
+                    } else if (hasImages) {
+                        handleImagePreviewOpen(uiTemplate);
+                    }
+                }}
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -150,6 +161,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                     border: '1px solid #e8e8e8',
                     backgroundColor: '#fff',
                     transition: 'all 0.15s ease',
+                    cursor: 'pointer',
                 }}
                 onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = '#d0d0d0';
@@ -162,7 +174,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             >
                 {/* 썸네일 */}
                 <div
-                    onClick={hasImages ? () => handleImagePreviewOpen(uiTemplate) : undefined}
                     style={{
                         width: '80px',
                         height: '100px',
@@ -171,7 +182,6 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                         flexShrink: 0,
                         position: 'relative',
                         backgroundColor: '#f0f0f0',
-                        cursor: hasImages ? 'pointer' : 'default',
                     }}
                 >
                     {firstImageSrc ? (
@@ -179,7 +189,7 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                             src={firstImageSrc}
                             alt={uiTemplate.name}
                             fill
-                            style={{ objectFit: 'cover' }}
+                            style={{ objectFit: 'cover', objectPosition: 'top' }}
                         />
                     ) : (
                         <div style={{
@@ -267,62 +277,36 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
+                    gap: '10px',
                     flexShrink: 0,
                 }}>
                     {lowestPlan && (
-                        <div style={{ textAlign: 'right' }}>
-                            <p style={{
-                                fontSize: '15px',
-                                fontWeight: 700,
-                                color: '#333',
-                                margin: 0,
-                            }}>
-                                {lowestPlan.price.toLocaleString()} 크레딧
-                            </p>
-                            {uiTemplate.plans && uiTemplate.plans.length > 1 && (
-                                <p style={{ fontSize: '11px', color: '#999', margin: '2px 0 0' }}>
-                                    {formatDuration(lowestPlan.durationDays)}~
-                                </p>
-                            )}
-                        </div>
+                        <p style={{
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            color: '#333',
+                            margin: 0,
+                            whiteSpace: 'nowrap',
+                        }}>
+                            {lowestPlan.price.toLocaleString()} 크레딧
+                        </p>
                     )}
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                        {previewPath && (
-                            <button
-                                onClick={(e) => { e.stopPropagation(); window.open(`/templates/preview/${previewPath}`, '_blank', 'noopener,noreferrer'); }}
-                                style={{
-                                    padding: '8px 14px',
-                                    backgroundColor: '#f5f5f5',
-                                    color: '#333',
-                                    border: '1px solid #e0e0e0',
-                                    borderRadius: '6px',
-                                    fontSize: '12px',
-                                    fontWeight: 600,
-                                    cursor: 'pointer',
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
-                                미리보기
-                            </button>
-                        )}
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleUITemplateSelect(uiTemplate); }}
-                            style={{
-                                padding: '8px 14px',
-                                backgroundColor: MAIN_COLOR,
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: '6px',
-                                fontSize: '12px',
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                                whiteSpace: 'nowrap',
-                            }}
-                        >
-                            구매하기
-                        </button>
-                    </div>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); handleUITemplateSelect(uiTemplate); }}
+                        style={{
+                            padding: '6px 12px',
+                            backgroundColor: MAIN_COLOR,
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        구매하기
+                    </button>
                 </div>
             </div>
         );
@@ -416,9 +400,8 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
             />
             {imagePreviewTemplate && (
                 <TemplateImagePreviewModal
-                    images={getTemplateImages(imagePreviewTemplate)}
+                    images={getDetailImages(imagePreviewTemplate)}
                     templateName={imagePreviewTemplate.name}
-                    initialIndex={imagePreviewIndex}
                     onClose={() => setImagePreviewTemplate(null)}
                 />
             )}
@@ -426,32 +409,29 @@ const UITemplateList: React.FC<UITemplateListProps> = ({ onPurchaseSuccess }) =>
     );
 };
 
-/* 이미지 미리보기 모달 */
+/* 이미지 미리보기 모달 - 세로 스크롤 방식 */
 export function TemplateImagePreviewModal({
     images,
     templateName,
-    initialIndex,
     onClose,
 }: {
     images: UITemplateImage[];
     templateName: string;
-    initialIndex: number;
     onClose: () => void;
 }) {
-    const [currentIndex, setCurrentIndex] = useState(initialIndex);
-
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
-            if (e.key === 'ArrowLeft') setCurrentIndex(prev => Math.max(0, prev - 1));
-            if (e.key === 'ArrowRight') setCurrentIndex(prev => Math.min(images.length - 1, prev + 1));
         };
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [images.length, onClose]);
+        document.body.style.overflow = 'hidden';
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+        };
+    }, [onClose]);
 
-    const current = images[currentIndex];
-    if (!current) return null;
+    if (images.length === 0) return null;
 
     return (
         <div
@@ -463,138 +443,84 @@ export function TemplateImagePreviewModal({
                 backgroundColor: 'rgba(0,0,0,0.85)',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
             }}
         >
-            {/* 닫기 버튼 - 우측 상단 고정 */}
-            <button
-                onClick={onClose}
-                style={{
-                    position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    zIndex: 1,
-                    background: 'rgba(255,255,255,0.15)',
-                    border: 'none',
-                    color: '#fff',
-                    fontSize: '20px',
-                    width: '36px',
-                    height: '36px',
-                    lineHeight: '36px',
-                    borderRadius: '50%',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: 0,
-                    textAlign: 'center',
-                }}
-            >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 4L4 12M4 4L12 12" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-            </button>
-
-            {/* 상단 헤더 영역 */}
+            {/* 상단 헤더 - 고정 */}
             <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     flexShrink: 0,
                     display: 'flex',
-                    flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '20px 56px 12px',
+                    justifyContent: 'center',
+                    padding: '16px 56px',
+                    position: 'relative',
                 }}
             >
                 <p style={{ color: '#fff', fontSize: '14px', fontWeight: 600, margin: 0 }}>
                     {templateName}
                 </p>
-                {images.length > 1 && (
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        {images.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setCurrentIndex(idx)}
-                                style={{
-                                    width: idx === currentIndex ? '10px' : '8px',
-                                    height: idx === currentIndex ? '10px' : '8px',
-                                    borderRadius: '50%',
-                                    border: 'none',
-                                    padding: 0,
-                                    backgroundColor: idx === currentIndex ? '#fff' : 'rgba(255,255,255,0.4)',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease',
-                                }}
-                            />
-                        ))}
-                    </div>
-                )}
+                {/* 닫기 버튼 */}
+                <button
+                    onClick={onClose}
+                    style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '16px',
+                        background: 'rgba(255,255,255,0.15)',
+                        border: 'none',
+                        color: '#fff',
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                    }}
+                >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4L4 12M4 4L12 12" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                </button>
             </div>
 
-            {/* 메인 이미지 고정 영역 */}
+            {/* 세로 스크롤 이미지 영역 */}
             <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     flex: 1,
-                    width: '90vw',
-                    maxWidth: '800px',
+                    overflowY: 'auto',
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    overflow: 'hidden',
+                    padding: '0 16px 32px',
+                    WebkitOverflowScrolling: 'touch',
                 }}
             >
-                <img
-                    src={current.imageUrl}
-                    alt={`${templateName} ${currentIndex + 1}`}
-                    style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        objectFit: 'contain',
-                        borderRadius: '8px',
-                    }}
-                />
-            </div>
-
-            {/* 하단 썸네일 목록 */}
-            {images.length > 1 && (
-                <div
-                    onClick={(e) => e.stopPropagation()}
-                    style={{
-                        display: 'flex',
-                        gap: '8px',
-                        padding: '16px 0 24px',
-                        overflowX: 'auto',
-                        maxWidth: '90vw',
-                        flexShrink: 0,
-                    }}
-                >
+                <div style={{
+                    width: '100%',
+                    maxWidth: '600px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                }}>
                     {images.map((img, idx) => (
-                        <div
+                        <img
                             key={img.id}
-                            onClick={() => setCurrentIndex(idx)}
+                            src={img.imageUrl}
+                            alt={`${templateName} ${idx + 1}`}
                             style={{
-                                width: '60px',
-                                height: '60px',
-                                borderRadius: '4px',
-                                overflow: 'hidden',
-                                flexShrink: 0,
-                                cursor: 'pointer',
-                                border: idx === currentIndex ? '2px solid #fff' : '2px solid transparent',
-                                opacity: idx === currentIndex ? 1 : 0.5,
-                                transition: 'opacity 0.15s ease',
+                                width: '100%',
+                                height: 'auto',
+                                display: 'block',
+                                borderRadius: idx === 0 ? '8px 8px 0 0' : idx === images.length - 1 ? '0 0 8px 8px' : '0',
                             }}
-                        >
-                            <img
-                                src={img.imageUrl}
-                                alt={`${templateName} ${idx + 1}`}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                        </div>
+                        />
                     ))}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

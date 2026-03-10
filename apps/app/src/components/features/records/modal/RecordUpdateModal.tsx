@@ -2,16 +2,17 @@ import React, {useEffect, useState, useMemo} from 'react'
 import HttpMethod from "@workfolio/shared/enums/HttpMethod"
 import { DateUtil } from "@workfolio/shared/utils/DateUtil"
 import {IDropdown} from "@workfolio/shared/ui/Dropdown"
-import {Record, RecordGroup} from "@workfolio/shared/generated/common"
+import {Record as RecordModel, RecordGroup} from "@workfolio/shared/generated/common"
 import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore'
 import dayjs from 'dayjs'
 import { RecordUpdateRequest } from '@workfolio/shared/generated/record'
 import RecordForm, { RecordAttachment } from './RecordForm'
+import { RecordTemplateType, detectTemplateType, getTemplate, parseDescriptionToFields, buildDescriptionFromFields } from '../templates/recordTemplates'
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    record: Record | null;
+    record: RecordModel | null;
     allRecordGroups: RecordGroup[];
 }
 
@@ -28,6 +29,8 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     const [endedAt, setEndedAt] = useState(dayjs().add(1, 'hour').toISOString());
     const [isAllDay, setIsAllDay] = useState(false);
     const [attachments, setAttachments] = useState<RecordAttachment[]>([]);
+    const [templateType, setTemplateType] = useState<RecordTemplateType>('free');
+    const [templateFields, setTemplateFields] = useState<Record<string, string>>({});
 
     const { triggerRecordRefresh } = useRecordGroupStore();
 
@@ -51,12 +54,24 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
     useEffect(() => {
         if (isOpen && record) {
             setTitle(record.title || '');
-            setDescription(record.description || '');
             setStartedAt(record.startedAt ? dayjs(parseInt(record.startedAt.toString())).toISOString() : dayjs().toISOString());
             setEndedAt(record.endedAt ? dayjs(parseInt(record.endedAt.toString())).toISOString() : dayjs().add(1, 'hour').toISOString());
             setRecordGroupId(record.recordGroup?.id || '');
             setIsAllDay(false);
             setAttachments([]);
+
+            const desc = record.description || '';
+            const detected = detectTemplateType(desc);
+            setTemplateType(detected);
+
+            if (detected !== 'free') {
+                const template = getTemplate(detected);
+                setTemplateFields(parseDescriptionToFields(template, desc));
+                setDescription('');
+            } else {
+                setDescription(desc);
+                setTemplateFields({});
+            }
         }
     }, [isOpen, record]);
 
@@ -81,11 +96,16 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
 
         if (!record) return;
 
+        const template = getTemplate(templateType);
+        const finalDescription = templateType !== 'free'
+            ? buildDescriptionFromFields(template, templateFields)
+            : description;
+
         try {
             const updateRecordRequest: RecordUpdateRequest = {
                 id: record.id,
                 title: title,
-                description: description,
+                description: finalDescription,
                 attachments: attachments.map(a => ({
                     fileName: a.fileName,
                     fileData: a.fileData as unknown as Uint8Array,
@@ -113,11 +133,13 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
 
     if (!isOpen || !record) return null;
 
+    const template = getTemplate(templateType);
+
     return (
         <div className="modal" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
             <div className="modal-wrap">
                 <div className="modal-tit">
-                    <h2>기록 수정</h2>
+                    <h2>{templateType === 'free' ? '기록 수정' : `${template.label} 수정`}</h2>
                     <button onClick={onClose}><i className="ic-close" /></button>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -138,6 +160,9 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                         setIsAllDay={setIsAllDay}
                         attachments={attachments}
                         onAttachmentsChange={setAttachments}
+                        templateType={templateType}
+                        templateFields={templateFields}
+                        onTemplateFieldsChange={setTemplateFields}
                     />
                     <div className="modal-btn">
                         <button type="button" onClick={onClose}>취소</button>

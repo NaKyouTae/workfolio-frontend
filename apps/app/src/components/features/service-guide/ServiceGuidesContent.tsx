@@ -4,7 +4,8 @@ import React from "react";
 import Notices from "./contents/Notices";
 import TermsOfService from "./contents/TermsOfService";
 import PrivacyPolicy from "./contents/PrivacyPolicy";
-// import Company from "./contents/Company";
+import Guides from "./contents/Guides";
+import Company from "./contents/Company";
 import { MenuType } from "@workfolio/shared/models/MenuType";
 
 interface ServiceGuidesContentProps {
@@ -17,7 +18,8 @@ const ServiceGuidesContent: React.FC<ServiceGuidesContentProps> = ({ selectedMen
             {selectedMenu === "notices" && <Notices />}
             {selectedMenu === "terms" && <TermsOfService />}
             {selectedMenu === "privacy" && <PrivacyPolicy />}
-            {/* {selectedMenu === "company" && <Company />} */}
+            {selectedMenu === "guides" && <Guides />}
+            {selectedMenu === "company" && <Company />}
         </div>
     );
 };

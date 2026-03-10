@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { ResumeDetail } from "@workfolio/shared/generated/common";
 import { isLoggedIn } from "@workfolio/shared/utils/authUtils";
 import LoginModal from "@workfolio/shared/ui/LoginModal";
-import SidebarListSkeleton from "@workfolio/shared/ui/skeleton/SidebarListSkeleton";
 import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
 
 const NEXT_PUBLIC_ADSENSE_CAREERS_SLOT = process.env.NEXT_PUBLIC_ADSENSE_CAREERS_SLOT;
@@ -22,7 +21,6 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({
     onResumeSelect,
     onResumeCreated,
     onGoHome,
-    isLoading = false,
 }) => {
     const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -58,7 +56,7 @@ const CareerSidebar: React.FC<CareerSidebarProps> = ({
                     내 이력 관리
                 </div>
                 <div className="aside-group">
-                    <p className="aside-group-title">내 이력서</p>
+                    <p className="aside-group-title">내 이력서 <span style={{ color: 'var(--gray005)', fontWeight: 400, marginLeft: '0.4rem' }}>{resumeDetails.length}</span></p>
                     <ul className="aside-group-list">
                         {/* isLoading ? (
                             <SidebarListSkeleton count={3} />

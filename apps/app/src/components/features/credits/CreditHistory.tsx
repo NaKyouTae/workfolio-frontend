@@ -47,7 +47,7 @@ function getTxIconStyle(txType: CreditTxType | string): string {
 }
 
 const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) => {
-    const { history, totalPages, currentPage, historyLoading, historyError, fetchHistory, fetchBalance } = useCredits();
+    const { history, totalPages, currentPage, historyError, fetchHistory, fetchBalance } = useCredits();
     const [selectedTxType, setSelectedTxType] = useState<CreditTxType | 'ALL'>('ALL');
     const pageSize = 10;
 

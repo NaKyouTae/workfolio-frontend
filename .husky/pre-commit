@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# package.json 파일들 정렬
+pnpm sort-pkg
+
+# 정렬된 package.json 파일들을 현재 커밋에 추가
+git add "**/package.json"
+
+# 변경 파일만 ESLint 검사 (auto-fix 사용 안 함)
+pnpm lint-staged || exit 1

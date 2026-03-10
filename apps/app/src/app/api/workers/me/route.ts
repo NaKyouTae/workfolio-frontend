@@ -39,10 +39,19 @@ export async function DELETE() {
 
         const res = await apiFetchHandler(`${API_BASE_URL}/api/workers/me`, HttpMethod.DELETE, undefined, accessToken);
 
-        // 응답이 정상적인 경우
         const data = await res.json();
+        const status = res.status;
 
-        return NextResponse.json(data)
+        const response = NextResponse.json(data, { status });
+
+        // 성공 시에만 httpOnly 쿠키 삭제
+        if (status >= 200 && status < 300) {
+            response.cookies.set("accessToken", "", { httpOnly: true, path: "/", maxAge: 0 });
+            response.cookies.set("refreshToken", "", { httpOnly: true, path: "/", maxAge: 0 });
+            response.cookies.set("logged_in", "", { httpOnly: false, path: "/", maxAge: 0 });
+        }
+
+        return response;
     } catch (error) {
         console.error('Error in DELETE request:', error);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });

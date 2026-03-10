@@ -45,6 +45,22 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
                 <textarea
                     value={formData.content}
                     onChange={(e) => onChange("content", e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Tab") {
+                            e.preventDefault();
+                            const textarea = e.currentTarget;
+                            const start = textarea.selectionStart;
+                            const end = textarea.selectionEnd;
+                            const newValue =
+                                formData.content.substring(0, start) +
+                                "    " +
+                                formData.content.substring(end);
+                            onChange("content", newValue);
+                            requestAnimationFrame(() => {
+                                textarea.selectionStart = textarea.selectionEnd = start + 4;
+                            });
+                        }
+                    }}
                     required
                     rows={10}
                     placeholder="공지사항 내용을 입력하세요"

@@ -4,10 +4,9 @@ import React, { useState } from 'react';
 import { useUser } from '@/hooks/useUser';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
 import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
-import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 
 export default function WithdrawPage() {
-    const { deleteAccount, isLoading } = useUser();
+    const { deleteAccount, isLoading, isLoggedIn } = useUser();
     const { showNotification } = useNotification();
     const { confirm } = useConfirm();
     const [isDeleting, setIsDeleting] = useState(false);
@@ -30,27 +29,29 @@ export default function WithdrawPage() {
             await deleteAccount();
         } catch (error) {
             console.error('회원 탈퇴 실패:', error);
-            showNotification('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
+            showNotification('회원 탈퇴에 실패했습니다. 다시 시도해주세요.', 'error');
         } finally {
             setIsDeleting(false);
         }
     };
 
     return (
-        <div className="page-cont">
-            <div className="cont-box">
-                <div className="cont-tit">
-                    <div>
-                        <h3>회원 탈퇴</h3>
-                    </div>
+        <>
+            <div className="page-title">
+                <div>
+                    <h2>회원 탈퇴</h2>
                 </div>
-                <ul className="setting-list">
-                    <li>
-                        <p>회원 탈퇴</p>
-                        <button className="xsm" onClick={handleWithdraw} disabled={!isLoggedIn || isDeleting || isLoading}>탈퇴하기</button>
-                    </li>
-                </ul>
             </div>
-        </div>
+            <div className="page-cont">
+                <div className="cont-box">
+                    <ul className="setting-list">
+                        <li>
+                            <p>회원 탈퇴</p>
+                            <button className="xsm" onClick={handleWithdraw} disabled={!isLoggedIn || isDeleting || isLoading}>탈퇴하기</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </>
     );
 }

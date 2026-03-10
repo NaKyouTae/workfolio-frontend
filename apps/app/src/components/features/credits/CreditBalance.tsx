@@ -11,7 +11,7 @@ interface CreditBalanceProps {
 }
 
 const CreditBalance: React.FC<CreditBalanceProps> = ({ compact = false }) => {
-    const { balance, balanceLoading, fetchBalance } = useCredits();
+    const { balance, fetchBalance } = useCredits();
 
     useEffect(() => {
         fetchBalance();

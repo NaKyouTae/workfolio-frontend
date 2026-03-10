@@ -8,8 +8,6 @@ import { TurnOverUpsertRequest } from '@workfolio/shared/generated/turn_over';
 import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
-import TurnOverContentViewSkeleton from '@workfolio/shared/ui/skeleton/TurnOverContentViewSkeleton';
-
 import Footer from "@/components/layouts/Footer"
 
 type ViewMode = 'home' | 'view' | 'edit';
@@ -28,22 +26,24 @@ interface TurnOversContentProps {
   onCancelEdit?: () => void;
   onSaveComplete?: (mode: ViewMode) => void;
   onTurnOverUpdate?: () => void;
+  onTurnOverCreated?: () => void;
 }
 
-const TurnOversContent  : React.FC<TurnOversContentProps> = ({ 
-  selectedTurnOver, 
-  isNewTurnOver = false, 
+const TurnOversContent  : React.FC<TurnOversContentProps> = ({
+  selectedTurnOver,
+  isNewTurnOver = false,
   viewMode,
   isLoading = false,
   onTurnOverSelect,
   onTurnOverSelectAndEdit,
-  onSave, 
-  onDuplicate, 
+  onSave,
+  onDuplicate,
   onDelete,
   onEnterEdit,
   onCancelEdit,
   onSaveComplete,
   onTurnOverUpdate,
+  onTurnOverCreated,
 }) => {
   const { confirm } = useConfirm();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -186,11 +186,12 @@ const TurnOversContent  : React.FC<TurnOversContentProps> = ({
   return (
     <section>
         {currentViewMode === 'home' && (
-          <TurnOversIntegration 
-            onSelectTurnOver={handleTurnOverSelect} 
-            onEdit={handleTurnOverEdit} 
-            onDuplicate={handleDuplicate} 
+          <TurnOversIntegration
+            onSelectTurnOver={handleTurnOverSelect}
+            onEdit={handleTurnOverEdit}
+            onDuplicate={handleDuplicate}
             onDelete={handleDelete}
+            onCreate={onTurnOverCreated}
             isLoading={isLoading && viewMode === 'home'}
           />
         )}

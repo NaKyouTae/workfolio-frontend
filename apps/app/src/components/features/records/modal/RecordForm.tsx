@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
 import Dropdown, { IDropdown } from "@workfolio/shared/ui/Dropdown"
 import DateTimeInput from "@workfolio/shared/ui/DateTimeInput"
+import { RecordTemplateType } from '../templates/recordTemplates'
+import TemplateFields from '../templates/TemplateFields'
 
 export interface RecordAttachment {
     fileName: string;
@@ -24,6 +26,9 @@ interface RecordFormProps {
     setIsAllDay: (val: boolean) => void;
     attachments: RecordAttachment[];
     onAttachmentsChange: (attachments: RecordAttachment[]) => void;
+    templateType?: RecordTemplateType;
+    templateFields?: Record<string, string>;
+    onTemplateFieldsChange?: (fields: Record<string, string>) => void;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -56,8 +61,12 @@ const RecordForm: React.FC<RecordFormProps> = ({
     setIsAllDay,
     attachments,
     onAttachmentsChange,
+    templateType = 'free',
+    templateFields = {},
+    onTemplateFieldsChange,
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const isTemplateMode = templateType !== 'free' && onTemplateFieldsChange;
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -163,15 +172,23 @@ const RecordForm: React.FC<RecordFormProps> = ({
                     />
                     <label htmlFor="allday"><p>종일</p></label>
                 </li>
-                <li>
-                    <p>메모</p>
-                    <textarea
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        rows={4}
+                {isTemplateMode ? (
+                    <TemplateFields
+                        templateType={templateType}
+                        templateFields={templateFields}
+                        onTemplateFieldsChange={onTemplateFieldsChange!}
                     />
-                </li>
+                ) : (
+                    <li>
+                        <p>메모</p>
+                        <textarea
+                            id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            rows={4}
+                        />
+                    </li>
+                )}
                 <li>
                     <p>첨부파일</p>
                     <label className="file">

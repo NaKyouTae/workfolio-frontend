@@ -64,23 +64,25 @@ export const useUser = () => {
         try {
             setLoading(true);
             setError(null);
-            
-            const response = await fetch('/api/workers/me', { method: HttpMethod.DELETE });
-            
-            // 400 에러가 발생해도 회원 탈퇴가 완료된 것으로 간주
-            if (!response.ok && response.status !== 400) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            // 성공 시 유저 정보 클리어 및 로그아웃
-            clearUser();
-            document.cookie = 'accessToken=; max-age=0; path=/';
-            document.cookie = 'refreshToken=; max-age=0; path=/';
-            document.cookie = 'logged_in=; max-age=0; path=/';
 
-            // 로그인 페이지로 리다이렉트
-            window.location.href = '/login';
-            
+            const response = await fetch('/api/workers/me', { method: HttpMethod.DELETE });
+
+            if (!response.ok) {
+                throw new Error('회원 탈퇴에 실패했습니다.');
+            }
+
+            const data = await response.json();
+            if (!data.isSuccess) {
+                throw new Error('회원 탈퇴에 실패했습니다.');
+            }
+
+            // 성공 시 유저 정보 클리어
+            // httpOnly 쿠키는 서버(API route)에서 삭제됨
+            clearUser();
+
+            // 루트로 리다이렉트
+            window.location.href = '/';
+
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : '회원 탈퇴 중 오류가 발생했습니다.';
             setError(errorMessage);
@@ -91,13 +93,9 @@ export const useUser = () => {
         }
     }, [clearUser, setLoading, setError]);
     
-    // 로그아웃
+    // 로그아웃 (httpOnly 쿠키는 서버 API route에서 삭제)
     const logout = useCallback(() => {
         clearUser();
-        // 쿠키에서 토큰 제거
-        document.cookie = 'accessToken=; max-age=0; path=/';
-        document.cookie = 'refreshToken=; max-age=0; path=/';
-        document.cookie = 'logged_in=; max-age=0; path=/';
     }, [clearUser]);
     
     // 유저 정보 새로고침

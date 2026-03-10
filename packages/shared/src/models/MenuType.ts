@@ -1,1 +1,1 @@
-export type MenuType = "info" | "notices" | "terms" | "privacy" | "company";
+export type MenuType = "info" | "notices" | "terms" | "privacy" | "company" | "guides";

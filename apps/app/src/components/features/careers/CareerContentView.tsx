@@ -13,7 +13,6 @@ import { normalizeEnumValue } from '@workfolio/shared/utils/commonUtils';
 import DateUtil from '@workfolio/shared/utils/DateUtil';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
-import CareerContentViewSkeleton from '@workfolio/shared/ui/skeleton/CareerContentViewSkeleton';
 import { useNotification } from '@workfolio/shared/hooks/useNotification';
 import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { UITemplate, WorkerUITemplate } from '@workfolio/shared/types/uitemplate';
@@ -39,7 +38,6 @@ interface CareerContentViewProps {
  */
 const CareerContentView: React.FC<CareerContentViewProps> = ({
   selectedResumeDetail,
-  isLoading = false,
   onEdit,
   duplicateResume,
   deleteResume,

@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /info
+Allow: /service-guides
+Allow: /templates/preview
+Allow: /resumes
+
+Disallow: /records
+Disallow: /careers
+Disallow: /turn-overs
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+Sitemap: https://workfolio.kr/sitemap.xml

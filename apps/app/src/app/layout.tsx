@@ -12,7 +12,7 @@ import GoogleAnalytics from "@workfolio/shared/ui/GoogleAnalytics";
 export const metadata = {
     title: "워크폴리오 - 나만의 기록장",
     description:
-        "일과 이력을 한곳에 쌓아두는 기록 플랫폼, 워크폴리오. 경험을 정리하고 커리어를 성장시켜 보세요.",
+        "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
     icons: {
         icon: "/assets/img/favicon.svg",
         shortcut: "/assets/img/favicon.ico",

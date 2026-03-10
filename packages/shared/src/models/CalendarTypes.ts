@@ -10,10 +10,10 @@ export interface CalendarViewOption {
 }
 
 export const CALENDAR_VIEW_OPTIONS: CalendarViewOption[] = [
+    { value: 'record', label: '기록' },
     { value: 'weekly', label: '주간' },
     { value: 'monthly', label: '월간' },
-    // { value: 'list', label: '목록' },
-    { value: 'record', label: '기록' },
+    { value: 'list', label: '목록' },
 ];
 
 export interface CalendarEvent {

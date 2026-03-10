@@ -1,32 +1,40 @@
 {
-    "name": "workfolio",
-    "private": true,
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
-    "scripts": {
-        "dev": "pnpm run proto && turbo dev",
-        "build": "pnpm run proto && turbo build",
-        "lint": "turbo lint",
-        "dev:app": "pnpm run proto && turbo dev --filter=app",
-        "dev:admin": "pnpm run proto && turbo dev --filter=admin",
-        "install-protoc": "bash scripts/install-protoc.sh",
-        "proto": "bash scripts/compile-proto.sh"
-    },
-    "packageManager": "pnpm@10.28.1",
-    "devDependencies": {
-        "@eslint/eslintrc": "^3",
-        "@types/luxon": "^3.4.2",
-        "eslint": "^9",
-        "luxon": "^3.6.0",
-        "protobufjs": "^7.4.0",
-        "protoc-gen-grpc-web": "^1.5.0",
-        "protoc-gen-js": "^3.21.4-4",
-        "protoc-gen-ts": "^0.8.7",
-        "rimraf": "^6.0.1",
-        "ts-proto": "^2.7.0",
-        "turbo": "^2",
-        "typescript": "^5"
-    }
+  "name": "workfolio",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm run proto && turbo build",
+    "dev": "pnpm run proto && turbo dev",
+    "dev:admin": "pnpm run proto && turbo dev --filter=admin",
+    "dev:app": "pnpm run proto && turbo dev --filter=app",
+    "install-protoc": "bash scripts/install-protoc.sh",
+    "lint": "turbo lint",
+    "prepare": "husky",
+    "proto": "bash scripts/compile-proto.sh",
+    "sort-pkg": "sort-package-json 'package.json' 'apps/*/package.json' 'packages/*/package.json'"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs}": "eslint --no-fix"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/luxon": "^3.4.2",
+    "eslint": "^9",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.2",
+    "luxon": "^3.6.0",
+    "protobufjs": "^7.4.0",
+    "protoc-gen-grpc-web": "^1.5.0",
+    "protoc-gen-js": "^3.21.4-4",
+    "protoc-gen-ts": "^0.8.7",
+    "rimraf": "^6.0.1",
+    "sort-package-json": "^3.6.1",
+    "ts-proto": "^2.7.0",
+    "turbo": "^2",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@10.28.1"
 }

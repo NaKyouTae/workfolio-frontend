@@ -6,8 +6,6 @@ import TurnOverChallengeView from './view/TurnOverChallengeView';
 import TurnOverContentViewHeader from './TurnOverContentViewHeader';
 import TurnOverContentTab, { TabType } from './TurnOverContentTab';
 import FloatingNavigation, { FloatingNavigationItem } from '@workfolio/shared/ui/FloatingNavigation';
-import TurnOverContentViewSkeleton from '@workfolio/shared/ui/skeleton/TurnOverContentViewSkeleton';
-
 interface TurnOversContentViewProps {
   selectedTurnOver: TurnOverDetail | null;
   isLoading?: boolean;
@@ -18,7 +16,7 @@ interface TurnOversContentViewProps {
   onShowLoginModal?: () => void;
 }
 
-const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, isLoading = false, onEdit, onDuplicate, onDelete, onUpdate, onShowLoginModal }) => {
+const TurnOversContentView: React.FC<TurnOversContentViewProps> = ({ selectedTurnOver, onEdit, onDuplicate, onDelete, onUpdate, onShowLoginModal }) => {
   const [activeTab, setActiveTab] = useState<TabType>('goal');
   const [navigationItems, setNavigationItems] = useState<FloatingNavigationItem[]>([]);
 

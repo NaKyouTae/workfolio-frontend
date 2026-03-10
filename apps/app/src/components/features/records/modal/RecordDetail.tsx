@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { DateUtil } from '@workfolio/shared/utils/DateUtil';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
+import { detectTemplateType, getTemplate, parseDescriptionToFields } from '../templates/recordTemplates';
 
 interface RecordDetailProps {
     isOpen: boolean;
@@ -47,6 +48,23 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
         };
     }, [isOpen, onClose]);
 
+    // ESC 키 감지
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, onClose]);
+
     if (!isOpen || !record) return null;
 
     // 시작일과 종료일이 같은지 확인
@@ -68,14 +86,20 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
         }
     };
 
+    // 템플릿 감지
+    const templateType = detectTemplateType(record.description || '');
+    const template = getTemplate(templateType);
+    const isTemplateMode = templateType !== 'free';
+    const templateFieldValues = isTemplateMode
+        ? parseDescriptionToFields(template, record.description || '')
+        : {};
+
     // 설명 텍스트를 줄바꿈으로 분리하여 렌더링
-    const renderDescription = () => {
-        if (!record.description) return null;
-        
-        return record.description.split('\n').map((line, index) => (
+    const renderText = (text: string) => {
+        return text.split('\n').map((line, index, arr) => (
             <span key={index}>
                 {line}
-                {index < record.description.split('\n').length - 1 && <br />}
+                {index < arr.length - 1 && <br />}
             </span>
         ));
     };
@@ -102,12 +126,21 @@ const RecordDetail: React.FC<RecordDetailProps> = ({
                 <ul className="record-info">
                     <li><span>일시</span><p>{getTimeRange()}</p></li>
                     {record.description && (
-                        <li>
-                            <span>메모</span>
-                            <p>
-                                {renderDescription()}
-                            </p>
-                        </li>
+                        isTemplateMode ? (
+                            template.fields
+                                .filter(field => templateFieldValues[field.key]?.trim())
+                                .map(field => (
+                                    <li key={field.key}>
+                                        <span>{field.label}</span>
+                                        <p>{renderText(templateFieldValues[field.key])}</p>
+                                    </li>
+                                ))
+                        ) : (
+                            <li>
+                                <span>메모</span>
+                                <p>{renderText(record.description)}</p>
+                            </li>
+                        )
                     )}
                     {/* {record.recordGroup && (
                         <li>

@@ -116,12 +116,6 @@ const CompanyModal: React.FC<CompanyModalProps> = ({ isOpen, onClose }) => {
                                         워크폴리오(workfolio)
                                     </span>
                                 </div>
-                                <div className="company-modal-info-item">
-                                    <span className="company-modal-info-label">도메인</span>
-                                    <span className="company-modal-info-value">
-                                        www.workfolio.kr
-                                    </span>
-                                </div>
                             </div>
                         </div>
 

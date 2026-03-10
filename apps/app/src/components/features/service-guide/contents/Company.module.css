@@ -1,0 +1,76 @@
+.introCard {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+    border-radius: 1.2rem;
+    padding: 2.8rem 3.2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.introIcon {
+    flex-shrink: 0;
+    width: 5.2rem;
+    height: 5.2rem;
+    border-radius: 1.2rem;
+    background: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.introText {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: var(--gray006);
+    word-break: keep-all;
+}
+
+.infoGrid {
+    display: flex;
+    flex-direction: column;
+}
+
+.infoRow {
+    display: flex;
+    align-items: center;
+    padding: 1.4rem 1.6rem;
+    border-bottom: 1px solid var(--gray002);
+    transition: background-color 0.15s;
+}
+
+.infoRow:last-child {
+    border-bottom: none;
+}
+
+.infoRow:hover {
+    background-color: var(--gray001);
+}
+
+.infoLabel {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--gray005);
+    min-width: 14rem;
+    flex-shrink: 0;
+}
+
+.infoValue {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--black);
+    word-break: break-word;
+    flex: 1;
+}
+
+.link {
+    color: var(--blue);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.link:hover {
+    color: var(--cyan);
+    text-decoration: underline;
+}

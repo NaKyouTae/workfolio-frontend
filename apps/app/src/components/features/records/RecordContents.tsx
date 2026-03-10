@@ -5,6 +5,7 @@ import React, {
     useImperativeHandle,
     useEffect,
     useRef,
+    useMemo,
 } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRecordGroupStore } from "@workfolio/shared/store/recordGroupStore";
@@ -16,15 +17,13 @@ import { parseCalendarViewType } from "@workfolio/shared/utils/commonUtils";
 import { RecordGroupDetailResponse } from "@workfolio/shared/generated/record_group";
 import { ListRecordResponse } from "@workfolio/shared/generated/record";
 import dayjs from "dayjs";
-import CalendarHeader from "./calendar/CalendarHeader";
+import CalendarHeader, { TemplateFilterType } from "./calendar/CalendarHeader";
+import { detectTemplateType } from "./templates/recordTemplates";
 import ListCalendar from "./calendar/list/ListCalendar";
 import MonthlyCalendar from "./calendar/monthly/MonthlyCalendar";
 import WeeklyCalendar from "./calendar/weekly/WeeklyCalendar";
 import RecordFeed from "./calendar/record/RecordFeed";
 import RecordSearch from "./search/RecordSearch";
-import WeeklyCalendarSkeleton from "@workfolio/shared/ui/skeleton/WeeklyCalendarSkeleton";
-import MonthlyCalendarSkeleton from "@workfolio/shared/ui/skeleton/MonthlyCalendarSkeleton";
-import ListCalendarSkeleton from "@workfolio/shared/ui/skeleton/ListCalendarSkeleton";
 
 export interface RecordContentsRef {
     refreshRecords: () => void;
@@ -85,6 +84,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         const [date, setDate] = useState<Date>(urlDate);
         const [searchResults, setSearchResults] = useState<ListRecordResponse | null>(null);
         const [searchKeyword, setSearchKeyword] = useState<string>("");
+        const [templateFilter, setTemplateFilter] = useState<TemplateFilterType>("all");
 
         // 초기 URL 설정 여부 추적
         const isInitialURLSet = useRef(false);
@@ -100,7 +100,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
 
         // records hook 사용 - recordType에 따라 적절한 파라미터 전달
         const isMonthlyBased = recordType === "monthly" || recordType === "list" || recordType === "record";
-        const { records, refreshRecords, searchRecordsByKeyword, isLoading } = useRecords(
+        const { records, refreshRecords, searchRecordsByKeyword } = useRecords(
             recordType === "record" ? "list" : recordType,
             isMonthlyBased ? date.getMonth() + 1 : undefined,
             isMonthlyBased ? date.getFullYear() : undefined,
@@ -304,8 +304,25 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
             }
         }, [searchParams, recordType, date, updateURL, systemConfig?.value]);
 
-        // 검색 필터링된 레코드
-        const filteredRecords = Array.isArray(records) ? records : [];
+        // 체크된 기록장 ID Set
+        const checkedGroupIds = useMemo(
+            () => new Set(checkedRecordGroups.map((g) => g.id)),
+            [checkedRecordGroups]
+        );
+
+        // 체크된 기록장 + 템플릿 유형으로 필터링된 레코드
+        const filteredRecords = useMemo(() => {
+            const validRecords = Array.isArray(records) ? records : [];
+            if (checkedGroupIds.size === 0) return [];
+            return validRecords.filter((record) => {
+                if (!record.recordGroup?.id || !checkedGroupIds.has(record.recordGroup.id)) return false;
+                if (templateFilter !== "all") {
+                    const type = detectTemplateType(record.description || "");
+                    if (type !== templateFilter) return false;
+                }
+                return true;
+            });
+        }, [records, checkedGroupIds, templateFilter]);
 
         return (
             <div className="contents">
@@ -320,6 +337,8 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                     onSearchChange={handleSearchChange}
                     onCloseSearch={handleCloseSearch}
                     searchResults={searchResults}
+                    templateFilter={templateFilter}
+                    onTemplateFilterChange={setTemplateFilter}
                 />
 
                 {/* 검색 결과가 있으면 검색 결과 표시, 없으면 캘린더 표시 */}

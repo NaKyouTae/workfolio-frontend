@@ -7,10 +7,6 @@ import NewRecordGroupItem from '../NewRecordGroupItem';
 import { RecordGroup, RecordGroup_RecordGroupType } from '@workfolio/shared/generated/common';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
-import RecordGroupsSkeleton from '@workfolio/shared/ui/skeleton/RecordGroupsSkeleton';
-import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore';
-import { useShallow } from 'zustand/react/shallow';
-
 interface RecordGroupSectionProps {
     defaultExpanded?: boolean;
     recordGroups: RecordGroup[];
@@ -27,13 +23,6 @@ const RecordGroupsShared: React.FC<RecordGroupSectionProps> = React.memo(({
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
     
-    // 로딩 상태 확인
-    const { isLoading } = useRecordGroupStore(
-        useShallow((state) => ({
-            isLoading: state.isLoading,
-        }))
-    );
-
     const handleToggleGroups = useCallback(() => {
         setIsGroupsExpanded(prev => !prev);
     }, []);

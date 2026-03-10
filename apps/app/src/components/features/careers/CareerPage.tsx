@@ -148,6 +148,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
   // 편집 취소 (이전 화면으로 복귀)
   const handleCancelEdit = () => {
     if (previousMode === 'home') {
+      setViewMode('home');
       setSelectedResumeDetail(null);
       setIsNewResume(false);
       router.push('/careers');
@@ -236,6 +237,7 @@ const CareerPage: React.FC<CareerPageProps> = ({ initialResumeId, initialEditMod
         onEnterEdit={handleEnterEdit}
         onCancelEdit={handleCancelEdit}
         onSaveComplete={handleSaveComplete}
+        onResumeCreated={handleResumeCreated}
         duplicateResume={(resumeId) => duplicateResume(resumeId, handleDeleteSuccess)}
         deleteResume={(resumeId) => deleteResume(resumeId, handleDeleteSuccess)}
         exportPDF={exportPDF}

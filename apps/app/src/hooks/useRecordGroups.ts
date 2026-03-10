@@ -89,10 +89,9 @@ export const useRecordGroups = () => {
                 setOwnedRecordGroups(sampleOwnedGroups);
                 setSharedRecordGroups(sampleSharedGroups);
 
-                // 샘플 레코드도 함께 생성하여 캐시에 저장
-                const sampleRecordGroups = createSampleRecordGroups();
+                // 샘플 레코드도 함께 생성하여 캐시에 저장 (동일한 그룹 객체 사용)
                 const sampleRecords = createSampleRecords(
-                    sampleRecordGroups
+                    [...sampleOwnedGroups, ...sampleSharedGroups]
                 ) as unknown as Record[];
                 setSampleRecords(sampleRecords);
 

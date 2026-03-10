@@ -1,175 +1,4 @@
-.container {
-  padding: 40px;
-  max-width: 1400px;
-  margin: 0 auto;
-  background-color: #f8f9fa;
-}
-
-.header {
-  margin-bottom: 32px;
-}
-
-.title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px;
-  font-size: 18px;
-  color: #666;
-}
-
-/* 통계 섹션 */
-.statisticsSection {
-  margin-bottom: 48px;
-}
-
-.sectionTitle {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 24px 0;
-}
-
-.statisticsCards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.statCard {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 28px 24px;
-  transition: all 0.2s ease;
-}
-
-.statCard:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.statLabel {
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b7280;
-  margin-bottom: 12px;
-}
-
-.statValue {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.statNumber {
-  font-size: 36px;
-  font-weight: 700;
-  color: #1a1a1a;
-}
-
-.statUnit {
-  font-size: 16px;
-  font-weight: 500;
-  color: #6b7280;
-}
-
-/* 이직 활동 섹션 */
-.turnOversSection {
-  margin-bottom: 40px;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.count {
-  font-weight: 400;
-  color: #6b7280;
-  margin-left: 8px;
-}
-
-.sortInfo {
-  font-size: 14px;
-  color: #6b7280;
-  cursor: pointer;
-  user-select: none;
-}
-
-.sortInfo:hover {
-  color: #374151;
-}
-
-/* 이직 활동 리스트 */
-.turnOversList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.emptyState {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 60px;
-  text-align: center;
-  color: #6b7280;
-}
-
-/* 이직 활동 카드 */
-.turnOverCard {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 24px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.turnOverCard:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.cardTitleRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.cardTitle {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
-}
-
-.statusBadge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
+/* 상태 뱃지 */
 .statusOngoing {
   background-color: #fee2e2;
   color: #dc2626;
@@ -180,122 +9,396 @@
   color: #6b7280;
 }
 
-.cardActions {
-  display: flex;
-  gap: 8px;
+/* 통계 4열 그리드 */
+.statsSummary4 {
+  grid-template-columns: repeat(4, 1fr) !important;
 }
 
-.actionButton {
-  padding: 6px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  background: white;
-  font-size: 13px;
+.statSub {
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+  color: var(--gray005);
+  margin-left: .4rem;
+}
+
+.salaryUp {
+  color: #22c55e;
+}
+
+.salaryDown {
+  color: #ef4444;
+}
+
+/* 통계 영역 내 화살표는 작게 */
+:global(.stats-summary) .salaryUp,
+:global(.stats-summary) .salaryDown {
+  font-size: 1.2rem !important;
+  margin-right: .2rem;
+}
+
+/* 지원 현황 차트 */
+.applicationStats {
+  display: flex;
+  flex-flow: column;
+  row-gap: 1.2rem;
+  flex: 1;
+}
+
+.applicationStats > li {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.applicationStatsLabel {
+  font-size: 1.3rem;
   font-weight: 500;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  width: 6rem;
+  flex-shrink: 0;
+  color: var(--gray006);
 }
 
-.actionButton:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
-  color: #374151;
+.applicationStatsBar {
+  flex: 1;
+  height: .8rem;
+  background-color: var(--gray002);
+  border-radius: .4rem;
+  overflow: hidden;
 }
 
-.actionButton:active {
-  transform: scale(0.98);
+.applicationStatsFill {
+  height: 100%;
+  border-radius: .4rem;
+  transition: width .3s ease;
+  min-width: 2px;
 }
 
-/* 카드 컨텐츠 */
-.cardContent {
+.applicationStatsCount {
+  font-size: 1.3rem;
+  color: var(--gray005);
+  width: 3.5rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.passRates {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 2.4rem;
+  margin-top: 1.6rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--gray003);
 }
 
-.infoRow {
+.passRates > div {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+
+.passRates > div > span {
+  font-size: 1.3rem;
+  color: var(--gray005);
+}
+
+.passRates > div > strong {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* 대시보드 3열 레이아웃 */
+.dashboardRow3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.4rem;
+  align-items: stretch;
+  margin-top: 4rem;
+}
+
+.dashboardRow3 > :global(.cont-box) {
+  margin-top: 0;
+  display: flex;
+  flex-flow: column;
+}
+
+.dashboardRow3 > :global(.cont-box) + :global(.cont-box) {
+  margin-top: 0;
+}
+
+.scrollBody {
+  max-height: 28rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.scrollBody::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollBody::-webkit-scrollbar-thumb {
+  background-color: var(--gray003);
+  border-radius: 2px;
+}
+
+.scrollBody::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* 최근 지원 회사 */
+.recentApps {
+  display: flex;
+  flex-flow: column;
+  row-gap: 0;
+}
+
+.recentAppItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 0;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray002);
+  cursor: pointer;
+  transition: background-color .15s;
 }
 
-.infoLabel {
-  font-size: 14px;
+.recentAppItem:last-child {
+  border-bottom: none;
+}
+
+.recentAppItem:hover {
+  background-color: var(--gray001);
+}
+
+.recentAppInfo {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  min-width: 0;
+}
+
+.recentAppName {
+  font-size: 1.3rem;
   font-weight: 500;
+  color: var(--gray007);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recentAppStatus {
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: .2rem .6rem;
+  border-radius: .4rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.recentAppTime {
+  font-size: 1.2rem;
+  color: var(--gray004);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 1.2rem;
+}
+
+.recentAppEmpty {
+  font-size: 1.3rem;
+  color: var(--gray004);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+/* 지원 상태 뱃지 */
+.statusPending {
+  background-color: #f3f4f6;
   color: #6b7280;
 }
 
-.infoValue {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a1a1a;
+.statusRunning {
+  background-color: #fef9c3;
+  color: #a16207;
 }
 
-.divider {
-  height: 1px;
+.statusPassed {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.statusFailed {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.statusCancelled {
   background-color: #e5e7eb;
-  margin: 12px 0;
-}
-
-.goalSection,
-.retrospectiveSection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* 카드 푸터 */
-.cardFooter {
-  padding-top: 12px;
-  border-top: 1px solid #f3f4f6;
-}
-
-.updateDate {
-  font-size: 12px;
   color: #9ca3af;
+}
+
+/* 이직 만족도 */
+.satisfactionList {
+  display: flex;
+  flex-flow: column;
+  row-gap: 0;
+}
+
+.satisfactionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray002);
+  cursor: pointer;
+  transition: background-color .15s;
+}
+
+.satisfactionItem:last-child {
+  border-bottom: none;
+}
+
+.satisfactionItem:hover {
+  background-color: var(--gray001);
+}
+
+.satisfactionName {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--gray007);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.satisfactionScore {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  flex-shrink: 0;
+}
+
+.satisfactionScoreNum {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--gray006);
+}
+
+.satisfactionAvg {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--gray003);
+}
+
+.satisfactionAvg > span {
+  font-size: 1.3rem;
+  color: var(--gray005);
+}
+
+.satisfactionAvgValue {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+
+.satisfactionAvgValue > strong {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* 별점 */
+.stars {
+  display: inline-flex;
+  gap: .1rem;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.starFilled {
+  color: #f59e0b;
+}
+
+.starEmpty {
+  color: var(--gray003);
+}
+
+.emptyText {
+  font-size: 1.3rem;
+  color: var(--gray004);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.salarySection {
+  margin-top: 4rem;
+}
+
+/* 연봉 지표 */
+.salaryMetrics {
+  display: flex;
+  gap: 2.4rem;
+}
+
+.salaryMetrics:not(:last-child) {
+  margin-bottom: 2rem;
+}
+
+.salaryMetrics > li {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+
+.salaryMetrics > li > span {
+  font-size: 1.3rem;
+  color: var(--gray005);
+}
+
+.salaryMetrics > li > strong {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* 연봉 변화 추이 차트 */
+.salaryChart {
+  margin-top: .8rem;
 }
 
 /* 반응형 */
 @media (max-width: 1024px) {
-  .statisticsCards {
-    grid-template-columns: repeat(2, 1fr);
+  .statsSummary4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .dashboardRow3 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboardRow3 > :last-child {
+    grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 24px 16px;
+  .statsSummary4 {
+    grid-template-columns: 1fr !important;
   }
 
-  .title {
-    font-size: 24px;
-  }
-
-  .statisticsCards {
+  .dashboardRow3 {
     grid-template-columns: 1fr;
   }
 
-  .statNumber {
-    font-size: 28px;
+  .dashboardRow3 > :last-child {
+    grid-column: auto;
   }
 
-  .sectionHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .passRates {
+    flex-flow: column;
+    gap: .8rem;
   }
 
-  .cardHeader {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .cardActions {
-    width: 100%;
-    justify-content: flex-end;
+  .salaryMetrics {
+    flex-flow: column;
+    gap: 1.2rem;
   }
 }
-

@@ -27,7 +27,7 @@ const PublicResumePage: React.FC<PublicResumePageProps> = ({
   const [resumeDetail, setResumeDetail] = useState<ResumeDetail | null>(
     sampleData ?? null
   );
-  const [isLoading, setIsLoading] = useState(!sampleData);
+  const [, setIsLoading] = useState(!sampleData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

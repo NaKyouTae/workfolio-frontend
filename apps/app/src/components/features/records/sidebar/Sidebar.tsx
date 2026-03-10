@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { RecordGroup } from "@workfolio/shared/generated/common";
 import { RecordGroupDetailResponse } from "@workfolio/shared/generated/record_group";
 import RecordGroupsOwned from "./record-groups/record-groups-owned/RecordGroupsOwned";
@@ -29,6 +29,11 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGroupsData, showDashboard, onGoHome, onGoRecords }) => {
     const defaultExpanded = true;
+    const [showAd, setShowAd] = useState(false);
+
+    useEffect(() => {
+        setShowAd(isLoggedIn());
+    }, []);
 
     // Zustand store에서 직접 구독하여 자동 갱신
     const { ownedRecordGroups } = useRecordGroupStore(
@@ -57,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
                     onRefresh={refreshRecordGroups}
                 />
             </div>
-            {isLoggedIn() && (
+            {showAd && (
                 <div>
                     <GoogleAdBanner
                         slot={NEXT_PUBLIC_ADSENSE_RECORDS_SLOT || ""}

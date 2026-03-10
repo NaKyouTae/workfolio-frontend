@@ -390,6 +390,66 @@ export const createSampleActivities = (): Activity[] => {
             createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
+        {
+            id: "activity-5",
+            name: "정보처리기사",
+            organization: "한국산업인력공단",
+            certificateNumber: "CERT-2022-56789",
+            description: "정보처리기사 자격증 취득",
+            startedAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.CERTIFICATION,
+            priority: 5,
+            resume,
+            createdAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-6",
+            name: "SQLD",
+            organization: "한국데이터산업진흥원",
+            certificateNumber: "SQLD-2023-12345",
+            description: "SQL 개발자 자격증 취득",
+            startedAt: now - 10 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 10 * 30 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.CERTIFICATION,
+            priority: 6,
+            resume,
+            createdAt: now - 10 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-7",
+            name: "서비스 기획 공모전 대상",
+            organization: "한국인터넷진흥원",
+            certificateNumber: "",
+            description: "AI 기반 서비스 기획안으로 대상 수상",
+            startedAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.AWARD,
+            priority: 7,
+            resume,
+            createdAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-8",
+            name: "UX 디자인 챌린지 우수상",
+            organization: "디자인진흥원",
+            certificateNumber: "",
+            description: "모바일 앱 UX 개선 프로젝트로 우수상 수상",
+            startedAt: now - 14 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 14 * 30 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.COMPETITION,
+            priority: 8,
+            resume,
+            createdAt: now - 14 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
     ];
 };
 
@@ -558,17 +618,17 @@ export const createSampleAttachments = (): Attachment[] => {
     ];
 };
 
-// ===== 추가 샘플 이력서 데이터 (10세트) =====
+// ===== 기업 유형별 샘플 이력서 데이터 (5세트) =====
 
-// 1. 기획자
-export const createSampleResume2 = () => {
+// 1. 스타트업 이력서
+export const createStartupResume = () => {
     const now = Date.now();
     const worker: Worker = {
-        id: "worker-2",
+        id: "worker-startup",
         status: Worker_WorkerStatus.ACTIVE,
-        nickName: "김민준",
+        nickName: "김도현",
         phone: "010-2345-6789",
-        email: "minjun.kim@example.com",
+        email: "dohyun.kim@example.com",
         birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
         gender: Worker_Gender.MALE,
         createdAt: now - 300 * 24 * 60 * 60 * 1000,
@@ -577,16 +637,17 @@ export const createSampleResume2 = () => {
     };
 
     const resume: Resume = {
-        id: "resume-2",
-        title: "김민준_기획자",
-        name: "김민준",
+        id: "resume-startup",
+        title: "스타트업 이력서",
+        name: "김도현",
         phone: "010-2345-6789",
-        email: "minjun.kim@example.com",
+        email: "dohyun.kim@example.com",
         birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
         gender: Resume_Gender.MALE,
-        position: "기획자",
-        description: "서비스 기획과 프로덕트 기획에 능숙한 5년차 기획자입니다.",
-        isDefault: false,
+        position: "풀스택 개발자",
+        description:
+            "빠른 실행력과 문제 해결 능력을 갖춘 4년차 풀스택 개발자입니다. 초기 스타트업에서 MVP 개발부터 서비스 스케일업까지 경험했습니다.",
+        isDefault: true,
         worker,
         createdAt: now - 280 * 24 * 60 * 60 * 1000,
         updatedAt: now - 3 * 24 * 60 * 60 * 1000,
@@ -594,37 +655,58 @@ export const createSampleResume2 = () => {
 
     const careers: Career[] = [
         {
-            id: "career-2-1",
-            name: "네이버",
-            position: "기획자",
-            department: "기획팀",
+            id: "career-startup-1",
+            name: "핏투게더",
+            position: "풀스택 개발자",
+            department: "프로덕트팀",
             employmentType: Career_EmploymentType.FULL_TIME,
-            rank: "시니어",
-            jobTitle: "기획자",
-            salary: 8500,
+            rank: "리드",
+            jobTitle: "풀스택 개발자",
+            salary: 5500,
             description:
-                "서비스 기획 및 프로덕트 기획\n- 신규 기능 기획 및 로드맵 수립\n- 사용자 리서치 및 데이터 분석",
+                "초기 멤버로 합류하여 서비스 전반 개발\n- MVP 기획 및 개발 (React + Node.js)\n- 사용자 피드백 기반 빠른 이터레이션\n- 월간 활성 사용자 0 → 5만명 성장 기여",
             isVisible: true,
             priority: 1,
-            startedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
+            startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
             endedAt: 0,
             isWorking: true,
             resume,
             salaries: [],
-            createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
+            createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
+        },
+        {
+            id: "career-startup-2",
+            name: "데일리랩",
+            position: "주니어 개발자",
+            department: "개발팀",
+            employmentType: Career_EmploymentType.FULL_TIME,
+            rank: "사원",
+            jobTitle: "프론트엔드 개발자",
+            salary: 3800,
+            description:
+                "초기 스타트업에서 프론트엔드 개발 담당\n- React 기반 웹앱 개발\n- 2주 스프린트 기반 애자일 개발",
+            isVisible: true,
+            priority: 2,
+            startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            isWorking: false,
+            resume,
+            salaries: [],
+            createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
         },
     ];
 
     const educations: Education[] = [
         {
-            id: "education-2-1",
-            major: "경영학",
-            name: "서울대학교",
-            description: "학점 4.0/4.5",
+            id: "education-startup-1",
+            major: "컴퓨터공학",
+            name: "한국외국어대학교",
+            description: "학점 3.7/4.5",
             status: Education_EducationStatus.GRADUATED,
-            startedAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
+            startedAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
             isVisible: true,
             priority: 1,
             resume,
@@ -635,42 +717,88 @@ export const createSampleResume2 = () => {
 
     const projects: Project[] = [
         {
-            id: "project-2-1",
-            title: "검색 서비스 리뉴얼",
-            affiliation: "네이버",
-            role: "기획 리드",
-            description: "검색 기능 개선 프로젝트 기획",
-            startedAt: now - 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 180 * 24 * 60 * 60 * 1000,
+            id: "project-startup-1",
+            title: "핏투게더 MVP 개발",
+            affiliation: "핏투게더",
+            role: "풀스택 개발자",
+            description:
+                "피트니스 매칭 플랫폼 MVP 기획 및 개발\n- 3주 만에 MVP 런칭\n- 사용자 인터뷰 20회 진행 후 피봇 결정\n- 월 매출 0 → 500만원 달성",
+            startedAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
             isVisible: true,
             priority: 1,
             resume,
-            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            createdAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "project-startup-2",
+            title: "그로스 해킹 프로젝트",
+            affiliation: "핏투게더",
+            role: "그로스 리드",
+            description:
+                "데이터 기반 사용자 확보 전략 수립\n- A/B 테스트 30건 이상 진행\n- 전환율 15% → 28% 개선\n- 리텐션율 2배 향상",
+            startedAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now,
+            isVisible: true,
+            priority: 2,
+            resume,
+            createdAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
 
     const activities: Activity[] = [
         {
-            id: "activity-2-1",
-            name: "기획자 밋업 발표",
-            organization: "Product Manager Korea",
+            id: "activity-startup-1",
+            name: "스타트업 해커톤 우승",
+            organization: "서울창업허브",
             certificateNumber: "",
-            description: "서비스 기획 프로세스 및 사례 공유",
+            description: "48시간 해커톤에서 AI 기반 헬스케어 서비스로 대상 수상",
             startedAt: now - 200 * 24 * 60 * 60 * 1000,
-            endedAt: now - 200 * 24 * 60 * 60 * 1000,
+            endedAt: now - 198 * 24 * 60 * 60 * 1000,
             isVisible: true,
-            type: Activity_ActivityType.EXTERNAL,
+            type: Activity_ActivityType.AWARD,
             priority: 1,
             resume,
             createdAt: now - 200 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-startup-2",
+            name: "정보처리기사",
+            organization: "한국산업인력공단",
+            certificateNumber: "CERT-2023-11111",
+            description: "정보처리기사 자격증 취득",
+            startedAt: now - 300 * 24 * 60 * 60 * 1000,
+            endedAt: now - 300 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.CERTIFICATION,
+            priority: 2,
+            resume,
+            createdAt: now - 300 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-startup-3",
+            name: "AWS Solutions Architect",
+            organization: "Amazon Web Services",
+            certificateNumber: "AWS-SAA-2024-001",
+            description: "AWS 솔루션즈 아키텍트 어소시에이트 자격증 취득",
+            startedAt: now - 150 * 24 * 60 * 60 * 1000,
+            endedAt: now - 150 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.CERTIFICATION,
+            priority: 3,
+            resume,
+            createdAt: now - 150 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
 
     const languageSkills: LanguageSkill[] = [
         {
-            id: "lang-2-1",
+            id: "lang-startup-1",
             language: LanguageSkill_Language.ENGLISH,
             level: LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION,
             isVisible: true,
@@ -687,33 +815,34 @@ export const createSampleResume2 = () => {
     return { resume, careers, educations, projects, activities, languageSkills, attachments };
 };
 
-// 2. 기획자
-export const createSampleResume3 = () => {
+// 2. 중소기업 이력서
+export const createSmeResume = () => {
     const now = Date.now();
     const worker: Worker = {
-        id: "worker-3",
+        id: "worker-sme",
+        status: Worker_WorkerStatus.ACTIVE,
         phone: "010-3456-7890",
         email: "jieun.lee@example.com",
-        birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
+        birthDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
         gender: Worker_Gender.FEMALE,
         nickName: "이지은",
-        status: Worker_WorkerStatus.ACTIVE,
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
         credit: 0,
         updatedAt: now,
     };
 
     const resume: Resume = {
-        id: "resume-3",
-        title: "이지은_기획자",
+        id: "resume-sme",
+        title: "중소기업 이력서",
         name: "이지은",
         phone: "010-3456-7890",
         email: "jieun.lee@example.com",
-        birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
+        birthDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
         gender: Resume_Gender.FEMALE,
-        position: "기획자",
-        description: "서비스 기획과 사용자 리서치에 능숙한 3년차 기획자입니다.",
-        isDefault: true,
+        position: "경영지원 팀장",
+        description:
+            "중소기업에서 인사, 총무, 회계 등 경영지원 전반을 담당한 7년차 실무자입니다. 소규모 조직의 효율적 운영에 강점이 있습니다.",
+        isDefault: false,
         worker,
         createdAt: now - 120 * 24 * 60 * 60 * 1000,
         updatedAt: now - 1 * 24 * 60 * 60 * 1000,
@@ -721,37 +850,58 @@ export const createSampleResume3 = () => {
 
     const careers: Career[] = [
         {
-            id: "career-3-1",
-            name: "토스",
-            position: "기획자",
-            department: "기획팀",
+            id: "career-sme-1",
+            name: "(주)한성테크",
+            position: "경영지원 팀장",
+            department: "경영지원팀",
             employmentType: Career_EmploymentType.FULL_TIME,
-            rank: "주니어",
-            jobTitle: "기획자",
-            salary: 7000,
+            rank: "팀장",
+            jobTitle: "경영지원",
+            salary: 5200,
             description:
-                "서비스 기획 및 기능 기획\n- 기능 명세서 작성\n- 사용자 리서치 및 피드백 수집",
+                "경영지원 전반 총괄\n- 인사/총무/회계 업무 관리\n- ERP 시스템 도입 및 운영\n- ISO 9001 인증 획득 주도\n- 직원 교육 프로그램 기획 및 운영",
             isVisible: true,
             priority: 1,
-            startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+            startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
             endedAt: 0,
             isWorking: true,
             resume,
             salaries: [],
-            createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+            createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
+        },
+        {
+            id: "career-sme-2",
+            name: "(주)미래솔루션",
+            position: "인사담당자",
+            department: "관리부",
+            employmentType: Career_EmploymentType.FULL_TIME,
+            rank: "대리",
+            jobTitle: "인사담당",
+            salary: 3800,
+            description:
+                "인사 및 총무 업무 담당\n- 채용 프로세스 관리\n- 급여 정산 및 4대보험 관리\n- 거래처 관리 및 계약 업무",
+            isVisible: true,
+            priority: 2,
+            startedAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            isWorking: false,
+            resume,
+            salaries: [],
+            createdAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
         },
     ];
 
     const educations: Education[] = [
         {
-            id: "education-3-1",
-            major: "정보시스템학",
-            name: "연세대학교",
-            description: "학점 3.8/4.5",
+            id: "education-sme-1",
+            major: "경영학",
+            name: "국민대학교",
+            description: "학점 3.6/4.5",
             status: Education_EducationStatus.GRADUATED,
-            startedAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            startedAt: now - 13 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 9 * 365 * 24 * 60 * 60 * 1000,
             isVisible: true,
             priority: 1,
             resume,
@@ -762,49 +912,70 @@ export const createSampleResume3 = () => {
 
     const projects: Project[] = [
         {
-            id: "project-3-1",
-            title: "디자인 시스템 구축",
-            affiliation: "토스",
-            role: "기획 리드",
-            description: "디자인 시스템 구축 프로젝트 기획",
-            startedAt: now - 300 * 24 * 60 * 60 * 1000,
-            endedAt: now - 150 * 24 * 60 * 60 * 1000,
+            id: "project-sme-1",
+            title: "ERP 시스템 도입",
+            affiliation: "(주)한성테크",
+            role: "프로젝트 매니저",
+            description:
+                "전사 ERP 시스템 도입 프로젝트 총괄\n- 요구사항 분석 및 벤더 선정\n- 업무 프로세스 재설계\n- 전 직원 교육 진행\n- 업무 효율 30% 향상",
+            startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
             isVisible: true,
+            priority: 1,
+            resume,
+            createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+    ];
+
+    const activities: Activity[] = [
+        {
+            id: "activity-sme-1",
+            name: "ERP 정보관리사 1급",
+            organization: "한국생산성본부",
+            certificateNumber: "ERP-2023-12345",
+            description: "ERP 정보관리사 1급 취득",
+            startedAt: now - 300 * 24 * 60 * 60 * 1000,
+            endedAt: now - 300 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.CERTIFICATION,
             priority: 1,
             resume,
             createdAt: now - 300 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
-    ];
-
-    const activities: Activity[] = [];
-    const languageSkills: LanguageSkill[] = [
         {
-            id: "lang-3-1",
-            language: LanguageSkill_Language.ENGLISH,
-            level: LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION,
+            id: "activity-sme-2",
+            name: "중소기업 경영혁신 우수상",
+            organization: "중소벤처기업부",
+            certificateNumber: "",
+            description: "ERP 도입을 통한 경영혁신 우수사례 수상",
+            startedAt: now - 180 * 24 * 60 * 60 * 1000,
+            endedAt: now - 180 * 24 * 60 * 60 * 1000,
             isVisible: true,
-            priority: 1,
+            type: Activity_ActivityType.AWARD,
+            priority: 2,
             resume,
-            languageTests: [],
-            createdAt: now - 150 * 24 * 60 * 60 * 1000,
+            createdAt: now - 180 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
+
+    const languageSkills: LanguageSkill[] = [];
     const attachments: Attachment[] = [];
 
     return { resume, careers, educations, projects, activities, languageSkills, attachments };
 };
 
-// 3. UX/UI 디자이너
-export const createSampleResume4 = () => {
+// 3. 중견기업 이력서
+export const createMidsizeResume = () => {
     const now = Date.now();
     const worker: Worker = {
-        id: "worker-4",
+        id: "worker-midsize",
         status: Worker_WorkerStatus.ACTIVE,
         phone: "010-4567-8901",
         email: "seoyeon.park@example.com",
-        birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
+        birthDate: now - 34 * 365 * 24 * 60 * 60 * 1000,
         gender: Worker_Gender.FEMALE,
         nickName: "박서연",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -813,15 +984,16 @@ export const createSampleResume4 = () => {
     };
 
     const resume: Resume = {
-        id: "resume-4",
-        title: "박서연_UX디자이너",
+        id: "resume-midsize",
+        title: "중견기업 이력서",
         name: "박서연",
         phone: "010-4567-8901",
         email: "seoyeon.park@example.com",
-        birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
+        birthDate: now - 34 * 365 * 24 * 60 * 60 * 1000,
         gender: Resume_Gender.FEMALE,
-        position: "UX/UI 디자이너",
-        description: "사용자 중심의 디자인을 추구하는 7년차 UX 디자이너입니다.",
+        position: "해외영업 과장",
+        description:
+            "10년차 해외영업 전문가입니다. 동남아 시장 개척 및 글로벌 거래선 관리 경험이 풍부하며, 체계적인 영업 프로세스 구축에 강점이 있습니다.",
         isDefault: false,
         worker,
         createdAt: now - 45 * 24 * 60 * 60 * 1000,
@@ -830,56 +1002,58 @@ export const createSampleResume4 = () => {
 
     const careers: Career[] = [
         {
-            id: "career-4-1",
-            name: "카카오",
-            position: "UX 디자이너",
-            startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            id: "career-midsize-1",
+            name: "(주)세원산업",
+            position: "해외영업 과장",
+            department: "해외사업부",
+            employmentType: Career_EmploymentType.FULL_TIME,
+            rank: "과장",
+            jobTitle: "해외영업",
+            salary: 6800,
+            description:
+                "동남아 시장 영업 총괄\n- 베트남/태국/인도네시아 거래선 40개사 관리\n- 연간 매출 150억원 달성\n- 신규 시장(인도) 진출 프로젝트 리드\n- 해외 전시회 기획 및 참가",
+            isVisible: true,
+            priority: 1,
+            startedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
             endedAt: 0,
             isWorking: true,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 68000000,
-            department: "카카오페이팀",
-            jobTitle: "UX 디자이너",
-            rank: "시니어",
-            description: "카카오페이 앱 UX 개선",
-            isVisible: true,
-            salaries: [],
-            priority: 1,
             resume,
-            createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            salaries: [],
+            createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
         {
-            id: "career-4-2",
-            name: "우아한형제들",
-            position: "UI 디자이너",
-            startedAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-            isWorking: false,
+            id: "career-midsize-2",
+            name: "(주)대한기계",
+            position: "해외영업 대리",
+            department: "영업팀",
             employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 55000000,
-            department: "배민앱팀",
-            jobTitle: "UI 디자이너",
-            rank: "주니어",
-            description: "배민 앱 UI 디자인",
+            rank: "대리",
+            jobTitle: "해외영업",
+            salary: 4800,
+            description:
+                "해외 거래처 관리 및 수출 업무\n- 중국/일본 시장 거래선 관리\n- 수출입 서류 관리\n- 해외 바이어 미팅 및 통역",
             isVisible: true,
-            salaries: [],
-            priority: 1,
+            priority: 2,
+            startedAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
+            isWorking: false,
             resume,
-            createdAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
+            salaries: [],
+            createdAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
         },
     ];
 
     const educations: Education[] = [
         {
-            id: "education-4-1",
-            name: "홍익대학교",
-            major: "시각디자인",
-            startedAt: now - 11 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
+            id: "education-midsize-1",
+            major: "국제통상학",
+            name: "부산대학교",
+            description: "학점 3.8/4.5",
             status: Education_EducationStatus.GRADUATED,
-            description: "학점 3.9/4.5",
+            startedAt: now - 14 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
             isVisible: true,
             priority: 1,
             resume,
@@ -890,69 +1064,100 @@ export const createSampleResume4 = () => {
 
     const projects: Project[] = [
         {
-            id: "project-4-1",
-            title: "카카오페이 리디자인",
-            affiliation: "카카오",
-            role: "UX 디자이너",
-            startedAt: now - 400 * 24 * 60 * 60 * 1000,
-            endedAt: now - 300 * 24 * 60 * 60 * 1000,
-            description: "사용자 경험 개선을 위한 전면 리디자인",
+            id: "project-midsize-1",
+            title: "인도 시장 신규 진출",
+            affiliation: "(주)세원산업",
+            role: "프로젝트 리더",
+            description:
+                "인도 시장 진출 전략 수립 및 실행\n- 시장 조사 및 타당성 분석\n- 현지 파트너사 발굴 (5개사)\n- 첫해 매출 30억원 달성",
+            startedAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
             isVisible: true,
             priority: 1,
             resume,
-            createdAt: now - 400 * 24 * 60 * 60 * 1000,
+            createdAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "project-midsize-2",
+            title: "글로벌 품질 표준화",
+            affiliation: "(주)세원산업",
+            role: "TF 멤버",
+            description:
+                "해외 납품 품질 표준화 프로젝트\n- 국제 품질 기준 조사 및 적용\n- 해외 거래선 클레임 50% 감소",
+            startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            priority: 2,
+            resume,
+            createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
 
-    const activities: Activity[] = [
+    const activities: Activity[] = [];
+
+    const languageSkills: LanguageSkill[] = [
         {
-            id: "activity-4-1",
-            name: "UX Korea 컨퍼런스 발표",
-            type: Activity_ActivityType.EXTERNAL,
-            organization: "UX Korea",
-            certificateNumber: "",
-            startedAt: now - 180 * 24 * 60 * 60 * 1000,
-            endedAt: now - 180 * 24 * 60 * 60 * 1000,
-            description: "사용자 리서치 방법론 공유",
+            id: "lang-midsize-1",
+            language: LanguageSkill_Language.ENGLISH,
+            level: LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION,
             isVisible: true,
             priority: 1,
             resume,
-            createdAt: now - 180 * 24 * 60 * 60 * 1000,
+            languageTests: [
+                {
+                    id: "lang-test-midsize-1",
+                    name: "TOEIC",
+                    score: "885",
+                    acquiredAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    isVisible: true,
+                    priority: 1,
+                    createdAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
+                },
+            ],
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "lang-midsize-2",
+            language: LanguageSkill_Language.JAPANESE,
+            level: LanguageSkill_LanguageLevel.DAILY_CONVERSATION,
+            isVisible: true,
+            priority: 2,
+            resume,
+            languageTests: [
+                {
+                    id: "lang-test-midsize-2",
+                    name: "JLPT",
+                    score: "N2",
+                    acquiredAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+                    isVisible: true,
+                    priority: 1,
+                    createdAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+                },
+            ],
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
 
-    const languageSkills: LanguageSkill[] = [];
-    const attachments: Attachment[] = [
-        {
-            id: "attachment-4-1",
-            category: Attachment_AttachmentCategory.FILE,
-            url: "",
-            fileName: "portfolio.pdf",
-            fileUrl: "https://example.com/portfolio.pdf",
-            type: Attachment_AttachmentType.RESUME,
-            isVisible: true,
-            priority: 1,
-            targetId: "",
-            targetType: Attachment_AttachmentTargetType.ENTITY_RESUME,
-            createdAt: now - 200 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
+    const attachments: Attachment[] = [];
 
     return { resume, careers, educations, projects, activities, languageSkills, attachments };
 };
 
-// 4. 프로덕트 매니저
-export const createSampleResume5 = () => {
+// 4. 대기업 이력서
+export const createEnterpriseResume = () => {
     const now = Date.now();
     const worker: Worker = {
-        id: "worker-5",
+        id: "worker-enterprise",
         status: Worker_WorkerStatus.ACTIVE,
         phone: "010-5678-9012",
         email: "junho.choi@example.com",
-        birthDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
+        birthDate: now - 36 * 365 * 24 * 60 * 60 * 1000,
         gender: Worker_Gender.MALE,
         nickName: "최준호",
         createdAt: now - 365 * 24 * 60 * 60 * 1000,
@@ -961,15 +1166,16 @@ export const createSampleResume5 = () => {
     };
 
     const resume: Resume = {
-        id: "resume-5",
-        title: "최준호_프로덕트매니저",
+        id: "resume-enterprise",
+        title: "대기업 이력서",
         name: "최준호",
         phone: "010-5678-9012",
         email: "junho.choi@example.com",
-        birthDate: now - 32 * 365 * 24 * 60 * 60 * 1000,
+        birthDate: now - 36 * 365 * 24 * 60 * 60 * 1000,
         gender: Resume_Gender.MALE,
-        position: "프로덕트 매니저",
-        description: "데이터 기반 의사결정을 중시하는 8년차 PM입니다.",
+        position: "전략기획 차장",
+        description:
+            "12년차 전략기획 전문가입니다. 대기업에서 사업 전략 수립, M&A, 신사업 기획 등 다양한 전략 업무를 수행했습니다.",
         isDefault: false,
         worker,
         createdAt: now - 90 * 24 * 60 * 60 * 1000,
@@ -978,706 +1184,155 @@ export const createSampleResume5 = () => {
 
     const careers: Career[] = [
         {
-            id: "career-5-1",
-            name: "쿠팡",
-            position: "Product Manager",
-            startedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: 0,
-            isWorking: true,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 95000000,
-            department: "로켓배송팀",
-            jobTitle: "Product Manager",
-            rank: "시니어",
-            description: "로켓배송 서비스 기획 및 개선",
-            isVisible: true,
-            salaries: [],
-            priority: 1,
-            resume,
-            createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-        {
-            id: "career-5-2",
-            name: "라인",
-            position: "Associate PM",
-            startedAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-            isWorking: false,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 65000000,
-            department: "메신저팀",
-            jobTitle: "Product Manager",
-            rank: "주니어",
-            description: "라인 메신저 신규 기능 기획",
-            isVisible: true,
-            salaries: [],
-            priority: 1,
-            resume,
-            createdAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const educations: Education[] = [
-        {
-            id: "education-5-1",
-            name: "고려대학교",
-            major: "경영학",
-            startedAt: now - 14 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
-            status: Education_EducationStatus.GRADUATED,
-            description: "학점 4.2/4.5",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 220 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const projects: Project[] = [
-        {
-            id: "project-5-1",
-            title: "로켓배송 최적화 프로젝트",
-            affiliation: "쿠팡",
-            role: "Product Manager",
-            startedAt: now - 450 * 24 * 60 * 60 * 1000,
-            endedAt: now - 300 * 24 * 60 * 60 * 1000,
-            description: "AI 기반 배송 경로 최적화",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 450 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const activities: Activity[] = [];
-    const languageSkills: LanguageSkill[] = [
-        {
-            id: "lang-5-1",
-            language: LanguageSkill_Language.ENGLISH,
-            level: LanguageSkill_LanguageLevel.NATIVE_LEVEL,
-            languageTests: [
-                {
-                    id: "lang-test-5-1",
-                    name: "TOEIC",
-                    score: "925",
-                    acquiredAt: now - 220 * 24 * 60 * 60 * 1000,
-                    isVisible: true,
-                    priority: 1,
-                    createdAt: now - 220 * 24 * 60 * 60 * 1000,
-                    updatedAt: now - 220 * 24 * 60 * 60 * 1000,
-                },
-            ],
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 220 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-    const attachments: Attachment[] = [];
-
-    return { resume, careers, educations, projects, activities, languageSkills, attachments };
-};
-
-// 5. 데이터 분석가
-export const createSampleResume6 = () => {
-    const now = Date.now();
-    const worker: Worker = {
-        id: "worker-6",
-        status: Worker_WorkerStatus.ACTIVE,
-        phone: "010-6789-0123",
-        email: "subin.jung@example.com",
-        birthDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
-        gender: Worker_Gender.FEMALE,
-        nickName: "정수빈",
-        createdAt: now - 365 * 24 * 60 * 60 * 1000,
-        credit: 0,
-        updatedAt: now,
-    };
-
-    const resume: Resume = {
-        id: "resume-6",
-        title: "정수빈_데이터분석가",
-        name: "정수빈",
-        phone: "010-6789-0123",
-        email: "subin.jung@example.com",
-        birthDate: now - 27 * 365 * 24 * 60 * 60 * 1000,
-        gender: Resume_Gender.FEMALE,
-        position: "데이터 분석가",
-        description: "Python과 SQL을 활용한 데이터 분석 전문가입니다.",
-        isDefault: false,
-        worker,
-        createdAt: now - 200 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 15 * 24 * 60 * 60 * 1000,
-    };
-
-    const careers: Career[] = [
-        {
-            id: "career-6-1",
-            name: "넷플릭스",
-            position: "Data Analyst",
-            startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: 0,
-            isWorking: true,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 78000000,
-            department: "Growth팀",
-            jobTitle: "Data Analyst",
-            rank: "미드",
-            description: "사용자 행동 데이터 분석",
-            isVisible: true,
-            salaries: [],
-            priority: 1,
-            resume,
-            createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const educations: Education[] = [
-        {
-            id: "education-6-1",
-            name: "카이스트",
-            major: "산업공학",
-            startedAt: now - 9 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-            status: Education_EducationStatus.GRADUATED,
-            description: "학점 4.1/4.5",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 170 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const projects: Project[] = [
-        {
-            id: "project-6-1",
-            title: "추천 알고리즘 개선",
-            affiliation: "넷플릭스",
-            role: "Data Analyst",
-            startedAt: now - 350 * 24 * 60 * 60 * 1000,
-            endedAt: now - 200 * 24 * 60 * 60 * 1000,
-            description: "머신러닝 기반 콘텐츠 추천 시스템",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 350 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const activities: Activity[] = [];
-    const languageSkills: LanguageSkill[] = [];
-    const attachments: Attachment[] = [];
-
-    return { resume, careers, educations, projects, activities, languageSkills, attachments };
-};
-
-// 6. DevOps 엔지니어
-export const createSampleResume7 = () => {
-    const now = Date.now();
-    const worker: Worker = {
-        id: "worker-7",
-        status: Worker_WorkerStatus.ACTIVE,
-        phone: "010-7890-1234",
-        email: "dongwoo.kang@example.com",
-        birthDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
-        gender: Worker_Gender.MALE,
-        nickName: "강동우",
-        createdAt: now - 365 * 24 * 60 * 60 * 1000,
-        credit: 0,
-        updatedAt: now,
-    };
-
-    const resume: Resume = {
-        id: "resume-7",
-        title: "강동우_DevOps엔지니어",
-        name: "강동우",
-        phone: "010-7890-1234",
-        email: "dongwoo.kang@example.com",
-        birthDate: now - 31 * 365 * 24 * 60 * 60 * 1000,
-        gender: Resume_Gender.MALE,
-        position: "DevOps 엔지니어",
-        description: "Kubernetes와 AWS에 능숙한 인프라 전문가입니다.",
-        isDefault: false,
-        worker,
-        createdAt: now - 60 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 10 * 24 * 60 * 60 * 1000,
-    };
-
-    const careers: Career[] = [
-        {
-            id: "career-7-1",
+            id: "career-enterprise-1",
             name: "삼성전자",
-            position: "DevOps Engineer",
-            startedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
+            position: "전략기획 차장",
+            department: "경영기획실",
+            employmentType: Career_EmploymentType.FULL_TIME,
+            rank: "차장",
+            jobTitle: "전략기획",
+            salary: 12000,
+            description:
+                "글로벌 사업 전략 수립 및 실행\n- 반도체 사업부 중장기 전략 수립\n- M&A 실사 및 PMI 프로젝트 리드\n- ESG 경영 전략 기획\n- 이사회 보고 자료 작성",
+            isVisible: true,
+            priority: 1,
+            startedAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
             endedAt: 0,
             isWorking: true,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 88000000,
-            department: "클라우드플랫폼팀",
-            jobTitle: "DevOps Engineer",
-            rank: "시니어",
-            description: "CI/CD 파이프라인 구축 및 운영",
-            isVisible: true,
-            salaries: [],
-            priority: 1,
-            resume,
-            createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const educations: Education[] = [
-        {
-            id: "education-7-1",
-            name: "포항공대",
-            major: "컴퓨터공학",
-            startedAt: now - 13 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 9 * 365 * 24 * 60 * 60 * 1000,
-            status: Education_EducationStatus.GRADUATED,
-            description: "학점 3.7/4.5",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 190 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const projects: Project[] = [
-        {
-            id: "project-7-1",
-            title: "IaC 구축",
-            affiliation: "삼성전자",
-            role: "DevOps Engineer",
-            startedAt: now - 400 * 24 * 60 * 60 * 1000,
-            endedAt: now - 250 * 24 * 60 * 60 * 1000,
-            description: "Terraform을 이용한 인프라 코드화",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 400 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const activities: Activity[] = [];
-    const languageSkills: LanguageSkill[] = [];
-    const attachments: Attachment[] = [];
-
-    return { resume, careers, educations, projects, activities, languageSkills, attachments };
-};
-
-// 7. 마케터
-export const createSampleResume8 = () => {
-    const now = Date.now();
-    const worker: Worker = {
-        id: "worker-8",
-        status: Worker_WorkerStatus.ACTIVE,
-        phone: "010-8901-2345",
-        email: "seoa.yoon@example.com",
-        birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
-        gender: Worker_Gender.FEMALE,
-        nickName: "윤서아",
-        createdAt: now - 365 * 24 * 60 * 60 * 1000,
-        credit: 0,
-        updatedAt: now,
-    };
-
-    const resume: Resume = {
-        id: "resume-8",
-        title: "윤서아_퍼포먼스마케터",
-        name: "윤서아",
-        phone: "010-8901-2345",
-        email: "seoa.yoon@example.com",
-        birthDate: now - 28 * 365 * 24 * 60 * 60 * 1000,
-        gender: Resume_Gender.FEMALE,
-        position: "퍼포먼스 마케터",
-        description: "데이터 기반 마케팅 전략 수립 및 실행 전문가입니다.",
-        isDefault: false,
-        worker,
-        createdAt: now - 150 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 12 * 24 * 60 * 60 * 1000,
-    };
-
-    const careers: Career[] = [
-        {
-            id: "career-8-1",
-            name: "당근마켓",
-            position: "Performance Marketer",
-            startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: 0,
-            isWorking: true,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 65000000,
-            department: "그로스팀",
-            jobTitle: "Performance Marketer",
-            rank: "미드",
-            description: "UA 광고 운영 및 최적화",
-            isVisible: true,
-            priority: 1,
             resume,
             salaries: [],
-            createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            createdAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
-    ];
-
-    const educations: Education[] = [
         {
-            id: "education-8-1",
-            name: "이화여대",
-            major: "경영학",
-            startedAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-            status: Education_EducationStatus.GRADUATED,
-            description: "학점 3.8/4.5",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 160 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const projects: Project[] = [
-        {
-            id: "project-8-1",
-            title: "브랜딩 캠페인",
-            affiliation: "당근마켓",
-            role: "Performance Marketer",
-            startedAt: now - 300 * 24 * 60 * 60 * 1000,
-            endedAt: now - 200 * 24 * 60 * 60 * 1000,
-            description: "신규 사용자 확보 캠페인",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 300 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const activities: Activity[] = [];
-    const languageSkills: LanguageSkill[] = [];
-    const attachments: Attachment[] = [];
-
-    return { resume, careers, educations, projects, activities, languageSkills, attachments };
-};
-
-// 8. QA 엔지니어
-export const createSampleResume9 = () => {
-    const now = Date.now();
-    const worker: Worker = {
-        id: "worker-9",
-        status: Worker_WorkerStatus.ACTIVE,
-        phone: "010-9012-3456",
-        email: "hyunwoo.cho@example.com",
-        birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
-        gender: Worker_Gender.MALE,
-        nickName: "조현우",
-        createdAt: now - 365 * 24 * 60 * 60 * 1000,
-        credit: 0,
-        updatedAt: now,
-    };
-
-    const resume: Resume = {
-        id: "resume-9",
-        title: "조현우_QA엔지니어",
-        name: "조현우",
-        phone: "010-9012-3456",
-        email: "hyunwoo.jo@example.com",
-        birthDate: now - 29 * 365 * 24 * 60 * 60 * 1000,
-        gender: Resume_Gender.MALE,
-        position: "QA 엔지니어",
-        description: "자동화 테스트에 능숙한 6년차 QA 엔지니어입니다.",
-        isDefault: false,
-        worker,
-        createdAt: now - 30 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 5 * 24 * 60 * 60 * 1000,
-    };
-
-    const careers: Career[] = [
-        {
-            id: "career-9-1",
-            name: "NHN",
-            position: "QA Engineer",
-            startedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: 0,
-            isWorking: true,
+            id: "career-enterprise-2",
+            name: "LG전자",
+            position: "전략기획 과장",
+            department: "기획조정실",
             employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 72000000,
-            department: "품질관리팀",
-            jobTitle: "QA Engineer",
-            rank: "시니어",
-            description: "자동화 테스트 구축 및 운영",
+            rank: "과장",
+            jobTitle: "전략기획",
+            salary: 8500,
+            description:
+                "사업부 전략 기획 담당\n- 연간 사업 계획 수립\n- 경쟁사 분석 및 시장 동향 리포트\n- 글로벌 컨퍼런스 기획",
             isVisible: true,
-            salaries: [],
-            priority: 1,
-            resume,
-            createdAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const educations: Education[] = [
-        {
-            id: "education-9-1",
-            name: "성균관대",
-            major: "소프트웨어학",
-            startedAt: now - 11 * 365 * 24 * 60 * 60 * 1000,
+            priority: 2,
+            startedAt: now - 12 * 365 * 24 * 60 * 60 * 1000,
             endedAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
+            isWorking: false,
+            resume,
+            salaries: [],
+            createdAt: now - 12 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 7 * 365 * 24 * 60 * 60 * 1000,
+        },
+    ];
+
+    const educations: Education[] = [
+        {
+            id: "education-enterprise-1",
+            major: "경영학",
+            name: "서울대학교",
+            description: "학점 4.1/4.5",
             status: Education_EducationStatus.GRADUATED,
-            description: "학점 3.6/4.5",
+            startedAt: now - 18 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 14 * 365 * 24 * 60 * 60 * 1000,
             isVisible: true,
             priority: 1,
             resume,
-            createdAt: now - 180 * 24 * 60 * 60 * 1000,
+            createdAt: now - 220 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "education-enterprise-2",
+            major: "MBA",
+            name: "서울대학교 경영대학원",
+            description: "경영전략 전공\n- 우수 논문상 수상",
+            status: Education_EducationStatus.GRADUATED,
+            startedAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            priority: 2,
+            resume,
+            createdAt: now - 220 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
 
     const projects: Project[] = [
         {
-            id: "project-9-1",
-            title: "E2E 테스트 자동화",
-            affiliation: "NHN",
-            role: "QA Engineer",
-            startedAt: now - 380 * 24 * 60 * 60 * 1000,
-            endedAt: now - 230 * 24 * 60 * 60 * 1000,
-            description: "Playwright 기반 테스트 자동화",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 380 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const activities: Activity[] = [];
-    const languageSkills: LanguageSkill[] = [];
-    const attachments: Attachment[] = [];
-
-    return { resume, careers, educations, projects, activities, languageSkills, attachments };
-};
-
-// 9. 모바일 개발자
-export const createSampleResume10 = () => {
-    const now = Date.now();
-    const worker: Worker = {
-        id: "worker-10",
-        status: Worker_WorkerStatus.ACTIVE,
-        phone: "010-0123-4567",
-        email: "minji.song@example.com",
-        birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
-        gender: Worker_Gender.FEMALE,
-        nickName: "송민지",
-        createdAt: now - 365 * 24 * 60 * 60 * 1000,
-        credit: 0,
-        updatedAt: now,
-    };
-
-    const resume: Resume = {
-        id: "resume-10",
-        title: "송민지_iOS개발자",
-        name: "송민지",
-        phone: "010-0123-4567",
-        email: "minji.song@example.com",
-        birthDate: now - 26 * 365 * 24 * 60 * 60 * 1000,
-        gender: Resume_Gender.FEMALE,
-        position: "iOS 개발자",
-        description: "Swift와 SwiftUI를 전문으로 하는 iOS 개발자입니다.",
-        isDefault: false,
-        worker,
-        createdAt: now - 180 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 20 * 24 * 60 * 60 * 1000,
-    };
-
-    const careers: Career[] = [
-        {
-            id: "career-10-1",
-            name: "야놀자",
-            position: "iOS Developer",
+            id: "project-enterprise-1",
+            title: "반도체 사업 M&A 프로젝트",
+            affiliation: "삼성전자",
+            role: "PMI 리드",
+            description:
+                "해외 반도체 기업 인수합병 프로젝트\n- 대상 기업 실사 및 가치 평가\n- PMI 전략 수립 및 실행\n- 인수 후 시너지 효과 1,200억원 달성",
             startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: 0,
-            isWorking: true,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 68000000,
-            department: "앱개발팀",
-            jobTitle: "iOS Developer",
-            rank: "주니어",
-            description: "iOS 앱 개발 및 유지보수",
+            endedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
             isVisible: true,
-            salaries: [],
             priority: 1,
             resume,
             createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
-    ];
-
-    const educations: Education[] = [
         {
-            id: "education-10-1",
-            name: "한양대학교",
-            major: "컴퓨터소프트웨어학",
-            startedAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
-            status: Education_EducationStatus.GRADUATED,
-            description: "학점 3.9/4.5",
+            id: "project-enterprise-2",
+            title: "디지털 전환 TF",
+            affiliation: "삼성전자",
+            role: "TF 멤버",
+            description:
+                "전사 디지털 전환 전략 수립\n- AI/클라우드 기반 업무 혁신\n- RPA 도입으로 반복 업무 40% 자동화",
+            startedAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 6 * 30 * 24 * 60 * 60 * 1000,
             isVisible: true,
-            priority: 1,
+            priority: 2,
             resume,
-            createdAt: now - 140 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const projects: Project[] = [
-        {
-            id: "project-10-1",
-            affiliation: "야놀자",
-            role: "iOS Developer",
-            title: "예약 시스템 리뉴얼",
-            startedAt: now - 280 * 24 * 60 * 60 * 1000,
-            endedAt: now - 180 * 24 * 60 * 60 * 1000,
-            description: "SwiftUI로 예약 화면 재구성",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 280 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const activities: Activity[] = [];
-    const languageSkills: LanguageSkill[] = [];
-    const attachments: Attachment[] = [];
-
-    return { resume, careers, educations, projects, activities, languageSkills, attachments };
-};
-
-// 10. AI 엔지니어
-export const createSampleResume11 = () => {
-    const now = Date.now();
-    const worker: Worker = {
-        id: "worker-11",
-        status: Worker_WorkerStatus.ACTIVE,
-        phone: "010-1357-2468",
-        email: "jihoon.han@example.com",
-        birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
-        gender: Worker_Gender.MALE,
-        nickName: "한지훈",
-        createdAt: now - 365 * 24 * 60 * 60 * 1000,
-        credit: 0,
-        updatedAt: now,
-    };
-
-    const resume: Resume = {
-        id: "resume-11",
-        title: "한지훈_AI엔지니어",
-        name: "한지훈",
-        phone: "010-1357-2468",
-        email: "jihoon.han@example.com",
-        birthDate: now - 30 * 365 * 24 * 60 * 60 * 1000,
-        gender: Resume_Gender.MALE,
-        position: "AI 엔지니어",
-        description: "딥러닝과 NLP 전문 AI 엔지니어입니다.",
-        isDefault: false,
-        worker,
-        createdAt: now - 250 * 24 * 60 * 60 * 1000,
-        updatedAt: now - 18 * 24 * 60 * 60 * 1000,
-    };
-
-    const careers: Career[] = [
-        {
-            id: "career-11-1",
-            name: "네이버 클로바",
-            position: "AI Researcher",
-            startedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: 0,
-            isWorking: true,
-            employmentType: Career_EmploymentType.FULL_TIME,
-            salary: 95000000,
-            department: "AI Lab",
-            jobTitle: "AI Researcher",
-            rank: "시니어",
-            description: "NLP 모델 개발 및 최적화",
-            isVisible: true,
-            priority: 1,
-            salaries: [],
-            resume,
-            createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const educations: Education[] = [
-        {
-            id: "education-11-1",
-            name: "서울대학교",
-            major: "인공지능",
-            startedAt: now - 12 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
-            status: Education_EducationStatus.GRADUATED,
-            description: "석사 학위",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 210 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-        {
-            id: "education-11-2",
-            name: "서울대학교",
-            major: "컴퓨터공학",
-            startedAt: now - 14 * 365 * 24 * 60 * 60 * 1000,
-            endedAt: now - 10 * 365 * 24 * 60 * 60 * 1000,
-            status: Education_EducationStatus.GRADUATED,
-            description: "학점 4.3/4.5",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 210 * 24 * 60 * 60 * 1000,
-            updatedAt: now,
-        },
-    ];
-
-    const projects: Project[] = [
-        {
-            id: "project-11-1",
-            title: "한국어 감정 분석 모델",
-            affiliation: "네이버 클로바",
-            role: "AI Researcher",
-            startedAt: now - 420 * 24 * 60 * 60 * 1000,
-            endedAt: now - 270 * 24 * 60 * 60 * 1000,
-            description: "Transformer 기반 감정 분석 시스템",
-            isVisible: true,
-            priority: 1,
-            resume,
-            createdAt: now - 420 * 24 * 60 * 60 * 1000,
+            createdAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
 
     const activities: Activity[] = [
         {
-            id: "activity-11-1",
-            name: "NeurIPS 논문 발표",
-            type: Activity_ActivityType.EXTERNAL,
+            id: "activity-enterprise-1",
+            name: "글로벌 경영 컨퍼런스 발표",
+            organization: "World Business Forum",
             certificateNumber: "",
-            organization: "NeurIPS",
+            description: "디지털 전환 시대의 전략 기획 - 300명 참석 기조 발표",
+            startedAt: now - 180 * 24 * 60 * 60 * 1000,
+            endedAt: now - 180 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.AWARD,
+            priority: 1,
+            resume,
+            createdAt: now - 180 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-enterprise-2",
+            name: "PMP",
+            organization: "PMI",
+            certificateNumber: "PMP-2022-98765",
+            description: "Project Management Professional 자격증 취득",
+            startedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.CERTIFICATION,
+            priority: 2,
+            resume,
+            createdAt: now - 3 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-enterprise-3",
+            name: "디지털 혁신 경진대회 최우수상",
+            organization: "한국경영학회",
+            certificateNumber: "",
+            description: "AI 기반 전략 기획 프레임워크로 최우수상 수상",
             startedAt: now - 250 * 24 * 60 * 60 * 1000,
             endedAt: now - 250 * 24 * 60 * 60 * 1000,
-            description: "한국어 NLP 모델 성능 개선 연구",
             isVisible: true,
-            priority: 1,
+            type: Activity_ActivityType.COMPETITION,
+            priority: 3,
             resume,
             createdAt: now - 250 * 24 * 60 * 60 * 1000,
             updatedAt: now,
@@ -1686,28 +1341,259 @@ export const createSampleResume11 = () => {
 
     const languageSkills: LanguageSkill[] = [
         {
-            id: "lang-11-1",
+            id: "lang-enterprise-1",
             language: LanguageSkill_Language.ENGLISH,
             level: LanguageSkill_LanguageLevel.NATIVE_LEVEL,
+            languageTests: [
+                {
+                    id: "lang-test-enterprise-1",
+                    name: "TOEIC",
+                    score: "960",
+                    acquiredAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+                    isVisible: true,
+                    priority: 1,
+                    createdAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+                },
+                {
+                    id: "lang-test-enterprise-2",
+                    name: "OPIc",
+                    score: "AL",
+                    acquiredAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+                    isVisible: true,
+                    priority: 2,
+                    createdAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+                },
+            ],
+            isVisible: true,
+            priority: 1,
+            resume,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+    ];
+
+    const attachments: Attachment[] = [];
+
+    return { resume, careers, educations, projects, activities, languageSkills, attachments };
+};
+
+// 5. 공기업 이력서
+export const createPublicCorpResume = () => {
+    const now = Date.now();
+    const worker: Worker = {
+        id: "worker-public",
+        status: Worker_WorkerStatus.ACTIVE,
+        phone: "010-6789-0123",
+        email: "subin.jung@example.com",
+        birthDate: now - 33 * 365 * 24 * 60 * 60 * 1000,
+        gender: Worker_Gender.FEMALE,
+        nickName: "정수빈",
+        createdAt: now - 365 * 24 * 60 * 60 * 1000,
+        credit: 0,
+        updatedAt: now,
+    };
+
+    const resume: Resume = {
+        id: "resume-public",
+        title: "공기업 이력서",
+        name: "정수빈",
+        phone: "010-6789-0123",
+        email: "subin.jung@example.com",
+        birthDate: now - 33 * 365 * 24 * 60 * 60 * 1000,
+        gender: Resume_Gender.FEMALE,
+        position: "정책기획 대리",
+        description:
+            "8년차 공기업 정책기획 전문가입니다. 공공서비스 기획, 정부 정책 연구, 경영평가 대응 등의 경험을 보유하고 있습니다.",
+        isDefault: false,
+        worker,
+        createdAt: now - 200 * 24 * 60 * 60 * 1000,
+        updatedAt: now - 15 * 24 * 60 * 60 * 1000,
+    };
+
+    const careers: Career[] = [
+        {
+            id: "career-public-1",
+            name: "한국전력공사",
+            position: "정책기획 대리",
+            department: "경영기획처",
+            employmentType: Career_EmploymentType.FULL_TIME,
+            rank: "대리",
+            jobTitle: "정책기획",
+            salary: 6200,
+            description:
+                "경영기획 및 정책 연구\n- 정부 에너지 정책 대응 전략 수립\n- 공공기관 경영평가 자료 작성 (A등급 달성)\n- 국정감사 대비 자료 준비\n- ESG 경영 실천 계획 수립",
+            isVisible: true,
+            priority: 1,
+            startedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: 0,
+            isWorking: true,
+            resume,
+            salaries: [],
+            createdAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "career-public-2",
+            name: "한국수자원공사",
+            position: "행정직",
+            department: "총무부",
+            employmentType: Career_EmploymentType.FULL_TIME,
+            rank: "사원",
+            jobTitle: "행정직",
+            salary: 4200,
+            description:
+                "총무 및 행정 업무\n- 예산 집행 관리\n- 민원 처리 및 공공데이터 관리\n- 안전 관리 점검 업무 보조",
+            isVisible: true,
+            priority: 2,
+            startedAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
+            isWorking: false,
+            resume,
+            salaries: [],
+            createdAt: now - 8 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now - 5 * 365 * 24 * 60 * 60 * 1000,
+        },
+    ];
+
+    const educations: Education[] = [
+        {
+            id: "education-public-1",
+            major: "행정학",
+            name: "고려대학교",
+            description: "학점 3.9/4.5",
+            status: Education_EducationStatus.GRADUATED,
+            startedAt: now - 13 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 9 * 365 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            priority: 1,
+            resume,
+            createdAt: now - 170 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "education-public-2",
+            major: "공공정책학",
+            name: "고려대학교 행정대학원",
+            description: "석사 학위\n- 논문: 공공기관 경영평가 지표 개선 방안 연구",
+            status: Education_EducationStatus.GRADUATED,
+            startedAt: now - 6 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            priority: 2,
+            resume,
+            createdAt: now - 170 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+    ];
+
+    const projects: Project[] = [
+        {
+            id: "project-public-1",
+            title: "공공기관 경영평가 대응",
+            affiliation: "한국전력공사",
+            role: "실무 담당",
+            description:
+                "공공기관 경영평가 A등급 달성 프로젝트\n- 경영평가 지표별 실적 분석\n- 개선 과제 도출 및 실행\n- 전년 대비 2단계 등급 상향",
+            startedAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 18 * 30 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            priority: 1,
+            resume,
+            createdAt: now - 2 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "project-public-2",
+            title: "사회적 가치 실현 프로젝트",
+            affiliation: "한국전력공사",
+            role: "기획 담당",
+            description:
+                "지역사회 상생 프로그램 기획\n- 에너지 취약계층 지원 프로그램\n- 지역 주민 간담회 운영\n- 사회공헌 예산 효율화 20%",
+            startedAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+            endedAt: now - 3 * 30 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            priority: 2,
+            resume,
+            createdAt: now - 12 * 30 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+    ];
+
+    const activities: Activity[] = [
+        {
+            id: "activity-public-1",
+            name: "한국행정학회 논문 발표",
+            organization: "한국행정학회",
+            certificateNumber: "",
+            description: "공공기관 성과관리 체계 개선에 관한 연구 발표",
+            startedAt: now - 250 * 24 * 60 * 60 * 1000,
+            endedAt: now - 250 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.EXTERNAL,
+            priority: 1,
+            resume,
+            createdAt: now - 250 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-public-2",
+            name: "행정관리사 1급",
+            organization: "행정안전부",
+            certificateNumber: "ADM-2021-54321",
+            description: "행정관리사 1급 자격증 취득",
+            startedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            endedAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.CERTIFICATION,
+            priority: 2,
+            resume,
+            createdAt: now - 4 * 365 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+        {
+            id: "activity-public-3",
+            name: "공공서비스 혁신 우수상",
+            organization: "기획재정부",
+            certificateNumber: "",
+            description: "공공기관 경영평가 우수 사례로 수상",
+            startedAt: now - 200 * 24 * 60 * 60 * 1000,
+            endedAt: now - 200 * 24 * 60 * 60 * 1000,
+            isVisible: true,
+            type: Activity_ActivityType.AWARD,
+            priority: 3,
+            resume,
+            createdAt: now - 200 * 24 * 60 * 60 * 1000,
+            updatedAt: now,
+        },
+    ];
+
+    const languageSkills: LanguageSkill[] = [
+        {
+            id: "lang-public-1",
+            language: LanguageSkill_Language.ENGLISH,
+            level: LanguageSkill_LanguageLevel.BUSINESS_CONVERSATION,
             isVisible: true,
             priority: 1,
             resume,
             languageTests: [
                 {
-                    id: "lang-test-11-1",
+                    id: "lang-test-public-1",
                     name: "TOEIC",
-                    score: "925",
-                    acquiredAt: now - 210 * 24 * 60 * 60 * 1000,
+                    score: "870",
+                    acquiredAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
                     isVisible: true,
                     priority: 1,
-                    createdAt: now - 210 * 24 * 60 * 60 * 1000,
-                    updatedAt: now - 210 * 24 * 60 * 60 * 1000,
+                    createdAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
+                    updatedAt: now - 8 * 30 * 24 * 60 * 60 * 1000,
                 },
             ],
-            createdAt: now - 210 * 24 * 60 * 60 * 1000,
+            createdAt: now - 365 * 24 * 60 * 60 * 1000,
             updatedAt: now,
         },
     ];
+
     const attachments: Attachment[] = [];
 
     return { resume, careers, educations, projects, activities, languageSkills, attachments };
@@ -1912,9 +1798,15 @@ export const createEmptySampleResumeDetails = () => {
     return { resume, careers, educations, projects, activities, languageSkills, attachments };
 };
 
-// 모든 샘플 Resume 데이터를 한 번에 반환 (가이드에 따라 3개만)
+// 모든 샘플 Resume 데이터를 한 번에 반환 (기업 유형별 5개)
 export const createAllSampleResumes = () => {
-    return [createSampleResume2(), createSampleResume3(), createSampleResume4()];
+    return [
+        createStartupResume(),
+        createSmeResume(),
+        createMidsizeResume(),
+        createEnterpriseResume(),
+        createPublicCorpResume(),
+    ];
 };
 
 /** URL 템플릿 미리보기용 샘플 ResumeDetail (공개 이력서 페이지와 동일 구조) */

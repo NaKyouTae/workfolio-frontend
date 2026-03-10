@@ -186,6 +186,7 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
   // 취소 시 이전 모드로 복귀
   const onCancelEdit = () => {
     if (previousMode === 'home') {
+      setViewMode('home');
       setSelectedTurnOver(null);
       setIsNewTurnOver(false);
       router.push('/turn-overs');
@@ -229,6 +230,7 @@ const TurnOversPage: React.FC<TurnOversPageProps> = ({ initialTurnOverId, initia
             onEnterEdit={onEnterEdit}
             onCancelEdit={onCancelEdit}
             onSaveComplete={onSaveComplete}
+            onTurnOverCreated={onTurnOverCreated}
             onTurnOverUpdate={async () => {
               // 체크리스트 업데이트 후 전체 데이터 갱신
               if (selectedTurnOver?.id) {

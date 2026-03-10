@@ -27,7 +27,7 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
     const [defaultPdfTemplate, setDefaultPdfTemplate] = useState<UITemplate | null>(null);
     const [activeSection, setActiveSection] = useState<'url' | 'pdf'>('url');
     const [imagePreviewTemplate, setImagePreviewTemplate] = useState<UITemplate | null>(null);
-    const [imagePreviewIndex, setImagePreviewIndex] = useState(0);
+    const [, setImagePreviewIndex] = useState(0);
     const urlSectionRef = useRef<HTMLDivElement>(null);
     const pdfSectionRef = useRef<HTMLDivElement>(null);
 
@@ -563,7 +563,6 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
                 <TemplateImagePreviewModal
                     images={getTemplateImages(imagePreviewTemplate)}
                     templateName={imagePreviewTemplate.name}
-                    initialIndex={imagePreviewIndex}
                     onClose={() => setImagePreviewTemplate(null)}
                 />
             )}
