@@ -41,10 +41,11 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
     const [allRecords, setAllRecords] = useState<Record[]>([]);
     const [quickTemplateType, setQuickTemplateType] = useState<RecordTemplateType | null>(null);
 
-    const { sampleRecords, checkedGroups } = useRecordGroupStore(
+    const { sampleRecords, checkedGroups, recordRefreshTrigger } = useRecordGroupStore(
         useShallow((state) => ({
             sampleRecords: state.sampleRecords,
             checkedGroups: state.checkedGroups,
+            recordRefreshTrigger: state.recordRefreshTrigger,
         }))
     );
 
@@ -94,7 +95,7 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
         };
 
         fetchAllRecords();
-    }, [allRecordGroups, sampleRecords]);
+    }, [allRecordGroups, sampleRecords, recordRefreshTrigger]);
 
     // startedAt/createdAt → 숫자로 파싱
     const parseTs = (value: number | string): number => {
@@ -117,10 +118,10 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
         const prevMonthStart = now.subtract(1, "month").startOf("month").valueOf();
         const prevMonthEnd = now.subtract(1, "month").endOf("month").valueOf();
 
-        // 최근 기록: startedAt 기준 내림차순 정렬 후 상위 N개
+        // 최근 기록: createdAt 기준 내림차순 정렬 후 상위 N개
         const sorted = [...filteredRecords].sort((a, b) => {
-            const tsA = parseTs(a.startedAt || a.createdAt);
-            const tsB = parseTs(b.startedAt || b.createdAt);
+            const tsA = parseTs(a.createdAt);
+            const tsB = parseTs(b.createdAt);
             return tsB - tsA;
         });
 

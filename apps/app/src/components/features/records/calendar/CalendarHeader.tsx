@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import CalendarNavigation from './CalendarNavigation';
 import { CalendarViewType, CALENDAR_VIEW_OPTIONS } from '@workfolio/shared/models/CalendarTypes';
 import { ListRecordResponse } from '@workfolio/shared/generated/record';
-import { RECORD_TEMPLATES, RecordTemplateType } from '../templates/recordTemplates';
+import { RecordTemplateType } from '../templates/recordTemplates';
 
 export type TemplateFilterType = 'all' | RecordTemplateType;
-
-const TEMPLATE_FILTER_OPTIONS: { value: TemplateFilterType; label: string }[] = [
-    { value: 'all', label: '전체' },
-    ...RECORD_TEMPLATES.map((t) => ({ value: t.type as TemplateFilterType, label: t.label })),
-];
 
 interface CalendarHeaderProps {
     date: Date;
@@ -21,8 +16,6 @@ interface CalendarHeaderProps {
     onSearchChange?: (term: string) => void;
     onCloseSearch?: () => void;
     searchResults?: ListRecordResponse | null;
-    templateFilter?: TemplateFilterType;
-    onTemplateFilterChange?: (filter: TemplateFilterType) => void;
 }
 
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({
@@ -35,8 +28,6 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
     onSearchChange,
     onCloseSearch,
     searchResults,
-    templateFilter = 'all',
-    onTemplateFilterChange,
 }) => {
     const [inputValue, setInputValue] = useState('');
 
@@ -101,20 +92,6 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                     </div>
                 )}
             </div>
-            {/* 템플릿 유형별 필터 */}
-            {!searchResults && onTemplateFilterChange && (
-                <div className="template-filter">
-                    {TEMPLATE_FILTER_OPTIONS.map((option) => (
-                        <button
-                            key={option.value}
-                            className={`template-filter-chip ${templateFilter === option.value ? 'active' : ''}`}
-                            onClick={() => onTemplateFilterChange(option.value)}
-                        >
-                            {option.label}
-                        </button>
-                    ))}
-                </div>
-            )}
         </div>
     );
 };
