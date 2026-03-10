@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { useUITemplates } from '@/hooks/useUITemplates';
 import { WorkerUITemplate, UITemplate, UITemplateImage, getRemainingDays, formatDuration } from '@workfolio/shared/types/uitemplate';
@@ -10,7 +10,7 @@ import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { getPreviewPathFromUITemplate } from '@/components/features/public-resume/templates/resumeTemplateConfig';
 import { TemplateImagePreviewModal } from './UITemplateList';
 import EmptyState from '@workfolio/shared/ui/EmptyState';
-import FloatingNavigation from '@workfolio/shared/ui/FloatingNavigation';
+
 
 const MAIN_COLOR = '#FFBB26';
 
@@ -25,11 +25,8 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
     const [page, setPage] = useState(0);
     const [defaultUrlTemplate, setDefaultUrlTemplate] = useState<UITemplate | null>(null);
     const [defaultPdfTemplate, setDefaultPdfTemplate] = useState<UITemplate | null>(null);
-    const [activeSection, setActiveSection] = useState<'url' | 'pdf'>('url');
     const [imagePreviewTemplate, setImagePreviewTemplate] = useState<UITemplate | null>(null);
     const [, setImagePreviewIndex] = useState(0);
-    const urlSectionRef = useRef<HTMLDivElement>(null);
-    const pdfSectionRef = useRef<HTMLDivElement>(null);
 
     const fetchDefaultTemplates = useCallback(async () => {
         try {
@@ -132,34 +129,6 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
         });
         return { urlTemplates: url, pdfTemplates: pdf };
     }, [myUITemplates]);
-
-    // 스크롤 위치에 따라 activeSection 갱신
-    useEffect(() => {
-        const scrollContainer = urlSectionRef.current?.closest('[data-scroll-container]') || urlSectionRef.current?.closest('.page-cont');
-        if (!scrollContainer) return;
-
-        const handleScroll = () => {
-            const pdfEl = pdfSectionRef.current;
-            if (!pdfEl) return;
-            const containerRect = scrollContainer.getBoundingClientRect();
-            const pdfRect = pdfEl.getBoundingClientRect();
-            setActiveSection(pdfRect.top <= containerRect.top + containerRect.height / 2 ? 'pdf' : 'url');
-        };
-
-        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-        return () => scrollContainer.removeEventListener('scroll', handleScroll);
-    }, [myUITemplates]);
-
-    const scrollToSection = (section: 'url' | 'pdf') => {
-        if (section === 'url') {
-            const scrollContainer = urlSectionRef.current?.closest('[data-scroll-container]') || urlSectionRef.current?.closest('.page-cont');
-            if (scrollContainer) {
-                scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        } else {
-            pdfSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
 
     const getTemplateImages = (uiTemplate: UITemplate): UITemplateImage[] => {
         return (uiTemplate.images ?? []).slice().sort((a, b) => a.displayOrder - b.displayOrder);
@@ -453,19 +422,27 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
             {/* 메인 컨텐츠 */}
             {isEmpty ? (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <div className="cont-tit">
-                        <div>
-                            <h3>보유 템플릿</h3>
-                        </div>
-                    </div>
                     <EmptyState text="보유한 템플릿이 없습니다." noBorder centerVertically />
                 </div>
             ) : (
                 <article style={{ paddingBottom: '10px' }}>
-                    <div className="cont-tit">
-                        <div>
-                            <h3>보유 템플릿</h3>
+                    {/* 기본 설정 템플릿 요약 */}
+                    <div className="cont-box">
+                        <div className="cont-tit">
+                            <div>
+                                <h3>기본 설정 템플릿</h3>
+                            </div>
                         </div>
+                        <ul className="stats-summary">
+                            <li>
+                                <p>UI 템플릿</p>
+                                <div>{defaultUrlTemplate?.name || '미설정'}</div>
+                            </li>
+                            <li>
+                                <p>PDF 템플릿</p>
+                                <div>{defaultPdfTemplate?.name || '미설정'}</div>
+                            </li>
+                        </ul>
                     </div>
 
                     {/* loading && <p style={{ textAlign: 'center', padding: '40px 0' }}>로딩 중...</p> */}
@@ -474,7 +451,7 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
                     {!loading && myUITemplates.length > 0 && (
                         <>
                             {/* UI 템플릿 섹션 */}
-                            <div ref={urlSectionRef} style={{ marginBottom: '40px' }}>
+                            <div style={{ marginTop: '24px', marginBottom: '40px' }}>
                                 <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -500,7 +477,7 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
                             </div>
 
                             {/* PDF 템플릿 섹션 */}
-                            <div ref={pdfSectionRef}>
+                            <div>
                                 <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -540,25 +517,6 @@ const MyUITemplates: React.FC<MyUITemplatesProps> = () => {
                 </article>
             )}
 
-            {/* 플로팅 카테고리 */}
-            {!loading && myUITemplates.length > 0 && (
-                <FloatingNavigation
-                    navigationItems={[
-                        {
-                            id: 'url',
-                            label: 'UI 템플릿',
-                            isActive: activeSection === 'url',
-                            onClick: () => scrollToSection('url'),
-                        },
-                        {
-                            id: 'pdf',
-                            label: 'PDF 템플릿',
-                            isActive: activeSection === 'pdf',
-                            onClick: () => scrollToSection('pdf'),
-                        },
-                    ]}
-                />
-            )}
             {imagePreviewTemplate && (
                 <TemplateImagePreviewModal
                     images={getTemplateImages(imagePreviewTemplate)}

@@ -84,9 +84,6 @@ const CreditHistory: React.FC<CreditHistoryProps> = ({ onOpenPaymentWidget }) =>
             {/* Left: History */}
             <div className={styles.historySection}>
                 <div className="cont-tit">
-                    <div>
-                        <h3>크레딧 내역</h3>
-                    </div>
                     <div className={styles.filterContainer}>
                         {TX_FILTERS.map((filter) => (
                             <button

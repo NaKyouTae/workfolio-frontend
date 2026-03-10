@@ -183,11 +183,6 @@ const ProfileManagement: React.FC = () => {
         <>
             <article>
                 <div className="cont-box">
-                    <div className="cont-tit">
-                        <div>
-                            <h3>프로필 관리</h3>
-                        </div>
-                    </div>
                     <form onSubmit={handleSubmit}>
                         <ul className="setting-list grid-2">
                             <li className="full">
