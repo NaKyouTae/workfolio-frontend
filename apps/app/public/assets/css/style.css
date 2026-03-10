@@ -392,6 +392,8 @@ table.list.search tbody td .empty {font-weight: 500; color: var(--gray005);}
 .stats-summary > li > p {font-size: 1.4rem; font-weight: 500;}
 .stats-summary > li > div {display: flex; align-items: center; column-gap: .6rem; font-size: 2rem; font-weight: 600;}
 .stats-summary > li > div > span {font-size: 1.2rem; font-weight: initial;}
+.stats-summary > li > div.positive {color: #16a34a;}
+.stats-summary > li > div.negative {color: #dc2626;}
 
 /* 빠른 기록 */
 .quick-record-list {display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem;}

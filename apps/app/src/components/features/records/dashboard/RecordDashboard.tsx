@@ -285,20 +285,20 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
                                     <h3>이번 달 요약</h3>
                                 </div>
                             </div>
-                            <ul className="dash-summary-cards">
+                            <ul className="stats-summary">
                                 <li>
-                                    <span className="dash-summary-value">{thisMonthCount}</span>
-                                    <span className="dash-summary-label">이번 달</span>
+                                    <p>이번 달</p>
+                                    <div>{thisMonthCount}<span>건</span></div>
                                 </li>
                                 <li>
-                                    <span className="dash-summary-value">{thisWeekCount}</span>
-                                    <span className="dash-summary-label">이번 주</span>
+                                    <p>이번 주</p>
+                                    <div>{thisWeekCount}<span>건</span></div>
                                 </li>
                                 <li>
-                                    <span className={`dash-summary-value ${monthDiff > 0 ? "positive" : monthDiff < 0 ? "negative" : ""}`}>
-                                        {monthDiff > 0 ? `+${monthDiff}` : monthDiff === 0 ? "0" : `${monthDiff}`}
-                                    </span>
-                                    <span className="dash-summary-label">지난달 대비</span>
+                                    <p>지난달 대비</p>
+                                    <div className={monthDiff > 0 ? "positive" : monthDiff < 0 ? "negative" : ""}>
+                                        {monthDiff > 0 ? `+${monthDiff}` : monthDiff === 0 ? "0" : `${monthDiff}`}<span>건</span>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
