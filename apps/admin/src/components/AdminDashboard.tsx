@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './AdminDashboard.module.css';
 
 interface DashboardStats {
+  totalWorkers: number;
   totalRecordGroups: number;
   totalRecords: number;
   totalTurnOvers: number;
@@ -14,6 +15,7 @@ interface DashboardStats {
 }
 
 const INITIAL_STATS: DashboardStats = {
+  totalWorkers: 0,
   totalRecordGroups: 0,
   totalRecords: 0,
   totalTurnOvers: 0,
@@ -35,6 +37,7 @@ export default function AdminDashboard() {
         }
         const data = await response.json();
         setStats({
+          totalWorkers: data.totalWorkers ?? 0,
           totalRecordGroups: data.totalRecordGroups ?? 0,
           totalRecords: data.totalRecords ?? 0,
           totalTurnOvers: data.totalTurnOvers ?? 0,
@@ -53,6 +56,7 @@ export default function AdminDashboard() {
 
   const statCards = useMemo(() => {
     const items = [
+      { label: '전체 사용자 수', rawValue: stats.totalWorkers, value: stats.totalWorkers.toLocaleString(), unit: '명' },
       { label: '전체 기록 그룹 개수', rawValue: stats.totalRecordGroups, value: stats.totalRecordGroups.toLocaleString(), unit: '개' },
       { label: '전체 기록 내역 개수', rawValue: stats.totalRecords, value: stats.totalRecords.toLocaleString(), unit: '건' },
       { label: '전체 이직 내역 수', rawValue: stats.totalTurnOvers, value: stats.totalTurnOvers.toLocaleString(), unit: '건' },

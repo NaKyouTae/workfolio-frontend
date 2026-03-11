@@ -27,42 +27,33 @@ const InfoContent: React.FC = () => {
                 <div className="contents">
                     <div className="info-wrap">
                         <div className="intro1">
-                            <div className="probl">
+                            <div className="hero">
+                                <h2 className="hero-title">
+                                    업무 기록을 쌓으면
+                                    <br />
+                                    이력서가 자동으로 만들어집니다
+                                </h2>
+                                <p className="hero-sub">
+                                    주간 회고 · 성과 기록 · 프로젝트 회고로 쌓은 기록이 이력서가 됩니다
+                                </p>
+                                <Link href="/records" className="hero-cta">
+                                    무료로 시작하기
+                                </Link>
                                 <Image
-                                    src="/assets/img/info/info-img01.svg"
-                                    alt="man"
-                                    width={1}
-                                    height={1}
+                                    src="/assets/img/info/info-img06.svg"
+                                    alt="워크폴리오 이력 관리 화면"
+                                    width={630}
+                                    height={292}
+                                    className="hero-mockup"
                                 />
-                                <Image
-                                    src="/assets/img/info/info-img02.svg"
-                                    alt="woman"
-                                    width={1}
-                                    height={1}
-                                />
+                            </div>
+                            <div className="pain-points">
+                                <p className="pain-points-title">이런 고민, 한 번쯤 해보셨죠?</p>
                                 <ul>
                                     <li>참여했던 프로젝트 내용이 잘 기억나지 않아요.</li>
                                     <li>이직 준비, 제대로 하고 있는 건지 잘 모르겠어요.</li>
-                                    <li>업무랑 개인 일정 관리가 자꾸 꼬여요.</li>
                                     <li>흩어진 이력을 한곳에서 편하게 관리하고 싶어요.</li>
                                 </ul>
-                            </div>
-                            <div className="dots">
-                                <span></span>
-                            </div>
-                            <div className="resolve">
-                                <Image
-                                    src="/assets/img/logo/img-logo01.svg"
-                                    alt="workfolio"
-                                    width={174}
-                                    height={50}
-                                />
-                                <p>
-                                    업무 기록을 쌓으면 이력서가 자동으로 만들어집니다
-                                    <br />
-                                    주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼,{" "}
-                                    <span>워크폴리오</span>
-                                </p>
                             </div>
                         </div>
                         <div className="intro2">

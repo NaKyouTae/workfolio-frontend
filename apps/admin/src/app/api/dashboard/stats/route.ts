@@ -6,6 +6,7 @@ import { getCookie } from "@workfolio/shared/utils/cookie";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export interface AdminDashboardStatsResponse {
+    totalWorkers: number;
     totalRecordGroups: number;
     totalRecords: number;
     totalTurnOvers: number;
@@ -37,6 +38,7 @@ export async function GET() {
         console.error("Error fetching dashboard stats:", error);
         return NextResponse.json(
             {
+                totalWorkers: 0,
                 totalRecordGroups: 0,
                 totalRecords: 0,
                 totalTurnOvers: 0,
