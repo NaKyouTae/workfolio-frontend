@@ -145,6 +145,14 @@ const DashboardPage: React.FC = React.memo(() => {
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     }, []);
 
+    const handleQuickRecordClick = useCallback((templateType: RecordTemplateType) => {
+        if (!isLoggedIn()) {
+            setShowLoginModal(true);
+            return;
+        }
+        setQuickTemplateType(templateType);
+    }, []);
+
 
     // ── Data fetching ──
     useEffect(() => {
@@ -658,7 +666,7 @@ const DashboardPage: React.FC = React.memo(() => {
                                         {RECORD_TEMPLATES.map((template) => (
                                             <li
                                                 key={template.type}
-                                                onClick={() => setQuickTemplateType(template.type)}
+                                                onClick={() => handleQuickRecordClick(template.type)}
                                             >
                                                 <p>{template.label}</p>
                                                 <span>{template.description}</span>
