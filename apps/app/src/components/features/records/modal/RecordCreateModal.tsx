@@ -1,20 +1,20 @@
-import React, {useEffect, useState, useMemo} from 'react'
+import React, {useEffect, useState, useMemo, useCallback} from 'react'
 import HttpMethod from "@workfolio/shared/enums/HttpMethod"
 import { DateUtil } from "@workfolio/shared/utils/DateUtil"
 import {IDropdown} from "@workfolio/shared/ui/Dropdown"
-import {RecordGroup} from "@workfolio/shared/generated/common"
+import {RecordGroup, RecordGroup_RecordGroupCategory} from "@workfolio/shared/generated/common"
 import { RecordCreateRequest } from '@workfolio/shared/generated/record'
 import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore'
 import dayjs from 'dayjs'
 import RecordForm, { RecordAttachment } from './RecordForm'
-import { RecordTemplateType, getTemplate, buildDescriptionFromFields } from '../templates/recordTemplates'
+import { RecordTemplateType, getTemplate, buildDescriptionFromFields, getTemplatesForCategory } from '../templates/recordTemplates'
+import { useRouter } from 'next/navigation'
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     selectedDate?: string | null;
     allRecordGroups: RecordGroup[];
-    templateType?: RecordTemplateType;
 }
 
 const RecordCreateModal: React.FC<ModalProps> = ({
@@ -22,11 +22,10 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     onClose,
     selectedDate,
     allRecordGroups,
-    templateType = 'free',
 }) => {
-    const template = getTemplate(templateType);
-
+    const router = useRouter();
     const [recordGroupId, setRecordGroupId] = useState<string | undefined>(undefined);
+    const [templateType, setTemplateType] = useState<RecordTemplateType>('free');
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [startedAt, setStartedAt] = useState(dayjs().toISOString());
@@ -34,16 +33,58 @@ const RecordCreateModal: React.FC<ModalProps> = ({
     const [isAllDay, setIsAllDay] = useState(false);
     const [attachments, setAttachments] = useState<RecordAttachment[]>([]);
     const [templateFields, setTemplateFields] = useState<Record<string, string>>({});
+    const [showSavedNudge, setShowSavedNudge] = useState(false);
 
     const { triggerRecordRefresh } = useRecordGroupStore();
+
+    const getCategoryLabel = (category: RecordGroup_RecordGroupCategory) =>
+        category === RecordGroup_RecordGroupCategory.PROJECT ? '프로젝트' : '일반';
 
     const dropdownOptions: IDropdown[] = useMemo(() =>
         allRecordGroups.map(group => ({
             value: group.id || '',
-            label: group.title || '',
+            label: `${group.title || ''} - ${getCategoryLabel(group.category)}`,
             color: group.color
         })), [allRecordGroups]
     );
+
+    // Get selected record group's category
+    const selectedGroup = useMemo(() =>
+        allRecordGroups.find(g => g.id === recordGroupId),
+        [allRecordGroups, recordGroupId]
+    );
+
+    const selectedCategory = selectedGroup?.category === RecordGroup_RecordGroupCategory.PROJECT
+        ? 'PROJECT' as const
+        : 'GENERAL' as const;
+
+    const categoryLabel = selectedCategory === 'PROJECT' ? '프로젝트' : '일반';
+
+    // Get available templates for the selected category
+    const availableTemplates = useMemo(() =>
+        getTemplatesForCategory(selectedCategory),
+        [selectedCategory]
+    );
+
+    const templateDropdownOptions: IDropdown[] = useMemo(() =>
+        availableTemplates.map(t => ({
+            value: t.type,
+            label: t.label,
+        })), [availableTemplates]
+    );
+
+    // When record group changes, reset template to first available
+    useEffect(() => {
+        if (availableTemplates.length > 0) {
+            const currentValid = availableTemplates.find(t => t.type === templateType);
+            if (!currentValid) {
+                setTemplateType(availableTemplates[0].type);
+                setTemplateFields({});
+            }
+        }
+    }, [availableTemplates, templateType]);
+
+    const template = getTemplate(templateType);
 
     useEffect(() => {
         if (isAllDay) {
@@ -80,7 +121,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
 
     useEffect(() => {
         if (isOpen) {
-            setTitle(template.defaultTitle);
+            setTitle('');
             setDescription('');
             setTemplateFields({});
 
@@ -89,36 +130,31 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                 setStartedAt(selectedDateTime.toISOString());
                 setEndedAt(selectedDateTime.add(30, 'minute').toISOString());
             } else {
-                if (template.isAllDay) {
-                    const today = dayjs().startOf('day');
-                    if (templateType === 'weekly_review') {
-                        const monday = today.day(1);
-                        const friday = today.day(5).endOf('day');
-                        setStartedAt(monday.toISOString());
-                        setEndedAt(friday.toISOString());
-                    } else {
-                        setStartedAt(today.toISOString());
-                        setEndedAt(today.endOf('day').toISOString());
-                    }
-                } else {
-                    const now = dayjs();
-                    const currentHour = now.hour();
-                    const startHour = currentHour >= 23 ? 22 : currentHour;
-                    const endHour = startHour + 1;
+                const now = dayjs();
+                const currentHour = now.hour();
+                const startHour = currentHour >= 23 ? 22 : currentHour;
+                const endHour = startHour + 1;
 
-                    const startTime = now.hour(startHour).minute(0).second(0);
-                    const endTime = now.hour(endHour).minute(0).second(0);
+                const startTime = now.hour(startHour).minute(0).second(0);
+                const endTime = now.hour(endHour).minute(0).second(0);
 
-                    setStartedAt(startTime.toISOString());
-                    setEndedAt(endTime.toISOString());
-                }
+                setStartedAt(startTime.toISOString());
+                setEndedAt(endTime.toISOString());
             }
 
             setRecordGroupId(dropdownOptions[0]?.value as string || undefined);
-            setIsAllDay(template.isAllDay);
+            setIsAllDay(false);
             setAttachments([]);
+            setShowSavedNudge(false);
         }
-    }, [isOpen, selectedDate, dropdownOptions, templateType, template]);
+    }, [isOpen, selectedDate, dropdownOptions]);
+
+    // When template changes, adjust isAllDay
+    useEffect(() => {
+        setIsAllDay(template.isAllDay);
+        setTitle(template.defaultTitle);
+        setTemplateFields({});
+    }, [templateType, template]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -133,6 +169,7 @@ const RecordCreateModal: React.FC<ModalProps> = ({
             recordGroupId: recordGroupId || undefined,
             title: title || undefined,
             description: finalDescription || undefined,
+            templateType: templateType,
             attachments: attachments.map(a => ({
                 fileName: a.fileName,
                 fileData: a.fileData as unknown as Uint8Array,
@@ -150,19 +187,51 @@ const RecordCreateModal: React.FC<ModalProps> = ({
             if (!response.ok) throw new Error('Failed to create record');
 
             triggerRecordRefresh();
-            onClose();
+            setShowSavedNudge(true);
         } catch (error) {
             console.error('Error creating record:', error);
         }
     };
 
+    const handleGoToResume = useCallback(() => {
+        setShowSavedNudge(false);
+        onClose();
+        router.push('/careers');
+    }, [onClose, router]);
+
+    const handleCloseNudge = useCallback(() => {
+        setShowSavedNudge(false);
+        onClose();
+    }, [onClose]);
+
     if (!isOpen) return null;
+
+    if (showSavedNudge) {
+        return (
+            <div className="modal" onClick={(e) => { if (e.target === e.currentTarget) handleCloseNudge(); }}>
+                <div className="modal-wrap record-saved-nudge">
+                    <div className="modal-tit">
+                        <h2>기록 저장 완료</h2>
+                        <button onClick={handleCloseNudge}><i className="ic-close" /></button>
+                    </div>
+                    <div className="record-saved-nudge-body">
+                        <p className="record-saved-nudge-msg">이 기록이 이력서에 반영될 수 있어요</p>
+                        <span className="record-saved-nudge-desc">쌓인 기록을 바탕으로 이력서를 업데이트해 보세요.</span>
+                        <div className="modal-btn">
+                            <button type="button" onClick={handleCloseNudge}>다음에 할게요</button>
+                            <button type="button" className="btn-primary" onClick={handleGoToResume}>이력서에 반영하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="modal" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
             <div className="modal-wrap">
                 <div className="modal-tit">
-                    <h2>{template.type === 'free' ? '기록 추가' : `${template.label} 추가`}</h2>
+                    <h2>기록 추가</h2>
                     <button onClick={onClose}><i className="ic-close" /></button>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -186,8 +255,11 @@ const RecordCreateModal: React.FC<ModalProps> = ({
                         attachments={attachments}
                         onAttachmentsChange={setAttachments}
                         templateType={templateType}
+                        setTemplateType={setTemplateType}
+                        templateDropdownOptions={templateDropdownOptions}
                         templateFields={templateFields}
                         onTemplateFieldsChange={setTemplateFields}
+                        categoryLabel={categoryLabel}
                     />
                     <div className="modal-btn">
                         <button type="button" onClick={onClose}>취소</button>

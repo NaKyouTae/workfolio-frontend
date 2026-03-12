@@ -2,12 +2,12 @@ import React, {useEffect, useState, useMemo} from 'react'
 import HttpMethod from "@workfolio/shared/enums/HttpMethod"
 import { DateUtil } from "@workfolio/shared/utils/DateUtil"
 import {IDropdown} from "@workfolio/shared/ui/Dropdown"
-import {Record as RecordModel, RecordGroup} from "@workfolio/shared/generated/common"
+import {Record as RecordModel, RecordGroup, RecordGroup_RecordGroupCategory} from "@workfolio/shared/generated/common"
 import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore'
 import dayjs from 'dayjs'
 import { RecordUpdateRequest } from '@workfolio/shared/generated/record'
 import RecordForm, { RecordAttachment } from './RecordForm'
-import { RecordTemplateType, detectTemplateType, getTemplate, parseDescriptionToFields, buildDescriptionFromFields } from '../templates/recordTemplates'
+import { RecordTemplateType, detectTemplateType, getTemplate, parseDescriptionToFields, buildDescriptionFromFields, getTemplatesForCategory } from '../templates/recordTemplates'
 
 interface ModalProps {
     isOpen: boolean;
@@ -34,12 +34,38 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
 
     const { triggerRecordRefresh } = useRecordGroupStore();
 
+    const getCategoryLabel = (category: RecordGroup_RecordGroupCategory) =>
+        category === RecordGroup_RecordGroupCategory.PROJECT ? '프로젝트' : '일반';
+
     const dropdownOptions: IDropdown[] = useMemo(() =>
         allRecordGroups.map(group => ({
             value: group.id || '',
-            label: group.title || '',
+            label: `${group.title || ''} - ${getCategoryLabel(group.category)}`,
             color: group.color
         })), [allRecordGroups]
+    );
+
+    const selectedGroup = useMemo(() =>
+        allRecordGroups.find(g => g.id === recordGroupId),
+        [allRecordGroups, recordGroupId]
+    );
+
+    const selectedCategory = selectedGroup?.category === RecordGroup_RecordGroupCategory.PROJECT
+        ? 'PROJECT' as const
+        : 'GENERAL' as const;
+
+    const categoryLabel = selectedCategory === 'PROJECT' ? '프로젝트' : '일반';
+
+    const availableTemplates = useMemo(() =>
+        getTemplatesForCategory(selectedCategory),
+        [selectedCategory]
+    );
+
+    const templateDropdownOptions: IDropdown[] = useMemo(() =>
+        availableTemplates.map(t => ({
+            value: t.type,
+            label: t.label,
+        })), [availableTemplates]
     );
 
     useEffect(() => {
@@ -113,6 +139,7 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                 startedAt: DateUtil.parseToTimestamp(startedAt),
                 endedAt: DateUtil.parseToTimestamp(endedAt),
                 recordGroupId: recordGroupId || '',
+                templateType: templateType,
             };
 
             const response = await fetch(`/api/records`, {
@@ -161,8 +188,11 @@ const RecordUpdateModal: React.FC<ModalProps> = ({
                         attachments={attachments}
                         onAttachmentsChange={setAttachments}
                         templateType={templateType}
+                        setTemplateType={setTemplateType}
+                        templateDropdownOptions={templateDropdownOptions}
                         templateFields={templateFields}
                         onTemplateFieldsChange={setTemplateFields}
+                        categoryLabel={categoryLabel}
                     />
                     <div className="modal-btn">
                         <button type="button" onClick={onClose}>취소</button>

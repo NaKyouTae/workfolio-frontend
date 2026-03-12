@@ -1,4 +1,6 @@
-export type RecordTemplateType = 'weekly_review' | 'project_review' | 'achievement' | 'daily_log' | 'free';
+export type RecordTemplateType = 'weekly_review' | 'project_review' | 'achievement' | 'daily_log' | 'free' | 'project_overview' | 'task' | 'project_review_v2';
+
+export type RecordGroupCategoryType = 'GENERAL' | 'PROJECT';
 
 export interface TemplateField {
     key: string;
@@ -72,6 +74,44 @@ export const RECORD_TEMPLATES: RecordTemplate[] = [
         ],
     },
     {
+        type: 'project_overview',
+        label: '프로젝트 개요',
+        description: '프로젝트 시작 시 기본 정보를 정리하는 기록',
+        defaultTitle: '',
+        isAllDay: true,
+        fields: [
+            { key: 'service', label: '서비스 설명', placeholder: '예) 중고 명품 C2C 플랫폼', type: 'text', required: true },
+            { key: 'role', label: '내 역할', placeholder: '예) 서버 개발자', type: 'text', required: true },
+            { key: 'team', label: '소속/팀', placeholder: '예) 페이먼트팀', type: 'text' },
+            { key: 'tech', label: '기술 스택', placeholder: '예) Kotlin, Spring Boot, Redis', type: 'textarea' },
+        ],
+    },
+    {
+        type: 'task',
+        label: '업무 기록',
+        description: '주요 업무의 내용, 과정, 성과를 기록',
+        defaultTitle: '',
+        isAllDay: false,
+        fields: [
+            { key: 'content', label: '내용', placeholder: '무엇을 구현/개발했는지 작성해 주세요.', type: 'textarea', required: true },
+            { key: 'process', label: '과정', placeholder: '어떤 문제가 있었고 어떻게 해결했는지 작성해 주세요.', type: 'textarea' },
+            { key: 'result', label: '성과', placeholder: '정량적 결과를 작성해 주세요. (예: 응답속도 2초→200ms)', type: 'textarea' },
+        ],
+    },
+    {
+        type: 'project_review_v2',
+        label: '프로젝트 회고',
+        description: '프로젝트 마무리 시 전체를 돌아보는 기록',
+        defaultTitle: '',
+        isAllDay: true,
+        fields: [
+            { key: 'achievement', label: '최종 성과', placeholder: '프로젝트의 최종 결과를 작성해 주세요.', type: 'textarea', required: true },
+            { key: 'good', label: '잘한 점', placeholder: '잘한 점을 작성해 주세요.', type: 'textarea' },
+            { key: 'bad', label: '아쉬운 점', placeholder: '아쉬운 점을 작성해 주세요.', type: 'textarea' },
+            { key: 'lesson', label: '배운 점', placeholder: '배운 점을 작성해 주세요.', type: 'textarea' },
+        ],
+    },
+    {
         type: 'free',
         label: '빈 기록',
         description: '자유롭게 작성하는 기록',
@@ -127,4 +167,12 @@ export function detectTemplateType(description: string): RecordTemplateType {
     }
 
     return 'free';
+}
+
+export const GENERAL_TEMPLATES: RecordTemplateType[] = ['weekly_review', 'project_review', 'achievement', 'daily_log', 'free'];
+export const PROJECT_TEMPLATES: RecordTemplateType[] = ['project_overview', 'task', 'project_review_v2', 'free'];
+
+export function getTemplatesForCategory(category: RecordGroupCategoryType): RecordTemplate[] {
+    const types = category === 'PROJECT' ? PROJECT_TEMPLATES : GENERAL_TEMPLATES;
+    return RECORD_TEMPLATES.filter(t => types.includes(t.type));
 }

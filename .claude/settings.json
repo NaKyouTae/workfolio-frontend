@@ -1,4 +1,11 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(npx next build)",
+      "Bash(git -C /Users/nakyutae/personal/git/workfolio-frontend diff apps/app/src/components/features/careers/CareerContentForm.tsx)",
+      "Bash(lsof -i :3000)"
+    ]
+  },
   "projectDocuments": [
     "../claude-settings/.claude/AGENTS.md",
     "../claude-settings/.claude/README.md",

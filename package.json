@@ -11,7 +11,7 @@
     "dev:admin": "pnpm run proto && turbo dev --filter=admin",
     "dev:app": "pnpm run proto && turbo dev --filter=app",
     "install-protoc": "bash scripts/install-protoc.sh",
-    "lint": "turbo lint",
+    "lint": "pnpm --filter app lint && pnpm --filter admin lint",
     "prepare": "husky",
     "proto": "bash scripts/compile-proto.sh",
     "sort-pkg": "sort-package-json 'package.json' 'apps/*/package.json' 'packages/*/package.json'"

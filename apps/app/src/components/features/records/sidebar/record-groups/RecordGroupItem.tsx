@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { RecordGroup } from '@workfolio/shared/generated/common';
+import { RecordGroup, RecordGroup_RecordGroupCategory } from '@workfolio/shared/generated/common';
 import RecordGroupFormModal from './RecordGroupFormModal';
 import { useConfirm } from '@workfolio/shared/hooks/useConfirm';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
@@ -10,7 +10,7 @@ interface RecordGroupItemProps {
     group: RecordGroup;
     isChecked: boolean;
     onToggle: (id: string) => void;
-    onUpdate?: (id: string, title: string, color: string) => void;
+    onUpdate?: (id: string, title: string, color: string, category?: RecordGroup_RecordGroupCategory) => void;
     onDelete?: (id: string) => void;
 }
 
@@ -64,9 +64,9 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onDelete }: Rec
         setShowEditModal(true);
     };
 
-    const handleEditSubmit = (title: string, color: string) => {
+    const handleEditSubmit = (title: string, color: string, category?: RecordGroup_RecordGroupCategory) => {
         if (onUpdate) {
-            onUpdate(group.id, title, color);
+            onUpdate(group.id, title, color, category);
         }
         setShowEditModal(false);
     };
@@ -105,7 +105,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onDelete }: Rec
                     htmlFor={`group${group.id}`}
                     style={{"--group-color": `${group.color}` } as React.CSSProperties}
                 >
-                    <p>{group.isDefault ? '[기본] ' : ''}{group.title}</p>
+                    <p>[{group.category === RecordGroup_RecordGroupCategory.PROJECT ? '프로젝트' : '일반'}] {group.title}</p>
                 </label>
             </div>
             <div className="more">
@@ -132,6 +132,7 @@ const RecordGroupItem = ({ group, isChecked, onToggle, onUpdate, onDelete }: Rec
                 mode="edit"
                 initialTitle={group.title}
                 initialColor={group.color}
+                initialCategory={group.category}
                 onSubmit={handleEditSubmit}
                 onClose={() => setShowEditModal(false)}
             />

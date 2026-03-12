@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
     const accessToken = request.nextUrl.searchParams.get("access_token");
     const refreshToken = request.nextUrl.searchParams.get("refresh_token");
     if (accessToken && refreshToken) {
-        const response = NextResponse.redirect(new URL("/records", request.url));
+        const response = NextResponse.redirect(new URL("/dashboard", request.url));
         const isProduction = process.env.NODE_ENV === "production";
 
         response.cookies.set("accessToken", accessToken, {
@@ -48,14 +48,14 @@ export function middleware(request: NextRequest) {
     }
 
     if (request.nextUrl.pathname === "/login") {
-        return NextResponse.redirect(new URL("/records", request.url));
+        return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
     if (request.nextUrl.pathname.startsWith("/mypage")) {
         const existingAccessToken = request.cookies.get("accessToken");
         const existingRefreshToken = request.cookies.get("refreshToken");
         if (!existingAccessToken && !existingRefreshToken) {
-            return NextResponse.redirect(new URL("/records", request.url));
+            return NextResponse.redirect(new URL("/dashboard", request.url));
         }
     }
 
@@ -65,6 +65,7 @@ export function middleware(request: NextRequest) {
 export const config = {
     matcher: [
         "/",
+        "/dashboard/:path*",
         "/records/:path*",
         "/company-history/:path*",
         "/mypage/:path*",

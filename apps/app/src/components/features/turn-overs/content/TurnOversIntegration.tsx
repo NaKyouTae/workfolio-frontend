@@ -1,10 +1,39 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { useTurnOver } from '@/hooks/useTurnOver';
-import { TurnOverDetail, JobApplication_JobApplicationStatus, jobApplication_JobApplicationStatusFromJSON } from '@workfolio/shared/generated/common';
-import styles from './TurnOversIntegration.module.css';
+import { TurnOverDetail, CheckList, JobApplication_JobApplicationStatus } from '@workfolio/shared/generated/common';
+import { CheckListCheckedUpdateRequest } from '@workfolio/shared/generated/turn_over';
 import { useIsDemo } from '@/hooks/useIsDemo';
+import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
+import { useNotification } from '@workfolio/shared/hooks/useNotification';
+import LoginModal from '@workfolio/shared/ui/LoginModal';
 import DemoBanner from '@/components/features/records/dashboard/DemoBanner';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import HttpMethod from '@workfolio/shared/enums/HttpMethod';
+import dayjs from 'dayjs';
+
+/** 이직 활동 진척도 계산 */
+export const calculateTurnOverProgress = (t: TurnOverDetail): number => {
+  let filled = 0;
+  const total = 5;
+  // 1. 목표 설정
+  if (t.turnOverGoal?.reason || t.turnOverGoal?.goal) filled++;
+  // 2. 체크리스트 존재
+  if (t.turnOverGoal?.checkList && t.turnOverGoal.checkList.length > 0) filled++;
+  // 3. 지원 회사 등록
+  if (t.turnOverChallenge?.jobApplications && t.turnOverChallenge.jobApplications.length > 0) filled++;
+  // 4. 회고 작성
+  if (t.turnOverRetrospective?.name && t.turnOverRetrospective.name.trim()) filled++;
+  // 5. 만족도 평가
+  if (t.turnOverRetrospective?.score && t.turnOverRetrospective.score > 0) filled++;
+  return Math.round((filled / total) * 100);
+};
+
+const STATUS_LABELS: Record<string, { label: string; className: string }> = {
+  [JobApplication_JobApplicationStatus.PENDING]: { label: '대기', className: 'status-pending' },
+  [JobApplication_JobApplicationStatus.RUNNING]: { label: '진행', className: 'status-running' },
+  [JobApplication_JobApplicationStatus.PASSED]: { label: '합격', className: 'status-passed' },
+  [JobApplication_JobApplicationStatus.FAILED]: { label: '불합격', className: 'status-failed' },
+  [JobApplication_JobApplicationStatus.CANCELLED]: { label: '취소', className: 'status-cancelled' },
+};
 
 interface TurnOversIntegrationProps {
   onSelectTurnOver?: (id: string) => void;
@@ -15,205 +44,100 @@ interface TurnOversIntegrationProps {
   isLoading?: boolean;
 }
 
-const RECENT_APPLICATIONS_LIMIT = 5;
-
-const formatSalary = (salary: number): string => {
-  if (salary >= 10000) {
-    const uk = Math.floor(salary / 10000);
-    const remainder = salary % 10000;
-    if (remainder === 0) return `${uk}억`;
-    return `${uk}억 ${remainder.toLocaleString()}만`;
-  }
-  return `${salary.toLocaleString()}만`;
-};
-
-const formatRelativeTime = (timestamp: number): string => {
-  const diff = Date.now() - timestamp;
-  const minutes = Math.floor(diff / (1000 * 60));
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const weeks = Math.floor(days / 7);
-  const months = Math.floor(days / 30);
-
-  if (minutes < 1) return '방금 전';
-  if (minutes < 60) return `${minutes}분 전`;
-  if (hours < 24) return `${hours}시간 전`;
-  if (days < 7) return `${days}일 전`;
-  if (weeks < 5) return `${weeks}주 전`;
-  return `${months}개월 전`;
-};
-
-const normalizeStatus = (status: JobApplication_JobApplicationStatus | string): JobApplication_JobApplicationStatus =>
-  typeof status === 'string' ? jobApplication_JobApplicationStatusFromJSON(status) : status;
-
-const getJobStatusLabel = (status: JobApplication_JobApplicationStatus | string): { label: string; className: string } => {
-  switch (normalizeStatus(status)) {
-    case JobApplication_JobApplicationStatus.PENDING:
-      return { label: '서류 대기', className: 'statusPending' };
-    case JobApplication_JobApplicationStatus.RUNNING:
-      return { label: '진행 중', className: 'statusRunning' };
-    case JobApplication_JobApplicationStatus.PASSED:
-      return { label: '최종 합격', className: 'statusPassed' };
-    case JobApplication_JobApplicationStatus.FAILED:
-      return { label: '불합격', className: 'statusFailed' };
-    case JobApplication_JobApplicationStatus.CANCELLED:
-      return { label: '포기', className: 'statusCancelled' };
-    default:
-      return { label: '대기', className: 'statusPending' };
-  }
-};
-
 const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTurnOver, onCreate }) => {
   const isDemo = useIsDemo();
-  const { turnOvers: liveTurnOvers, isLoading } = useTurnOver();
+  const { turnOvers: liveTurnOvers, isLoading, refreshTurnOvers } = useTurnOver();
+  const { showNotification } = useNotification();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   // 로딩 중일 때 이전 데이터를 유지하여 깜빡임 방지
   const [stableTurnOvers, setStableTurnOvers] = useState<TurnOverDetail[]>(liveTurnOvers);
+  // 낙관적 업데이트로 체크된 아이템 ID 추적
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
   if (!isLoading && liveTurnOvers !== stableTurnOvers) {
     setStableTurnOvers(liveTurnOvers);
   }
   const turnOvers = isLoading && stableTurnOvers.length > 0 ? stableTurnOvers : liveTurnOvers;
 
-  // 통계 계산
-  const statistics = useMemo(() => {
-    const completedTurnOvers = turnOvers.filter(
-      turnOver => turnOver.turnOverRetrospective?.name && turnOver.turnOverRetrospective.name !== ''
-    );
-    const ongoingTurnOvers = turnOvers.filter(
-      turnOver => !turnOver.turnOverRetrospective?.name || turnOver.turnOverRetrospective.name === ''
-    );
+  // 체크리스트 체크 핸들러
+  const handleCheckItem = useCallback(async (item: CheckList) => {
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (!item.id) return;
 
-    let avgDuration = { months: 0, days: 0 };
-    if (completedTurnOvers.length > 0) {
-      const totalDays = completedTurnOvers.reduce((sum, turnOver) => {
-        if (turnOver.turnOverChallenge?.jobApplications &&
-            turnOver.turnOverChallenge.jobApplications.length > 0) {
-          const apps = turnOver.turnOverChallenge.jobApplications;
-          const firstApp = apps.reduce((earliest, app) =>
-            (!earliest.startedAt || (app.startedAt && app.startedAt < earliest.startedAt))
-              ? app : earliest
-          , apps[0]);
+    // 낙관적 업데이트
+    setCheckedIds(prev => new Set(prev).add(item.id));
 
-          const lastApp = apps.reduce((latest, app) =>
-            (!latest.endedAt || (app.endedAt && app.endedAt > latest.endedAt))
-              ? app : latest
-          , apps[0]);
-
-          if (firstApp.startedAt && lastApp.endedAt) {
-            const durationDays = (lastApp.endedAt - firstApp.startedAt) / (1000 * 60 * 60 * 24);
-            return sum + durationDays;
-          }
-        }
-        return sum;
-      }, 0);
-
-      const avgDays = totalDays / completedTurnOvers.length;
-      avgDuration = {
-        months: Math.floor(avgDays / 30),
-        days: Math.round(avgDays % 30)
+    try {
+      const request: CheckListCheckedUpdateRequest = {
+        id: item.id,
+        checked: true,
       };
-    }
-
-    const avgApplications = turnOvers.length > 0
-      ? turnOvers.map(t => t.turnOverChallenge?.jobApplications.length ?? 0).reduce((s, l) => s + l, 0) / turnOvers.length
-      : 0;
-
-    let avgSalaryIncreaseRate = 0;
-    if (completedTurnOvers.length > 1) {
-      const sorted = [...completedTurnOvers].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-      const rates: number[] = [];
-      for (let i = 1; i < sorted.length; i++) {
-        const cur = sorted[i].turnOverRetrospective?.salary ?? 0;
-        const prev = sorted[i - 1].turnOverRetrospective?.salary ?? 0;
-        if (prev > 0 && cur > 0) rates.push(((cur - prev) / prev) * 100);
-      }
-      if (rates.length > 0) avgSalaryIncreaseRate = rates.reduce((s, r) => s + r, 0) / rates.length;
-    }
-
-    return { total: turnOvers.length, completed: completedTurnOvers.length, ongoing: ongoingTurnOvers.length, avgDuration, avgApplications, avgSalaryIncreaseRate };
-  }, [turnOvers]);
-
-  // 지원 현황 집계
-  const applicationStats = useMemo(() => {
-    let total = 0, pending = 0, running = 0, passed = 0, failed = 0, cancelled = 0;
-    turnOvers.forEach(t => {
-      const apps = t.turnOverChallenge?.jobApplications ?? [];
-      total += apps.length;
-      apps.forEach(app => {
-        switch (normalizeStatus(app.status)) {
-          case JobApplication_JobApplicationStatus.RUNNING: running++; break;
-          case JobApplication_JobApplicationStatus.PASSED: passed++; break;
-          case JobApplication_JobApplicationStatus.FAILED: failed++; break;
-          case JobApplication_JobApplicationStatus.CANCELLED: cancelled++; break;
-          default: pending++; break;
-        }
+      const response = await fetch('/api/check-lists/checked', {
+        method: HttpMethod.PUT,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
       });
-    });
-    const documentPassRate = total > 0 ? ((passed + running) / total * 100) : 0;
-    const finalPassRate = total > 0 ? (passed / total * 100) : 0;
-    return { total, pending, running, passed, failed, cancelled, documentPassRate, finalPassRate };
-  }, [turnOvers]);
 
-  // 최근 지원 회사 목록
-  const recentApplications = useMemo(() => {
-    const allApps: { name: string; status: JobApplication_JobApplicationStatus; timestamp: number; turnOverId: string }[] = [];
-    turnOvers.forEach(t => {
-      (t.turnOverChallenge?.jobApplications ?? []).forEach(app => {
-        allApps.push({
-          name: app.name || '(회사명 없음)',
-          status: app.status,
-          timestamp: app.updatedAt || app.createdAt || t.updatedAt || 0,
-          turnOverId: t.id,
+      if (response.ok) {
+        refreshTurnOvers();
+      } else {
+        setCheckedIds(prev => {
+          const next = new Set(prev);
+          next.delete(item.id);
+          return next;
         });
+        showNotification('체크리스트 업데이트에 실패했습니다.', 'error');
+      }
+    } catch {
+      setCheckedIds(prev => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
       });
-    });
-    return allApps
-      .sort((a, b) => b.timestamp - a.timestamp)
-      .slice(0, RECENT_APPLICATIONS_LIMIT);
-  }, [turnOvers]);
-
-  // 이직 만족도 비교
-  const satisfactionData = useMemo(() => {
-    const completed = turnOvers.filter(
-      t => t.turnOverRetrospective?.name && t.turnOverRetrospective.name !== ''
-    );
-    if (completed.length === 0) return null;
-
-    const items = completed
-      .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
-      .map(t => ({
-        id: t.id,
-        name: t.turnOverRetrospective!.name,
-        score: t.turnOverRetrospective!.score || 0,
-      }));
-
-    const avgScore = items.reduce((sum, item) => sum + item.score, 0) / items.length;
-
-    return { items, avgScore };
-  }, [turnOvers]);
-
-  // 연봉 변화 추이 데이터
-  const salaryTrend = useMemo(() => {
-    const completedWithSalary = turnOvers
-      .filter(t => t.turnOverRetrospective?.salary && t.turnOverRetrospective.salary > 0)
-      .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-    const points = completedWithSalary.map((t, i) => ({
-      label: t.turnOverRetrospective?.name || t.name || `${i + 1}차`,
-      salary: t.turnOverRetrospective!.salary,
-    }));
-    if (points.length > 0) {
-      return [{ label: '시작', salary: 0 }, ...points];
+      showNotification('체크리스트 업데이트 중 오류가 발생했습니다.', 'error');
     }
-    return points;
+  }, [refreshTurnOvers, showNotification]);
+
+  // 지원 현황 통계
+  const applicationStats = useMemo(() => {
+    const allApps = turnOvers.flatMap(t => t.turnOverChallenge?.jobApplications || []);
+    const counts: Record<number, number> = {};
+    allApps.forEach(a => {
+      counts[a.status] = (counts[a.status] || 0) + 1;
+    });
+    return { total: allApps.length, counts };
   }, [turnOvers]);
 
-  // 최근 연봉 & 변동
-  const latestSalary = salaryTrend.length > 0 ? salaryTrend[salaryTrend.length - 1].salary : 0;
-  const salaryChange = salaryTrend.length >= 2
-    ? salaryTrend[salaryTrend.length - 1].salary - salaryTrend[salaryTrend.length - 2].salary
-    : 0;
+  // 최근 지원 회사 (전체 이직 활동에서 최근 5개)
+  const recentApplications = useMemo(() => {
+    return turnOvers
+      .flatMap(t =>
+        (t.turnOverChallenge?.jobApplications || []).map(a => ({
+          ...a,
+          turnOverName: t.name,
+          turnOverId: t.id,
+        }))
+      )
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+      .slice(0, 5);
+  }, [turnOvers]);
 
-  // 지원 현황 바 차트 최대값
-  const applicationBarMax = Math.max(applicationStats.pending, applicationStats.running, applicationStats.passed, applicationStats.failed, applicationStats.cancelled, 1);
+  // 다음 할 일 (미완료 체크리스트, 낙관적 업데이트 반영)
+  const pendingChecklist = useMemo(() => {
+    return turnOvers
+      .flatMap(t =>
+        (t.turnOverGoal?.checkList || [])
+          .filter(c => !c.checked && !checkedIds.has(c.id))
+          .map(c => ({
+            ...c,
+            turnOverName: t.name,
+            turnOverId: t.id,
+          }))
+      )
+      .slice(0, 5);
+  }, [turnOvers, checkedIds]);
 
   // 상황별 추천 액션
   const recommendations = useMemo(() => {
@@ -241,7 +165,7 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
 
     // 합격했는데 회고 미작성
     const passedNoRetro = turnOvers.find(t =>
-      t.turnOverChallenge?.jobApplications?.some(a => normalizeStatus(a.status) === JobApplication_JobApplicationStatus.PASSED) &&
+      t.turnOverChallenge?.jobApplications?.some(a => a.status === JobApplication_JobApplicationStatus.PASSED) &&
       (!t.turnOverRetrospective?.name || t.turnOverRetrospective.name === '')
     );
     if (passedNoRetro) {
@@ -268,23 +192,13 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
     return items;
   }, [turnOvers, onCreate, onSelectTurnOver]);
 
-  // 별점 렌더링
-  const renderStars = (score: number) => {
-    const maxStars = 5;
-    return (
-      <span className={styles.stars}>
-        {Array.from({ length: maxStars }, (_, i) => (
-          <span key={i} className={i < Math.round(score) ? styles.starFilled : styles.starEmpty}>★</span>
-        ))}
-      </span>
-    );
-  };
+  const hasData = turnOvers.length > 0;
 
   return (
     <div className="contents">
         <div className="page-title">
             <div>
-                <h2>내 이직 관리</h2>
+                <h2>커리어 준비</h2>
             </div>
         </div>
         <div className="page-cont">
@@ -296,6 +210,7 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                 />
             )}
 
+            {/* 추천 액션 */}
             {isDemo === false && !isLoading && recommendations.length > 0 && (
                 <div className="cont-box">
                     <div className="cont-tit">
@@ -314,222 +229,147 @@ const TurnOversIntegration: React.FC<TurnOversIntegrationProps> = ({ onSelectTur
                 </div>
             )}
 
-            {/* 핵심 통계 4개 */}
-            <div className="cont-box">
-                <div className="cont-tit">
-                    <div>
-                        <h3>내 이직 현황</h3>
-                    </div>
-                </div>
-                <ul className={`stats-summary ${styles.statsSummary4}`}>
-                    <li>
-                        <p>총 이직 횟수</p>
-                        <div>
-                          {statistics.total}<span>회</span>
-                          {statistics.total > 0 && (
-                            <span className={styles.statSub}>
-                              (완료 {statistics.completed} / 진행 {statistics.ongoing})
-                            </span>
-                          )}
-                        </div>
-                    </li>
-                    <li>
-                        <p>평균 이직 기간</p>
-                        <div>
-                          {statistics.avgDuration.months > 0 && `${statistics.avgDuration.months}개월 `}
-                          {statistics.avgDuration.days > 0 && `${statistics.avgDuration.days}일`}
-                          {statistics.avgDuration.months === 0 && statistics.avgDuration.days === 0 && '0일'}
-                        </div>
-                    </li>
-                    <li>
-                        <p>평균 지원 회사</p>
-                        <div>{statistics.avgApplications.toFixed(1)}<span>개</span></div>
-                    </li>
-                    <li>
-                        <p>평균 연봉 상승률</p>
-                        <div>
-                          {statistics.avgSalaryIncreaseRate > 0 && <span className={styles.salaryUp}>&#9650;</span>}
-                          {statistics.avgSalaryIncreaseRate < 0 && <span className={styles.salaryDown}>&#9660;</span>}
-                          {statistics.avgSalaryIncreaseRate.toFixed(1)}<span>%</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            {/* 연봉 변화 추이 */}
-            <div className={`cont-box ${styles.salarySection}`}>
-                <div className="cont-tit">
-                    <div>
-                        <h3>연봉 변화 추이</h3>
-                    </div>
-                </div>
-                <ul className={styles.salaryMetrics}>
-                    <li>
-                        <span>최근 연봉</span>
-                        <strong>{latestSalary > 0 ? `${formatSalary(latestSalary)}원` : '0원'}</strong>
-                    </li>
-                    <li>
-                        <span>연봉 변동</span>
-                        <strong className={salaryChange > 0 ? styles.salaryUp : salaryChange < 0 ? styles.salaryDown : ''}>
-                            {salaryChange > 0 && '+'}{salaryChange !== 0 ? `${formatSalary(Math.abs(salaryChange))}원` : '0원'}
-                        </strong>
-                    </li>
-                </ul>
-                <div className={styles.salaryChart}>
-                    <ResponsiveContainer width="100%" height={200}>
-                        <LineChart
-                            data={salaryTrend.length >= 2 ? salaryTrend : [{ label: '', salary: 0 }]}
-                            margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--gray002)" />
-                            <XAxis
-                                dataKey="label"
-                                tick={{ fontSize: 12, fill: 'var(--gray005)' }}
-                                axisLine={{ stroke: 'var(--gray003)' }}
-                                tickLine={false}
-                            />
-                            <YAxis
-                                tickFormatter={(v: number) => `${v.toLocaleString()}만`}
-                                tick={{ fontSize: 12, fill: 'var(--gray005)' }}
-                                axisLine={false}
-                                tickLine={false}
-                                width={80}
-                            />
-                            <Tooltip
-                                formatter={(value) => [`${formatSalary(Number(value))}원`, '연봉']}
-                                contentStyle={{ fontSize: 13, borderRadius: 8, border: '1px solid var(--gray003)' }}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="salary"
-                                stroke="#f59e0b"
-                                strokeWidth={2}
-                                dot={{ r: 4, fill: '#f59e0b', stroke: '#fff', strokeWidth: 2 }}
-                                activeDot={{ r: 6 }}
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-            </div>
-
-            {/* 지원 현황 + 최근 지원 회사 + 이직 만족도 */}
-            <div className={styles.dashboardRow3}>
-                {/* 지원 현황 차트 */}
+            {/* 진행 중인 이직 현황 */}
+            {hasData && (
                 <div className="cont-box">
                     <div className="cont-tit">
                         <div>
-                            <h3>지원 현황</h3>
-                            <p>{applicationStats.total}개</p>
+                            <h3>이직 현황</h3>
+                            <p>{turnOvers.length}개</p>
                         </div>
                     </div>
-                    <ul className={styles.applicationStats}>
-                        {[
-                          { label: '대기 중', count: applicationStats.pending, color: 'var(--gray004)' },
-                          { label: '진행 중', count: applicationStats.running, color: 'var(--yellow004)' },
-                          { label: '최종 합격', count: applicationStats.passed, color: '#22c55e' },
-                          { label: '불합격', count: applicationStats.failed, color: '#ef4444' },
-                          { label: '포기', count: applicationStats.cancelled, color: 'var(--gray003)' },
-                        ].map(item => (
-                            <li key={item.label}>
-                                <span className={styles.applicationStatsLabel}>{item.label}</span>
-                                <div className={styles.applicationStatsBar}>
-                                    <div
-                                        className={styles.applicationStatsFill}
-                                        style={{
-                                          width: `${applicationBarMax > 0 ? (item.count / applicationBarMax) * 100 : 0}%`,
-                                          backgroundColor: item.color,
-                                        }}
-                                    />
-                                </div>
-                                <span className={styles.applicationStatsCount}>{item.count}개</span>
-                            </li>
-                        ))}
-                    </ul>
-                    <div className={styles.passRates}>
-                        <div>
-                            <span>서류 통과율</span>
-                            <strong>{applicationStats.documentPassRate.toFixed(0)}%</strong>
-                        </div>
-                        <div>
-                            <span>최종 합격률</span>
-                            <strong>{applicationStats.finalPassRate.toFixed(0)}%</strong>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 최근 지원 회사 */}
-                <div className="cont-box">
-                    <div className="cont-tit">
-                        <div>
-                            <h3>최근 지원 회사</h3>
-                            <p>{recentApplications.length}건</p>
-                        </div>
-                    </div>
-                    {recentApplications.length === 0 ? (
-                        <ul className={styles.recentApps}>
-                            <li className={styles.recentAppEmpty}>지원 내역이 없습니다</li>
-                        </ul>
-                    ) : (
-                        <ul className={`${styles.recentApps} ${styles.scrollBody}`}>
-                            {recentApplications.map((app, index) => {
-                                const statusInfo = getJobStatusLabel(app.status);
-                                return (
-                                    <li
-                                      key={`${app.turnOverId}-${index}`}
-                                      className={styles.recentAppItem}
-                                      onClick={() => onSelectTurnOver?.(app.turnOverId)}
-                                    >
-                                        <div className={styles.recentAppInfo}>
-                                            <span className={styles.recentAppName}>{app.name}</span>
-                                            <span className={`${styles.recentAppStatus} ${styles[statusInfo.className]}`}>
-                                                {statusInfo.label}
-                                            </span>
+                    <ul className="turnover-status-list">
+                        {turnOvers.map(t => {
+                            const progress = calculateTurnOverProgress(t);
+                            const appCount = t.turnOverChallenge?.jobApplications?.length || 0;
+                            const checkTotal = t.turnOverGoal?.checkList?.length || 0;
+                            const checkDone = t.turnOverGoal?.checkList?.filter(c => c.checked).length || 0;
+                            return (
+                                <li key={t.id} onClick={() => onSelectTurnOver?.(t.id)}>
+                                    <div className="turnover-status-header">
+                                        <span className="turnover-status-name">{t.name || '이름 없음'}</span>
+                                        <span className="turnover-status-percent">{progress}%</span>
+                                    </div>
+                                    <div className="career-resume-card-progress">
+                                        <div className="career-completeness-bar">
+                                            <div className="career-completeness-fill" style={{ width: `${progress}%` }} />
                                         </div>
-                                        <span className={styles.recentAppTime}>{formatRelativeTime(app.timestamp)}</span>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                </div>
-
-                {/* 이직 만족도 */}
-                <div className="cont-box">
-                    <div className="cont-tit">
-                        <div>
-                            <h3>이직 만족도</h3>
-                        </div>
-                    </div>
-                    {satisfactionData && satisfactionData.items.length > 0 ? (
-                        <ul className={`${styles.satisfactionList} ${styles.scrollBody}`}>
-                            {satisfactionData.items.map(item => (
-                                <li
-                                  key={item.id}
-                                  className={styles.satisfactionItem}
-                                  onClick={() => onSelectTurnOver?.(item.id)}
-                                >
-                                    <span className={styles.satisfactionName}>{item.name}</span>
-                                    <div className={styles.satisfactionScore}>
-                                        {renderStars(item.score)}
-                                        <span className={styles.satisfactionScoreNum}>{item.score.toFixed(1)}</span>
+                                    </div>
+                                    <div className="turnover-status-meta">
+                                        {appCount > 0 && <span>지원 {appCount}건</span>}
+                                        {checkTotal > 0 && <span>체크리스트 {checkDone}/{checkTotal}</span>}
+                                        {t.startedAt && <span>{dayjs(t.startedAt).format('YYYY.MM')}~</span>}
                                     </div>
                                 </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className={styles.emptyText}>작성된 만족도가 없습니다</p>
-                    )}
-                    <div className={styles.satisfactionAvg}>
-                        <span>평균 만족도</span>
-                        <div className={styles.satisfactionAvgValue}>
-                            {renderStars(satisfactionData?.avgScore ?? 0)}
-                            <strong>{(satisfactionData?.avgScore ?? 0).toFixed(1)}점</strong>
+                            );
+                        })}
+                    </ul>
+                </div>
+            )}
+
+            {/* 지원 현황 / 최근 지원 / 다음 할 일 - 3열 */}
+            {(applicationStats.total > 0 || recentApplications.length > 0 || pendingChecklist.length > 0) && (
+                <div className="dashboard-row-3col">
+                    {/* 지원 현황 파이프라인 */}
+                    <div className="cont-box">
+                        <div className="cont-tit">
+                            <div>
+                                <h3>지원 현황</h3>
+                                {applicationStats.total > 0 && <p>총 {applicationStats.total}건</p>}
+                            </div>
                         </div>
+                        {applicationStats.total > 0 ? (
+                            <div className="turnover-pipeline">
+                                {Object.entries(STATUS_LABELS).map(([statusKey, { label, className }]) => {
+                                    const count = applicationStats.counts[Number(statusKey)] || 0;
+                                    if (count === 0) return null;
+                                    return (
+                                        <div key={statusKey} className={`turnover-pipeline-item ${className}`}>
+                                            <span className="turnover-pipeline-count">{count}</span>
+                                            <span className="turnover-pipeline-label">{label}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <p className="empty-text">지원 내역이 없어요</p>
+                        )}
+                    </div>
+
+                    {/* 최근 지원 회사 */}
+                    <div className="cont-box">
+                        <div className="cont-tit">
+                            <div>
+                                <h3>최근 지원</h3>
+                            </div>
+                        </div>
+                        {recentApplications.length > 0 ? (
+                            <ul className="summary-list turnover-summary">
+                                {recentApplications.map(app => {
+                                    const statusInfo = STATUS_LABELS[app.status] || { label: '알 수 없음', className: '' };
+                                    return (
+                                        <li key={app.id} onClick={() => onSelectTurnOver?.(app.turnOverId)}>
+                                            <div className="turnover-app-row">
+                                                <span className="turnover-app-name">{app.name || '회사명 없음'}</span>
+                                                {app.position && <span className="turnover-app-position">{app.position}</span>}
+                                            </div>
+                                            <span className={`turnover-app-status ${statusInfo.className}`}>{statusInfo.label}</span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : (
+                            <p className="empty-text">지원 내역이 없어요</p>
+                        )}
+                    </div>
+
+                    {/* 다음 할 일 */}
+                    <div className="cont-box">
+                        <div className="cont-tit">
+                            <div>
+                                <h3>다음 할 일</h3>
+                            </div>
+                        </div>
+                        {pendingChecklist.length > 0 ? (
+                            <ul className="summary-list turnover-summary">
+                                {pendingChecklist.map((item, index) => (
+                                    <li key={item.id}>
+                                        <div className="turnover-todo-row">
+                                            <input
+                                                id={`todo-check-${index}`}
+                                                type="checkbox"
+                                                checked={false}
+                                                onChange={() => handleCheckItem(item)}
+                                            />
+                                            <label
+                                                htmlFor={`todo-check-${index}`}
+                                                onClick={(e) => e.stopPropagation()}
+                                            />
+                                            <span
+                                                className="turnover-todo-content"
+                                                onClick={() => onSelectTurnOver?.(item.turnOverId)}
+                                            >
+                                                {item.content}
+                                            </span>
+                                        </div>
+                                        <span
+                                            className="turnover-todo-from"
+                                            onClick={() => onSelectTurnOver?.(item.turnOverId)}
+                                        >
+                                            {item.turnOverName}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="empty-text">완료할 항목이 없어요</p>
+                        )}
                     </div>
                 </div>
-            </div>
+            )}
 
         </div>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </div>
   );
 };

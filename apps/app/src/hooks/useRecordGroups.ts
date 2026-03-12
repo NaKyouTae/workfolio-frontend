@@ -126,8 +126,10 @@ export const useRecordGroups = () => {
                 const ownedData = await ownedRes.json();
                 const sharedData = await sharedRes.json();
 
-                const ownedGroups = ownedData.groups || [];
-                const sharedGroups = sharedData.groups || [];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const ownedGroups = (ownedData.groups || []).map((g: any) => RecordGroup.fromJSON(g));
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const sharedGroups = (sharedData.groups || []).map((g: any) => RecordGroup.fromJSON(g));
 
                 // 로그인한 경우 API 데이터만 사용 (샘플 데이터 병합하지 않음)
                 const allGroupIds = [

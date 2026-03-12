@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { createDateModel, DateModel } from "@workfolio/shared/models/DateModel"
 import { Record, RecordGroup } from '@workfolio/shared/generated/common'
 import dayjs from 'dayjs'
@@ -6,12 +6,8 @@ import timezone from 'dayjs/plugin/timezone'
 import { useCalendarDays } from '@/hooks/useCalendar'
 import { CalendarDay } from '@workfolio/shared/models/CalendarTypes'
 import MonthlyCalendarItem from './MonthlyCalendarItem'
-import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore'
-import HttpMethod from '@workfolio/shared/enums/HttpMethod'
 import RecordCreateModal from '../../modal/RecordCreateModal'
-import RecordDetail from '../../modal/RecordDetail'
 import RecordUpdateModal from '../../modal/RecordUpdateModal'
-import { useConfirm } from '@workfolio/shared/hooks/useConfirm'
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils'
 import LoginModal from '@workfolio/shared/ui/LoginModal'
 
@@ -23,17 +19,18 @@ interface MonthlyCalendarProps {
     initialDate: Date
     records: Record[]
     allRecordGroups: RecordGroup[]
+    highlightRecordId?: string
 }
 
 /**
  * Table 태그를 사용한 MonthlyCalendarV1 컴포넌트
  */
-const MonthlyCalendar = React.memo(function MonthlyCalendar({ 
-    initialDate, 
+const MonthlyCalendar = React.memo(function MonthlyCalendar({
+    initialDate,
     records,
-    allRecordGroups, 
+    allRecordGroups,
+    highlightRecordId,
 }: MonthlyCalendarProps) {
-    const { confirm } = useConfirm();
     const [date, setDate] = useState<DateModel>(() => {
         const d = new Date(initialDate)
         return createDateModel(d.getFullYear(), d.getMonth(), d.getDate(), true)
@@ -47,16 +44,25 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
 
     // 모달 상태
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [selectedRecord, setSelectedRecord] = useState<Record | null>(null)
-    const [detailPosition, setDetailPosition] = useState<{top: number, left: number, width: number} | null>(null)
     const [selectedDateForCreate, setSelectedDateForCreate] = useState<string | null>(null)
     const [showLoginModal, setShowLoginModal] = useState(false)
 
     // 커스텀 훅 사용
     const calendarDays = useCalendarDays(date)
-    const { triggerRecordRefresh } = useRecordGroupStore()
+    // 대시보드에서 넘어온 경우 해당 기록 수정 모달 자동 열기
+    const highlightHandled = useRef(false)
+    useEffect(() => {
+        if (highlightRecordId && records.length > 0 && !highlightHandled.current) {
+            const target = records.find(r => r.id === highlightRecordId)
+            if (target) {
+                highlightHandled.current = true
+                setSelectedRecord(target)
+                setIsUpdateModalOpen(true)
+            }
+        }
+    }, [highlightRecordId, records])
 
     // 빈 record 영역 클릭 핸들러 - useCallback으로 최적화
     const handleEmptyRecordClick = useCallback((day: CalendarDay) => {
@@ -65,22 +71,20 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
             setShowLoginModal(true);
             return;
         }
-        
+
         // 이전 모달 상태 초기화
-        setIsDetailModalOpen(false)
         setIsUpdateModalOpen(false)
         setSelectedRecord(null)
-        setDetailPosition(null)
-        
-        // RecordDetail이 열려있으면 RecordCreateModal을 열지 않음
-        if (isDetailModalOpen || isUpdateModalOpen) {
+
+        // 모달이 열려있으면 RecordCreateModal을 열지 않음
+        if (isUpdateModalOpen) {
             return
         }
-        
+
         // 클릭한 날짜와 현재 시간으로 selectedDateForCreate 설정
         const clickedDate = dayjs(day.id, 'YYYYMMDD')
         const currentTime = dayjs()
-        
+
         // 클릭한 날짜의 현재 시간으로 설정
         const selectedDateTime = clickedDate
             .hour(currentTime.hour())
@@ -88,146 +92,36 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
             .second(0)
             .millisecond(0)
             .toISOString()
-        
+
         setSelectedDateForCreate(selectedDateTime)
         setIsCreateModalOpen(true)
-    }, [isDetailModalOpen, isUpdateModalOpen])
+    }, [isUpdateModalOpen])
 
     // 레코드 클릭 핸들러 - useCallback으로 최적화
-    const handleRecordClick = useCallback((record: Record, event: React.MouseEvent<HTMLTableCellElement>) => {
+    const handleRecordClick = useCallback((record: Record) => {
         // 이전 모달 상태 초기화
-        setIsUpdateModalOpen(false)
         setIsCreateModalOpen(false)
         setSelectedDateForCreate(null)
-        
-        const rect = event.currentTarget.getBoundingClientRect()
-        const calendarContainer = event.currentTarget.closest('.days')?.getBoundingClientRect()
-        
-        if (calendarContainer) {
-            const viewportHeight = window.innerHeight
-            const viewportWidth = window.innerWidth
-            const detailHeight = 300 // CSS에서 설정한 max-height
-            const detailWidth = Math.min(400, Math.max(200, rect.width * 1.5)) // 최소 200px, 최대 400px
-            
-            // 세로 위치 계산
-            let top = rect.bottom - calendarContainer.top + 25 // 5px에서 2px로 줄임
-            const spaceBelow = viewportHeight - (rect.bottom + detailHeight)
-            const spaceAbove = rect.top - detailHeight
-            
-            // 아래쪽 공간이 부족하고 위쪽에 공간이 있으면 위쪽에 표시
-            if (spaceBelow < 0 && spaceAbove > 0) {
-                top = rect.top - calendarContainer.top - detailHeight + 150 // 5px에서 2px로 줄임
-            }
-            
-            // 여전히 위쪽도 공간이 부족하면 가능한 공간에 맞춰 조정
-            if (top < 0) {
-                top = 5
-            }
-            
-            // 가로 위치 계산
-            let left = rect.left - calendarContainer.left
-            const spaceRight = viewportWidth - rect.left
-            const spaceLeft = rect.left
-            
-            // 오른쪽 공간이 부족하면 왼쪽으로 이동
-            if (spaceRight < detailWidth && spaceLeft > detailWidth) {
-                left = rect.right - calendarContainer.left - detailWidth
-            }
-            
-            // 여전히 화면을 벗어나면 중앙 정렬
-            if (left < 0) {
-                left = Math.max(5, (calendarContainer.width - detailWidth) / 2)
-            }
-            
-            // 오른쪽 경계도 확인
-            if (left + detailWidth > calendarContainer.width) {
-                left = Math.max(5, calendarContainer.width - detailWidth - 5)
-            }
-            
-            setDetailPosition({
-                top: Math.max(5, top),
-                left: Math.max(5, left),
-                width: detailWidth
-            })
-        }
-        
-        setSelectedRecord(record)
-        setIsDetailModalOpen(true)
-    }, [])
 
-    // 상세 모달 닫기 핸들러 - useCallback으로 최적화
-    const handleCloseDetailModal = useCallback(() => {
-        setIsDetailModalOpen(false)
-        setIsUpdateModalOpen(false)
-        setIsCreateModalOpen(false)
-        setSelectedRecord(null)
-        setSelectedDateForCreate(null)
-        setDetailPosition(null)
+        setSelectedRecord(record)
+        setIsUpdateModalOpen(true)
     }, [])
 
     // 생성 모달 닫기 핸들러 - useCallback으로 최적화
     const handleCloseCreateModal = useCallback(() => {
-        setIsDetailModalOpen(false)
         setIsUpdateModalOpen(false)
         setIsCreateModalOpen(false)
         setSelectedRecord(null)
         setSelectedDateForCreate(null)
-        setDetailPosition(null)
-    }, [])
-
-    // 수정 모달 열기 핸들러 - useCallback으로 최적화
-    const handleOpenUpdateModal = useCallback(() => {
-        setIsDetailModalOpen(false)
-        setIsCreateModalOpen(false)
-        setSelectedDateForCreate(null)
-        setIsUpdateModalOpen(true)
     }, [])
 
     // 수정 모달 닫기 핸들러 - useCallback으로 최적화
     const handleCloseUpdateModal = useCallback(() => {
-        setIsDetailModalOpen(false)
         setIsUpdateModalOpen(false)
         setIsCreateModalOpen(false)
         setSelectedRecord(null)
         setSelectedDateForCreate(null)
-        setDetailPosition(null)
     }, [])
-
-    // 삭제 핸들러
-    const handleDeleteRecord = async () => {
-        if (!selectedRecord) return;
-        
-        if (!isLoggedIn()) {
-            setShowLoginModal(true);
-            return;
-        }
-        
-        const result = await confirm({
-            title: '레코드 삭제',
-            icon: '/assets/img/ico/ic-delete.svg',
-            description: `삭제하면 레코드에 저장된 내용이 모두 사라져요.\n한 번 삭제하면 되돌릴 수 없어요.`,
-            confirmText: '삭제하기',
-            cancelText: '돌아가기',
-        });
-        
-        if (!result) return;
-        
-        try {
-            const response = await fetch(`/api/records/${selectedRecord.id}`, {
-                method: HttpMethod.DELETE,
-            });
-            
-            if (response.ok) {
-                // 삭제 성공 시 모달 닫기 및 레코드 재조회
-                handleCloseDetailModal();
-                triggerRecordRefresh();
-            } else {
-                console.error('Failed to delete record');
-            }
-        } catch (error) {
-            console.error('Error deleting record:', error);
-        }
-    }
 
     // 주별로 날짜들을 그룹화
     const weeks: (CalendarDay | null)[][] = []
@@ -438,8 +332,8 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                                     key={`empty-${j}`}
                                     onClick={() => day && handleEmptyRecordClick(day)}
                                     style={{ 
-                                        cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
-                                        pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                                        cursor: isUpdateModalOpen ? 'default' : 'pointer',
+                                        pointerEvents: isUpdateModalOpen ? 'none' : 'auto'
                                     }}
                                 ></td>
                             )
@@ -464,8 +358,8 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                                 key={`empty-${currentDay}`}
                                 onClick={() => day && handleEmptyRecordClick(day)}
                                 style={{ 
-                                    cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
-                                    pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                                    cursor: isUpdateModalOpen ? 'default' : 'pointer',
+                                    pointerEvents: isUpdateModalOpen ? 'none' : 'auto'
                                 }}
                             ></td>
                         )
@@ -514,8 +408,8 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                             key={`empty-after-${currentDay}`}
                             onClick={() => day && handleEmptyRecordClick(day)}
                             style={{ 
-                                cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
-                                pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                                cursor: isUpdateModalOpen ? 'default' : 'pointer',
+                                pointerEvents: isUpdateModalOpen ? 'none' : 'auto'
                             }}
                         ></td>
                     )
@@ -532,7 +426,7 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
 
         return rows
         }
-    }, [records, date.year, date.month, handleEmptyRecordClick, handleRecordClick, isDetailModalOpen, isUpdateModalOpen])
+    }, [records, date.year, date.month, handleEmptyRecordClick, handleRecordClick, isUpdateModalOpen])
 
     const today = dayjs().format('YYYYMMDD')
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -564,8 +458,8 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                                         <td key={dayIndex}
                                         onClick={() => day && handleEmptyRecordClick(day)}
                                         style={{ 
-                                            cursor: (isDetailModalOpen || isUpdateModalOpen) ? 'default' : 'pointer',
-                                            pointerEvents: (isDetailModalOpen || isUpdateModalOpen) ? 'none' : 'auto'
+                                            cursor: isUpdateModalOpen ? 'default' : 'pointer',
+                                            pointerEvents: isUpdateModalOpen ? 'none' : 'auto'
                                         }}
                                         >
                                         </td>
@@ -594,16 +488,6 @@ const MonthlyCalendar = React.memo(function MonthlyCalendar({
                     </div>
                 ))}
             </div>
-            
-            {/* RecordDetail Modal */}
-            <RecordDetail
-                isOpen={isDetailModalOpen}
-                onClose={handleCloseDetailModal}
-                record={selectedRecord}
-                onEdit={handleOpenUpdateModal}
-                onDelete={handleDeleteRecord}
-                position={detailPosition || undefined}
-            />
             
             {/* RecordUpdateModal */}
             <RecordUpdateModal

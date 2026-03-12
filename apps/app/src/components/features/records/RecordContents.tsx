@@ -52,6 +52,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
         // URL에서 초기 상태 읽기
         const urlView = searchParams.get("view") as CalendarViewType | null;
         const urlDateString = searchParams.get("date");
+        const urlRecordId = searchParams.get("recordId");
         const urlDate = urlDateString ? dayjs(urlDateString).toDate() : dayjs().toDate();
         // urlView가 있으면 사용, 없으면 systemConfig 사용, 그것도 없으면 'monthly'
         const initialRecordType: CalendarViewType =
@@ -359,6 +360,7 @@ const RecordContentsComponent = forwardRef<RecordContentsRef, RecordContentsProp
                                 initialDate={date}
                                 records={filteredRecords}
                                 allRecordGroups={allRecordGroups}
+                                highlightRecordId={urlRecordId || undefined}
                             />
                         ) : recordType === "weekly" ? (
                             <WeeklyCalendar

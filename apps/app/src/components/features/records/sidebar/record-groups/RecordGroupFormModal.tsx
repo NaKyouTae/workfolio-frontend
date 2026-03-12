@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { resolveRecordGroupColor } from '@workfolio/shared/models/ColorModel';
+import { RecordGroup_RecordGroupCategory } from '@workfolio/shared/generated/common';
 import RecordGroupColorModal from './RecordGroupColorModal';
 
 interface RecordGroupFormModalProps {
@@ -7,27 +8,38 @@ interface RecordGroupFormModalProps {
     mode: 'create' | 'edit';
     initialTitle?: string;
     initialColor?: string;
-    onSubmit: (title: string, color: string) => void;
+    initialCategory?: RecordGroup_RecordGroupCategory;
+    onSubmit: (title: string, color: string, category?: RecordGroup_RecordGroupCategory) => void;
     onClose: () => void;
 }
+
+const resolveCategory = (cat?: RecordGroup_RecordGroupCategory): RecordGroup_RecordGroupCategory =>
+    cat === RecordGroup_RecordGroupCategory.GENERAL || cat === RecordGroup_RecordGroupCategory.PROJECT
+        ? cat
+        : RecordGroup_RecordGroupCategory.GENERAL;
 
 const RecordGroupFormModal: React.FC<RecordGroupFormModalProps> = ({
     isOpen,
     mode,
     initialTitle = '',
     initialColor,
+    initialCategory,
     onSubmit,
     onClose,
 }) => {
     const [title, setTitle] = useState(initialTitle);
     const [color, setColor] = useState<string>(resolveRecordGroupColor(initialColor));
+    const [category, setCategory] = useState<RecordGroup_RecordGroupCategory>(
+        resolveCategory(initialCategory)
+    );
 
     useEffect(() => {
         if (isOpen) {
             setTitle(initialTitle);
             setColor(resolveRecordGroupColor(initialColor));
+            setCategory(resolveCategory(initialCategory));
         }
-    }, [isOpen, initialTitle, initialColor]);
+    }, [isOpen, initialTitle, initialColor, initialCategory]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -53,7 +65,7 @@ const RecordGroupFormModal: React.FC<RecordGroupFormModalProps> = ({
 
     const handleSubmit = () => {
         if (title.trim()) {
-            onSubmit(title.trim(), color);
+            onSubmit(title.trim(), color, category);
         }
     };
 
@@ -66,6 +78,45 @@ const RecordGroupFormModal: React.FC<RecordGroupFormModalProps> = ({
                 </div>
                 <div className="modal-cont">
                     <div className="record-group-form">
+                        <div className="record-group-form-field">
+                            <p className="record-group-form-label">기록장 유형</p>
+                            <div className="record-group-category-select" style={{ display: 'flex', gap: '16px' }}>
+                                <span>
+                                    <input
+                                        type="radio"
+                                        name="category"
+                                        id="category-general"
+                                        checked={category === RecordGroup_RecordGroupCategory.GENERAL}
+                                        onChange={() => setCategory(RecordGroup_RecordGroupCategory.GENERAL)}
+                                    />
+                                    <label htmlFor="category-general"><p>일반</p></label>
+                                </span>
+                                <span>
+                                    <input
+                                        type="radio"
+                                        name="category"
+                                        id="category-project"
+                                        checked={category === RecordGroup_RecordGroupCategory.PROJECT}
+                                        onChange={() => setCategory(RecordGroup_RecordGroupCategory.PROJECT)}
+                                    />
+                                    <label htmlFor="category-project"><p>프로젝트</p></label>
+                                </span>
+                            </div>
+                            <p style={{ fontSize: '1.2rem', color: '#888', marginTop: '8px', lineHeight: '1.8' }}>
+                                유형에 따라 사용 가능한 기록 템플릿이 달라집니다.
+                                <br />
+                                사용 가능:{' '}
+                                {(category === RecordGroup_RecordGroupCategory.GENERAL
+                                    ? ['주간 회고', '프로젝트 회고', '성과 기록', '일일 업무 기록', '빈 기록']
+                                    : ['프로젝트 개요', '업무 기록', '프로젝트 회고']
+                                ).map((name, i, arr) => (
+                                    <span key={name}>
+                                        <strong style={{ color: '#555' }}>{name}</strong>
+                                        {i < arr.length - 1 && ', '}
+                                    </span>
+                                ))}
+                            </p>
+                        </div>
                         <div className="record-group-form-field">
                             <p className="record-group-form-label">기록장 이름</p>
                             <input

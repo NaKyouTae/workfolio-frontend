@@ -702,6 +702,7 @@ export interface Record {
   description: string;
   startedAt: number;
   endedAt: number;
+  templateType: string;
   worker?: Worker | undefined;
   recordGroup?: RecordGroup | undefined;
   createdAt: number;
@@ -761,6 +762,7 @@ export interface RecordGroup {
   publicId: string;
   color: string;
   defaultRole: RecordGroup_RecordGroupRole;
+  category: RecordGroup_RecordGroupCategory;
   priority: number;
   worker?: Worker | undefined;
   createdAt: number;
@@ -852,6 +854,45 @@ export function recordGroup_RecordGroupRoleToJSON(object: RecordGroup_RecordGrou
     case RecordGroup_RecordGroupRole.VIEW:
       return "VIEW";
     case RecordGroup_RecordGroupRole.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum RecordGroup_RecordGroupCategory {
+  CATEGORY_UNKNOWN = 0,
+  GENERAL = 1,
+  PROJECT = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function recordGroup_RecordGroupCategoryFromJSON(object: any): RecordGroup_RecordGroupCategory {
+  switch (object) {
+    case 0:
+    case "CATEGORY_UNKNOWN":
+      return RecordGroup_RecordGroupCategory.CATEGORY_UNKNOWN;
+    case 1:
+    case "GENERAL":
+      return RecordGroup_RecordGroupCategory.GENERAL;
+    case 2:
+    case "PROJECT":
+      return RecordGroup_RecordGroupCategory.PROJECT;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return RecordGroup_RecordGroupCategory.UNRECOGNIZED;
+  }
+}
+
+export function recordGroup_RecordGroupCategoryToJSON(object: RecordGroup_RecordGroupCategory): string {
+  switch (object) {
+    case RecordGroup_RecordGroupCategory.CATEGORY_UNKNOWN:
+      return "CATEGORY_UNKNOWN";
+    case RecordGroup_RecordGroupCategory.GENERAL:
+      return "GENERAL";
+    case RecordGroup_RecordGroupCategory.PROJECT:
+      return "PROJECT";
+    case RecordGroup_RecordGroupCategory.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -4876,6 +4917,7 @@ function createBaseRecord(): Record {
     description: "",
     startedAt: 0,
     endedAt: 0,
+    templateType: "",
     worker: undefined,
     recordGroup: undefined,
     createdAt: 0,
@@ -4902,6 +4944,9 @@ export const Record: MessageFns<Record> = {
     }
     if (message.endedAt !== 0) {
       writer.uint32(48).uint64(message.endedAt);
+    }
+    if (message.templateType !== "") {
+      writer.uint32(58).string(message.templateType);
     }
     if (message.worker !== undefined) {
       Worker.encode(message.worker, writer.uint32(402).fork()).join();
@@ -4973,6 +5018,14 @@ export const Record: MessageFns<Record> = {
           message.endedAt = longToNumber(reader.uint64());
           continue;
         }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.templateType = reader.string();
+          continue;
+        }
         case 50: {
           if (tag !== 402) {
             break;
@@ -5030,6 +5083,11 @@ export const Record: MessageFns<Record> = {
         : isSet(object.ended_at)
         ? globalThis.Number(object.ended_at)
         : 0,
+      templateType: isSet(object.templateType)
+        ? globalThis.String(object.templateType)
+        : isSet(object.template_type)
+        ? globalThis.String(object.template_type)
+        : "",
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       recordGroup: isSet(object.recordGroup)
         ? RecordGroup.fromJSON(object.recordGroup)
@@ -5069,6 +5127,9 @@ export const Record: MessageFns<Record> = {
     if (message.endedAt !== 0) {
       obj.endedAt = Math.round(message.endedAt);
     }
+    if (message.templateType !== "") {
+      obj.templateType = message.templateType;
+    }
     if (message.worker !== undefined) {
       obj.worker = Worker.toJSON(message.worker);
     }
@@ -5095,6 +5156,7 @@ export const Record: MessageFns<Record> = {
     message.description = object.description ?? "";
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
+    message.templateType = object.templateType ?? "";
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)
       : undefined;
@@ -5116,6 +5178,7 @@ function createBaseRecordGroup(): RecordGroup {
     publicId: "",
     color: "",
     defaultRole: 0,
+    category: 0,
     priority: 0,
     worker: undefined,
     createdAt: 0,
@@ -5145,6 +5208,9 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     }
     if (message.defaultRole !== 0) {
       writer.uint32(56).int32(message.defaultRole);
+    }
+    if (message.category !== 0) {
+      writer.uint32(64).int32(message.category);
     }
     if (message.priority !== 0) {
       writer.uint32(240).uint64(message.priority);
@@ -5224,6 +5290,14 @@ export const RecordGroup: MessageFns<RecordGroup> = {
           message.defaultRole = reader.int32() as any;
           continue;
         }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.category = reader.int32() as any;
+          continue;
+        }
         case 30: {
           if (tag !== 240) {
             break;
@@ -5286,6 +5360,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
         : isSet(object.default_role)
         ? recordGroup_RecordGroupRoleFromJSON(object.default_role)
         : 0,
+      category: isSet(object.category) ? recordGroup_RecordGroupCategoryFromJSON(object.category) : 0,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
       worker: isSet(object.worker) ? Worker.fromJSON(object.worker) : undefined,
       createdAt: isSet(object.createdAt)
@@ -5324,6 +5399,9 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     if (message.defaultRole !== 0) {
       obj.defaultRole = recordGroup_RecordGroupRoleToJSON(message.defaultRole);
     }
+    if (message.category !== 0) {
+      obj.category = recordGroup_RecordGroupCategoryToJSON(message.category);
+    }
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
     }
@@ -5351,6 +5429,7 @@ export const RecordGroup: MessageFns<RecordGroup> = {
     message.publicId = object.publicId ?? "";
     message.color = object.color ?? "";
     message.defaultRole = object.defaultRole ?? 0;
+    message.category = object.category ?? 0;
     message.priority = object.priority ?? 0;
     message.worker = (object.worker !== undefined && object.worker !== null)
       ? Worker.fromPartial(object.worker)

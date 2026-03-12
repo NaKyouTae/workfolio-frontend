@@ -1,5 +1,6 @@
 import {
     RecordGroup,
+    RecordGroup_RecordGroupCategory,
     RecordGroup_RecordGroupRole,
     RecordGroup_RecordGroupType,
     Worker,
@@ -20,6 +21,7 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             publicId: "work",
             color: "#FFCC00",
             defaultRole: RecordGroup_RecordGroupRole.FULL,
+            category: RecordGroup_RecordGroupCategory.GENERAL,
             priority: 1,
             createdAt: Date.now(),
             updatedAt: Date.now(),
@@ -33,6 +35,7 @@ export const createSampleRecordGroups = (): RecordGroup[] => {
             color: "#FF9500",
             priority: 2,
             defaultRole: RecordGroup_RecordGroupRole.FULL,
+            category: RecordGroup_RecordGroupCategory.PROJECT,
             createdAt: Date.now(),
             updatedAt: Date.now(),
         },

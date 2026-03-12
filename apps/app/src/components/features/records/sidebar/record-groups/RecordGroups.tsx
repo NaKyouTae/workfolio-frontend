@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import HttpMethod from '@workfolio/shared/enums/HttpMethod';
-import { RecordGroup } from '@workfolio/shared/generated/common';
+import { RecordGroup, RecordGroup_RecordGroupCategory } from '@workfolio/shared/generated/common';
 import { useRecordGroupStore } from '@workfolio/shared/store/recordGroupStore';
 import { RecordGroupUpdateRequest } from '@workfolio/shared/generated/record_group';
 import RecordGroupItem from './RecordGroupItem';
@@ -27,7 +27,7 @@ const RecordGroups = React.memo(({
     );
     const [showLoginModal, setShowLoginModal] = useState(false);
 
-    const updateRecordGroup = useCallback(async (id: string, title: string, color: string) => {
+    const updateRecordGroup = useCallback(async (id: string, title: string, color: string, category?: RecordGroup_RecordGroupCategory) => {
         if (!isLoggedIn()) {
             setShowLoginModal(true);
             return;
@@ -44,7 +44,8 @@ const RecordGroups = React.memo(({
             const updateRequest = RecordGroupUpdateRequest.create({
                 title: title,
                 color: color,
-                priority: existingGroup.priority || 1
+                priority: existingGroup.priority || 1,
+                category: category ?? existingGroup.category,
             });
 
             const response = await fetch(`/api/record-groups/${id}`, {
@@ -56,6 +57,7 @@ const RecordGroups = React.memo(({
                     title: updateRequest.title,
                     color: updateRequest.color,
                     priority: updateRequest.priority.toString(),
+                    category: updateRequest.category,
                 })
             });
 

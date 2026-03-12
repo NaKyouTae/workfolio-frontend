@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ResumeUpdateRequest_ProjectRequest } from '@workfolio/shared/generated/resume';
+import { RecordGroup } from '@workfolio/shared/generated/common';
+import HttpMethod from '@workfolio/shared/enums/HttpMethod';
 import Input from '@workfolio/shared/ui/Input';
 import DatePicker from '@workfolio/shared/ui/DatePicker';
 import DateUtil from '@workfolio/shared/utils/DateUtil';
@@ -7,6 +9,7 @@ import DraggableList from '@workfolio/shared/ui/DraggableList';
 import DraggableItem from '@workfolio/shared/ui/DraggableItem';
 import CardActions from '@workfolio/shared/ui/CardActions';
 import EmptyState from '@workfolio/shared/ui/EmptyState';
+import ImportFromRecordsModal from './ImportFromRecordsModal';
 
 interface ProjectEditProps {
   projects: ResumeUpdateRequest_ProjectRequest[];
@@ -89,7 +92,11 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
                         value={project.description || ''}
                         onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
                     /> */}
-                    <textarea placeholder="내용을 입력해 주세요."></textarea>
+                    <textarea
+                        placeholder="내용을 입력해 주세요."
+                        value={project.description || ''}
+                        onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
+                    />
                 </li>
             </ul>
             <CardActions
@@ -107,6 +114,28 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
  * sectionHeader, 추가 버튼, 개별 프로젝트 항목 포함
  */
 const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [allRecordGroups, setAllRecordGroups] = useState<RecordGroup[]>([]);
+
+  const handleOpenImportModal = async () => {
+    try {
+      const response = await fetch('/api/record-groups/owned', { method: HttpMethod.GET });
+      if (response.ok) {
+        const data = await response.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const groups = (data.groups || []).map((g: any) => RecordGroup.fromJSON(g));
+        setAllRecordGroups(groups);
+      }
+    } catch (error) {
+      console.error('기록장 조회 실패:', error);
+    }
+    setShowImportModal(true);
+  };
+
+  const handleImport = (project: ResumeUpdateRequest_ProjectRequest) => {
+    onUpdate([...projects, project]);
+  };
+
   const createEmptyProject = (priority: number = 0): ResumeUpdateRequest_ProjectRequest => ({
     title: '',
     role: '',
@@ -190,7 +219,10 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
                 <h3>프로젝트</h3>
                 {/* <p>{projects.length}개</p> */}
             </div>
-            <button onClick={handleAddProject}><i className="ic-add" />추가</button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+                <button onClick={handleOpenImportModal}>기록에서 가져오기</button>
+                <button onClick={handleAddProject}><i className="ic-add" />추가</button>
+            </div>
         </div>
 
         {projects.length === 0 ? (
@@ -212,6 +244,14 @@ const ProjectEdit: React.FC<ProjectEditProps> = ({ projects, onUpdate }) => {
             )}
         />
         )}
+
+        <ImportFromRecordsModal
+            isOpen={showImportModal}
+            onClose={() => setShowImportModal(false)}
+            allRecordGroups={allRecordGroups}
+            onImport={handleImport}
+            currentProjectCount={projects.length}
+        />
     </>
   );
 };

@@ -20,7 +20,6 @@ import FloatingNavigation from '@workfolio/shared/ui/FloatingNavigation';
 import Input from '@workfolio/shared/ui/Input';
 import { AttachmentRequest } from '@workfolio/shared/generated/attachment';
 
-import Footer from "@/components/layouts/Footer"
 
 interface CareerContentFormProps {
   // 기본 정보
@@ -103,7 +102,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
   onCancel
 }) => {
   return (
-    <section>
+    <>
         <div className="contents">
             <div className="page-title">
                 <div>
@@ -223,8 +222,7 @@ const CareerContentForm: React.FC<CareerContentFormProps> = ({
             </div>
         </div>
 
-        <Footer/>
-    </section>
+    </>
   );
 };
 

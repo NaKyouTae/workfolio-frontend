@@ -8,6 +8,9 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import {
   RecordGroup,
+  RecordGroup_RecordGroupCategory,
+  recordGroup_RecordGroupCategoryFromJSON,
+  recordGroup_RecordGroupCategoryToJSON,
   RecordGroup_RecordGroupRole,
   recordGroup_RecordGroupRoleFromJSON,
   recordGroup_RecordGroupRoleToJSON,
@@ -26,6 +29,7 @@ export interface CreateRecordGroupRequest {
   title: string;
   color: string;
   type: RecordGroup_RecordGroupType;
+  category: RecordGroup_RecordGroupCategory;
   priority: number;
 }
 
@@ -57,6 +61,7 @@ export interface RecordGroupUpdateRequest {
   title: string;
   color: string;
   priority: number;
+  category: RecordGroup_RecordGroupCategory;
 }
 
 export interface RecordGroupResponse {
@@ -92,7 +97,7 @@ export interface SharedRecordGroupPriorityUpdateRequest_PriorityItem {
 }
 
 function createBaseCreateRecordGroupRequest(): CreateRecordGroupRequest {
-  return { title: "", color: "", type: 0, priority: 0 };
+  return { title: "", color: "", type: 0, category: 0, priority: 0 };
 }
 
 export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
@@ -105,6 +110,9 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
     }
     if (message.type !== 0) {
       writer.uint32(24).int32(message.type);
+    }
+    if (message.category !== 0) {
+      writer.uint32(32).int32(message.category);
     }
     if (message.priority !== 0) {
       writer.uint32(800).uint64(message.priority);
@@ -143,6 +151,14 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
           message.type = reader.int32() as any;
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.category = reader.int32() as any;
+          continue;
+        }
         case 100: {
           if (tag !== 800) {
             break;
@@ -165,6 +181,7 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       color: isSet(object.color) ? globalThis.String(object.color) : "",
       type: isSet(object.type) ? recordGroup_RecordGroupTypeFromJSON(object.type) : 0,
+      category: isSet(object.category) ? recordGroup_RecordGroupCategoryFromJSON(object.category) : 0,
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
     };
   },
@@ -180,6 +197,9 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
     if (message.type !== 0) {
       obj.type = recordGroup_RecordGroupTypeToJSON(message.type);
     }
+    if (message.category !== 0) {
+      obj.category = recordGroup_RecordGroupCategoryToJSON(message.category);
+    }
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
     }
@@ -194,6 +214,7 @@ export const CreateRecordGroupRequest: MessageFns<CreateRecordGroupRequest> = {
     message.title = object.title ?? "";
     message.color = object.color ?? "";
     message.type = object.type ?? 0;
+    message.category = object.category ?? 0;
     message.priority = object.priority ?? 0;
     return message;
   },
@@ -593,7 +614,7 @@ export const RecordGroupJoinRequest_JoinWorkerRequest: MessageFns<RecordGroupJoi
 };
 
 function createBaseRecordGroupUpdateRequest(): RecordGroupUpdateRequest {
-  return { title: "", color: "", priority: 0 };
+  return { title: "", color: "", priority: 0, category: 0 };
 }
 
 export const RecordGroupUpdateRequest: MessageFns<RecordGroupUpdateRequest> = {
@@ -606,6 +627,9 @@ export const RecordGroupUpdateRequest: MessageFns<RecordGroupUpdateRequest> = {
     }
     if (message.priority !== 0) {
       writer.uint32(24).uint64(message.priority);
+    }
+    if (message.category !== 0) {
+      writer.uint32(32).int32(message.category);
     }
     return writer;
   },
@@ -641,6 +665,14 @@ export const RecordGroupUpdateRequest: MessageFns<RecordGroupUpdateRequest> = {
           message.priority = longToNumber(reader.uint64());
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.category = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -655,6 +687,7 @@ export const RecordGroupUpdateRequest: MessageFns<RecordGroupUpdateRequest> = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       color: isSet(object.color) ? globalThis.String(object.color) : "",
       priority: isSet(object.priority) ? globalThis.Number(object.priority) : 0,
+      category: isSet(object.category) ? recordGroup_RecordGroupCategoryFromJSON(object.category) : 0,
     };
   },
 
@@ -669,6 +702,9 @@ export const RecordGroupUpdateRequest: MessageFns<RecordGroupUpdateRequest> = {
     if (message.priority !== 0) {
       obj.priority = Math.round(message.priority);
     }
+    if (message.category !== 0) {
+      obj.category = recordGroup_RecordGroupCategoryToJSON(message.category);
+    }
     return obj;
   },
 
@@ -680,6 +716,7 @@ export const RecordGroupUpdateRequest: MessageFns<RecordGroupUpdateRequest> = {
     message.title = object.title ?? "";
     message.color = object.color ?? "";
     message.priority = object.priority ?? 0;
+    message.category = object.category ?? 0;
     return message;
   },
 };

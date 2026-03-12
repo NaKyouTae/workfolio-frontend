@@ -8,7 +8,7 @@ interface MonthlyCalendarItemProps {
     colSpan: number
     isContinuation: boolean
     continuesToNextWeek: boolean
-    onRecordClick: (record: Record, event: React.MouseEvent<HTMLTableCellElement>) => void
+    onRecordClick: (record: Record) => void
 }
 
 export default function MonthlyCalendarItem({
@@ -37,7 +37,7 @@ export default function MonthlyCalendarItem({
             className={'record'}
             onClick={(e) => {
                 e.stopPropagation()
-                onRecordClick(record, e)
+                onRecordClick(record)
             }}
             title={
                 isContinuation && continuesToNextWeek ? `${getDisplayTitle()} (이전 주에서 이어짐, 다음 주로 이어짐)` :

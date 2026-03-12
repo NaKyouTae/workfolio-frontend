@@ -4,7 +4,7 @@ import RecordGroups from '../RecordGroups';
 import { CreateRecordGroupRequest } from '@workfolio/shared/generated/record_group';
 import HttpMethod from '@workfolio/shared/enums/HttpMethod';
 import RecordGroupFormModal from '../RecordGroupFormModal';
-import { RecordGroup_RecordGroupType, RecordGroup } from '@workfolio/shared/generated/common';
+import { RecordGroup_RecordGroupType, RecordGroup, RecordGroup_RecordGroupCategory } from '@workfolio/shared/generated/common';
 import { isLoggedIn } from '@workfolio/shared/utils/authUtils';
 import LoginModal from '@workfolio/shared/ui/LoginModal';
 interface RecordGroupSectionProps {
@@ -40,7 +40,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
     }, []);
 
     // 새 그룹 생성 함수
-    const createRecordGroup = useCallback(async (title: string, color: string) => {
+    const createRecordGroup = useCallback(async (title: string, color: string, category?: RecordGroup_RecordGroupCategory) => {
         if (!isLoggedIn()) {
             setShowLoginModal(true);
             return;
@@ -63,6 +63,7 @@ const RecordGroupsOwned: React.FC<RecordGroupSectionProps> = React.memo(({
                     title: message.title,
                     color: message.color,
                     type: message.type,
+                    category: category ?? RecordGroup_RecordGroupCategory.GENERAL,
                     priority: message.priority.toString(),
                 })
             });

@@ -22,12 +22,9 @@ interface SidebarProps {
             recordGroupId: string
         ) => Promise<RecordGroupDetailResponse | null>;
     };
-    showDashboard: boolean;
-    onGoHome: () => void;
-    onGoRecords: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGroupsData, showDashboard, onGoHome, onGoRecords }) => {
+const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGroupsData }) => {
     const defaultExpanded = true;
     const [showAd, setShowAd] = useState(false);
 
@@ -49,12 +46,6 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ onConfigToggle, recordGrou
         <aside>
             <SidebarButton allRecordGroups={allRecordGroups} />
             <div className="aside-cont">
-                <div
-                    className={`aside-home ${showDashboard ? "active" : ""}`}
-                    onClick={showDashboard ? onGoRecords : onGoHome}
-                >
-                    {showDashboard ? "기록 보러가기" : "내 기록 관리"}
-                </div>
                 <SidebarConfig onConfigToggle={onConfigToggle} />
                 <RecordGroupsOwned
                     defaultExpanded={defaultExpanded}

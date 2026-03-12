@@ -3,6 +3,7 @@ import { TurnOver, TurnOverDetail } from "@workfolio/shared/generated/common";
 import { isLoggedIn } from "@workfolio/shared/utils/authUtils";
 import LoginModal from "@workfolio/shared/ui/LoginModal";
 import GoogleAdBanner from "@/components/ads/GoogleAdBanner";
+import { calculateTurnOverProgress } from "./content/TurnOversIntegration";
 
 const NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT = process.env.NEXT_PUBLIC_ADSENSE_TURNOVERS_SLOT;
 
@@ -50,16 +51,16 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
                     className={`aside-home ${selectedTurnOver === null ? "active" : ""}`}
                     onClick={onGoHome}
                 >
-                    내 이직 관리
+                    커리어 준비
                 </div>
                 <div className="aside-group">
                     <p className="aside-group-title">내 이직 활동 <span style={{ color: 'var(--gray005)', fontWeight: 400, marginLeft: '0.4rem' }}>{turnOvers.length}</span></p>
                     <ul className="aside-group-list">
-                        {/* isLoading ? (
-                            <SidebarListSkeleton count={3} />
-                        ) : */ }
                         {(
                             turnOvers.map((turnOver) => {
+                                const progress = 'turnOverGoal' in turnOver
+                                    ? calculateTurnOverProgress(turnOver as TurnOverDetail)
+                                    : null;
                                 return (
                                     <li
                                         key={turnOver.id}
@@ -68,6 +69,7 @@ const TurnOversSidebar: React.FC<TurnOversSidebarProps> = ({
                                         }
                                         onClick={() => handleTurnOverSelect(turnOver.id)}
                                     >
+                                        {progress !== null && <span className="aside-progress">[{progress}%]</span>}
                                         <p>{turnOver.name}</p>
                                     </li>
                                 );

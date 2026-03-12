@@ -5,7 +5,6 @@ import Sidebar from "@/components/features/records/sidebar/Sidebar";
 import RecordContents, {
     RecordContentsRef,
 } from "@/components/features/records/RecordContents";
-import RecordDashboard from "@/components/features/records/dashboard/RecordDashboard";
 import RecordConfigModal from "./sidebar/records-config/RecordConfigModal";
 
 import Footer from "@/components/layouts/Footer";
@@ -17,7 +16,6 @@ const RecordsPage = React.memo(() => {
     const pathname = usePathname();
     const recordContentsRef = useRef<RecordContentsRef>(null);
     const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
-    const [showDashboard, setShowDashboard] = useState(true);
 
     // 최상위에서 useRecordGroups 한 번만 호출
     const recordGroupsData = useRecordGroups();
@@ -55,34 +53,19 @@ const RecordsPage = React.memo(() => {
         setIsConfigModalOpen(false);
     };
 
-    const handleGoHome = () => {
-        setShowDashboard(true);
-    };
-
-    const handleGoRecords = () => {
-        setShowDashboard(false);
-    };
-
     return (
         <main>
             <Sidebar
                 onConfigToggle={handleConfigToggle}
                 recordGroupsData={recordGroupsData}
-                showDashboard={showDashboard}
-                onGoHome={handleGoHome}
-                onGoRecords={handleGoRecords}
             />
             <section>
-                {showDashboard ? (
-                    <RecordDashboard allRecordGroups={recordGroupsData.allRecordGroups} />
-                ) : (
-                    <Suspense fallback={<></>}>
-                        <RecordContents
-                            ref={recordContentsRef}
-                            recordGroupsData={recordGroupsData}
-                        />
-                    </Suspense>
-                )}
+                <Suspense fallback={<></>}>
+                    <RecordContents
+                        ref={recordContentsRef}
+                        recordGroupsData={recordGroupsData}
+                    />
+                </Suspense>
                 <Footer />
             </section>
             <RecordConfigModal

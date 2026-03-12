@@ -27,8 +27,11 @@ interface RecordFormProps {
     attachments: RecordAttachment[];
     onAttachmentsChange: (attachments: RecordAttachment[]) => void;
     templateType?: RecordTemplateType;
+    setTemplateType?: (type: RecordTemplateType) => void;
+    templateDropdownOptions?: IDropdown[];
     templateFields?: Record<string, string>;
     onTemplateFieldsChange?: (fields: Record<string, string>) => void;
+    categoryLabel?: string;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -62,8 +65,11 @@ const RecordForm: React.FC<RecordFormProps> = ({
     attachments,
     onAttachmentsChange,
     templateType = 'free',
+    setTemplateType,
+    templateDropdownOptions = [],
     templateFields = {},
     onTemplateFieldsChange,
+    categoryLabel,
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const isTemplateMode = templateType !== 'free' && onTemplateFieldsChange;
@@ -125,18 +131,46 @@ const RecordForm: React.FC<RecordFormProps> = ({
         <div className="modal-cont">
             <ul className="record-info-input">
                 <li>
-                    <p>기록장</p>
-                    <div className="record-select">
-                        <div className="color" style={{
-                            backgroundColor: recordGroupColor,
-                        }}></div>
-                        <Dropdown
-                            options={dropdownOptions}
-                            selectedOption={recordGroupId || ''}
-                            setValue={(value) => setRecordGroupId(value as string)}
-                        />
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <div style={{ flex: 1, display: 'flex', flexFlow: 'column', rowGap: '.6rem' }}>
+                            <p className="field-label">기록장</p>
+                            <div className="record-select">
+                                <div className="color" style={{
+                                    backgroundColor: recordGroupColor,
+                                }}></div>
+                                <Dropdown
+                                    options={dropdownOptions}
+                                    selectedOption={recordGroupId || ''}
+                                    setValue={(value) => setRecordGroupId(value as string)}
+                                />
+                            </div>
+                        </div>
+                        {categoryLabel && (
+                            <div style={{ width: '100px', display: 'flex', flexFlow: 'column', rowGap: '.6rem' }}>
+                                <p className="field-label">기록장 유형</p>
+                                <input
+                                    type="text"
+                                    value={categoryLabel}
+                                    readOnly
+                                    style={{ cursor: 'default' }}
+                                />
+                            </div>
+                        )}
                     </div>
                 </li>
+                {setTemplateType && templateDropdownOptions.length > 0 && (
+                    <li>
+                        <p>기록 유형</p>
+                        <Dropdown
+                            options={templateDropdownOptions}
+                            selectedOption={templateType}
+                            setValue={(value) => setTemplateType(value as RecordTemplateType)}
+                        />
+                        <p style={{ fontSize: '1.1rem', color: 'var(--gray004)', marginTop: '2px' }}>
+                            기록장 유형에 따라 사용 가능한 기록 유형이 다릅니다.
+                        </p>
+                    </li>
+                )}
                 <li>
                     <p>제목</p>
                     <input
@@ -148,20 +182,24 @@ const RecordForm: React.FC<RecordFormProps> = ({
                     />
                 </li>
                 <li>
-                    <p>시작 일시</p>
-                    <DateTimeInput
-                        value={startedAt}
-                        onChange={setStartedAt}
-                        showTime={!isAllDay}
-                    />
-                </li>
-                <li>
-                    <p>종료 일시</p>
-                    <DateTimeInput
-                        value={endedAt}
-                        onChange={setEndedAt}
-                        showTime={!isAllDay}
-                    />
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <div style={{ flex: 1, display: 'flex', flexFlow: 'column', rowGap: '.6rem' }}>
+                            <p className="field-label">시작 일시</p>
+                            <DateTimeInput
+                                value={startedAt}
+                                onChange={setStartedAt}
+                                showTime={!isAllDay}
+                            />
+                        </div>
+                        <div style={{ flex: 1, display: 'flex', flexFlow: 'column', rowGap: '.6rem' }}>
+                            <p className="field-label">종료 일시</p>
+                            <DateTimeInput
+                                value={endedAt}
+                                onChange={setEndedAt}
+                                showTime={!isAllDay}
+                            />
+                        </div>
+                    </div>
                 </li>
                 <li>
                     <input

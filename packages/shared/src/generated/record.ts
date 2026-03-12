@@ -16,6 +16,7 @@ export interface RecordCreateRequest {
   startedAt: number;
   endedAt: number;
   attachments: RecordCreateRequest_Attachment[];
+  templateType: string;
   recordGroupId: string;
 }
 
@@ -30,6 +31,7 @@ export interface RecordUpdateRequest {
   startedAt: number;
   endedAt: number;
   attachments: RecordUpdateRequest_Attachment[];
+  templateType: string;
   id: string;
   recordGroupId: string;
 }
@@ -54,7 +56,7 @@ export interface RecordResponse {
 }
 
 function createBaseRecordCreateRequest(): RecordCreateRequest {
-  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], recordGroupId: "" };
+  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], templateType: "", recordGroupId: "" };
 }
 
 export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
@@ -73,6 +75,9 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     }
     for (const v of message.attachments) {
       RecordCreateRequest_Attachment.encode(v!, writer.uint32(42).fork()).join();
+    }
+    if (message.templateType !== "") {
+      writer.uint32(50).string(message.templateType);
     }
     if (message.recordGroupId !== "") {
       writer.uint32(794).string(message.recordGroupId);
@@ -127,6 +132,14 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
           message.attachments.push(RecordCreateRequest_Attachment.decode(reader, reader.uint32()));
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.templateType = reader.string();
+          continue;
+        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -161,6 +174,11 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
       attachments: globalThis.Array.isArray(object?.attachments)
         ? object.attachments.map((e: any) => RecordCreateRequest_Attachment.fromJSON(e))
         : [],
+      templateType: isSet(object.templateType)
+        ? globalThis.String(object.templateType)
+        : isSet(object.template_type)
+        ? globalThis.String(object.template_type)
+        : "",
       recordGroupId: isSet(object.recordGroupId)
         ? globalThis.String(object.recordGroupId)
         : isSet(object.record_group_id)
@@ -186,6 +204,9 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     if (message.attachments?.length) {
       obj.attachments = message.attachments.map((e) => RecordCreateRequest_Attachment.toJSON(e));
     }
+    if (message.templateType !== "") {
+      obj.templateType = message.templateType;
+    }
     if (message.recordGroupId !== "") {
       obj.recordGroupId = message.recordGroupId;
     }
@@ -202,6 +223,7 @@ export const RecordCreateRequest: MessageFns<RecordCreateRequest> = {
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
     message.attachments = object.attachments?.map((e) => RecordCreateRequest_Attachment.fromPartial(e)) || [];
+    message.templateType = object.templateType ?? "";
     message.recordGroupId = object.recordGroupId ?? "";
     return message;
   },
@@ -294,7 +316,7 @@ export const RecordCreateRequest_Attachment: MessageFns<RecordCreateRequest_Atta
 };
 
 function createBaseRecordUpdateRequest(): RecordUpdateRequest {
-  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], id: "", recordGroupId: "" };
+  return { title: "", description: "", startedAt: 0, endedAt: 0, attachments: [], templateType: "", id: "", recordGroupId: "" };
 }
 
 export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
@@ -313,6 +335,9 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     }
     for (const v of message.attachments) {
       RecordUpdateRequest_Attachment.encode(v!, writer.uint32(42).fork()).join();
+    }
+    if (message.templateType !== "") {
+      writer.uint32(50).string(message.templateType);
     }
     if (message.id !== "") {
       writer.uint32(794).string(message.id);
@@ -367,6 +392,14 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
           message.attachments.push(RecordUpdateRequest_Attachment.decode(reader, reader.uint32()));
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.templateType = reader.string();
+          continue;
+        }
         case 99: {
           if (tag !== 794) {
             break;
@@ -401,6 +434,11 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
       attachments: globalThis.Array.isArray(object?.attachments)
         ? object.attachments.map((e: any) => RecordUpdateRequest_Attachment.fromJSON(e))
         : [],
+      templateType: isSet(object.templateType)
+        ? globalThis.String(object.templateType)
+        : isSet(object.template_type)
+        ? globalThis.String(object.template_type)
+        : "",
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       recordGroupId: isSet(object.recordGroupId)
         ? globalThis.String(object.recordGroupId)
@@ -427,6 +465,9 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     if (message.attachments?.length) {
       obj.attachments = message.attachments.map((e) => RecordUpdateRequest_Attachment.toJSON(e));
     }
+    if (message.templateType !== "") {
+      obj.templateType = message.templateType;
+    }
     if (message.id !== "") {
       obj.id = message.id;
     }
@@ -443,6 +484,7 @@ export const RecordUpdateRequest: MessageFns<RecordUpdateRequest> = {
     message.startedAt = object.startedAt ?? 0;
     message.endedAt = object.endedAt ?? 0;
     message.attachments = object.attachments?.map((e) => RecordUpdateRequest_Attachment.fromPartial(e)) || [];
+    message.templateType = object.templateType ?? "";
     message.id = object.id ?? "";
     message.recordGroupId = object.recordGroupId ?? "";
     return message;

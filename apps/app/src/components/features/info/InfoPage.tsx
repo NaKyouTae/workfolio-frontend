@@ -19,9 +19,6 @@ const InfoPage: React.FC = () => {
                         />
                     </Link>
                 </h1>
-                <Link href="/records" className="info-header-cta">
-                    내 기록 쌓으러 가기
-                </Link>
             </header>
             <InfoContent />
         </>

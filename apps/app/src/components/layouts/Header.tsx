@@ -63,9 +63,9 @@ const Header = () => {
     };
 
     const handleLogoClick = () => {
-        // 이미 /records 페이지에 있으면 아무것도 안함 (불필요한 _rsc 요청 방지)
-        if (pathname !== "/records") {
-            router.push("/records");
+        // 이미 /dashboard 페이지에 있으면 아무것도 안함 (불필요한 _rsc 요청 방지)
+        if (pathname !== "/dashboard") {
+            router.push("/dashboard");
         }
     };
 
@@ -126,13 +126,22 @@ const Header = () => {
             </h1>
             <div>
                 <ul className="menu">
+                    <li className={pathname.includes("/dashboard") ? "active" : ""}>
+                        <Link
+                            href="/dashboard"
+                            prefetch={false}
+                            onClick={(e) => handleMenuClick(e, "/dashboard")}
+                        >
+                            대시보드
+                        </Link>
+                    </li>
                     <li className={pathname.includes("/records") ? "active" : ""}>
                         <Link
                             href="/records"
                             prefetch={false}
                             onClick={(e) => handleMenuClick(e, "/records")}
                         >
-                            기록 관리
+                            내 기록
                         </Link>
                     </li>
                     <li className={pathname.includes("/careers") ? "active" : ""}>
@@ -141,7 +150,7 @@ const Header = () => {
                             prefetch={false}
                             onClick={(e) => handleMenuClick(e, "/careers")}
                         >
-                            이력 관리
+                            내 이력서
                         </Link>
                     </li>
                     <li className={pathname.includes("/turn-overs") ? "active" : ""}>
@@ -150,7 +159,7 @@ const Header = () => {
                             prefetch={false}
                             onClick={(e) => handleMenuClick(e, "/turn-overs")}
                         >
-                            이직 관리
+                            커리어 준비
                         </Link>
                     </li>
                     <li className={pathname === "/templates" || pathname.startsWith("/templates/") ? "active" : ""}>

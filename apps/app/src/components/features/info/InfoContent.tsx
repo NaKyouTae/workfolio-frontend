@@ -36,8 +36,8 @@ const InfoContent: React.FC = () => {
                                 <p className="hero-sub">
                                     주간 회고 · 성과 기록 · 프로젝트 회고로 쌓은 기록이 이력서가 됩니다
                                 </p>
-                                <Link href="/records" className="hero-cta">
-                                    무료로 시작하기
+                                <Link href="/dashboard" className="hero-cta">
+                                    내 기록 쌓으러가기
                                 </Link>
                                 <Image
                                     src="/assets/img/info/info-img06.svg"
@@ -176,7 +176,7 @@ const InfoContent: React.FC = () => {
                                     <div className="num">POINT 1</div>
                                     <div className="desc">
                                         <div>
-                                            매일 정리하는 <span>기록 관리</span>
+                                            매일 정리하는 <span>내 기록</span>
                                         </div>
                                         <p>
                                             매일의 업무를 간단하게 기록하고 캘린더 형태로 한눈에
@@ -197,7 +197,7 @@ const InfoContent: React.FC = () => {
                                     <div className="num">POINT 2</div>
                                     <div className="desc">
                                         <div>
-                                            탄탄하게 쌓아가는 <span>이력 관리</span>
+                                            탄탄하게 쌓아가는 <span>내 이력서</span>
                                         </div>
                                         <p>
                                             경험을 차곡차곡 기록해 필요한 순간에 바로 꺼내 쓸 수
@@ -218,7 +218,7 @@ const InfoContent: React.FC = () => {
                                     <div className="num">POINT 3</div>
                                     <div className="desc">
                                         <div>
-                                            단계별로 준비하는 <span>이직 관리</span>
+                                            단계별로 준비하는 <span>커리어 준비</span>
                                         </div>
                                         <p>
                                             이직 과정 전체를 단계별로 챙기고 목표를 설정해
@@ -258,6 +258,82 @@ const InfoContent: React.FC = () => {
                                 </SwiperSlide>
                             </Swiper>
                         </div>
+                        <div className="record-to-resume">
+                            <div className="record-to-resume-header">
+                                <span>핵심 기능</span>
+                                <p>
+                                    프로젝트 기록, 클릭 한 번으로
+                                    <br />
+                                    <span>이력서가 됩니다</span>
+                                </p>
+                                <p className="record-to-resume-sub">
+                                    프로젝트 개요 · 업무 · 회고를 기록하면 — 이력서에 바로 가져올 수 있습니다
+                                </p>
+                            </div>
+                            <div className="record-to-resume-steps">
+                                <div className="record-to-resume-step">
+                                    <div className="step-num">STEP 1</div>
+                                    <div className="step-title">프로젝트 기록 쌓기</div>
+                                    <p className="step-desc">
+                                        프로젝트 개요, 업무, 회고
+                                        <br />
+                                        3가지 템플릿으로 체계적으로 기록
+                                    </p>
+                                    {/* TODO: 이미지 추가 후 주석 해제
+                                    <Image
+                                        src="/assets/img/info/info-step01.png"
+                                        alt="프로젝트 기록 화면"
+                                        width={480}
+                                        height={300}
+                                        className="step-img"
+                                    /> */}
+                                </div>
+                                <div className="record-to-resume-arrow">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <path d="M9 6l6 6-6 6" stroke="#FFBB26" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div className="record-to-resume-step">
+                                    <div className="step-num">STEP 2</div>
+                                    <div className="step-title">가져올 기록 선택</div>
+                                    <p className="step-desc">
+                                        원하는 기록만 체크박스로 골라서
+                                        <br />
+                                        이력서 프로젝트로 변환
+                                    </p>
+                                    {/* TODO: 이미지 추가 후 주석 해제
+                                    <Image
+                                        src="/assets/img/info/info-step02.png"
+                                        alt="기록 선택 화면"
+                                        width={480}
+                                        height={300}
+                                        className="step-img"
+                                    /> */}
+                                </div>
+                                <div className="record-to-resume-arrow">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <path d="M9 6l6 6-6 6" stroke="#FFBB26" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div className="record-to-resume-step">
+                                    <div className="step-num">STEP 3</div>
+                                    <div className="step-title">이력서에 자동 추가</div>
+                                    <p className="step-desc">
+                                        소속 · 역할 · 기술스택 · 성과가
+                                        <br />
+                                        이력서 형식에 맞게 자동 구성
+                                    </p>
+                                    {/* TODO: 이미지 추가 후 주석 해제
+                                    <Image
+                                        src="/assets/img/info/info-step03.png"
+                                        alt="이력서 완성 화면"
+                                        width={480}
+                                        height={300}
+                                        className="step-img"
+                                    /> */}
+                                </div>
+                            </div>
+                        </div>
                         <div className="action">
                             <div>
                                 <span>시작하는 순간부터 달라지는 커리어 관리</span>
@@ -265,7 +341,7 @@ const InfoContent: React.FC = () => {
                                     당신의 내일을 <span>워크폴리오가 응원</span>합니다.
                                 </p>
                             </div>
-                            <Link href="/records">무료로 내 기록 쌓아보기</Link>
+                            <Link href="/dashboard">무료로 내 기록 쌓아보기</Link>
                         </div>
                     </div>
                 </div>

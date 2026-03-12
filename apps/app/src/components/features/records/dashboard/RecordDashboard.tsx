@@ -274,7 +274,6 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
                                     isOpen={true}
                                     onClose={() => setQuickTemplateType(null)}
                                     allRecordGroups={allRecordGroups}
-                                    templateType={quickTemplateType}
                                 />
                             )}
                         </div>
@@ -313,50 +312,50 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
                                         <h3>기록장별 활동</h3>
                                     </div>
                                 </div>
-                                {groupStats.length === 0 ? (
-                                    <p className="empty-text">기록장이 없습니다.</p>
-                                ) : (
-                                    <div className="dash-group-stats">
-                                        <div className="dash-group-donut">
-                                            <svg viewBox="0 0 120 120" className="dash-donut-svg">
-                                                {(() => {
-                                                    const total = groupStats.reduce((sum, g) => sum + g.count, 0);
-                                                    if (total === 0) {
-                                                        return (
-                                                            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--gray002)" strokeWidth="20" />
-                                                        );
-                                                    }
-                                                    let offset = 0;
-                                                    const circumference = 2 * Math.PI * 50;
-                                                    return groupStats.map((g) => {
-                                                        const ratio = g.count / total;
-                                                        const dashLength = ratio * circumference;
-                                                        const el = (
-                                                            <circle
-                                                                key={g.id}
-                                                                cx="60"
-                                                                cy="60"
-                                                                r="50"
-                                                                fill="none"
-                                                                stroke={g.color}
-                                                                strokeWidth="20"
-                                                                strokeDasharray={`${dashLength} ${circumference - dashLength}`}
-                                                                strokeDashoffset={-offset}
-                                                                transform="rotate(-90 60 60)"
-                                                            />
-                                                        );
-                                                        offset += dashLength;
-                                                        return el;
-                                                    });
-                                                })()}
-                                                <text x="60" y="56" textAnchor="middle" fontSize="18" fontWeight="600" fill="var(--black)">
-                                                    {groupStats.reduce((sum, g) => sum + g.count, 0)}
-                                                </text>
-                                                <text x="60" y="72" textAnchor="middle" fontSize="10" fill="var(--gray005)">
-                                                    총 기록
-                                                </text>
-                                            </svg>
-                                        </div>
+                                <div className="dash-group-stats">
+                                    <div className="dash-group-donut">
+                                        <svg viewBox="0 0 120 120" className="dash-donut-svg">
+                                            {(() => {
+                                                const total = groupStats.reduce((sum, g) => sum + g.count, 0);
+                                                if (total === 0) {
+                                                    return (
+                                                        <circle cx="60" cy="60" r="50" fill="none" stroke="var(--gray002)" strokeWidth="20" />
+                                                    );
+                                                }
+                                                let offset = 0;
+                                                const circumference = 2 * Math.PI * 50;
+                                                return groupStats.map((g) => {
+                                                    const ratio = g.count / total;
+                                                    const dashLength = ratio * circumference;
+                                                    const el = (
+                                                        <circle
+                                                            key={g.id}
+                                                            cx="60"
+                                                            cy="60"
+                                                            r="50"
+                                                            fill="none"
+                                                            stroke={g.color}
+                                                            strokeWidth="20"
+                                                            strokeDasharray={`${dashLength} ${circumference - dashLength}`}
+                                                            strokeDashoffset={-offset}
+                                                            transform="rotate(-90 60 60)"
+                                                        />
+                                                    );
+                                                    offset += dashLength;
+                                                    return el;
+                                                });
+                                            })()}
+                                            <text x="60" y="56" textAnchor="middle" fontSize="18" fontWeight="600" fill="var(--black)">
+                                                {groupStats.reduce((sum, g) => sum + g.count, 0)}
+                                            </text>
+                                            <text x="60" y="72" textAnchor="middle" fontSize="10" fill="var(--gray005)">
+                                                총 기록
+                                            </text>
+                                        </svg>
+                                    </div>
+                                    {groupStats.length === 0 ? (
+                                        <p className="empty-text">기록장이 없습니다.</p>
+                                    ) : (
                                         <ul className="dash-group-legend">
                                             {groupStats.map((g) => (
                                                 <li key={g.id}>
@@ -366,8 +365,8 @@ const RecordDashboard: React.FC<RecordDashboardProps> = ({ allRecordGroups }) =>
                                                 </li>
                                             ))}
                                         </ul>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
 
                             {/* 기록 히트맵 */}
