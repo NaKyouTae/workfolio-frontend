@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Script from "next/script";
 import "@workfolio/shared/styles/globals.css";
 import "../../public/assets/css/reset.css";
@@ -9,14 +10,47 @@ import ConfirmDialogProvider from "@workfolio/shared/ui/ConfirmDialogProvider";
 import NotificationProvider from "@workfolio/shared/ui/NotificationProvider";
 import GoogleAnalytics from "@workfolio/shared/ui/GoogleAnalytics";
 
-export const metadata = {
-    title: "워크폴리오 - 나만의 기록장",
+export const metadata: Metadata = {
+    metadataBase: new URL("https://www.workfolio.kr"),
+    title: {
+        default: "워크폴리오 - 나만의 기록장",
+        template: "%s | 워크폴리오",
+    },
     description:
         "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
     icons: {
         icon: "/assets/img/favicon.svg",
         shortcut: "/assets/img/favicon.ico",
         apple: "/assets/img/favicon.svg",
+    },
+    openGraph: {
+        title: "워크폴리오 - 나만의 커리어 기록 플랫폼",
+        description:
+            "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
+        url: "https://www.workfolio.kr",
+        siteName: "워크폴리오",
+        type: "website",
+        locale: "ko_KR",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "워크폴리오 - 나만의 커리어 기록 플랫폼",
+        description:
+            "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
+    },
+    alternates: {
+        canonical: "https://www.workfolio.kr",
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
     },
 };
 
@@ -25,6 +59,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="ko" suppressHydrationWarning>
             <head suppressHydrationWarning>{/* favicon은 metadata에서 설정됨 */}</head>
             <body>
+                {/* JSON-LD Structured Data */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "WebSite",
+                            name: "워크폴리오",
+                            url: "https://www.workfolio.kr",
+                            description:
+                                "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
+                        }),
+                    }}
+                />
                 {/* Google Tag Manager */}
                 <Script
                     id="google-tag-manager"
