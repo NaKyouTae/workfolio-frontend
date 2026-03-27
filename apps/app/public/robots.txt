@@ -1,12 +1,18 @@
 User-agent: *
 Allow: /info
+Allow: /dashboard
+Allow: /records
+Allow: /careers
+Allow: /turn-overs
+Allow: /templates
 Allow: /service-guides
-Allow: /templates/preview
+Allow: /service-guides/notices
+Allow: /service-guides/terms-services
+Allow: /service-guides/privacy-policies
+Allow: /service-guides/guides
+Allow: /service-guides/company
 Allow: /resumes
 
-Disallow: /records
-Disallow: /careers
-Disallow: /turn-overs
 Disallow: /mypage
 Disallow: /api
 Disallow: /login
