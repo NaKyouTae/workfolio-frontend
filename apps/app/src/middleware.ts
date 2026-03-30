@@ -2,11 +2,22 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
+    const host = request.headers.get("host") || "";
     const protocol = request.headers.get("x-forwarded-proto") || request.nextUrl.protocol;
+
+    // http → https 리디렉트
     if (protocol === "http:") {
         const httpsUrl = request.nextUrl.clone();
         httpsUrl.protocol = "https:";
+        httpsUrl.host = host.replace(/^(?!www\.)/, "www.");
         return NextResponse.redirect(httpsUrl, 301);
+    }
+
+    // non-www → www 리디렉트
+    if (host && !host.startsWith("www.") && !host.startsWith("localhost")) {
+        const wwwUrl = request.nextUrl.clone();
+        wwwUrl.host = `www.${host}`;
+        return NextResponse.redirect(wwwUrl, 301);
     }
 
     // OAuth 콜백: 백엔드에서 리다이렉트된 토큰 쿼리 파라미터를 쿠키로 저장
@@ -64,11 +75,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        "/",
-        "/dashboard/:path*",
-        "/records/:path*",
-        "/company-history/:path*",
-        "/mypage/:path*",
-        "/login",
+        "/((?!_next/static|_next/image|assets|favicon\\.ico|sitemap\\.xml|robots\\.txt).*)",
     ],
 };
