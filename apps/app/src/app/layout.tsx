@@ -11,7 +11,7 @@ import NotificationProvider from "@workfolio/shared/ui/NotificationProvider";
 import GoogleAnalytics from "@workfolio/shared/ui/GoogleAnalytics";
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://www.workfolio.kr"),
+    metadataBase: new URL("https://workfolio.spectrify.kr"),
     title: {
         default: "워크폴리오 - 나만의 기록장",
         template: "%s | 워크폴리오",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
         title: "워크폴리오 - 나만의 커리어 기록 플랫폼",
         description:
             "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
-        url: "https://www.workfolio.kr",
+        url: "https://workfolio.spectrify.kr",
         siteName: "워크폴리오",
         type: "website",
         locale: "ko_KR",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
             "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
     },
     alternates: {
-        canonical: "https://www.workfolio.kr",
+        canonical: "https://workfolio.spectrify.kr",
     },
     robots: {
         index: true,
@@ -67,7 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             "@context": "https://schema.org",
                             "@type": "WebSite",
                             name: "워크폴리오",
-                            url: "https://www.workfolio.kr",
+                            url: "https://workfolio.spectrify.kr",
                             description:
                                 "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
                         }),

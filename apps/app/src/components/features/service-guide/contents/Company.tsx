@@ -25,8 +25,8 @@ const COMPANY_INFO = {
         },
         {
             label: "도메인",
-            value: "www.workfolio.kr",
-            href: "https://www.workfolio.kr",
+            value: "workfolio.spectrify.kr",
+            href: "https://workfolio.spectrify.kr",
         },
     ],
 };
