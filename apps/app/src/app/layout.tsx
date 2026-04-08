@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     alternates: {
         canonical: "https://workfolio.spectrify.kr",
     },
+    verification: {
+        google: "7Z5qXHvXmaZVGUrCaUMCuRR5uMGbTCBwG8-fSJMouLE",
+    },
     robots: {
         index: true,
         follow: true,
