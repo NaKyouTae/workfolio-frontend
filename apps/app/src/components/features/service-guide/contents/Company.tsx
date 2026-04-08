@@ -11,7 +11,7 @@ const COMPANY_INFO = {
     },
     business: [
         { label: "서비스명", value: "워크폴리오(workfolio)" },
-        { label: "사업자명", value: "스펙트럼(spectrum)" },
+        { label: "사업자명", value: "스펙트럼" },
         { label: "대표자명", value: "나규태" },
         { label: "사업자 번호", value: "244-20-02381" },
         { label: "사무실 주소", value: "다산중앙로82번안길 166-46, 2층 207-S37호" },

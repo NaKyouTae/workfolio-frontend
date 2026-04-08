@@ -141,7 +141,7 @@ const CompanyModal: React.FC<CompanyModalProps> = ({ isOpen, onClose }) => {
                                 <div className="company-modal-info-item">
                                     <span className="company-modal-info-label">사업자명</span>
                                     <span className="company-modal-info-value">
-                                        스펙트럼(spectrum)
+                                        스펙트럼
                                     </span>
                                 </div>
                                 <div className="company-modal-info-item">
