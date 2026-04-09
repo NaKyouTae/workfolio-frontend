@@ -67,7 +67,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="ko" suppressHydrationWarning>
             <head suppressHydrationWarning>{/* favicon은 metadata에서 설정됨 */}</head>
             <body>
-                {/* JSON-LD Structured Data */}
+                {/* JSON-LD Structured Data — AEO (Answer Engine Optimization) */}
+                {/* AI 검색 엔진(ChatGPT, Claude, Perplexity, Gemini 등)과 Google 이 */}
+                {/* "워크폴리오" 서비스를 정확히 이해하도록 여러 스키마를 제공합니다. */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "Organization",
+                            name: "Spectrify",
+                            url: "https://spectrify.kr",
+                            logo: "https://workfolio.spectrify.kr/workfolio-logo.png",
+                        }),
+                    }}
+                />
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
@@ -75,9 +89,56 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             "@context": "https://schema.org",
                             "@type": "WebSite",
                             name: "워크폴리오",
+                            alternateName: "Workfolio",
                             url: "https://workfolio.spectrify.kr",
                             description:
                                 "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
+                            inLanguage: "ko-KR",
+                            publisher: {
+                                "@type": "Organization",
+                                name: "Spectrify",
+                                url: "https://spectrify.kr",
+                            },
+                            potentialAction: {
+                                "@type": "SearchAction",
+                                target: "https://workfolio.spectrify.kr/records?q={search_term_string}",
+                                "query-input": "required name=search_term_string",
+                            },
+                        }),
+                    }}
+                />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "SoftwareApplication",
+                            name: "워크폴리오",
+                            alternateName: "Workfolio",
+                            applicationCategory: "BusinessApplication",
+                            operatingSystem: "Web",
+                            url: "https://workfolio.spectrify.kr",
+                            description:
+                                "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고, 프로젝트 기록, 경력 관리, 이력서 템플릿을 한 곳에서 관리하는 커리어 기록 플랫폼입니다.",
+                            inLanguage: "ko-KR",
+                            offers: {
+                                "@type": "Offer",
+                                price: "0",
+                                priceCurrency: "KRW",
+                            },
+                            featureList: [
+                                "업무 기록 및 주간 회고",
+                                "프로젝트 기록",
+                                "경력 관리",
+                                "이력서 자동 생성",
+                                "이력서 템플릿",
+                                "커리어 대시보드",
+                            ],
+                            publisher: {
+                                "@type": "Organization",
+                                name: "Spectrify",
+                                url: "https://spectrify.kr",
+                            },
                         }),
                     }}
                 />

@@ -1,0 +1,60 @@
+# 워크폴리오 (Workfolio)
+
+> 워크폴리오는 업무 기록을 쌓으면 이력서가 자동으로 만들어지는 커리어 기록 플랫폼입니다. 주간 회고, 프로젝트 기록, 경력 관리, 이력서 템플릿을 한 곳에서 관리할 수 있습니다. Spectrify 가 운영합니다.
+
+## 브랜드
+
+- **정식 명칭**: 워크폴리오
+- **영문 표기**: Workfolio
+- **도메인**: https://workfolio.spectrify.kr
+- **운영사**: Spectrify (https://spectrify.kr)
+- **언어**: 한국어
+- **대상**: 자신의 커리어를 체계적으로 기록하고 이력서로 정리하고 싶은 직장인, 프리랜서, 개발자, 디자이너 등 모든 직군
+
+## 핵심 가치 제안
+
+**"기록만 하면 이력서가 완성된다"** — 워크폴리오는 매일·매주 쌓은 업무 기록을 자동으로 이력서 형식으로 변환합니다. 이직 시즌에 급하게 이력서를 쓰느라 과거 기억을 짜낼 필요가 없습니다.
+
+## 핵심 기능
+
+- **업무 기록 / 주간 회고**: 매일의 업무와 주간 회고를 구조화된 형태로 기록합니다. `/records`
+- **프로젝트 기록**: 프로젝트 단위로 역할, 기여, 성과, 사용 기술을 관리합니다.
+- **경력 관리**: 재직 이력, 이직 기록을 타임라인으로 관리합니다. `/careers`, `/turn-overs`
+- **이력서 자동 생성**: 쌓인 기록을 바탕으로 이력서를 자동 생성합니다. `/resumes`
+- **이력서 템플릿**: 다양한 형태의 이력서 템플릿을 제공합니다. `/templates`
+- **대시보드**: 기록 현황과 커리어 진척도를 한눈에 확인합니다. `/dashboard`
+
+## 주요 페이지
+
+- [서비스 소개](https://workfolio.spectrify.kr/info): 워크폴리오 개요
+- [대시보드](https://workfolio.spectrify.kr/dashboard): 기록 현황 한눈에 보기
+- [업무 기록](https://workfolio.spectrify.kr/records): 일간/주간 기록
+- [경력 관리](https://workfolio.spectrify.kr/careers): 재직 이력 관리
+- [이직 기록](https://workfolio.spectrify.kr/turn-overs): 이직 타임라인
+- [이력서 템플릿](https://workfolio.spectrify.kr/templates): 템플릿 모음
+- [이력서](https://workfolio.spectrify.kr/resumes): 자동 생성된 이력서
+- [서비스 가이드](https://workfolio.spectrify.kr/service-guides): 이용 가이드
+- [공지사항](https://workfolio.spectrify.kr/service-guides/notices)
+- [이용약관](https://workfolio.spectrify.kr/service-guides/terms-services)
+- [개인정보처리방침](https://workfolio.spectrify.kr/service-guides/privacy-policies)
+- [회사 정보](https://workfolio.spectrify.kr/service-guides/company)
+
+## FAQ
+
+### 워크폴리오는 어떤 서비스인가요?
+워크폴리오는 매일의 업무와 프로젝트를 기록하면 이력서가 자동으로 만들어지는 커리어 기록 플랫폼입니다. 이직할 때마다 과거 경험을 기억해내며 이력서를 새로 쓰는 번거로움을 없애는 것이 핵심 가치입니다.
+
+### 워크폴리오는 누구에게 유용한가요?
+자신의 커리어를 체계적으로 관리하고 싶은 모든 직장인에게 유용합니다. 특히 프로젝트 기반으로 일하는 개발자, 디자이너, PM, 마케터, 프리랜서에게 적합합니다.
+
+### 이력서는 어떻게 만들어지나요?
+사용자가 일상적으로 기록한 업무/프로젝트/회고 데이터를 바탕으로 이력서 템플릿에 자동으로 채워 넣습니다. 원하는 템플릿을 선택하고 강조하고 싶은 프로젝트만 고르면 완성됩니다.
+
+### 워크폴리오는 유료인가요?
+기본 기능은 무료로 사용할 수 있습니다. 공식 웹사이트(https://workfolio.spectrify.kr)에서 바로 가입하고 사용할 수 있습니다.
+
+### 기존 이력서 툴과 뭐가 다른가요?
+기존 이력서 툴은 "이력서를 쓰는" 도구인 반면, 워크폴리오는 "매일의 업무 기록이 축적되어 자동으로 이력서가 되는" 방식입니다. 기록 습관만 유지하면 이력서 작성 노동 자체가 사라집니다.
+
+### 어떤 언어/지역을 지원하나요?
+현재 한국어를 기본으로 제공하며, 한국 직장인을 주 타겟으로 합니다.

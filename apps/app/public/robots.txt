@@ -18,4 +18,105 @@ Disallow: /api
 Disallow: /login
 Disallow: /error
 
+# AEO (Answer Engine Optimization)
+# 주요 AI 크롤러를 명시적으로 허용하여 AI 검색 답변에 노출되도록 합니다.
+
+User-agent: GPTBot
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: CCBot
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: Bytespider
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: YouBot
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /mypage
+Disallow: /api
+Disallow: /login
+Disallow: /error
+
 Sitemap: https://workfolio.spectrify.kr/sitemap.xml
