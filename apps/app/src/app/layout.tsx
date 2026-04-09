@@ -38,9 +38,14 @@ export const metadata: Metadata = {
         description:
             "업무 기록을 쌓으면 이력서가 자동으로 만들어집니다. 주간 회고·프로젝트 기록으로 이력서를 관리하는 플랫폼, 워크폴리오.",
     },
-    alternates: {
-        canonical: "https://workfolio.spectrify.kr",
-    },
+    // 주의: 루트 layout 에서는 canonical 을 설정하지 않습니다.
+    // 루트에 고정 canonical 을 두면 하위 모든 페이지가 "나는 홈페이지다" 라고
+    // 잘못 선언하게 됩니다. 각 페이지가 필요 시 자체 metadata 에서 지정하세요.
+    //
+    // metadataBase 가 workfolio.spectrify.kr 로 설정되어 있어, og:url / 구조화 데이터
+    // 등 모든 절대 URL 은 자동으로 workfolio 호스트 기준으로 렌더링됩니다.
+    // 이를 통해 spectrify.kr 과 workfolio.spectrify.kr 중복 노출 시에도
+    // Google 은 workfolio 를 canonical 로 선택합니다.
     verification: {
         google: "7Z5qXHvXmaZVGUrCaUMCuRR5uMGbTCBwG8-fSJMouLE",
     },
